@@ -10,5 +10,5 @@ dependencies = [
     "bohr-agent-sdk>=0.1.23",
 ]
 
-[project.packages]
+[tool.hatch.build.targets.wheel]
 packages = ["agents"]
