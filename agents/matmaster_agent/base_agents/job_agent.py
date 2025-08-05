@@ -6,7 +6,12 @@ from typing import AsyncGenerator, Optional, Union, override
 
 import aiohttp
 import jsonpickle
-from app.utils.constants import FRONTEND_STATE_KEY, TMP_FRONTEND_STATE_KEY
+
+try:
+    from app.utils.constants import FRONTEND_STATE_KEY, TMP_FRONTEND_STATE_KEY
+except:
+    from agents.matmaster_agent.constants import FRONTEND_STATE_KEY, TMP_FRONTEND_STATE_KEY
+
 from dp.agent.adapter.adk import CalculationMCPTool
 from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.agents.invocation_context import InvocationContext
