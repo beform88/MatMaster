@@ -55,7 +55,12 @@ class LLMConfig(object):
 
         # Helper to init any provider model
         def _init_model(provider_key: str, model_name: str):
-            return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL))
+            return LiteLlm(
+                model=MODEL_MAPPING.get(
+                    (provider_key, model_name),
+                    DEFAULT_MODEL
+                )
+            )
 
         self.gpt_4o = _init_model(gpt_provider, gpt_4o)
         self.gemini_2_0_flash = _init_model(model_provider, gemini_2_0_flash)
