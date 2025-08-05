@@ -1,7 +1,6 @@
 import asyncio
 import base64
 import json
-
 # TODO: use unique logging module
 import logging
 import os
@@ -26,29 +25,6 @@ from agents.matmaster_agent.model import JobResult, JobResultType
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
-async def upload_base64_to_oss(data: str, oss_path: str) -> dict:
-    return await asyncio.to_thread(_sync_upload_base64_to_oss, data, oss_path)
-
-
-def _sync_upload_base64_to_oss(data: str, oss_path: str) -> dict:
-    try:
-        auth = oss2.ProviderAuth(EnvironmentVariableCredentialsProvider())
-        endpoint = os.environ["OSS_ENDPOINT"]
-        bucket_name = os.environ["OSS_BUCKET_NAME"]
-        bucket = oss2.Bucket(auth, endpoint, bucket_name)
-
-        bucket.put_object(oss_path, base64.b64decode(data))
-        return {
-            "status": "success",
-            "oss_path": f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}",
-        }
-    except Exception as e:
-        logger.exception(
-            f"[upload_base64_to_oss] OSS 上传失败: oss_path={oss_path} error={str(e)}"
-        )
-        return {"status": "failed", "reason": str(e)}
 
 
 def is_json(json_str):
@@ -90,6 +66,27 @@ async def extract_convert_and_upload(tgz_url: str, temp_dir: str = "./tmp") -> d
 
 
 async def upload_to_oss_wrapper(b64_data: str, oss_path: str, filename: str) -> Dict[str, dict]:
+    def _sync_upload_base64_to_oss(data: str, oss_path: str) -> dict:
+        try:
+            auth = oss2.ProviderAuth(EnvironmentVariableCredentialsProvider())
+            endpoint = os.environ["OSS_ENDPOINT"]
+            bucket_name = os.environ["OSS_BUCKET_NAME"]
+            bucket = oss2.Bucket(auth, endpoint, bucket_name)
+
+            bucket.put_object(oss_path, base64.b64decode(data))
+            return {
+                "status": "success",
+                "oss_path": f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}",
+            }
+        except Exception as e:
+            logger.exception(
+                f"[upload_base64_to_oss] OSS 上传失败: oss_path={oss_path} error={str(e)}"
+            )
+            return {"status": "failed", "reason": str(e)}
+
+    async def upload_base64_to_oss(data: str, oss_path: str) -> dict:
+        return await asyncio.to_thread(_sync_upload_base64_to_oss, data, oss_path)
+
     """上传包装器，保留原始文件名信息"""
     result = await upload_base64_to_oss(b64_data, oss_path)
 
@@ -142,7 +139,6 @@ async def find_jpg_files(directory: Path) -> List[Path]:
         return list(directory.rglob("*.jpg")) + list(directory.rglob("*.JPG"))
 
     return await loop.run_in_executor(None, _sync_find)
-
 
 
 def is_json(json_str):

@@ -1,4 +1,4 @@
-from google.adk.agents import BaseAgent, LlmAgent
+from google.adk.agents import LlmAgent
 from opik.integrations.adk import track_adk_agent_recursive
 
 from agents.matmaster_agent.callback import matmaster_before_agent

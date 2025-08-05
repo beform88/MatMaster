@@ -4,10 +4,7 @@ from typing import Optional
 from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
 
-try:
-    from app.utils.constants import FRONTEND_STATE_KEY
-except:
-    from agents.matmaster_agent.constants import FRONTEND_STATE_KEY
+from agents.matmaster_agent.constant import FRONTEND_STATE_KEY
 
 
 async def matmaster_before_agent(callback_context: CallbackContext) -> Optional[types.Content]:

@@ -19,8 +19,6 @@ TMP_FRONTEND_STATE_KEY = "tmp_frontend_state"
 # Matmaster Constants
 MATMASTER_AGENT_NAME = "matmaster_agent"
 
-
-
 # Agent Constant
 SystemRole = "system"
 ModelRole = "model"
