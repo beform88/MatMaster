@@ -1,11 +1,19 @@
-import asyncio
 import os
 
-from agents.matmaster_agent.constant import DPA_CALCULATIONS_AGENT_NAME
+from agents.matmaster_agent.base_agents.job_agent import (
+    BaseAsyncJobAgent,
+    ResultCalculationMCPLlmAgent,
+    SubmitCoreCalculationMCPLlmAgent,
+)
+from agents.matmaster_agent.constant import (
+    DPA_CALCULATIONS_AGENT_NAME,
+    BohriumExecutor,
+    BohriumStorge,
+)
+from agents.matmaster_agent.logger import matmodeler_logging_handler
 from pathlib import Path
 from typing import Any, Dict
 
-from dotenv import load_dotenv
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
@@ -14,65 +22,31 @@ from google.adk.sessions import InMemorySessionService
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.genai import types
 
-load_dotenv()
 
-# Global Configuration
-BOHRIUM_EXECUTOR = {
-        "type": "dispatcher",
-        "machine": {
-            "batch_type": "OpenAPI",
-            "context_type": "OpenAPI",
-            "remote_profile": {
-                "access_key": os.getenv("AK"),
-                "project_id":int(os.getenv("BOHRIUM_PROJECT_ID")),
-                "image_address": "registry.dp.tech/dptech/dpa-calculator:85b4fe74",
-                "job_type": "container",
-                "platform": "ali",
-                "machine_type": "1 * NVIDIA V100_32g"
-            }
-        }
-}
-LOCAL_EXECUTOR = {
-    "type": "local"
-}
-BOHRIUM_STORAGE = {
-    "type": "bohrium",
-    "username": os.getenv("BOHRIUM_EMAIL"),
-    "password": os.getenv("BOHRIUM_PASSWORD"),
-    "project_id": int(os.getenv("BOHRIUM_PROJECT_ID"))
-}
-
-HTTPS_STORAGE = {
-  "type": "https",
-  "plugin": {
-        "type": "bohrium",
-        "username": os.getenv("BOHRIUM_EMAIL"),
-        "password": os.getenv("BOHRIUM_PASSWORD"),
-        "project_id": int(os.getenv("BOHRIUM_PROJECT_ID"))
-    }
-}
-print('-----', HTTPS_STORAGE)
-
-
+DPA_CALCULATOR_URL = "https://dpa-uuid1750659890.app-space.dplink.cc/sse?token=fa66cc76b6724d5590a89546772963fd"
 mcp_tools_dpa = CalculationMCPToolset(
-    connection_params=SseServerParams(url="https://dpa-uuid1750659890.app-space.dplink.cc/sse?token=fa66cc76b6724d5590a89546772963fd"),
-    storage=HTTPS_STORAGE,
-    executor=BOHRIUM_EXECUTOR,
+    connection_params=SseServerParams(url=DPA_CALCULATOR_URL),
+    storage=BohriumStorge,
+    executor=BohriumExecutor,
+    async_mode=True,
+    wait=False,
     executor_map={
         "build_bulk_structure": None,
         "build_molecule_structure": None,
         "build_surface_slab": None,
         "build_surface_adsorbate": None
-    }
+    },
+    logging_callback=matmodeler_logging_handler
 )
 
-class DPACalculationsAgent(LlmAgent):
+class DPACalculationsAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            name=DPA_CALCULATIONS_AGENT_NAME,
-            model=llm_config.gpt_4o,  # or specify another model if needed
-            description="An agent specialized in computational research using Deep Potential",
-            instruction=(
+            agent_name=DPA_CALCULATIONS_AGENT_NAME,
+            mcp_tools=[mcp_tools_dpa],,
+            llm_config=llm_config.gpt_4o,
+            agent_description="An agent specialized in computational research using Deep Potential",
+            agent_instruction=(
                 "You are an expert in materials science and computational chemistry. "
                 "Help users perform Deep Potential calculations including structure optimization, "
                 "molecular dynamics and property calculations. "
@@ -81,9 +55,8 @@ class DPACalculationsAgent(LlmAgent):
                 "as the input for the next tool. Always verify the input parameters to users and provide "
                 "clear explanations of results."
             ),
-            tools=[
-                mcp_tools_dpa,
-            ],
+            submit_core_agent_class=SubmitCoreCalculationMCPLlmAgent,
+            result_core_agent_class=ResultCalculationMCPLlmAgent
         )
 
 def init_dpa_calculations_agent() -> LlmAgent:
