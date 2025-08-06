@@ -43,7 +43,7 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
             agent_name=DPA_CALCULATIONS_AGENT_NAME,
-            mcp_tools=[mcp_tools_dpa],,
+            mcp_tools=[mcp_tools_dpa],
             llm_config=llm_config.gpt_4o,
             agent_description="An agent specialized in computational research using Deep Potential",
             agent_instruction=(
