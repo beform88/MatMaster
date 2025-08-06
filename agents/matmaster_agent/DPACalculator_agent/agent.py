@@ -1,5 +1,7 @@
 import asyncio
 import os
+
+from agents.matmaster_agent.constant import DPA_CALCULATIONS_AGENT_NAME
 from pathlib import Path
 from typing import Any, Dict
 
@@ -64,19 +66,31 @@ mcp_tools_dpa = CalculationMCPToolset(
     }
 )
 
-root_agent = LlmAgent(
-    model=LiteLlm(model="azure/gpt-4o"),
-    # model=LiteLlm(model="deepseek/deepseek-chat"),
-    name="dpa_calculations_agent",
-    description="An agent specialized in computational research using Deep Potential",
-    instruction=(
-        "You are an expert in materials science and computational chemistry. "
-        "Help users perform Deep Potential calculations including structure optimization, molecular dynamics and property calculations. "
-        "Use default parameters if the users do not mention, but let users confirm them before submission. "
-        "In multi-step workflows involving file outputs, always use the URI of the previous step's file as the input for the next tool. "
-        "Always verify the input parameters to users and provide clear explanations of results."
-    ),
-    tools=[
-        mcp_tools_dpa,
-    ],
-)
+class DPACalculationsAgent(LlmAgent):
+    def __init__(self, llm_config):
+        super().__init__(
+            name=DPA_CALCULATIONS_AGENT_NAME,
+            model=llm_config.gpt_4o,  # or specify another model if needed
+            description="An agent specialized in computational research using Deep Potential",
+            instruction=(
+                "You are an expert in materials science and computational chemistry. "
+                "Help users perform Deep Potential calculations including structure optimization, "
+                "molecular dynamics and property calculations. "
+                "Use default parameters if the users do not mention, but let users confirm them before submission. "
+                "In multi-step workflows involving file outputs, always use the URI of the previous step's file "
+                "as the input for the next tool. Always verify the input parameters to users and provide "
+                "clear explanations of results."
+            ),
+            tools=[
+                mcp_tools_dpa,
+            ],
+        )
+
+def init_dpa_calculations_agent() -> LlmAgent:
+    dpa_agent = DPACalculationsAgent(MatMasterLlmConfig)  # Reuse existing config or create new one
+    track_adk_agent_recursive(dpa_agent, MatMasterLlmConfig.opik_tracer)  # Add tracing
+    
+    return dpa_agent
+
+# Replace the global instance
+root_agent = init_dpa_calculations_agent()
