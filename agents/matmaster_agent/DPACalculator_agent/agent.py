@@ -65,8 +65,8 @@ mcp_tools_dpa = CalculationMCPToolset(
 )
 
 root_agent = LlmAgent(
-    # model=LiteLlm(model="azure/gpt-4o"),
-    model=LiteLlm(model="deepseek/deepseek-chat"),
+    model=LiteLlm(model="azure/gpt-4o"),
+    # model=LiteLlm(model="deepseek/deepseek-chat"),
     name="dpa_calculations_agent",
     description="An agent specialized in computational research using Deep Potential",
     instruction=(
