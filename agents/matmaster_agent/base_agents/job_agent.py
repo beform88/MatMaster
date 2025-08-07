@@ -151,12 +151,12 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
 
 
 def ak_to_username(access_key: str) -> str:
-    url = "https://openapi.dp.tech/openapi/v1/account/info"
+    url = f"{OpenAPIHost}/openapi/v1/account/info"
     headers = {
         "AccessKey": access_key,
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": "openapi.dp.tech"
+        "Host": f"{OpenAPIHost.split('//')[1]}",
     }
     try:
         response = requests.get(url, headers=headers, timeout=10)
