@@ -1,35 +1,17 @@
-import os
-import asyncio
-from google.adk.agents import Agent, BaseAgent
-from google.adk.models.lite_llm import LiteLlm
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
-from google.adk.runners import InMemoryRunner
-from google.adk.sessions import InMemorySessionService
-from google.adk.tools import FunctionTool
-from typing import Any, Dict
-
-from pathlib import Path
-from typing import Any, Dict
-
-import nest_asyncio
 from dotenv import load_dotenv
 from dp.agent.adapter.adk import CalculationMCPToolset
+from google.adk.agents import BaseAgent
 from google.adk.agents import LlmAgent
-from google.adk.runners import Runner
-from google.genai import types
+from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.constant import (
     LOCAL_EXECUTOR,
     BohriumStorge,
 )
-
-from .prompt import *
 from .constant import *
-
+from .prompt import *
 
 load_dotenv()
-nest_asyncio.apply()
-
 
 # Initialize MCP tools and agent
 mcp_tools = CalculationMCPToolset(
@@ -55,8 +37,6 @@ mcp_tools = CalculationMCPToolset(
 #     ),
 #     tools=[mcp_tools],
 # )
-
-
 
 
 class Optimade_Agent(LlmAgent):
