@@ -6,7 +6,7 @@ from typing import AsyncGenerator, Optional, Union, override
 
 import aiohttp
 import jsonpickle
-
+import requests
 from dp.agent.adapter.adk import CalculationMCPTool
 from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.agents.invocation_context import InvocationContext
@@ -16,15 +16,44 @@ from google.adk.tools import BaseTool, ToolContext, transfer_to_agent
 from mcp.types import CallToolResult
 from pydantic import Field
 
-from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
-from agents.matmaster_agent.constant import OpenAPIHost, FRONTEND_STATE_KEY, Transfer2Agent, TMP_FRONTEND_STATE_KEY, \
-    LOADING_STATE_KEY, LOADING_START, LOADING_TITLE, LOADING_DESC, LOADING_END, ModelRole, JOB_LIST_KEY, \
-    get_BohriumExecutor, get_DFlowExecutor, JOB_RESULT_KEY, get_BohriumStorage
+from agents.matmaster_agent.base_agents.io_agent import (
+    HandleFileUploadLlmAgent,
+)
+from agents.matmaster_agent.constant import (
+    FRONTEND_STATE_KEY,
+    JOB_LIST_KEY,
+    JOB_RESULT_KEY,
+    LOADING_DESC,
+    LOADING_END,
+    LOADING_START,
+    LOADING_STATE_KEY,
+    LOADING_TITLE,
+    TMP_FRONTEND_STATE_KEY,
+    ModelRole,
+    OpenAPIHost,
+    Transfer2Agent,
+    get_BohriumExecutor,
+    get_BohriumStorage,
+    get_DFlowExecutor,
+)
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
-from agents.matmaster_agent.prompt import SubmitRenderAgentDescription, ResultCoreAgentDescription
-from agents.matmaster_agent.utils import is_function_call, is_function_response, send_error_event, update_session_state, \
-    context_function_event, is_text, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium, \
-    parse_result
+from agents.matmaster_agent.prompt import (
+    ResultCoreAgentDescription,
+    SubmitRenderAgentDescription,
+)
+from agents.matmaster_agent.utils import (
+    all_text_event,
+    context_function_event,
+    context_text_event,
+    frontend_text_event,
+    is_function_call,
+    is_function_response,
+    is_text,
+    is_text_and_not_bohrium,
+    parse_result,
+    send_error_event,
+    update_session_state,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -110,11 +139,117 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
                 executor['machine']['remote_profile']['project_id'] = int(project_id)
+                if executor.get("resources", None) is None:
+                    executor["resources"] = {
+                        "envs": {}
+                    }
+                elif executor["resources"].get('envs', None) is None:
+                    executor["resources"]['envs'] = {}
+                executor["resources"]["envs"]["BOHRIUM_PROJECT_ID"] = int(project_id)
             elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
         if storage is not None:  # BohriumStorage
             storage['plugin']['project_id'] = int(project_id)
     return project_id, executor, storage
+
+
+def ak_to_username(access_key: str) -> str:
+    url = "https://openapi.dp.tech/openapi/v1/account/info"
+    headers = {
+        "AccessKey": access_key,
+        "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
+        "Accept": "*/*",
+        "Host": "openapi.dp.tech"
+    }
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()  # 抛出HTTP错误异常
+
+        data = response.json()
+        if data.get("code") == 0:
+            user_data = data.get("data", {})
+            email = user_data.get("email", "")
+            phone = user_data.get("phone", "")
+            if not email and not phone:
+                raise ValueError("Username not found in response. Please bind your email or phone at https://www.bohrium.com/settings/user.")
+            username = email if email else phone
+            return username
+        else:
+            raise Exception(f"API error: {data}")
+    except requests.RequestException as e:
+        raise Exception(f"HTTP request failed: {e}")
+    except Exception as e:
+        raise Exception(f"Failed to get user info: {e}")
+
+
+def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
+    access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
+    if not access_key:
+        raise ValueError("AccessKey not found")
+    username = ak_to_username(access_key=access_key)
+    if username:
+        if executor is not None:
+            if executor['type'] == "dispatcher":  # BohriumExecutor
+                if executor.get("resources", None) is None:
+                    executor["resources"] = {
+                        "envs": {}
+                    }
+                elif executor["resources"].get('envs', None) is None:
+                    executor["resources"]['envs'] = {}
+                executor['resources']['envs']['BOHRIUM_USERNAME'] = \
+                    str(username)
+            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+                executor['env']['BOHRIUM_USERNAME'] = str(username)
+    return username, executor
+
+
+def ak_to_ticket(
+    access_key: str,
+    expiration: int = 48  # 48 hours
+) -> str:
+    url = f"https://bohrium-api.dp.tech/bohrapi/v1/ticket/get?expiration={expiration}&preOrderId=0"
+    headers = {
+        "Brm-AK": access_key,
+        "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
+        "Accept": "*/*",
+        "Host": "bohrium-api.dp.tech",
+        "Connection": "keep-alive"
+    }
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        if data.get("code") == 0:
+            ticket = data.get("data", {}).get("ticket", "")
+            if not ticket:
+                raise ValueError("Ticket not found in response.")
+            return ticket
+        else:
+            raise Exception(f"API error: {data}")
+    except requests.RequestException as e:
+        raise Exception(f"HTTP request failed: {e}")
+    except Exception as e:
+        raise Exception(f"Failed to get ticket: {e}")
+
+
+def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
+    access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
+    if not access_key:
+        raise ValueError("AccessKey not found")
+    ticket = ak_to_ticket(access_key=access_key)
+    if ticket:
+        if executor is not None:
+            if executor['type'] == "dispatcher":  # BohriumExecutor
+                if executor.get("resources", None) is None:
+                    executor["resources"] = {
+                        "envs": {}
+                    }
+                elif executor["resources"].get('envs', None) is None:
+                    executor["resources"]['envs'] = {}
+                executor['resources']['envs']['BOHRIUM_TICKET'] = str(ticket)
+            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+                executor['env']['BOHRIUM_TICKET'] = str(ticket)
+    return ticket, executor
 
 
 def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
@@ -149,6 +284,22 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
 
         tool_context.state['ak'] = access_key
         tool_context.state['project_id'] = project_id
+
+    return wrapper
+
+
+def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+        # 先执行前面的回调链
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 注入 username
+        _, tool.executor = _get_username(tool_context, tool.executor)
+
+        # 注入 ticket
+        _, tool.executor = _get_ticket(tool_context, tool.executor)
 
     return wrapper
 
@@ -238,7 +389,15 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         """
 
         # Todo: support List[before_tool_callback]
-        before_tool_callback = catch_tool_call_error(check_job_create(get_ak_projectId(before_tool_callback)))
+        before_tool_callback = catch_tool_call_error(
+            check_job_create(
+                set_dpdispatcher_env(
+                    get_ak_projectId(
+                        before_tool_callback
+                    )
+                )
+            )
+        )
         after_tool_callback = check_tool_response(after_tool_callback)
 
         super().__init__(

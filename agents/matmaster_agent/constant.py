@@ -57,6 +57,9 @@ BohriumExecutor = {
             "platform": "ali",
             "machine_type": "c32_m64_cpu"
         }
+    },
+    "resources": {
+        "envs": {}
     }
 }
 
