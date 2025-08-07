@@ -10,9 +10,10 @@ from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 
 from agents.matmaster_agent.piloteye_electro_agent.agent import (
     init_piloteye_electro_agent,
-)
 from agents.matmaster_agent.DPACalculator_agent.agent import (
     init_dpa_calculations_agent,
+from agents.matmaster_agent.thermoelectric_agent.agent import (
+    init_thermoelectric_agent
 )
 from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_database_agent
 
@@ -26,15 +27,15 @@ from agents.matmaster_agent.prompt import (
 class MatMasterAgent(HandleFileUploadLlmAgent):
 
     def __init__(self, llm_config):
-
         piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
         optimade_agent = init_optimade_database_agent(llm_config)
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
+        thermoelectric_agent = init_thermoelectric_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
             model=llm_config.gpt_4o,
-            sub_agents=[piloteye_electro_agent, dpa_calculator_agent, optimade_agent],
+            sub_agents=[piloteye_electro_agent, dpa_calculator_agent, optimade_agent, thermoelectric_agent],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
             description=AgentDescription,
