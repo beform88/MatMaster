@@ -13,6 +13,7 @@ from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculatio
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
 from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_database_agent
 from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
+from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
 
 from agents.matmaster_agent.prompt import (
     AgentDescription,
@@ -29,11 +30,12 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
         thermoelectric_agent = init_thermoelectric_agent(llm_config)
         superconductor_agent = init_superconductor_agent(llm_config)
+        crystalformer_agent = init_crystalformer_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
             model=llm_config.gpt_4o,
-            sub_agents=[piloteye_electro_agent, dpa_calculator_agent, optimade_agent, thermoelectric_agent, superconductor_agent],
+            sub_agents=[piloteye_electro_agent, dpa_calculator_agent, optimade_agent, thermoelectric_agent, superconductor_agent, crystalformer_agent],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
             description=AgentDescription,
