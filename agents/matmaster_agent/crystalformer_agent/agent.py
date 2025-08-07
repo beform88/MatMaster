@@ -41,8 +41,8 @@ from .constant import CrystalformerServerUrl
 
 CrystalformerBohriumExecutor = copy.deepcopy(BohriumExecutor)
 CrystalformerBohriumStorge = copy.deepcopy(BohriumStorge)
-CrystalformerBohriumExecutor["machine"]["remote_profile"]["image_address"] = "registry.dp.tech/dptech/dp/native/prod-788025/crystalformer:1"
-CrystalformerBohriumExecutor["machine"]["remote_profile"]["machine_type"] = "c12_m92_1 * NVIDIA V100"
+CrystalformerBohriumExecutor["machine"]["remote_profile"]["image_address"] = "registry.dp.tech/dptech/dp/native/prod-788025/crystalformer:t4"
+CrystalformerBohriumExecutor["machine"]["remote_profile"]["machine_type"] = "c8_m31_1 * NVIDIA T4"
 
 sse_params = SseServerParams(url=CrystalformerServerUrl)
 
