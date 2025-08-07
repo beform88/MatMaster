@@ -139,12 +139,9 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
                 executor['machine']['remote_profile']['project_id'] = int(project_id)
-                if executor.get("resources", None) is None:
-                    executor["resources"] = {
-                        "envs": {}
-                    }
-                elif executor["resources"].get('envs', None) is None:
-                    executor["resources"]['envs'] = {}
+                # Redundant set for resources/envs keys
+                executor["resources"] = executor.get("resources", {})
+                executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor["resources"]["envs"]["BOHRIUM_PROJECT_ID"] = int(project_id)
             elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
@@ -191,12 +188,9 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
     if username:
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
-                if executor.get("resources", None) is None:
-                    executor["resources"] = {
-                        "envs": {}
-                    }
-                elif executor["resources"].get('envs', None) is None:
-                    executor["resources"]['envs'] = {}
+                # Redundant set for resources/envs keys
+                executor["resources"] = executor.get("resources", {})
+                executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_USERNAME'] = \
                     str(username)
             elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
@@ -241,12 +235,9 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
     if ticket:
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
-                if executor.get("resources", None) is None:
-                    executor["resources"] = {
-                        "envs": {}
-                    }
-                elif executor["resources"].get('envs', None) is None:
-                    executor["resources"]['envs'] = {}
+                # Redundant set for resources/envs keys
+                executor["resources"] = executor.get("resources", {})
+                executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_TICKET'] = str(ticket)
             elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
                 executor['env']['BOHRIUM_TICKET'] = str(ticket)
