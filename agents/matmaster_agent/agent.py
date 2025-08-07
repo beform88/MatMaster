@@ -12,6 +12,7 @@ from agents.matmaster_agent.piloteye_electro_agent.agent import (
     init_piloteye_electro_agent,
 from agents.matmaster_agent.DPACalculator_agent.agent import (
     init_dpa_calculations_agent,
+)
 from agents.matmaster_agent.thermoelectric_agent.agent import (
     init_thermoelectric_agent
 )
