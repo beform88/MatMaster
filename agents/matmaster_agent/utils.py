@@ -27,14 +27,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def is_json(json_str):
-    try:
-        json.loads(json_str)
-    except:
-        return False
-    return True
-
-
 async def extract_convert_and_upload(tgz_url: str, temp_dir: str = "./tmp") -> dict:
     """
     使用当前目录下的临时文件夹处理文件
