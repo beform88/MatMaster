@@ -7,8 +7,28 @@ from agents.matmaster_agent.base_agents.job_agent import (
 )
 from agents.matmaster_agent.constant import (
     DPA_CALCULATIONS_AGENT_NAME,
+    MATMASTER_AGENT_NAME,
     BohriumExecutor,
     BohriumStorge,
+)
+from agents.matmaster_agent.DPACalculator_agent.prompt import (
+    DPAAgentDescription,
+    DPAAgentInstruction,
+    DPAAgentName,
+    DPAResultAgentDescription,
+    DPAResultAgentName,
+    DPAResultCoreAgentInstruction,
+    DPAResultCoreAgentName,
+    DPAResultTransferAgentInstruction,
+    DPAResultTransferAgentName,
+    DPASubmitAgentDescription,
+    DPASubmitAgentName,
+    DPASubmitCoreAgentDescription,
+    DPASubmitCoreAgentInstruction,
+    DPASubmitCoreAgentName,
+    DPASubmitRenderAgentName,
+    DPATransferAgentInstruction,
+    DPATransferAgentName,
 )
 from agents.matmaster_agent import llm_config
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
@@ -17,7 +37,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from dp.agent.adapter.adk import CalculationMCPToolset
-from google.adk.agents import LlmAgent
+from google.adk.agents import LlmAgent, BaseAgent
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -46,26 +66,29 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
         super().__init__(
             agent_name=DPA_CALCULATIONS_AGENT_NAME,
             mcp_tools=[mcp_tools_dpa],
-            llm_config=llm_config.gpt_4o,
-            agent_description="An agent specialized in computational research using Deep Potential",
-            agent_instruction=(
-                "You are an expert in materials science and computational chemistry. "
-                "Help users perform Deep Potential calculations including structure optimization, "
-                "molecular dynamics and property calculations. "
-                "Use default parameters if the users do not mention, but let users confirm them before submission. "
-                "In multi-step workflows involving file outputs, always use the URI of the previous step's file "
-                "as the input for the next tool. Always verify the input parameters to users and provide "
-                "clear explanations of results."
-            ),
+            model=llm_config.gpt_4o,
+            agent_description=DPAAgentDescription,
+            agent_instruction=DPAAgentInstruction,
             submit_core_agent_class=SubmitCoreCalculationMCPLlmAgent,
-            result_core_agent_class=ResultCalculationMCPLlmAgent
+            submit_core_agent_name=DPASubmitCoreAgentName,
+            submit_core_agent_description=DPASubmitCoreAgentDescription,
+            submit_core_agent_instruction=DPASubmitCoreAgentInstruction,
+            submit_render_agent_name=DPASubmitRenderAgentName,
+            result_core_agent_class=ResultCalculationMCPLlmAgent,
+            result_core_agent_name=DPAResultCoreAgentName,
+            result_core_agent_instruction=DPAResultCoreAgentInstruction,
+            result_transfer_agent_name=DPAResultTransferAgentName,
+            result_transfer_agent_instruction=DPAResultTransferAgentInstruction,
+            transfer_agent_name=DPATransferAgentName,
+            transfer_agent_instruction=DPATransferAgentInstruction,
+            submit_agent_name=DPASubmitAgentName,
+            submit_agent_description=DPASubmitAgentDescription,
+            result_agent_name=DPAResultAgentName,
+            result_agent_description=DPAResultAgentDescription,
+            dflow_flag=False,
+            supervisor_agent=MATMASTER_AGENT_NAME
         )
 
-def init_dpa_calculations_agent() -> LlmAgent:
-    dpa_agent = DPACalculationsAgent(MatMasterLlmConfig)  # Reuse existing config or create new one
-    track_adk_agent_recursive(dpa_agent, MatMasterLlmConfig.opik_tracer)  # Add tracing
-    
-    return dpa_agent
 
-# Replace the global instance
-root_agent = init_dpa_calculations_agent()
+def init_dpa_calculations_agent(llm_config) -> BaseAgent:
+    return DPACalculationsAgent(llm_config)
