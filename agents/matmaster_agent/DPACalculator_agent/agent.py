@@ -10,6 +10,8 @@ from agents.matmaster_agent.constant import (
     BohriumExecutor,
     BohriumStorge,
 )
+from agents.matmaster_agent import llm_config
+from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from pathlib import Path
 from typing import Any, Dict
