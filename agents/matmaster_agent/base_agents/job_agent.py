@@ -20,6 +20,8 @@ from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
 from agents.matmaster_agent.constant import (
+    BOHRIUM_API_URL,
+    CURRENT_ENV,
     FRONTEND_STATE_KEY,
     JOB_LIST_KEY,
     JOB_RESULT_KEY,
@@ -28,9 +30,9 @@ from agents.matmaster_agent.constant import (
     LOADING_START,
     LOADING_STATE_KEY,
     LOADING_TITLE,
+    OPENAPI_HOST,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
-    OpenAPIHost,
     Transfer2Agent,
     get_BohriumExecutor,
     get_BohriumStorage,
@@ -101,7 +103,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             return {"status": "error", "msg": "Current tool can't create job!"}
 
         if tool.executor is not None:
-            url = f"{OpenAPIHost}/openapi/v1/job/create"
+            url = f"{OPENAPI_HOST}/openapi/v1/job/create"
             payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
             params = {'accessKey': tool_context.state['ak']}
 
@@ -139,12 +141,9 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
                 executor['machine']['remote_profile']['project_id'] = int(project_id)
-                if executor.get("resources", None) is None:
-                    executor["resources"] = {
-                        "envs": {}
-                    }
-                elif executor["resources"].get('envs', None) is None:
-                    executor["resources"]['envs'] = {}
+                # Redundant set for resources/envs keys
+                executor["resources"] = executor.get("resources", {})
+                executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor["resources"]["envs"]["BOHRIUM_PROJECT_ID"] = int(project_id)
             elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
@@ -154,12 +153,12 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
 
 
 def ak_to_username(access_key: str) -> str:
-    url = "https://openapi.dp.tech/openapi/v1/account/info"
+    url = f"{OPENAPI_HOST}/openapi/v1/account/info"
     headers = {
         "AccessKey": access_key,
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": "openapi.dp.tech"
+        "Host": f"{OPENAPI_HOST.split('//')[1]}",
     }
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -191,12 +190,9 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
     if username:
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
-                if executor.get("resources", None) is None:
-                    executor["resources"] = {
-                        "envs": {}
-                    }
-                elif executor["resources"].get('envs', None) is None:
-                    executor["resources"]['envs'] = {}
+                # Redundant set for resources/envs keys
+                executor["resources"] = executor.get("resources", {})
+                executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_USERNAME'] = \
                     str(username)
             elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
@@ -208,12 +204,18 @@ def ak_to_ticket(
         access_key: str,
         expiration: int = 48  # 48 hours
 ) -> str:
-    url = f"https://bohrium-api.dp.tech/bohrapi/v1/ticket/get?expiration={expiration}&preOrderId=0"
+    # if CurrentEnv == "uat":
+    #     BOHRIUM_API_URL = "https://bohrium-api.uat.dp.tech"
+    # elif CurrentEnv == "test":
+    #     BOHRIUM_API_URL = "https://bohrium-api.test.dp.tech"
+    # else:
+    #     BOHRIUM_API_URL = "https://bohrium-api.dp.tech"
+    url = f"{BOHRIUM_API_URL}/bohrapi/v1/ticket/get?expiration={expiration}&preOrderId=0"
     headers = {
         "Brm-AK": access_key,
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": "bohrium-api.dp.tech",
+        "Host": f"{BOHRIUM_API_URL.split('//')[1]}",
         "Connection": "keep-alive"
     }
     try:
@@ -241,16 +243,29 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
     if ticket:
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
-                if executor.get("resources", None) is None:
-                    executor["resources"] = {
-                        "envs": {}
-                    }
-                elif executor["resources"].get('envs', None) is None:
-                    executor["resources"]['envs'] = {}
+                # Redundant set for resources/envs keys
+                executor["resources"] = executor.get("resources", {})
+                executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_TICKET'] = str(ticket)
             elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
                 executor['env']['BOHRIUM_TICKET'] = str(ticket)
     return ticket, executor
+
+
+def _get_current_env(executor):
+    if CURRENT_ENV:
+        current_env = CURRENT_ENV
+    else:
+        current_env = "prod"
+    if executor is not None:
+        if executor['type'] == "dispatcher":  # BohriumExecutor
+            # Redundant set for resources/envs keys
+            executor["resources"] = executor.get("resources", {})
+            executor["resources"]["envs"] = executor["resources"].get("envs", {})
+            executor['resources']['envs']['CURRENT_ENV'] = str(CURRENT_ENV)
+        elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
+    return current_env, executor
 
 
 def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
@@ -295,13 +310,26 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
         # 先执行前面的回调链
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
-
-        # 注入 username
-        _, tool.executor = _get_username(tool_context, tool.executor)
+        try:
+            # 注入 username
+            _, tool.executor = _get_username(tool_context, tool.executor)
+        except Exception as e:
+            return {"status": "error", "msg": f"Failed to get username: {str(e)}"}
 
         # 注入 ticket
-        _, tool.executor = _get_ticket(tool_context, tool.executor)
+        try:
+            _, tool.executor = _get_ticket(tool_context, tool.executor)
+        except Exception as e:
+            return {"status": "error", "msg": f"Failed to get ticket: {str(e)}"}
 
+        # 注入当前环境
+        try:
+            _, tool.executor = _get_current_env(tool.executor)
+        except Exception as e:
+            return {
+                "status": "error",
+                "msg": f"Failed to get current environment: {str(e)}"
+            }
     return wrapper
 
 
