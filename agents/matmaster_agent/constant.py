@@ -86,7 +86,7 @@ DFlowExecutor = {
         "DFLOW_S3_REPO_KEY": "oss-bohrium",
         "DFLOW_S3_STORAGE_CLIENT": "dflow.plugins.bohrium.TiefblueClient",
         "BOHRIUM_ACCESS_KEY": "",
-        "BOHRIUM_PROJECT_ID": -1,
+        "BOHRIUM_PROJECT_ID": "",
         "BOHRIUM_APP_KEY": "agent"
     }
 }
