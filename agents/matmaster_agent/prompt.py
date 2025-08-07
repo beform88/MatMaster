@@ -2,6 +2,7 @@ from agents.matmaster_agent.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
 
+DPACalulator_AGENT_NAME = "dpa_calculator_agent"
 GlobalInstruction = """
 ---
 Today's date is {current_time}.
@@ -78,6 +79,16 @@ You must use the following conversational format.
 - Admit Limitations: If an agent fails, report the failure, and suggest a different step or ask the user for guidance.
 - Unless the previous agent explicitly states that the task has been submitted, do not autonomously determine whether the task is considered submitted—especially during parameter confirmation stages. Always verify completion status through direct confirmation before proceeding.
 - If a connection timeout occurs, avoid frequent retries as this may worsen the issue.
+
+- {DPACalulator_AGENT_NAME}
+Purpose: Performs deep potential-based simulations, including:
+    - structure building
+    - optimization, 
+    - molecular simulation (MD)
+    - phonon calculation
+    - elastic constants
+    - NEB calculations
+
 """
 
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
