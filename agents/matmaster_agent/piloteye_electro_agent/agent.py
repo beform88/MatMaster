@@ -72,7 +72,7 @@ toolset = CalculationMCPToolset(
 class DPAAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            llm_config=llm_config,
+            model=llm_config.gpt_4o,
             mcp_tools=[toolset],
             agent_name=DPAAgentName,
             agent_description=DPAAgentDescription,
