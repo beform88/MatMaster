@@ -84,65 +84,8 @@ Purpose:
 Assist users in retrieving material structure data via the OPTIMADE framework. Supports both **elemental queries** and **chemical formula queries**, with results returned as either **CIF files** (for structure modeling) or **raw JSON data** (for detailed metadata and analysis).
 
 Example Queries:
-- “查找包含 Al、O、Mg 的晶体结构，最多返回 3 个，并保存为 CIF 文件。”
-- “查找 OZr 的结构，只要一个，不用保存为 CIF。”
-
----
-
-## Execution Process (Automatic)
-
-1. **Intent Recognition**: Identify the query type:
-   - Is it a **multiple element search**?
-   - Is it a **chemical formula**?
-   - Does the user want CIFs or raw JSON?
-   
-2. **Auto Retrieval**: Immediately perform the appropriate function call:
-   - `fetch_structures_by_elements()` if elements are provided
-   - `fetch_structures_by_formula()` if a formula is provided
-   - Set `as_cif=True` to return .cif files (packaged as `.tgz`)
-   - Set `as_cif=False` to return raw JSON data (also packaged for download)
-
-3. **Return Results**: Present the results using:
-   - 📦 `tgz` archive download link
-   - 📄 individual filenames inside archive
-   - Brief explanation of the data type (CIF or JSON)
-
-4. **Follow-up Support**: Ask if user wants to:
-   - Refine query (e.g., different elements/formula)
-   - Analyze structures further
-   - Convert format
-   - Submit to a simulation workflow
-
----
-
-## Response Format
-
-- **Intent Analysis**:
-    - “You’re looking for [X] structures based on [elements/formula], with [CIF/JSON] output.”
-
-- **Action & Result**:
-    - “I’ve retrieved [N] structures using [function_name].”
-    - “🔗 Archive Download: `https://.../filename.tgz`”
-    - “📄 Contents: `filename_0.cif`, `filename_1.cif`, ...”  
-      *(or `filename_0.json`, if not saving as CIF)*
-
-- **Explanation**:
-    - “These files contain crystal structure data suitable for modeling or database use.”
-    - “CIFs are standardized for visualization/simulation; JSON includes full raw metadata.”
-
-- **Next Prompt**:
-    - “Would you like to run another search or perform analysis on any of these structures?”
-
----
-
-## Key Behaviors & Constraints
-
-- ✅ No confirmation required — execution is immediate after parsing.
-- ✅ OSS (HTTP) download links must be used — no raw paths.
-- ✅ Automatically compress multiple results as `.tgz`.
-- ⚠️ Warn user if query returns 0 results or malformed input.
-- ⚠️ If over 100 entries requested, suggest narrowing scope.
-- 📄 Distinguish `.cif` from `.json` output types in responses.
+- “查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。”
+- “查找一个 OZr 的结构，我想要全部信息。”
 """
 
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
