@@ -517,7 +517,7 @@ class BaseAsyncJobAgent(LlmAgent):
 
     def __init__(
             self,
-            llm_config,
+            model,
             agent_name: str,
             agent_description: str,
             agent_instruction: str,
@@ -543,7 +543,7 @@ class BaseAsyncJobAgent(LlmAgent):
     ):
         # 创建提交核心代理
         submit_core_agent = submit_core_agent_class(
-            model=llm_config.gpt_4o,
+            model=model,
             name=submit_core_agent_name,
             description=submit_core_agent_description,
             instruction=submit_core_agent_instruction,
@@ -553,7 +553,7 @@ class BaseAsyncJobAgent(LlmAgent):
 
         # 创建提交渲染代理
         submit_render_agent = SubmitRenderAgent(
-            model=llm_config.gpt_4o,
+            model=model,
             name=submit_render_agent_name
         )
 
@@ -566,7 +566,7 @@ class BaseAsyncJobAgent(LlmAgent):
 
         # 创建结果核心代理
         result_core_agent = result_core_agent_class(
-            model=llm_config.gpt_4o,
+            model=model,
             name=result_core_agent_name,
             tools=mcp_tools,
             instruction=result_core_agent_instruction
@@ -574,7 +574,7 @@ class BaseAsyncJobAgent(LlmAgent):
 
         # 创建结果转移代理
         result_transfer_agent = ResultTransferLlmAgent(
-            model=llm_config.gpt_4o,
+            model=model,
             name=result_transfer_agent_name,
             instruction=result_transfer_agent_instruction,
             tools=[transfer_to_agent]
@@ -599,7 +599,7 @@ class BaseAsyncJobAgent(LlmAgent):
         # 初始化父类
         super().__init__(
             name=agent_name,
-            model=llm_config.gpt_4o,
+            model=model,
             description=agent_description,
             instruction=agent_instruction,
             submit_agent=submit_agent,
