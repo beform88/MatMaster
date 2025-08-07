@@ -17,7 +17,7 @@ TrajAnalysisAgentName = "traj_analysis_agent"
 TransferAgentDescription
 
 # Agent Constant
-DPAAgentName = "dpa_agent"
+DPAAgentName = "piloteye_electro_agent"
 
 DPASubmitAgentName = "dpa_submit_agent"
 DPASubmitCoreAgentName = "dpa_submit_core_agent"
