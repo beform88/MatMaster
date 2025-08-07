@@ -1,4 +1,6 @@
-from agents.matmaster_agent.piloteye_electro_agent.constant import UniELFAgentName
+from agents.matmaster_agent.piloteye_electro_agent.constant import (
+    PILOTEYE_ELECTRO_AGENT_NAME,
+)
 from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DATABASE_AGENT_NAME
 
 GlobalInstruction = """
@@ -26,7 +28,7 @@ You are a methodical assistant. You never execute more than one step without exp
 ## 🔧 Sub-Agent Toolkit
 You have access to the following specialized sub-agents. You must delegate the task to the appropriate sub-agent to perform actions.
 
-- {UniELFAgentName}
+- {PILOTEYE_ELECTRO_AGENT_NAME}
 Purpose:
 Example Query:
 
