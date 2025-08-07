@@ -57,18 +57,23 @@ BohriumExecutor = {
 OpenAPIHost = ""
 DFLOW_HOST = ""
 DFLOW_K8S_API_SERVER = ""
+BOHRIUM_API_URL = ""
 
-CurrentEnv = os.getenv("OPIK_PROJECT_NAME", None)
+
+CurrentEnv = os.getenv("OPIK_PROJECT_NAME", "prod")
 if CurrentEnv == "test":
     OpenAPIHost = "https://openapi.test.dp.tech"
     DFLOW_HOST = "https://lbg-workflow-mlops.test.dp.tech"
     DFLOW_K8S_API_SERVER = "https://lbg-workflow-mlops.test.dp.tech"
+    BOHRIUM_API_URL = "https://bohrium-api.test.dp.tech"
 elif CurrentEnv == "uat":
     OpenAPIHost = "https://openapi.uat.dp.tech"
+    BOHRIUM_API_URL = "https://bohrium-api.uat.dp.tech"
 elif CurrentEnv == "prod":
     OpenAPIHost = "https://openapi.dp.tech"
     DFLOW_HOST = "https://workflows.deepmodeling.com"
     DFLOW_K8S_API_SERVER = "https://workflows.deepmodeling.com"
+    BOHRIUM_API_URL = "https://bohrium-api.dp.tech"
 
 DFlowExecutor = {
     "type": "local",

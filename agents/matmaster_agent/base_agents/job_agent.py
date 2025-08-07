@@ -20,6 +20,7 @@ from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
 from agents.matmaster_agent.constant import (
+    BOHRIUM_API_URL,
     FRONTEND_STATE_KEY,
     JOB_LIST_KEY,
     JOB_RESULT_KEY,
@@ -202,12 +203,18 @@ def ak_to_ticket(
         access_key: str,
         expiration: int = 48  # 48 hours
 ) -> str:
-    url = f"https://bohrium-api.dp.tech/bohrapi/v1/ticket/get?expiration={expiration}&preOrderId=0"
+    # if CurrentEnv == "uat":
+    #     BOHRIUM_API_URL = "https://bohrium-api.uat.dp.tech"
+    # elif CurrentEnv == "test":
+    #     BOHRIUM_API_URL = "https://bohrium-api.test.dp.tech"
+    # else:
+    #     BOHRIUM_API_URL = "https://bohrium-api.dp.tech"
+    url = f"{BOHRIUM_API_URL}/bohrapi/v1/ticket/get?expiration={expiration}&preOrderId=0"
     headers = {
         "Brm-AK": access_key,
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": "bohrium-api.dp.tech",
+        "Host": f"{BOHRIUM_API_URL.split('//')[1]}",
         "Connection": "keep-alive"
     }
     try:
@@ -286,12 +293,17 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
         # 先执行前面的回调链
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
-
-        # 注入 username
-        _, tool.executor = _get_username(tool_context, tool.executor)
+        try:
+            # 注入 username
+            _, tool.executor = _get_username(tool_context, tool.executor)
+        except Exception as e:
+            return {"status": "error", "msg": f"Failed to get username: {str(e)}"}
 
         # 注入 ticket
-        _, tool.executor = _get_ticket(tool_context, tool.executor)
+        try:
+            _, tool.executor = _get_ticket(tool_context, tool.executor)
+        except Exception as e:
+            return {"status": "error", "msg": f"Failed to get ticket: {str(e)}"}
 
     return wrapper
 
