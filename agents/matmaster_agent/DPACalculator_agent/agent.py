@@ -11,6 +11,11 @@ from agents.matmaster_agent.constant import (
     BohriumExecutor,
     BohriumStorge,
 )
+from agents.matmaster_agent.DPACalculator_agent.constant import (
+    DPACalulator_BOHRIUM_EXECUTOR,
+    DPACalulator_BOHRIUM_STORAGE,
+    DPA_CALCULATOR_URL,
+)
 from agents.matmaster_agent.DPACalculator_agent.prompt import (
     DPAAgentDescription,
     DPAAgentInstruction,
@@ -45,7 +50,6 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.genai import types
 
 
-DPA_CALCULATOR_URL = "https://dpa-uuid1750659890.app-space.dplink.cc/sse?token=fa66cc76b6724d5590a89546772963fd"
 mcp_tools_dpa = CalculationMCPToolset(
     connection_params=SseServerParams(url=DPA_CALCULATOR_URL),
     storage=BohriumStorge,
