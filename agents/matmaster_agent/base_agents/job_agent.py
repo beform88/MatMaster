@@ -171,7 +171,8 @@ def ak_to_username(access_key: str) -> str:
             email = user_data.get("email", "")
             phone = user_data.get("phone", "")
             if not email and not phone:
-                raise ValueError("Username not found in response. Please bind your email or phone at https://www.bohrium.com/settings/user.")
+                raise ValueError(
+                    "Username not found in response. Please bind your email or phone at https://www.bohrium.com/settings/user.")
             username = email if email else phone
             return username
         else:
@@ -204,8 +205,8 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
 
 
 def ak_to_ticket(
-    access_key: str,
-    expiration: int = 48  # 48 hours
+        access_key: str,
+        expiration: int = 48  # 48 hours
 ) -> str:
     url = f"https://bohrium-api.dp.tech/bohrapi/v1/ticket/get?expiration={expiration}&preOrderId=0"
     headers = {
@@ -534,12 +535,13 @@ class SubmitRenderAgent(LlmAgent):
                                 },
                             }
                         }
-                        # 同时发送流式消息（聊条的时候可见）和数据库消息（历史记录的时候可见）
-                        for event in all_text_event(ctx=ctx,
-                                                    author=self.name,
-                                                    text=f"<bohrium-chat-msg>{json.dumps(job_list_comp_data)}</bohrium-chat-msg>",
-                                                    role=ModelRole):
-                            yield event
+                        if not ctx.session.state["dflow"]:
+                            # 同时发送流式消息（聊条的时候可见）和数据库消息（历史记录的时候可见）
+                            for event in all_text_event(ctx=ctx,
+                                                        author=self.name,
+                                                        text=f"<bohrium-chat-msg>{json.dumps(job_list_comp_data)}</bohrium-chat-msg>",
+                                                        role=ModelRole):
+                                yield event
 
                     ctx.session.state["render_job_list"] = False
                     ctx.session.state["render_job_id"] = []
@@ -645,7 +647,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                                     {"msg": f"Job {origin_job_id} status is {status}"},
                                                     ModelRole):
                     yield event
-
+            yield Event(author=self.name)
         except BaseExceptionGroup as err:
             async for error_event in send_error_event(err, ctx, self.name,
                                                       ctx.agent.parent_agent.parent_agent.parent_agent):
@@ -743,8 +745,8 @@ class BaseAsyncJobAgent(LlmAgent):
         result_agent = SequentialAgent(
             name=result_agent_name,
             description=result_agent_description,
-            sub_agents=[result_core_agent, result_transfer_agent]
-            # sub_agents=[result_core_agent]
+            # sub_agents=[result_core_agent, result_transfer_agent]
+            sub_agents=[result_core_agent]
         )
 
         # # 创建转移代理
