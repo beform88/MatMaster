@@ -45,9 +45,10 @@ class LLMConfig(object):
             return
 
         gpt_provider = "azure"
-        gpt_4o = "gpt-4o"
+        litellm_provider = "litellm_proxy"
+        deepseek_provider = "deepseek"
 
-        model_provider = "litellm_proxy"
+        gpt_4o = "gpt-4o"
         gemini_2_5_flash = "gemini-2.5-flash"
         gemini_2_0_flash = "gemini-2.0-flash"
         gemini_2_5_pro = "gemini-2.5-pro"
@@ -65,12 +66,11 @@ class LLMConfig(object):
             )
 
         self.gpt_4o = _init_model(gpt_provider, gpt_4o)
-        self.gemini_2_0_flash = _init_model(model_provider, gemini_2_0_flash)
-        self.gemini_2_5_flash = _init_model(model_provider, gemini_2_5_flash)
-        self.gemini_2_5_pro = _init_model(model_provider, gemini_2_5_pro)
-        self.claude_sonnet_4 = _init_model(model_provider, claude_sonnet_4)
-
-        self.deepseek_chat = _init_model(model_provider, deepseek_chat)
+        self.gemini_2_0_flash = _init_model(litellm_provider, gemini_2_0_flash)
+        self.gemini_2_5_flash = _init_model(litellm_provider, gemini_2_5_flash)
+        self.gemini_2_5_pro = _init_model(litellm_provider, gemini_2_5_pro)
+        self.claude_sonnet_4 = _init_model(litellm_provider, claude_sonnet_4)
+        self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
 
         # tracing
         self.opik_tracer = OpikTracer()
