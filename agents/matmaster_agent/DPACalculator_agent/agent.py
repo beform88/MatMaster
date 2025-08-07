@@ -1,23 +1,15 @@
-import os
+from dp.agent.adapter.adk import CalculationMCPToolset
+from google.adk.agents import BaseAgent
+from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.job_agent import (
-    BaseAsyncJobAgent,
-    ResultCalculationMCPLlmAgent,
-    SubmitCoreCalculationMCPLlmAgent,
-)
-from agents.matmaster_agent.constant import (
-    DPA_CALCULATIONS_AGENT_NAME,
-    MATMASTER_AGENT_NAME
-)
 from agents.matmaster_agent.DPACalculator_agent.constant import (
     DPACalulator_BOHRIUM_EXECUTOR,
     DPACalulator_BOHRIUM_STORAGE,
-    DPA_CALCULATOR_URL,
+    DPA_CALCULATOR_URL, DPACalulator_AGENT_NAME,
 )
 from agents.matmaster_agent.DPACalculator_agent.prompt import (
     DPAAgentDescription,
     DPAAgentInstruction,
-    DPAAgentName,
     DPAResultAgentDescription,
     DPAResultAgentName,
     DPAResultCoreAgentInstruction,
@@ -33,20 +25,15 @@ from agents.matmaster_agent.DPACalculator_agent.prompt import (
     DPATransferAgentInstruction,
     DPATransferAgentName,
 )
-from agents.matmaster_agent import llm_config
-from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+from agents.matmaster_agent.base_agents.job_agent import (
+    BaseAsyncJobAgent,
+    ResultCalculationMCPLlmAgent,
+    SubmitCoreCalculationMCPLlmAgent,
+)
+from agents.matmaster_agent.constant import (
+    MATMASTER_AGENT_NAME
+)
 from agents.matmaster_agent.logger import matmodeler_logging_handler
-from pathlib import Path
-from typing import Any, Dict
-
-from dp.agent.adapter.adk import CalculationMCPToolset
-from google.adk.agents import LlmAgent, BaseAgent
-from google.adk.models.lite_llm import LiteLlm
-from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
-from google.genai import types
-
 
 mcp_tools_dpa = CalculationMCPToolset(
     connection_params=SseServerParams(url=DPA_CALCULATOR_URL),
@@ -63,10 +50,11 @@ mcp_tools_dpa = CalculationMCPToolset(
     logging_callback=matmodeler_logging_handler
 )
 
+
 class DPACalculationsAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            agent_name=DPA_CALCULATIONS_AGENT_NAME,
+            agent_name=DPACalulator_AGENT_NAME,
             mcp_tools=[mcp_tools_dpa],
             model=llm_config.gpt_4o,
             agent_description=DPAAgentDescription,

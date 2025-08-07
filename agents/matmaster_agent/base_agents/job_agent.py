@@ -94,7 +94,7 @@ def _get_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
                 executor['machine']['remote_profile']['access_key'] = access_key
-            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
         if storage is not None:  # BohriumStorage
             storage['plugin']['access_key'] = access_key
@@ -110,7 +110,7 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
                 executor['machine']['remote_profile']['project_id'] = int(project_id)
-            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
         if storage is not None:  # BohriumStorage
             storage['plugin']['project_id'] = int(project_id)

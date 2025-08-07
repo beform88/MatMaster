@@ -18,7 +18,6 @@ TMP_FRONTEND_STATE_KEY = "tmp_frontend_state"
 
 # Matmaster Constants
 MATMASTER_AGENT_NAME = "matmaster_agent"
-DPA_CALCULATIONS_AGENT_NAME = "dpa_calculator_agent"
 
 # Agent Constant
 SystemRole = "system"

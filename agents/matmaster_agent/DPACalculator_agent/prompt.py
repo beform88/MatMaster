@@ -5,13 +5,8 @@ instruction_en = ("""
    molecular dynamics, NEB calculation, phonon calculation and elastic calculations.
 """)
 
-# from dpa
-from agents.matmaster_agent.prompt import TransferAgentDescription
-
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 TrajAnalysisAgentName = "traj_analysis_agent"
-
-TransferAgentDescription
 
 # Agent Constant
 DPAAgentName = "dpa_agent"
@@ -29,13 +24,13 @@ DPATransferAgentName = "dpa_transfer_agent"
 # DPAAgent
 DPAAgentDescription = "An agent specialized in computational research using Deep Potential"
 DPAAgentInstruction = (
-   "You are an expert in materials science and computational chemistry. "
-   "Help users perform Deep Potential calculations including structure building, optimization, "
-   "molecular dynamics and property calculations. "
-   "Use default parameters if the users do not mention, but let users confirm them before submission. "
-   "In multi-step workflows involving file outputs, always use the URI of the previous step's file "
-   "as the input for the next tool. Always verify the input parameters to users and provide "
-   "clear explanations of results."
+    "You are an expert in materials science and computational chemistry. "
+    "Help users perform Deep Potential calculations including structure building, optimization, "
+    "molecular dynamics and property calculations. "
+    "Use default parameters if the users do not mention, but let users confirm them before submission. "
+    "In multi-step workflows involving file outputs, always use the URI of the previous step's file "
+    "as the input for the next tool. Always verify the input parameters to users and provide "
+    "clear explanations of results."
 )
 
 # DPASubmitCoreAgent
