@@ -7,9 +7,7 @@ from agents.matmaster_agent.base_agents.job_agent import (
 )
 from agents.matmaster_agent.constant import (
     DPA_CALCULATIONS_AGENT_NAME,
-    MATMASTER_AGENT_NAME,
-    BohriumExecutor,
-    BohriumStorge,
+    MATMASTER_AGENT_NAME
 )
 from agents.matmaster_agent.DPACalculator_agent.constant import (
     DPACalulator_BOHRIUM_EXECUTOR,
@@ -52,8 +50,8 @@ from google.genai import types
 
 mcp_tools_dpa = CalculationMCPToolset(
     connection_params=SseServerParams(url=DPA_CALCULATOR_URL),
-    storage=BohriumStorge,
-    executor=BohriumExecutor,
+    storage=DPACalulator_BOHRIUM_STORAGE,
+    executor=DPACalulator_BOHRIUM_EXECUTOR,
     async_mode=True,
     wait=False,
     executor_map={
