@@ -35,7 +35,6 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         super().__init__(
             name=MATMASTER_AGENT_NAME,
             model=llm_config.gpt_4o,
-            sub_agents=[unielf_agent, thermoelectric_agent],
             sub_agents=[piloteye_electro_agent, dpa_calculator_agent,thermoelectric_agent],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
