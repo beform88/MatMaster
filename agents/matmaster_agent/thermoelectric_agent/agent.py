@@ -20,23 +20,23 @@ from agents.matmaster_agent.constant import (
 
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.thermoelectric_agent.prompt import (
-    DPAAgentDescription,
-    DPAAgentInstruction,
-    DPAAgentName,
-    DPAResultAgentDescription,
-    DPAResultAgentName,
-    DPAResultCoreAgentInstruction,
-    DPAResultCoreAgentName,
-    DPAResultTransferAgentInstruction,
-    DPAResultTransferAgentName,
-    DPASubmitAgentDescription,
-    DPASubmitAgentName,
-    DPASubmitCoreAgentDescription,
-    DPASubmitCoreAgentInstruction,
-    DPASubmitCoreAgentName,
-    DPASubmitRenderAgentName,
-    DPATransferAgentInstruction,
-    DPATransferAgentName,
+    ThermoAgentDescription,
+    ThermoAgentInstruction,
+    ThermoAgentName,
+    ThermoResultAgentDescription,
+    ThermoResultAgentName,
+    ThermoResultCoreAgentInstruction,
+    ThermoResultCoreAgentName,
+    ThermoResultTransferAgentInstruction,
+    ThermoResultTransferAgentName,
+    ThermoSubmitAgentDescription,
+    ThermoSubmitAgentName,
+    ThermoSubmitCoreAgentDescription,
+    ThermoSubmitCoreAgentInstruction,
+    ThermoSubmitCoreAgentName,
+    ThermoSubmitRenderAgentName,
+    ThermoTransferAgentInstruction,
+    ThermoTransferAgentName,
 )
 
 from .constant import ThermoelectricServerUrl
@@ -56,36 +56,36 @@ toolset = CalculationMCPToolset(
         logging_callback=matmodeler_logging_handler
 )
 
-class DPAAgent(BaseAsyncJobAgent):
+class ThermoAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
           llm_config=llm_config,
           mcp_tools=[toolset],
-          agent_name=DPAAgentName,
-          agent_description=DPAAgentDescription,
-          agent_instruction=DPAAgentInstruction,
+          agent_name=ThermoAgentName,
+          agent_description=ThermoAgentDescription,
+          agent_instruction=ThermoAgentInstruction,
           submit_core_agent_class=SubmitCoreCalculationMCPLlmAgent,
-          submit_core_agent_name=DPASubmitCoreAgentName,
-          submit_core_agent_description=DPASubmitCoreAgentDescription,
-          submit_core_agent_instruction=DPASubmitCoreAgentInstruction,
-          submit_render_agent_name=DPASubmitRenderAgentName,
+          submit_core_agent_name=ThermoSubmitCoreAgentName,
+          submit_core_agent_description=ThermoSubmitCoreAgentDescription,
+          submit_core_agent_instruction=ThermoSubmitCoreAgentInstruction,
+          submit_render_agent_name=ThermoSubmitRenderAgentName,
           result_core_agent_class=ResultCalculationMCPLlmAgent,
-          result_core_agent_name=DPAResultCoreAgentName,
-          result_core_agent_instruction=DPAResultCoreAgentInstruction,
-          result_transfer_agent_name=DPAResultTransferAgentName,
-          result_transfer_agent_instruction=DPAResultTransferAgentInstruction,
-          transfer_agent_name=DPATransferAgentName,
-          transfer_agent_instruction=DPATransferAgentInstruction,
-          submit_agent_name=DPASubmitAgentName,
-          submit_agent_description=DPASubmitAgentDescription,
-          result_agent_name=DPAResultAgentName,
-          result_agent_description=DPAResultAgentDescription,
+          result_core_agent_name=ThermoResultCoreAgentName,
+          result_core_agent_instruction=ThermoResultCoreAgentInstruction,
+          result_transfer_agent_name=ThermoResultTransferAgentName,
+          result_transfer_agent_instruction=ThermoResultTransferAgentInstruction,
+          transfer_agent_name=ThermoTransferAgentName,
+          transfer_agent_instruction=ThermoTransferAgentInstruction,
+          submit_agent_name=ThermoSubmitAgentName,
+          submit_agent_description=ThermoSubmitAgentDescription,
+          result_agent_name=ThermoResultAgentName,
+          result_agent_description=ThermoResultAgentDescription,
           dflow_flag=False,
           supervisor_agent=MATMASTER_AGENT_NAME
         )
 
 def init_thermoelectric_agent(llm_config) -> BaseAgent:
-    return DPAAgent(llm_config)
+    return ThermoAgent(llm_config)
 
 # Replace the global instance
 #root_agent = init_thermoelectric_agent()
