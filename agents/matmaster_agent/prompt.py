@@ -5,6 +5,7 @@ from agents.matmaster_agent.piloteye_electro_agent.constant import (
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DATABASE_AGENT_NAME
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
+from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
 
 GlobalInstruction = """
 ---
