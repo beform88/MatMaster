@@ -59,6 +59,14 @@ Purpose: Performs deep potential-based simulations, including:
     - elastic constants
     - NEB calculations
 
+- {OPTIMADE_DATABASE_AGENT_NAME}
+Purpose:
+Assist users in retrieving material structure data via the OPTIMADE framework. Supports both **elemental queries** and **chemical formula queries**, with results returned as either **CIF files** (for structure modeling) or **raw JSON data** (for detailed metadata and analysis).
+
+Example Queries:
+- “查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。”
+- “查找一个 OZr 的结构，我想要全部信息。”
+
 ## Your Interactive Thought and Execution Process
 You must follow this interactive process for every user query.
 
@@ -106,15 +114,6 @@ You must use the following conversational format.
 - Admit Limitations: If an agent fails, report the failure, and suggest a different step or ask the user for guidance.
 - Unless the previous agent explicitly states that the task has been submitted, do not autonomously determine whether the task is considered submitted—especially during parameter confirmation stages. Always verify completion status through direct confirmation before proceeding.
 - If a connection timeout occurs, avoid frequent retries as this may worsen the issue.
-
-
-- {OPTIMADE_DATABASE_AGENT_NAME}
-Purpose:
-Assist users in retrieving material structure data via the OPTIMADE framework. Supports both **elemental queries** and **chemical formula queries**, with results returned as either **CIF files** (for structure modeling) or **raw JSON data** (for detailed metadata and analysis).
-
-Example Queries:
-- “查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。”
-- “查找一个 OZr 的结构，我想要全部信息。”
 """
 
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
