@@ -21,6 +21,7 @@ from agents.matmaster_agent.base_agents.io_agent import (
 )
 from agents.matmaster_agent.constant import (
     BOHRIUM_API_URL,
+    CURRENT_ENV,
     FRONTEND_STATE_KEY,
     JOB_LIST_KEY,
     JOB_RESULT_KEY,
@@ -29,9 +30,9 @@ from agents.matmaster_agent.constant import (
     LOADING_START,
     LOADING_STATE_KEY,
     LOADING_TITLE,
+    OPENAPI_HOST,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
-    OpenAPIHost,
     Transfer2Agent,
     get_BohriumExecutor,
     get_BohriumStorage,
@@ -102,7 +103,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             return {"status": "error", "msg": "Current tool can't create job!"}
 
         if tool.executor is not None:
-            url = f"{OpenAPIHost}/openapi/v1/job/create"
+            url = f"{OPENAPI_HOST}/openapi/v1/job/create"
             payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
             params = {'accessKey': tool_context.state['ak']}
 
@@ -152,12 +153,12 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
 
 
 def ak_to_username(access_key: str) -> str:
-    url = f"{OpenAPIHost}/openapi/v1/account/info"
+    url = f"{OPENAPI_HOST}/openapi/v1/account/info"
     headers = {
         "AccessKey": access_key,
         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
         "Accept": "*/*",
-        "Host": f"{OpenAPIHost.split('//')[1]}",
+        "Host": f"{OPENAPI_HOST.split('//')[1]}",
     }
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -251,6 +252,22 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
     return ticket, executor
 
 
+def _get_current_env(executor):
+    if CURRENT_ENV:
+        current_env = CURRENT_ENV
+    else:
+        current_env = "prod"
+    if executor is not None:
+        if executor['type'] == "dispatcher":  # BohriumExecutor
+            # Redundant set for resources/envs keys
+            executor["resources"] = executor.get("resources", {})
+            executor["resources"]["envs"] = executor["resources"].get("envs", {})
+            executor['resources']['envs']['CURRENT_ENV'] = str(CURRENT_ENV)
+        elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
+    return current_env, executor
+
+
 def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
@@ -305,6 +322,14 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
         except Exception as e:
             return {"status": "error", "msg": f"Failed to get ticket: {str(e)}"}
 
+        # 注入当前环境
+        try:
+            _, tool.executor = _get_current_env(tool.executor)
+        except Exception as e:
+            return {
+                "status": "error",
+                "msg": f"Failed to get current environment: {str(e)}"
+            }
     return wrapper
 
 
