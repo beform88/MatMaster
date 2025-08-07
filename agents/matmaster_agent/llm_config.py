@@ -28,8 +28,7 @@ MODEL_MAPPING = {
     ("deepseek", "deepseek-chat"): "deepseek/deepseek-chat",
 }
 
-# DEFAULT_MODEL = "azure/gpt-4o-mini"
-DEFAULT_MODEL = "deepseek/deepseek-chat"
+DEFAULT_MODEL = "azure/gpt-4o-mini"
 
 
 class LLMConfig(object):

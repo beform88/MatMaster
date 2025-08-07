@@ -1,3 +1,4 @@
+from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
 from agents.matmaster_agent.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
@@ -31,6 +32,15 @@ You have access to the following specialized sub-agents. You must delegate the t
 - {PILOTEYE_ELECTRO_AGENT_NAME}
 Purpose:
 Example Query:
+
+- {DPACalulator_AGENT_NAME}
+Purpose: Performs deep potential-based simulations, including:
+    - structure building
+    - optimization, 
+    - molecular simulation (MD)
+    - phonon calculation
+    - elastic constants
+    - NEB calculations
 
 ## Your Interactive Thought and Execution Process
 You must follow this interactive process for every user query.
