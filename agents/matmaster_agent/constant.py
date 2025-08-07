@@ -35,8 +35,8 @@ BohriumStorge = {
     "type": "https",
     "plugin": {
         "type": "bohrium",
-        "access_key": "",
-        "project_id": -1,
+        "access_key": "3422de8b0e7d4bd39bdf0a3a447ba362",
+        "project_id": 912472,
         "app_key": "agent"
     }
 }
@@ -50,8 +50,8 @@ BohriumExecutor = {
         "batch_type": "OpenAPI",
         "context_type": "OpenAPI",
         "remote_profile": {
-            "access_key": "",
-            "project_id": -1,
+            "access_key": "3422de8b0e7d4bd39bdf0a3a447ba362",
+            "project_id": 912472,
             "app_key": "agent",
             "image_address": "registry.dp.tech/dptech/dp/native/prod-19853/dpa-mcp:0.0.0",
             "platform": "ali",
@@ -84,8 +84,8 @@ DFlowExecutor = {
         "DFLOW_K8S_API_SERVER": DFLOW_K8S_API_SERVER,
         "DFLOW_S3_REPO_KEY": "oss-bohrium",
         "DFLOW_S3_STORAGE_CLIENT": "dflow.plugins.bohrium.TiefblueClient",
-        "BOHRIUM_ACCESS_KEY": "",
-        "BOHRIUM_PROJECT_ID": "",
+        "BOHRIUM_ACCESS_KEY": "3422de8b0e7d4bd39bdf0a3a447ba362",
+        "BOHRIUM_PROJECT_ID": 912472,
         "BOHRIUM_APP_KEY": "agent"
     }
 }

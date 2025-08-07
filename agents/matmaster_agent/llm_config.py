@@ -25,10 +25,11 @@ MODEL_MAPPING = {
     # ("gemini", "gemini1.5-turbo"): "gemini/gemini1.5-turbo",
     # ("gemini", "gemini2.5-pro"): "gemini/gemini-2.5-pro-preview-03-25",
     # ("deepseek", "deepseek-reasoner"): "deepseek/deepseek-reasoner",
-    # ("deepseek", "deepseek-chat"): "deepseek/deepseek-chat",
+    ("deepseek", "deepseek-chat"): "deepseek/deepseek-chat",
 }
 
-DEFAULT_MODEL = "azure/gpt-4o-mini"
+# DEFAULT_MODEL = "azure/gpt-4o-mini"
+DEFAULT_MODEL = "deepseek/deepseek-chat"
 
 
 class LLMConfig(object):
@@ -53,6 +54,9 @@ class LLMConfig(object):
         gemini_2_5_pro = "gemini-2.5-pro"
         claude_sonnet_4 = "claude-sonnet-4"
 
+        deepseek_provider = 'deepseek'
+        deepseek_chat = 'seepseek-chat'
+
         # Helper to init any provider model
         def _init_model(provider_key: str, model_name: str):
             return LiteLlm(
@@ -67,6 +71,8 @@ class LLMConfig(object):
         self.gemini_2_5_flash = _init_model(model_provider, gemini_2_5_flash)
         self.gemini_2_5_pro = _init_model(model_provider, gemini_2_5_pro)
         self.claude_sonnet_4 = _init_model(model_provider, claude_sonnet_4)
+
+        self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
 
         # tracing
         self.opik_tracer = OpikTracer()
