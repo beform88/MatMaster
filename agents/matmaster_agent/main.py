@@ -1,0 +1,113 @@
+import asyncio
+
+from google.adk import Runner
+from google.adk.sessions import DatabaseSessionService
+from google.genai import types
+from rich import print
+
+from agents.matmaster_agent.agent import root_agent
+from agents.matmaster_agent.constant import AppName, UserId, DBUrl, SystemRole
+from agents.matmaster_agent.logger import logger
+
+
+async def agent_main() -> None:
+    """
+    Main entry point for the material modeling agent application.
+
+    This function:
+    1. Initializes a new session for the user
+    2. Sets up the agent runner
+    3. Handles the interactive chat loop between user and agent
+    4. Processes and displays agent responses in real-time
+
+    The conversation continues until the user enters an exit command.
+    """
+    # Initialize session service and create new session
+    session_service = DatabaseSessionService(db_url=DBUrl)
+    session = await session_service.create_session(
+        app_name=AppName,
+        user_id=UserId,
+    )
+    logger.info(f"Current Session: {session.id}")
+
+    # Set up the agent runner with root agent and session service
+    runner = Runner(
+        app_name=AppName,
+        agent=root_agent,
+        session_service=session_service
+    )
+
+    # Initial user prompt for material modeling
+    # user_input = "帮我构建FCC Bulk Au"
+    # user_input = "使用 build_bulk_structure 创建体相铝晶体（Al），采用fcc结构，晶格常数设为4.05Å，并扩展为2×2×2超胞，输出文件命名为Al_bulk.cif"
+    #   user_input = """
+    #   run_molecular_dynamics 在优化后的Al体相结构(https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/110663/12791/store/0f23a0ea241566b00c8b401b2422457a2c2ef130/outputs/structure_file/Al_bulk.cif)上运行三阶段分子动力学模拟：
+    # - 第一阶段：300K NVT系综平衡 0.2 ps
+    # - 第二阶段：500K NPT系综退火 0.2 ps
+    # - 第三阶段：300K NVT系综生产模拟 0.2 ps时间步长设为0.5 fs，每100步保存一次轨迹
+    #   """
+    # user_input = (
+    #     "结构文件：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/4365d412-9b05-4831-9100-1f08f5b81d43/Si.cif,"
+    #     "模型文件：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/e7371db3-bd2c-4231-8337-0bbe46eb8786/dpa-2.4-7M.pt,"
+    #     "请帮我进行结构优化")
+    # user_input = """
+    # 使用 catalysis_agent 帮我计算吸附能，结构文件是：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/bac96a53-8eb2-41e0-8c71-413769df5844/ads_energy.tgz
+    # """
+    # user_input = ("帮我计算msd，traj=https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/48237/46562/store/upload/e8d55410-def9-47ab-bc32-d33dd3461f35/XDATCAR, "
+    #               "INCAR=https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/48237/46562/store/upload/d3be80b8-b584-457d-921c-2c926878082d/INCAR")
+    # user_input = "计算https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/12158/13844/store/upload/b8ec23aa-eb16-4114-bb06-b7722df7b1f2/SnSe.tgz的能带"
+    # user_input = "使用NEB方法搜索H迁移的过渡态，初态结构文件： https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/eab31774-4f1d-4e49-9d37-c6c8059ef704/H-trans-is-opt.poscar，末态结构文件：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/97045d53-fafc-462d-962f-2a1180df8b66/H-trans-fs-opt.poscar"
+    user_input = "请帮我查找3个包含 铝（Al）、氧（O） 和 镁（Mg） 的晶体结构。"
+    print(f"🧑 用户：{user_input}")
+
+    # Create the initial content with user input
+    content = types.Content(role="user", parts=[types.Part(text=user_input)])
+
+    # Main conversation loop
+    while True:
+        # Execute the agent with the current user input
+        events = runner.run_async(
+            user_id=session.user_id,
+            session_id=session.id,
+            new_message=content,
+        )
+
+        # Process and display agent responses
+        async for event in events:
+            logger.debug(f"Event received: {event}")
+
+            # Extract and display text content from event
+            if event.content and event.content.parts:
+                for part in event.content.parts:
+                    if part.text:
+                        role = event.content.role
+                        if role == "user":
+                            print(f"🧑 用户：{part.text}")
+                        elif role == "model":
+                            print(f"🤖 智能体：{part.text}")
+                        elif role == SystemRole:
+                            print(f"🖥️ 系统: {part.text}")
+
+        # Get next user input
+        user_input = input("🧑 用户：")
+
+        # Skip empty inputs
+        if not user_input or not user_input.strip():
+            continue
+
+        # Check for exit commands
+        if user_input.lower() in ["exit", "quit", "q"]:
+            break
+
+        # Prepare content for next iteration
+        content = types.Content(
+            role="user",
+            parts=[types.Part(text=user_input)]
+        )
+
+    # Clean up resources
+    await runner.close()
+
+
+if __name__ == '__main__':
+    asyncio.run(agent_main())
