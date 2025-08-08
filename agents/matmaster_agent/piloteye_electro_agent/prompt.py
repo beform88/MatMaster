@@ -1,10 +1,9 @@
-from agents.matmaster_agent.prompt import TransferAgentDescription
+from agents.matmaster_agent.traj_analysis_agent.constant import (
+    TrajAnalysisAgentName,
+)
 
-# from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
-TrajAnalysisAgentName = "traj_analysis_agent"
-
-TransferAgentDescription
-
+# TrajAnalysisAgentName = "traj_analysis_agent"
+# TransferAgentDescription
 # Agent Constant
 PiloteyeElectroAgentName = "piloteye_electro_agent"
 
