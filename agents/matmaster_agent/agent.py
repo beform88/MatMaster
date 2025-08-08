@@ -19,6 +19,7 @@ from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_d
 from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
 from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
 from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
+from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
 from agents.matmaster_agent.optimade_database_agent.agent import (
     init_optimade_database_agent,
 )
@@ -54,6 +55,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         invar_agent = init_invar_agent(llm_config)
         crystalformer_agent = init_crystalformer_agent(llm_config)
         apex_agent = init_apex_agent(llm_config, use_deepseek=True)
+        abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -67,6 +69,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 superconductor_agent,
                 apex_agent,
                 crystalformer_agent,
+                abacus_calculator_agent,
                 invar_agent
             ],
             global_instruction=GlobalInstruction,

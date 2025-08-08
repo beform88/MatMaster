@@ -5,3 +5,5 @@ build/**
 matmaster.egg-info/
 .env
 dpdispatcher.log
+
+.vscode/
