@@ -5,6 +5,7 @@ from agents.matmaster_agent.piloteye_electro_agent.constant import (
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DATABASE_AGENT_NAME
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
+from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 
 GlobalInstruction = """
 ---
@@ -35,6 +36,10 @@ You have access to the following specialized sub-agents. You must delegate the t
 Purpose:
 Example Query:
 
+- {ApexAgentName}
+Purpose: Material property calculations using APEX framework
+Example Query: "Calculate elastic properties of Fe crystal"
+
 -{ThermoelectricAgentName}
 Purpose:
 This agent works for thermoelectric material related calculations.This MCP server is designed to predict key thermoelectric material properties and facilitate the discovery of promising new thermoelectric candidates. Users can provide crystal structures by uploading them directly, generating element-guided structures via CALYPSO, or generating property-guided structures using CrystalFormer. The server supports prediction of various thermoelectric properties, including HSE-functional band gap, shear modulus (G), bulk modulus (K), n-type and p-type power factors, carrier mobility, and Seebeck coefficient.
@@ -64,8 +69,8 @@ Purpose:
 Assist users in retrieving material structure data via the OPTIMADE framework. Supports both **elemental queries** and **chemical formula queries**, with results returned as either **CIF files** (for structure modeling) or **raw JSON data** (for detailed metadata and analysis).
 
 Example Queries:
-- “查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。”
-- “查找一个 OZr 的结构，我想要全部信息。”
+- "查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
+- "查找一个 OZr 的结构，我想要全部信息。"
 
 ## Your Interactive Thought and Execution Process
 You must follow this interactive process for every user query.
