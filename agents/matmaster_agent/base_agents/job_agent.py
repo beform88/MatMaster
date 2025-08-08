@@ -132,9 +132,7 @@ def _get_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
                 executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
         if storage is not None:  # BohriumStorage
             storage['plugin']['access_key'] = access_key
-        return access_key, executor, storage
-    else:
-        raise ValueError("AccessKey was not provided.")
+    return access_key, executor, storage
 
 
 def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
@@ -154,9 +152,7 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
                 executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
         if storage is not None:  # BohriumStorage
             storage['plugin']['project_id'] = int(project_id)
-        return project_id, executor, storage
-    else:
-        raise ValueError("ProjectId was not provided. Please select the project first.")
+    return project_id, executor, storage
 
 
 def ak_to_username(access_key: str) -> str:
@@ -295,10 +291,18 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
             raise TypeError("Not CalculationMCPTool type, current tool does not have <storage>")
 
         # 获取 access_key
+
         access_key, tool.executor, tool.storage = _get_ak(tool_context, tool.executor, tool.storage)
+        if access_key is None:
+            raise ValueError("Failed to get access_key")
 
         # 获取 project_id
-        project_id, tool.executor, tool.storage = _get_projectId(tool_context, tool.executor, tool.storage)
+        try:
+            project_id, tool.executor, tool.storage = _get_projectId(tool_context, tool.executor, tool.storage)
+        except ValueError as e:
+            raise ValueError("ProjectId is invalid") from e
+        if project_id is None:
+            raise RuntimeError("ProjectId was not provided. Please select the project first.")
 
         tool_context.state['ak'] = access_key
         tool_context.state['project_id'] = project_id
