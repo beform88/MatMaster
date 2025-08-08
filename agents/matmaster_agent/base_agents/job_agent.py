@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import traceback
 from functools import wraps
 from typing import AsyncGenerator, Optional, Union, override
 
@@ -75,15 +76,17 @@ def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
         try:
+            if (before_tool_result := await func(tool, args, tool_context)) is not None:
+                return before_tool_result
+
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
             return {
+                "status": "error",
                 "error": str(e),
                 "error_type": type(e).__name__,
+                "traceback": traceback.format_exc()
             }
 
     return wrapper
@@ -100,7 +103,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
-            return {"status": "error", "msg": "Current tool can't create job!"}
+            raise TypeError("Not CalculationMCPTool type, current tool can't create job!")
 
         if tool.executor is not None:
             url = f"{OPENAPI_HOST}/openapi/v1/job/create"
@@ -184,8 +187,6 @@ def ak_to_username(access_key: str) -> str:
 
 def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
     access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
-    if not access_key:
-        raise ValueError("AccessKey not found")
     username = ak_to_username(access_key=access_key)
     if username:
         if executor is not None:
@@ -195,9 +196,11 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
                 executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_USERNAME'] = \
                     str(username)
-            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_USERNAME'] = str(username)
-    return username, executor
+        return username, executor
+    else:
+        raise RuntimeError("Failed to get username")
 
 
 def ak_to_ticket(
@@ -247,9 +250,11 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
                 executor["resources"] = executor.get("resources", {})
                 executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_TICKET'] = str(ticket)
-            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_TICKET'] = str(ticket)
-    return ticket, executor
+        return ticket, executor
+    else:
+        raise RuntimeError("Failed to get ticket")
 
 
 def _get_current_env(executor):
@@ -263,7 +268,7 @@ def _get_current_env(executor):
             executor["resources"] = executor.get("resources", {})
             executor["resources"]["envs"] = executor["resources"].get("envs", {})
             executor['resources']['envs']['CURRENT_ENV'] = str(CURRENT_ENV)
-        elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+        elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
             executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
     return current_env, executor
 
@@ -283,20 +288,21 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
-            return {"status": "error", "msg": "Current tool does not have <storage>"}
+            raise TypeError("Not CalculationMCPTool type, current tool does not have <storage>")
 
         # 获取 access_key
+
         access_key, tool.executor, tool.storage = _get_ak(tool_context, tool.executor, tool.storage)
         if access_key is None:
-            return {"status": "error", "msg": "AccessKey was not provided"}
+            raise ValueError("Failed to get access_key")
 
         # 获取 project_id
         try:
             project_id, tool.executor, tool.storage = _get_projectId(tool_context, tool.executor, tool.storage)
-        except ValueError:
-            return {"status": "error", "msg": f"ProjectId is invalid"}
+        except ValueError as e:
+            raise ValueError("ProjectId is invalid") from e
         if project_id is None:
-            return {"status": "error", "msg": "ProjectId was not provided. Please select the project first."}
+            raise RuntimeError("ProjectId was not provided. Please select the project first.")
 
         tool_context.state['ak'] = access_key
         tool_context.state['project_id'] = project_id
@@ -310,26 +316,15 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
         # 先执行前面的回调链
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
-        try:
-            # 注入 username
-            _, tool.executor = _get_username(tool_context, tool.executor)
-        except Exception as e:
-            return {"status": "error", "msg": f"Failed to get username: {str(e)}"}
+
+        # 注入 username
+        _, tool.executor = _get_username(tool_context, tool.executor)
 
         # 注入 ticket
-        try:
-            _, tool.executor = _get_ticket(tool_context, tool.executor)
-        except Exception as e:
-            return {"status": "error", "msg": f"Failed to get ticket: {str(e)}"}
+        _, tool.executor = _get_ticket(tool_context, tool.executor)
 
         # 注入当前环境
-        try:
-            _, tool.executor = _get_current_env(tool.executor)
-        except Exception as e:
-            return {
-                "status": "error",
-                "msg": f"Failed to get current environment: {str(e)}"
-            }
+        _, tool.executor = _get_current_env(tool.executor)
 
     return wrapper
 
