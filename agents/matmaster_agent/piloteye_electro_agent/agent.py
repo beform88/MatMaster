@@ -1,4 +1,3 @@
-
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
@@ -16,23 +15,23 @@ from agents.matmaster_agent.piloteye_electro_agent.constant import (
     PILOTEYE_SERVER_URL,
 )
 from agents.matmaster_agent.piloteye_electro_agent.prompt import (
-    DPAAgentDescription,
-    DPAAgentInstruction,
-    DPAAgentName,
-    DPAResultAgentDescription,
-    DPAResultAgentName,
-    DPAResultCoreAgentInstruction,
-    DPAResultCoreAgentName,
-    DPAResultTransferAgentInstruction,
-    DPAResultTransferAgentName,
-    DPASubmitAgentDescription,
-    DPASubmitAgentName,
-    DPASubmitCoreAgentDescription,
-    DPASubmitCoreAgentInstruction,
-    DPASubmitCoreAgentName,
-    DPASubmitRenderAgentName,
-    DPATransferAgentInstruction,
-    DPATransferAgentName,
+    PiloteyeElectroAgentDescription,
+    PiloteyeElectroAgentInstruction,
+    PiloteyeElectroAgentName,
+    PiloteyeElectroResultAgentDescription,
+    PiloteyeElectroResultAgentName,
+    PiloteyeElectroResultCoreAgentInstruction,
+    PiloteyeElectroResultCoreAgentName,
+    PiloteyeElectroResultTransferAgentInstruction,
+    PiloteyeElectroResultTransferAgentName,
+    PiloteyeElectroSubmitAgentDescription,
+    PiloteyeElectroSubmitAgentName,
+    PiloteyeElectroSubmitCoreAgentDescription,
+    PiloteyeElectroSubmitCoreAgentInstruction,
+    PiloteyeElectroSubmitCoreAgentName,
+    PiloteyeElectroSubmitRenderAgentName,
+    PiloteyeElectroTransferAgentInstruction,
+    PiloteyeElectroTransferAgentName,
 )
 
 # Configure SSE params
@@ -63,34 +62,34 @@ piloteye_electro_tool = CalculationMCPToolset(
 
 
 
-class DPAAgent(BaseAsyncJobAgent):
+class PiloteyeElectroAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.gpt_4o,
             mcp_tools=[piloteye_electro_tool],
-            agent_name=DPAAgentName,
-            agent_description=DPAAgentDescription,
-            agent_instruction=DPAAgentInstruction,
+            agent_name=PiloteyeElectroAgentName,
+            agent_description=PiloteyeElectroAgentDescription,
+            agent_instruction=PiloteyeElectroAgentInstruction,
             submit_core_agent_class=SubmitCoreCalculationMCPLlmAgent,
-            submit_core_agent_name=DPASubmitCoreAgentName,
-            submit_core_agent_description=DPASubmitCoreAgentDescription,
-            submit_core_agent_instruction=DPASubmitCoreAgentInstruction,
-            submit_render_agent_name=DPASubmitRenderAgentName,
+            submit_core_agent_name=PiloteyeElectroSubmitCoreAgentName,
+            submit_core_agent_description=PiloteyeElectroSubmitCoreAgentDescription,
+            submit_core_agent_instruction=PiloteyeElectroSubmitCoreAgentInstruction,
+            submit_render_agent_name=PiloteyeElectroSubmitRenderAgentName,
             result_core_agent_class=ResultCalculationMCPLlmAgent,
-            result_core_agent_name=DPAResultCoreAgentName,
-            result_core_agent_instruction=DPAResultCoreAgentInstruction,
-            result_transfer_agent_name=DPAResultTransferAgentName,
-            result_transfer_agent_instruction=DPAResultTransferAgentInstruction,
-            transfer_agent_name=DPATransferAgentName,
-            transfer_agent_instruction=DPATransferAgentInstruction,
-            submit_agent_name=DPASubmitAgentName,
-            submit_agent_description=DPASubmitAgentDescription,
-            result_agent_name=DPAResultAgentName,
-            result_agent_description=DPAResultAgentDescription,
+            result_core_agent_name=PiloteyeElectroResultCoreAgentName,
+            result_core_agent_instruction=PiloteyeElectroResultCoreAgentInstruction,
+            result_transfer_agent_name=PiloteyeElectroResultTransferAgentName,
+            result_transfer_agent_instruction=PiloteyeElectroResultTransferAgentInstruction,
+            transfer_agent_name=PiloteyeElectroTransferAgentName,
+            transfer_agent_instruction=PiloteyeElectroTransferAgentInstruction,
+            submit_agent_name=PiloteyeElectroSubmitAgentName,
+            submit_agent_description=PiloteyeElectroSubmitAgentDescription,
+            result_agent_name=PiloteyeElectroResultAgentName,
+            result_agent_description=PiloteyeElectroResultAgentDescription,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )
 
 
 def init_piloteye_electro_agent(llm_config) -> BaseAgent:
-    return DPAAgent(llm_config)
+    return PiloteyeElectroAgent(llm_config)
