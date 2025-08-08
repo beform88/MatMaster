@@ -14,6 +14,8 @@ async def matmaster_before_agent(callback_context: CallbackContext) -> Optional[
     callback_context.state['current_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     callback_context.state["long_running_ids"] = callback_context.state.get("long_running_ids", [])
     callback_context.state["long_running_jobs"] = callback_context.state.get("long_running_jobs", {})
+    callback_context.state["long_running_jobs_count"] = callback_context.state.get("long_running_jobs_count", 0)
+    callback_context.state["long_running_jobs_count_ori"] = callback_context.state.get("long_running_jobs_count_ori", 0)
     callback_context.state["render_job_list"] = callback_context.state.get("render_job_list", False)
     callback_context.state["render_job_id"] = callback_context.state.get("render_job_id", [])
     callback_context.state["dflow"] = callback_context.state.get("dflow", False)
