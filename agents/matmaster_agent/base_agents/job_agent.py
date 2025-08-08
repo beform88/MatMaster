@@ -36,18 +36,9 @@ from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
     SubmitRenderAgentDescription,
 )
-from agents.matmaster_agent.utils import (
-    all_text_event,
-    context_function_event,
-    context_text_event,
-    frontend_text_event,
-    is_function_call,
-    is_function_response,
-    is_text,
-    is_text_and_not_bohrium,
-    parse_result,
-    send_error_event,
-    update_session_state, )
+from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
+    context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
+from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result
 
 logger = logging.getLogger(__name__)
 

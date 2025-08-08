@@ -14,7 +14,7 @@ from agents.matmaster_agent.logger import logger
 from agents.matmaster_agent.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
 )
-from agents.matmaster_agent.utils import is_json
+from agents.matmaster_agent.utils.helper_func import is_json
 
 
 async def before_tool_callback(tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext):

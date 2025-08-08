@@ -17,9 +17,7 @@ from agents.matmaster_agent.constant import (
     OPENAPI_HOST,
     Transfer2Agent,
 )
-from agents.matmaster_agent.utils import (
-    ak_to_ticket, ak_to_username,
-)
+from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
 
 
 # before_tool_callback
