@@ -256,7 +256,7 @@ class SubmitRenderAgent(LlmAgent):
                 yield error_event
 
 
-class SubmitValidator(LlmAgent):
+class SubmitValidatorAgent(LlmAgent):
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         if ctx.session.state["long_running_jobs_count"] > ctx.session.state["long_running_jobs_count_ori"]:
@@ -422,10 +422,12 @@ class BaseAsyncJobAgent(LlmAgent):
             dflow_flag: bool,
             supervisor_agent: str
     ):
+        agent_prefix = agent_name.replace("_agent", "")
+
         # 创建提交核心代理
-        submit_core_agent = submit_core_agent_class(
+        submit_core_agent = SubmitCoreCalculationMCPLlmAgent(
             model=model,
-            name=submit_core_agent_name,
+            name=f"{agent_prefix}_submit_core_agent",
             description=submit_core_agent_description,
             instruction=submit_core_agent_instruction,
             tools=mcp_tools,
@@ -435,25 +437,25 @@ class BaseAsyncJobAgent(LlmAgent):
         # 创建提交渲染代理
         submit_render_agent = SubmitRenderAgent(
             model=model,
-            name=submit_render_agent_name
+            name=f"{agent_prefix}_submit_render_agent"
         )
 
-        submit_validator_agent = SubmitValidator(
+        submit_validator_agent = SubmitValidatorAgent(
             model=model,
-            name="submit_validator_agent"
+            name=f"{agent_prefix}_submit_validator_agent"
         )
 
         # 创建提交序列代理
         submit_agent = SequentialAgent(
-            name=submit_agent_name,
+            name=f"{agent_prefix}_submit_agent",
             description=submit_agent_description,
             sub_agents=[submit_core_agent, submit_render_agent, submit_validator_agent]
         )
 
         # 创建结果核心代理
-        result_core_agent = result_core_agent_class(
+        result_core_agent = ResultCalculationMCPLlmAgent(
             model=model,
-            name=result_core_agent_name,
+            name=f"{agent_prefix}_result_core_agent",
             tools=mcp_tools,
             instruction=result_core_agent_instruction
         )
@@ -461,14 +463,14 @@ class BaseAsyncJobAgent(LlmAgent):
         # 创建结果转移代理
         result_transfer_agent = ResultTransferLlmAgent(
             model=model,
-            name=result_transfer_agent_name,
+            name=f"{agent_prefix}_result_transfer_agent",
             instruction=result_transfer_agent_instruction,
             tools=[transfer_to_agent]
         )
 
         # 创建结果序列代理
         result_agent = SequentialAgent(
-            name=result_agent_name,
+            name=f"{agent_prefix}_result_agent",
             description=result_agent_description,
             # sub_agents=[result_core_agent, result_transfer_agent]
             sub_agents=[result_core_agent]
