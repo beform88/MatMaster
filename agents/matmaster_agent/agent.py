@@ -1,7 +1,6 @@
 from google.adk.agents import LlmAgent
 from opik.integrations.adk import track_adk_agent_recursive
 
-from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -12,6 +11,7 @@ from agents.matmaster_agent.DPACalculator_agent.agent import (
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 
+from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.piloteye_electro_agent.agent import init_piloteye_electro_agent
 from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
