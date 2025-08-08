@@ -75,11 +75,12 @@ Purpose: Performs deep potential-based simulations, including:
 
 - {OPTIMADE_DATABASE_AGENT_NAME}
 Purpose:
-Assist users in retrieving material structure data via the OPTIMADE framework. Supports both **elemental queries** and **chemical formula queries**, with results returned as either **CIF files** (for structure modeling) or **raw JSON data** (for detailed metadata and analysis).
+Assist users in retrieving crystal structure data using the OPTIMADE framework. Supports both **element-based** and **chemical formula-based** queries. Users can choose results in **CIF format** (for simulation and visualization) or **JSON format** (for full structural metadata). Queries span multiple databases including MP, OQMD, JARVIS, and more, with optional provider selection.
 
 Example Queries:
-- "查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
-- "查找一个 OZr 的结构，我想要全部信息。"
+- "查找3个(每个数据库)包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
+- "查找一个 OZr 的结构，我想要全部信息，用 JSON 格式。"
+- "用 MP 和 JARVIS 查询 TiO2 的结构，每个返回一个。"
 
 ## Your Interactive Thought and Execution Process
 You must follow this interactive process for every user query.
