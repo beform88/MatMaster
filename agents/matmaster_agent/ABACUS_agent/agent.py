@@ -24,14 +24,29 @@ from agents.matmaster_agent.constant import (
 )
 
 from agents.matmaster_agent.ABACUS_agent.prompt import (
+    ABACUS_AGENT_NAME,
     ABACUS_AGENT_DESCRIPTION,
-    ABACUS_AGENT_INSTRCUTION,
+    ABACUS_AGENT_INSTRUCTION,
+    ABACUS_SUBMIT_CORE_AGENT_NAME,
+    ABACUS_SUBMIT_CORE_AGENT_DESCRIPTION,
+    ABACUS_SUBMIT_CORE_AGENT_INSTRUCTION,
+    ABACUS_SUBMIT_RENDER_AGENT_NAME,
+    ABACUS_RESULT_CORE_AGENT_NAME,
+    ABACUS_RESULT_CORE_AGENT_INSTRUCTION,
+    ABACUS_RESULT_TRANSFER_AGENT_NAME,
+    ABACUS_RESULT_TRANSFER_AGENT_INSTRUCTION,
+    ABACUS_TRANSFER_AGENT_NAME,
+    ABACUS_TRANSFER_AGENT_INSTRCUTION,
+    ABACUS_SUBMIT_AGENT_NAME,
+    ABACUS_SUBMIT_AGENT_DESCRIPTION,
+    ABACUS_RESULT_AGENT_NAME,
+    ABACUS_RESULT_AGENT_DESCRIPTION
 )
 
 from agents.matmaster_agent.ABACUS_agent.constant import (
-    ABACUS_CALCULATOR_AGENT_NAME,
     ABACUS_CALCULATOR_URL,
-    EXECUTOR_MAP,
+    ABACUS_CALCULATOR_BOHRIUM_EXECUTOR,
+    ABACUS_CALCULATOR_BOHRIUM_STORAGE,
 )
 
 mcp_tools_abacus = CalculationMCPToolset(
@@ -39,23 +54,42 @@ mcp_tools_abacus = CalculationMCPToolset(
         url=ABACUS_CALCULATOR_URL,
         sse_read_timeout = 3600,
     ),
+    executor = ABACUS_CALCULATOR_BOHRIUM_EXECUTOR,
+    storage = ABACUS_CALCULATOR_BOHRIUM_STORAGE,
     async_mode=True,
     wait=False,
-    executor = BohriumExecutor,
-    executor_map = EXECUTOR_MAP,
-    storage = BohriumStorge,
     logging_callback=matmodeler_logging_handler
 )
 
-class ABACUSCalculatorAgent(LlmAgent):
+class ABACUSCalculatorAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.deepseek_chat,
-            name=ABACUS_CALCULATOR_AGENT_NAME,
-            description=ABACUS_AGENT_DESCRIPTION,
-            instruction=ABACUS_AGENT_INSTRCUTION,
-            tools=[mcp_tools_abacus]
+            mcp_tools=[mcp_tools_abacus],
+            agent_name=ABACUS_AGENT_NAME,
+            agent_description=ABACUS_AGENT_DESCRIPTION,
+            agent_instruction=ABACUS_AGENT_INSTRUCTION,
+            submit_core_agent_class=SubmitCoreCalculationMCPLlmAgent,
+            submit_core_agent_name=ABACUS_SUBMIT_CORE_AGENT_NAME,
+            submit_core_agent_description=ABACUS_SUBMIT_CORE_AGENT_DESCRIPTION,
+            submit_core_agent_instruction=ABACUS_SUBMIT_CORE_AGENT_INSTRUCTION,
+            submit_render_agent_name=ABACUS_SUBMIT_RENDER_AGENT_NAME,
+            result_core_agent_class=ResultCalculationMCPLlmAgent,
+            result_core_agent_name=ABACUS_RESULT_CORE_AGENT_NAME,
+            result_core_agent_instruction=ABACUS_RESULT_CORE_AGENT_INSTRUCTION,
+            result_transfer_agent_name=ABACUS_RESULT_TRANSFER_AGENT_NAME,
+            result_transfer_agent_instruction=ABACUS_RESULT_TRANSFER_AGENT_INSTRUCTION,
+            transfer_agent_name=ABACUS_TRANSFER_AGENT_NAME,
+            transfer_agent_instruction=ABACUS_TRANSFER_AGENT_INSTRCUTION,
+            submit_agent_name=ABACUS_SUBMIT_AGENT_NAME,
+            submit_agent_description=ABACUS_SUBMIT_AGENT_DESCRIPTION,
+            result_agent_name=ABACUS_RESULT_AGENT_NAME,
+            result_agent_description=ABACUS_RESULT_AGENT_DESCRIPTION,
+            dflow_flag=False,
+            supervisor_agent=MATMASTER_AGENT_NAME
         )
 
 def init_abacus_calculation_agent(llm_config):
     return ABACUSCalculatorAgent(llm_config)
+
+init_abacus_calculation_agent(MatMasterLlmConfig)
