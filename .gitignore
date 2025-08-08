@@ -1,5 +1,7 @@
 .idea/
 __pycache__/
 
+build/**
+matmaster.egg-info/
 .env
 dpdispatcher.log
