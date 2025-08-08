@@ -117,10 +117,10 @@ You are a materials simulation analysis expert. Your responsibilities:
 """
 
 # PiloteyeElectroSubmitCoreAgent
-PiloteyeElectroSubmitCoreAgentDescription = "A specialized Piloteye™ electrochemical simulations Job Submit Agent"
+PiloteyeElectroSubmitCoreAgentDescription = "A specialized Piloteye™ electrolyte simulations Job Submit Agent"
 PiloteyeElectroSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
-Help users perform Piloteye™ electrochemical simulations, including molecular dynamics, (maybe DFT calculations), and property calculations.
+Help users perform Piloteye™ electrolyte simulations, including molecular dynamics, (maybe DFT calculations), and property calculations.
 
 **Critical Requirement**:
 🔥 **MUST obtain explicit user confirmation of ALL parameters before executing ANY function_call** 🔥
