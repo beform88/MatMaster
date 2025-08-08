@@ -195,7 +195,7 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
                 executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_USERNAME'] = \
                     str(username)
-            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_USERNAME'] = str(username)
     return username, executor
 
@@ -247,7 +247,7 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
                 executor["resources"] = executor.get("resources", {})
                 executor["resources"]["envs"] = executor["resources"].get("envs", {})
                 executor['resources']['envs']['BOHRIUM_TICKET'] = str(ticket)
-            elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_TICKET'] = str(ticket)
     return ticket, executor
 
@@ -263,7 +263,7 @@ def _get_current_env(executor):
             executor["resources"] = executor.get("resources", {})
             executor["resources"]["envs"] = executor["resources"].get("envs", {})
             executor['resources']['envs']['CURRENT_ENV'] = str(CURRENT_ENV)
-        elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
+        elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
             executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
     return current_env, executor
 
