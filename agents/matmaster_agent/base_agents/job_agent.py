@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import traceback
 from functools import wraps
 from typing import AsyncGenerator, Optional, Union, override
 
@@ -82,8 +83,10 @@ def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
             return {
+                "status": "error",
                 "error": str(e),
                 "error_type": type(e).__name__,
+                "treceback": traceback.format_exc()
             }
 
     return wrapper
