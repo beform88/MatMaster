@@ -16,6 +16,8 @@ from agents.matmaster_agent.DPACalculator_agent.agent import (
 )
 from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_database_agent
 
+from agents.matmaster_agent.organic_reaction_agent.agent import init_organic_reaction_agent
+
 from agents.matmaster_agent.prompt import (
     AgentDescription,
     AgentInstruction,
@@ -30,11 +32,12 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
         optimade_agent = init_optimade_database_agent(llm_config)
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
+        organic_reaction_agent = init_organic_reaction_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
             model=llm_config.gpt_4o,
-            sub_agents=[piloteye_electro_agent, dpa_calculator_agent, optimade_agent],
+            sub_agents=[piloteye_electro_agent, dpa_calculator_agent, optimade_agent, organic_reaction_agent],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
             description=AgentDescription,

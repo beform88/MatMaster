@@ -3,6 +3,7 @@ from agents.matmaster_agent.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
 from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DATABASE_AGENT_NAME
+from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
 
 GlobalInstruction = """
 ---
@@ -98,6 +99,16 @@ Assist users in retrieving material structure data via the OPTIMADE framework. S
 Example Queries:
 - “查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。”
 - “查找一个 OZr 的结构，我想要全部信息。”
+
+- {ORGANIC_REACTION_AGENT_NAME}
+Purpose:
+Help users find the transition state of a reaction and calculate the reaction profile.
+
+Example Queries:
+- 帮我计算CC(N=[N+]=[N-])=O>>CN=C=O.N#N反应的过渡态。
+- The reactants are known to be C=C and C=CC=C, and the product is C1=CCCCC1. 
+  Please help me find the possible transitions and the entire reaction path.
+  
 """
 
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
