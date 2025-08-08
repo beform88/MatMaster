@@ -86,7 +86,7 @@ def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
                 "status": "error",
                 "error": str(e),
                 "error_type": type(e).__name__,
-                "treceback": traceback.format_exc()
+                "traceback": traceback.format_exc()
             }
 
     return wrapper
@@ -103,7 +103,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
-            return {"status": "error", "msg": "Current tool can't create job!"}
+            raise TypeError("Not CalculationMCPTool type, current tool can't create job!")
 
         if tool.executor is not None:
             url = f"{OPENAPI_HOST}/openapi/v1/job/create"
@@ -132,7 +132,9 @@ def _get_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
                 executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
         if storage is not None:  # BohriumStorage
             storage['plugin']['access_key'] = access_key
-    return access_key, executor, storage
+        return access_key, executor, storage
+    else:
+        raise ValueError("AccessKey was not provided.")
 
 
 def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
@@ -152,7 +154,9 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
                 executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
         if storage is not None:  # BohriumStorage
             storage['plugin']['project_id'] = int(project_id)
-    return project_id, executor, storage
+        return project_id, executor, storage
+    else:
+        raise ValueError("ProjectId was not provided. Please select the project first.")
 
 
 def ak_to_username(access_key: str) -> str:
@@ -187,8 +191,6 @@ def ak_to_username(access_key: str) -> str:
 
 def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
     access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
-    if not access_key:
-        raise ValueError("AccessKey not found")
     username = ak_to_username(access_key=access_key)
     if username:
         if executor is not None:
@@ -200,7 +202,9 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
                     str(username)
             elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_USERNAME'] = str(username)
-    return username, executor
+        return username, executor
+    else:
+        raise RuntimeError("Failed to get username")
 
 
 def ak_to_ticket(
@@ -252,7 +256,9 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
                 executor['resources']['envs']['BOHRIUM_TICKET'] = str(ticket)
             elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
                 executor['env']['BOHRIUM_TICKET'] = str(ticket)
-    return ticket, executor
+        return ticket, executor
+    else:
+        raise RuntimeError("Failed to get ticket")
 
 
 def _get_current_env(executor):
@@ -286,20 +292,13 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
-            return {"status": "error", "msg": "Current tool does not have <storage>"}
+            raise TypeError("Not CalculationMCPTool type, current tool does not have <storage>")
 
         # 获取 access_key
         access_key, tool.executor, tool.storage = _get_ak(tool_context, tool.executor, tool.storage)
-        if access_key is None:
-            return {"status": "error", "msg": "AccessKey was not provided"}
 
         # 获取 project_id
-        try:
-            project_id, tool.executor, tool.storage = _get_projectId(tool_context, tool.executor, tool.storage)
-        except ValueError:
-            return {"status": "error", "msg": f"ProjectId is invalid"}
-        if project_id is None:
-            return {"status": "error", "msg": "ProjectId was not provided. Please select the project first."}
+        project_id, tool.executor, tool.storage = _get_projectId(tool_context, tool.executor, tool.storage)
 
         tool_context.state['ak'] = access_key
         tool_context.state['project_id'] = project_id
@@ -313,26 +312,15 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
         # 先执行前面的回调链
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
-        try:
-            # 注入 username
-            _, tool.executor = _get_username(tool_context, tool.executor)
-        except Exception as e:
-            return {"status": "error", "msg": f"Failed to get username: {str(e)}"}
+
+        # 注入 username
+        _, tool.executor = _get_username(tool_context, tool.executor)
 
         # 注入 ticket
-        try:
-            _, tool.executor = _get_ticket(tool_context, tool.executor)
-        except Exception as e:
-            return {"status": "error", "msg": f"Failed to get ticket: {str(e)}"}
+        _, tool.executor = _get_ticket(tool_context, tool.executor)
 
         # 注入当前环境
-        try:
-            _, tool.executor = _get_current_env(tool.executor)
-        except Exception as e:
-            return {
-                "status": "error",
-                "msg": f"Failed to get current environment: {str(e)}"
-            }
+        _, tool.executor = _get_current_env(tool.executor)
 
     return wrapper
 
