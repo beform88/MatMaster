@@ -5,7 +5,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from agents.matmaster_agent.DPACalculator_agent.constant import (
     DPACalulator_BOHRIUM_EXECUTOR,
     DPACalulator_BOHRIUM_STORAGE,
-    DPA_CALCULATOR_URL, DPACalulator_AGENT_NAME,
+    DPACalulator_AGENT_NAME, DPAMCPServerUrl,
 )
 from agents.matmaster_agent.DPACalculator_agent.prompt import (
     DPAAgentDescription,
@@ -36,7 +36,7 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 mcp_tools_dpa = CalculationMCPToolset(
-    connection_params=SseServerParams(url=DPA_CALCULATOR_URL),
+    connection_params=SseServerParams(url=DPAMCPServerUrl),
     storage=DPACalulator_BOHRIUM_STORAGE,
     executor=DPACalulator_BOHRIUM_EXECUTOR,
     async_mode=True,

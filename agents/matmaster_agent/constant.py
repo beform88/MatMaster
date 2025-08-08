@@ -4,15 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Constants from app.utils.constants of f5157ebd1c037940ddf896fa14e01af9106f6e29 at dev/matmodeler
-DEFAULT_AGENT_NAME = "chat_agent"
-SCHOLAR_DEEP_SEARCH_AGENT = "scholar_deep_search_agent"
-CHEMBRAIN_AGENT = "chembrain_agent"
-SN_DEEP_RESEARCH_AGENT = "sn_deep_research_agent"
-
-ADK_SESSION_ID_KEY = "adk_session_id"
-ADK_AGENT_ID_KEY = "adk_agent_id"
-ADK_USER_ID_KEY = "adk_user_id"
 FRONTEND_STATE_KEY = "frontend_state"
 TMP_FRONTEND_STATE_KEY = "tmp_frontend_state"
 
@@ -63,21 +54,26 @@ BohriumExecutor = {
     }
 }
 
-OpenAPIHost = ""
+OPENAPI_HOST = ""
 DFLOW_HOST = ""
 DFLOW_K8S_API_SERVER = ""
+BOHRIUM_API_URL = ""
 
-CurrentEnv = os.getenv("OPIK_PROJECT_NAME", None)
-if CurrentEnv == "test":
-    OpenAPIHost = "https://openapi.test.dp.tech"
+
+CURRENT_ENV = os.getenv("OPIK_PROJECT_NAME", "prod")
+if CURRENT_ENV == "test":
+    OPENAPI_HOST = "https://openapi.test.dp.tech"
     DFLOW_HOST = "https://lbg-workflow-mlops.test.dp.tech"
     DFLOW_K8S_API_SERVER = "https://lbg-workflow-mlops.test.dp.tech"
-elif CurrentEnv == "uat":
-    OpenAPIHost = "https://openapi.uat.dp.tech"
-elif CurrentEnv == "prod":
-    OpenAPIHost = "https://openapi.dp.tech"
+    BOHRIUM_API_URL = "https://bohrium-api.test.dp.tech"
+elif CURRENT_ENV == "uat":
+    OPENAPI_HOST = "https://openapi.uat.dp.tech"
+    BOHRIUM_API_URL = "https://bohrium-api.uat.dp.tech"
+elif CURRENT_ENV == "prod":
+    OPENAPI_HOST = "https://openapi.dp.tech"
     DFLOW_HOST = "https://workflows.deepmodeling.com"
     DFLOW_K8S_API_SERVER = "https://workflows.deepmodeling.com"
+    BOHRIUM_API_URL = "https://bohrium-api.dp.tech"
 
 DFlowExecutor = {
     "type": "local",
