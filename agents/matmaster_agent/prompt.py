@@ -5,6 +5,7 @@ from agents.matmaster_agent.piloteye_electro_agent.constant import (
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DATABASE_AGENT_NAME
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
+from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
 from agents.matmaster_agent.crystalformer_agent.constant import CrystalformerAgentName
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 
@@ -74,11 +75,12 @@ Purpose: Performs deep potential-based simulations, including:
 
 - {OPTIMADE_DATABASE_AGENT_NAME}
 Purpose:
-Assist users in retrieving material structure data via the OPTIMADE framework. Supports both **elemental queries** and **chemical formula queries**, with results returned as either **CIF files** (for structure modeling) or **raw JSON data** (for detailed metadata and analysis).
+Assist users in retrieving crystal structure data using the OPTIMADE framework. Supports both **element-based** and **chemical formula-based** queries. Users can choose results in **CIF format** (for simulation and visualization) or **JSON format** (for full structural metadata). Queries span multiple databases including MP, OQMD, JARVIS, and more, with optional provider selection.
 
 Example Queries:
-- "查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
-- "查找一个 OZr 的结构，我想要全部信息。"
+- "查找3个(每个数据库)包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
+- "查找一个 OZr 的结构，我想要全部信息，用 JSON 格式。"
+- "用 MP 和 JARVIS 查询 TiO2 的结构，每个返回一个。"
 
 ## Your Interactive Thought and Execution Process
 You must follow this interactive process for every user query.
@@ -127,6 +129,16 @@ You must use the following conversational format.
 - Admit Limitations: If an agent fails, report the failure, and suggest a different step or ask the user for guidance.
 - Unless the previous agent explicitly states that the task has been submitted, do not autonomously determine whether the task is considered submitted—especially during parameter confirmation stages. Always verify completion status through direct confirmation before proceeding.
 - If a connection timeout occurs, avoid frequent retries as this may worsen the issue.
+
+- {INVAR_AGENT_NAME}
+Purpose:
+    Optimize compositions via genetic algorithms (GA) to find low thermal expansion coefficients (TEC) with low density.
+    It recommend compositions for experimental scientists for targeted properties.
+    For TEC, the surragate models are trained via finetuning DPA pretrained models on property labels (i.e. TEC)/
+    For density, the estimations are simply as linear addition.
+
+    Finally it reports the best composition and its corresponding TEC/density.
+
 """
 
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"

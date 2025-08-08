@@ -3,6 +3,7 @@ from opik.integrations.adk import track_adk_agent_recursive
 
 from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
 from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
+from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
 from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
@@ -42,6 +43,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
         thermoelectric_agent = init_thermoelectric_agent(llm_config)
         superconductor_agent = init_superconductor_agent(llm_config)
+        invar_agent = init_invar_agent(llm_config)
         crystalformer_agent = init_crystalformer_agent(llm_config)
         apex_agent = init_apex_agent(llm_config, use_deepseek=True)
         abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
@@ -58,7 +60,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 superconductor_agent,
                 apex_agent,
                 crystalformer_agent,
-                abacus_calculator_agent
+                abacus_calculator_agent,
+                invar_agent
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
