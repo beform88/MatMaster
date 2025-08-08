@@ -76,10 +76,10 @@ def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
         try:
+            if (before_tool_result := await func(tool, args, tool_context)) is not None:
+                return before_tool_result
+
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
             return {
