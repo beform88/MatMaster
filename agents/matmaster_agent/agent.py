@@ -11,12 +11,20 @@ from agents.matmaster_agent.DPACalculator_agent.agent import (
     init_dpa_calculations_agent,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+
+from agents.matmaster_agent.piloteye_electro_agent.agent import init_piloteye_electro_agent
+from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
+from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
+from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_database_agent
+from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
+from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
 from agents.matmaster_agent.optimade_database_agent.agent import (
     init_optimade_database_agent,
 )
 from agents.matmaster_agent.piloteye_electro_agent.agent import (
     init_piloteye_electro_agent,
 )
+
 from agents.matmaster_agent.prompt import (
     AgentDescription,
     AgentInstruction,
@@ -42,6 +50,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
         thermoelectric_agent = init_thermoelectric_agent(llm_config)
         superconductor_agent = init_superconductor_agent(llm_config)
+        crystalformer_agent = init_crystalformer_agent(llm_config)
         apex_agent = init_apex_agent(llm_config, use_deepseek=True)
 
         super().__init__(
@@ -54,7 +63,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 optimade_agent,
                 thermoelectric_agent,
                 superconductor_agent,
-                apex_agent
+                apex_agent,
+                crystalformer_agent
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
