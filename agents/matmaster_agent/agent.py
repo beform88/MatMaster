@@ -28,7 +28,9 @@ from agents.matmaster_agent.superconductor_agent.agent import (
 from agents.matmaster_agent.thermoelectric_agent.agent import (
     init_thermoelectric_agent,
 )
-from agents.matmaster_agent.traj_analysis_agent import init_traj_analysis_agent
+from agents.matmaster_agent.traj_analysis_agent.agent import (
+    init_traj_analysis_agent,
+)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
