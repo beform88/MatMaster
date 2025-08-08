@@ -330,6 +330,7 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
                 "status": "error",
                 "msg": f"Failed to get current environment: {str(e)}"
             }
+
     return wrapper
 
 
@@ -524,12 +525,13 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             ctx.session.state['long_running_jobs'][origin_job_id] = frontend_result
                             ctx.session.state["render_job_list"] = True
                             ctx.session.state["render_job_id"].append(origin_job_id)
+                            ctx.session.state['long_running_jobs_count'] += 1
                             await update_session_state(ctx, self.name)
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
                 if is_text(event):
                     for function_event in context_function_event(ctx, self.name, "system_submit_core_info",
-                                                                 {"response": event.content.parts[0].text},
+                                                                 {"msg": event.content.parts[0].text},
                                                                  ModelRole):
                         yield function_event
                 else:
@@ -578,6 +580,22 @@ class SubmitRenderAgent(LlmAgent):
             async for error_event in send_error_event(err, ctx, self.name,
                                                       ctx.agent.parent_agent.parent_agent.parent_agent):
                 yield error_event
+
+
+class SubmitValidator(LlmAgent):
+    @override
+    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        if ctx.session.state["long_running_jobs_count"] > ctx.session.state["long_running_jobs_count_ori"]:
+            submit_validator_msg = "The Job has indeed been submitted."
+            ctx.session.state["long_running_jobs_count_ori"] = ctx.session.state["long_running_jobs_count"]
+            await update_session_state(ctx, self.name)
+        else:
+            submit_validator_msg = "No Job Submitted."
+
+        for function_event in context_function_event(ctx, self.name, "system_submit_validator",
+                                                     {"msg": submit_validator_msg},
+                                                     ModelRole):
+            yield function_event
 
 
 class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
@@ -746,11 +764,16 @@ class BaseAsyncJobAgent(LlmAgent):
             name=submit_render_agent_name
         )
 
+        submit_validator_agent = SubmitValidator(
+            model=model,
+            name="submit_validator_agent"
+        )
+
         # 创建提交序列代理
         submit_agent = SequentialAgent(
             name=submit_agent_name,
             description=submit_agent_description,
-            sub_agents=[submit_core_agent, submit_render_agent]
+            sub_agents=[submit_core_agent, submit_render_agent, submit_validator_agent]
         )
 
         # 创建结果核心代理
