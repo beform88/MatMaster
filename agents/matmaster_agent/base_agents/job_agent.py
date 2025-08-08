@@ -6,7 +6,6 @@ from typing import AsyncGenerator, Optional, Union, override
 
 import aiohttp
 import jsonpickle
-import requests
 from dp.agent.adapter.adk import CalculationMCPTool
 from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.agents.invocation_context import InvocationContext
@@ -20,7 +19,6 @@ from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
 from agents.matmaster_agent.constant import (
-    BOHRIUM_API_URL,
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
     JOB_LIST_KEY,
@@ -54,66 +52,15 @@ from agents.matmaster_agent.utils import (
     is_text_and_not_bohrium,
     parse_result,
     send_error_event,
-    update_session_state,
+    update_session_state, ak_to_ticket, ak_to_username,
 )
 
 logger = logging.getLogger(__name__)
 
 
+# before_tool_callback
 async def default_before_tool_callback(tool, args, tool_context):
     return
-
-
-async def default_after_tool_callback(tool, args, tool_context, tool_response):
-    return
-
-
-# 总应该在最后
-def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
-    @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> dict:
-        # 两步操作：
-        # 1. 调用被装饰的 before_tool_callback；
-        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
-        try:
-            return await tool.run_async(args=args, tool_context=tool_context)
-        except Exception as e:
-            return {
-                "error": str(e),
-                "error_type": type(e).__name__,
-            }
-
-    return wrapper
-
-
-def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
-    @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
-        # 两步操作：
-        # 1. 调用被装饰的 before_tool_callback；
-        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
-        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
-        if not isinstance(tool, CalculationMCPTool):
-            return {"status": "error", "msg": "Current tool can't create job!"}
-
-        if tool.executor is not None:
-            url = f"{OPENAPI_HOST}/openapi/v1/job/create"
-            payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
-            params = {'accessKey': tool_context.state['ak']}
-
-            async with aiohttp.ClientSession() as session:
-                async with session.post(url, json=payload, params=params) as response:
-                    res = json.loads(await response.text())
-                    if res['code'] != 0:
-                        return res
-
-    return wrapper
 
 
 def _get_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
@@ -152,36 +99,6 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
     return project_id, executor, storage
 
 
-def ak_to_username(access_key: str) -> str:
-    url = f"{OPENAPI_HOST}/openapi/v1/account/info"
-    headers = {
-        "AccessKey": access_key,
-        "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-        "Accept": "*/*",
-        "Host": f"{OPENAPI_HOST.split('//')[1]}",
-    }
-    try:
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()  # 抛出HTTP错误异常
-
-        data = response.json()
-        if data.get("code") == 0:
-            user_data = data.get("data", {})
-            email = user_data.get("email", "")
-            phone = user_data.get("phone", "")
-            if not email and not phone:
-                raise ValueError(
-                    "Username not found in response. Please bind your email or phone at https://www.bohrium.com/settings/user.")
-            username = email if email else phone
-            return username
-        else:
-            raise Exception(f"API error: {data}")
-    except requests.RequestException as e:
-        raise Exception(f"HTTP request failed: {e}")
-    except Exception as e:
-        raise Exception(f"Failed to get user info: {e}")
-
-
 def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
     access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
     if not access_key:
@@ -198,41 +115,6 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
             elif executor["type"] == "local" and executor["dflow"]:  # DFlowExecutor
                 executor['env']['BOHRIUM_USERNAME'] = str(username)
     return username, executor
-
-
-def ak_to_ticket(
-        access_key: str,
-        expiration: int = 48  # 48 hours
-) -> str:
-    # if CurrentEnv == "uat":
-    #     BOHRIUM_API_URL = "https://bohrium-api.uat.dp.tech"
-    # elif CurrentEnv == "test":
-    #     BOHRIUM_API_URL = "https://bohrium-api.test.dp.tech"
-    # else:
-    #     BOHRIUM_API_URL = "https://bohrium-api.dp.tech"
-    url = f"{BOHRIUM_API_URL}/bohrapi/v1/ticket/get?expiration={expiration}&preOrderId=0"
-    headers = {
-        "Brm-AK": access_key,
-        "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-        "Accept": "*/*",
-        "Host": f"{BOHRIUM_API_URL.split('//')[1]}",
-        "Connection": "keep-alive"
-    }
-    try:
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        if data.get("code") == 0:
-            ticket = data.get("data", {}).get("ticket", "")
-            if not ticket:
-                raise ValueError("Ticket not found in response.")
-            return ticket
-        else:
-            raise Exception(f"API error: {data}")
-    except requests.RequestException as e:
-        raise Exception(f"HTTP request failed: {e}")
-    except Exception as e:
-        raise Exception(f"Failed to get ticket: {e}")
 
 
 def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
@@ -332,6 +214,59 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
             }
 
     return wrapper
+
+
+def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            return {"status": "error", "msg": "Current tool can't create job!"}
+
+        if tool.executor is not None:
+            url = f"{OPENAPI_HOST}/openapi/v1/job/create"
+            payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
+            params = {'accessKey': tool_context.state['ak']}
+
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, json=payload, params=params) as response:
+                    res = json.loads(await response.text())
+                    if res['code'] != 0:
+                        return res
+
+    return wrapper
+
+
+# 总应该在最后
+def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> dict:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        try:
+            return await tool.run_async(args=args, tool_context=tool_context)
+        except Exception as e:
+            return {
+                "error": str(e),
+                "error_type": type(e).__name__,
+            }
+
+    return wrapper
+
+
+# after_tool_callback
+async def default_after_tool_callback(tool, args, tool_context, tool_response):
+    return
 
 
 def check_tool_response(func: AfterToolCallback) -> AfterToolCallback:
