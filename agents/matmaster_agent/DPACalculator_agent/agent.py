@@ -59,13 +59,6 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
             model=llm_config.gpt_4o,
             agent_description=DPAAgentDescription,
             agent_instruction=DPAAgentInstruction,
-            submit_core_agent_description=DPASubmitCoreAgentDescription,
-            submit_core_agent_instruction=DPASubmitCoreAgentInstruction,
-            result_core_agent_instruction=DPAResultCoreAgentInstruction,
-            result_transfer_agent_instruction=DPAResultTransferAgentInstruction,
-            transfer_agent_instruction=DPATransferAgentInstruction,
-            submit_agent_description=DPASubmitAgentDescription,
-            result_agent_description=DPAResultAgentDescription,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )

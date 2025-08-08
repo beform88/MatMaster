@@ -64,13 +64,6 @@ class CrystalformerAgent(BaseAsyncJobAgent):
             agent_name=CrystalformerAgentName,
             agent_description=CrystalformerAgentDescription,
             agent_instruction=CrystalformerAgentInstruction,
-            submit_core_agent_description=CrystalformerSubmitCoreAgentDescription,
-            submit_core_agent_instruction=CrystalformerSubmitCoreAgentInstruction,
-            result_core_agent_instruction=CrystalformerResultCoreAgentInstruction,
-            result_transfer_agent_instruction=CrystalformerResultTransferAgentInstruction,
-            transfer_agent_instruction=CrystalformerTransferAgentInstruction,
-            submit_agent_description=CrystalformerSubmitAgentDescription,
-            result_agent_description=CrystalformerResultAgentDescription,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )

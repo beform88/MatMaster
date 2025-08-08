@@ -53,13 +53,6 @@ class INVARAgent(BaseAsyncJobAgent):
             model=llm_config.gpt_4o,
             agent_description=INVARAgentDescription,
             agent_instruction=INVARAgentInstruction,
-            submit_core_agent_description=INVARSubmitCoreAgentDescription,
-            submit_core_agent_instruction=INVARSubmitCoreAgentInstruction,
-            result_core_agent_instruction=INVARResultCoreAgentInstruction,
-            result_transfer_agent_instruction=INVARResultTransferAgentInstruction,
-            transfer_agent_instruction=INVARTransferAgentInstruction,
-            submit_agent_description=INVARSubmitAgentDescription,
-            result_agent_description=INVARResultAgentDescription,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )

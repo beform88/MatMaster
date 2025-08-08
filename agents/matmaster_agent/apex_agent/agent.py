@@ -84,13 +84,6 @@ class ApexAgent(BaseAsyncJobAgent):
             agent_name=ApexAgentName,
             agent_description=ApexAgentDescription,
             agent_instruction=formatted_instruction,
-            submit_core_agent_description="APEX任务提交核心智能体",
-            submit_core_agent_instruction=ApexSubmitCoreAgentInstruction,
-            result_core_agent_instruction=ApexResultCoreAgentInstruction,
-            result_transfer_agent_instruction="处理APEX计算结果传输",
-            transfer_agent_instruction=ApexTransferAgentInstruction,
-            submit_agent_description=ApexSubmitAgentDescription,
-            result_agent_description=ApexResultAgentDescription,
             dflow_flag=False,  # APEX使用Bohrium异步任务，不使用dflow
             supervisor_agent=MATMASTER_AGENT_NAME
         )

@@ -64,13 +64,6 @@ class ThermoAgent(BaseAsyncJobAgent):
             agent_name=ThermoAgentName,
             agent_description=ThermoAgentDescription,
             agent_instruction=ThermoAgentInstruction,
-            submit_core_agent_description=ThermoSubmitCoreAgentDescription,
-            submit_core_agent_instruction=ThermoSubmitCoreAgentInstruction,
-            result_core_agent_instruction=ThermoResultCoreAgentInstruction,
-            result_transfer_agent_instruction=ThermoResultTransferAgentInstruction,
-            transfer_agent_instruction=ThermoTransferAgentInstruction,
-            submit_agent_description=ThermoSubmitAgentDescription,
-            result_agent_description=ThermoResultAgentDescription,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )

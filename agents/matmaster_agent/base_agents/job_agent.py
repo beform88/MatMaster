@@ -34,7 +34,8 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
 from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
-    SubmitRenderAgentDescription,
+    SubmitRenderAgentDescription, gen_submit_core_agent_description, gen_submit_core_agent_instruction,
+    gen_result_core_agent_instruction, gen_submit_agent_description, gen_result_agent_description,
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
@@ -402,14 +403,7 @@ class BaseAsyncJobAgent(LlmAgent):
             agent_name: str,
             agent_description: str,
             agent_instruction: str,
-            submit_core_agent_description: str,
-            submit_core_agent_instruction: str,
             mcp_tools: list,
-            result_core_agent_instruction: str,
-            result_transfer_agent_instruction: str,
-            transfer_agent_instruction: str,
-            submit_agent_description: str,
-            result_agent_description: str,
             dflow_flag: bool,
             supervisor_agent: str
     ):
@@ -419,8 +413,8 @@ class BaseAsyncJobAgent(LlmAgent):
         submit_core_agent = SubmitCoreCalculationMCPLlmAgent(
             model=model,
             name=f"{agent_prefix}_submit_core_agent",
-            description=submit_core_agent_description,
-            instruction=submit_core_agent_instruction,
+            description=gen_submit_core_agent_description(agent_prefix),
+            instruction=gen_submit_core_agent_instruction(agent_prefix),
             tools=mcp_tools,
             disallow_transfer_to_parent=True
         )
@@ -439,7 +433,7 @@ class BaseAsyncJobAgent(LlmAgent):
         # 创建提交序列代理
         submit_agent = SequentialAgent(
             name=f"{agent_prefix}_submit_agent",
-            description=submit_agent_description,
+            description=gen_submit_agent_description(agent_prefix),
             sub_agents=[submit_core_agent, submit_render_agent, submit_validator_agent]
         )
 
@@ -448,21 +442,21 @@ class BaseAsyncJobAgent(LlmAgent):
             model=model,
             name=f"{agent_prefix}_result_core_agent",
             tools=mcp_tools,
-            instruction=result_core_agent_instruction
+            instruction=gen_result_core_agent_instruction(agent_prefix)
         )
 
         # 创建结果转移代理
         result_transfer_agent = ResultTransferLlmAgent(
             model=model,
             name=f"{agent_prefix}_result_transfer_agent",
-            instruction=result_transfer_agent_instruction,
+            instruction="result_transfer_agent_instruction",
             tools=[transfer_to_agent]
         )
 
         # 创建结果序列代理
         result_agent = SequentialAgent(
             name=f"{agent_prefix}_result_agent",
-            description=result_agent_description,
+            description=gen_result_agent_description(),
             # sub_agents=[result_core_agent, result_transfer_agent]
             sub_agents=[result_core_agent]
         )

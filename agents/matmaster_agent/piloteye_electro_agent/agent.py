@@ -70,13 +70,6 @@ class PiloteyeElectroAgent(BaseAsyncJobAgent):
             agent_name=PiloteyeElectroAgentName,
             agent_description=PiloteyeElectroAgentDescription,
             agent_instruction=PiloteyeElectroAgentInstruction,
-            submit_core_agent_description=PiloteyeElectroSubmitCoreAgentDescription,
-            submit_core_agent_instruction=PiloteyeElectroSubmitCoreAgentInstruction,
-            result_core_agent_instruction=PiloteyeElectroResultCoreAgentInstruction,
-            result_transfer_agent_instruction=PiloteyeElectroResultTransferAgentInstruction,
-            transfer_agent_instruction=PiloteyeElectroTransferAgentInstruction,
-            submit_agent_description=PiloteyeElectroSubmitAgentDescription,
-            result_agent_description=PiloteyeElectroResultAgentDescription,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )

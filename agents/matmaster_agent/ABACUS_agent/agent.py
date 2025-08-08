@@ -69,13 +69,6 @@ class ABACUSCalculatorAgent(BaseAsyncJobAgent):
             agent_name=ABACUS_AGENT_NAME,
             agent_description=ABACUS_AGENT_DESCRIPTION,
             agent_instruction=ABACUS_AGENT_INSTRUCTION,
-            submit_core_agent_description=ABACUS_SUBMIT_CORE_AGENT_DESCRIPTION,
-            submit_core_agent_instruction=ABACUS_SUBMIT_CORE_AGENT_INSTRUCTION,
-            result_core_agent_instruction=ABACUS_RESULT_CORE_AGENT_INSTRUCTION,
-            result_transfer_agent_instruction=ABACUS_RESULT_TRANSFER_AGENT_INSTRUCTION,
-            transfer_agent_instruction=ABACUS_TRANSFER_AGENT_INSTRCUTION,
-            submit_agent_description=ABACUS_SUBMIT_AGENT_DESCRIPTION,
-            result_agent_description=ABACUS_RESULT_AGENT_DESCRIPTION,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )
