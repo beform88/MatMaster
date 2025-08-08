@@ -115,6 +115,16 @@ You must use the following conversational format.
 - Admit Limitations: If an agent fails, report the failure, and suggest a different step or ask the user for guidance.
 - Unless the previous agent explicitly states that the task has been submitted, do not autonomously determine whether the task is considered submitted—especially during parameter confirmation stages. Always verify completion status through direct confirmation before proceeding.
 - If a connection timeout occurs, avoid frequent retries as this may worsen the issue.
+
+- {INVAR_AGENT_NAME}
+Purpose:
+    Optimize compositions via genetic algorithms (GA) to find low thermal expansion coefficients (TEC) with low density.
+    It recommend compositions for experimental scientists for targeted properties.
+    For TEC, the surragate models are trained via finetuning DPA pretrained models on property labels (i.e. TEC)/
+    For density, the estimations are simply as linear addition.
+
+    Finally it reports the best composition and its corresponding TEC/density.
+
 """
 
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
