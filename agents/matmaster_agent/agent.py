@@ -32,6 +32,9 @@ from agents.matmaster_agent.thermoelectric_agent.agent import (
 from agents.matmaster_agent.traj_analysis_agent.agent import (
     init_traj_analysis_agent,
 )
+from agents.matmaster_agent.organic_reaction_agent.agent import (
+    init_organic_reaction_agent,
+)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -47,6 +50,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         crystalformer_agent = init_crystalformer_agent(llm_config)
         apex_agent = init_apex_agent(llm_config, use_deepseek=True)
         abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
+        organic_reaction_agent = init_organic_reaction_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -61,7 +65,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 apex_agent,
                 crystalformer_agent,
                 abacus_calculator_agent,
-                invar_agent
+                invar_agent,
+                organic_reaction_agent
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
