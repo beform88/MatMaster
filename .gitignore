@@ -1,6 +1,8 @@
 .idea/
 __pycache__/
 
+build/**
+matmaster.egg-info/
 .env
 __pycache__/
 dpdispatcher.log
@@ -9,3 +11,6 @@ PKG*
 requires.txt
 SOURCES.txt
 top_level.txt
+dpdispatcher.log
+
+.vscode/
