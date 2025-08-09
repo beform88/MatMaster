@@ -22,8 +22,7 @@ mcp_tools = CalculationMCPToolset(
 )
 
 
-# class Optimade_Agent(CalculationMCPLlmAgent):
-class Optimade_Agent(LlmAgent):
+class Optimade_Agent(CalculationMCPLlmAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.deepseek_chat,
