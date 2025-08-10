@@ -6,7 +6,7 @@ from google.genai import types
 from rich import print
 
 from agents.matmaster_agent.agent import root_agent
-from agents.matmaster_agent.constant import AppName, UserId, DBUrl, SystemRole
+from agents.matmaster_agent.constant import DBUrl
 from agents.matmaster_agent.logger import logger
 
 
@@ -25,14 +25,14 @@ async def agent_main() -> None:
     # Initialize session service and create new session
     session_service = DatabaseSessionService(db_url=DBUrl)
     session = await session_service.create_session(
-        app_name=AppName,
-        user_id=UserId,
+        app_name="matmaster_agent",
+        user_id="matmaster_agent_user",
     )
     logger.info(f"Current Session: {session.id}")
 
     # Set up the agent runner with root agent and session service
     runner = Runner(
-        app_name=AppName,
+        app_name="matmaster_agent",
         agent=root_agent,
         session_service=session_service
     )
@@ -86,8 +86,6 @@ async def agent_main() -> None:
                             print(f"🧑 用户：{part.text}")
                         elif role == "model":
                             print(f"🤖 智能体：{part.text}")
-                        elif role == SystemRole:
-                            print(f"🖥️ 系统: {part.text}")
 
         # Get next user input
         user_input = input("🧑 用户：")
