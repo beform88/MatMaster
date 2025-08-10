@@ -253,14 +253,13 @@ def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
         new_tool_result = {}
         tgz_flag = False
         for k, v in tool_results.items():
+            new_tool_result[k] = v
             if (
                     type(v) == str and
                     v.startswith("https") and
                     v.endswith("tgz")):
                 tgz_flag = True
-                new_tool_result[k] = await extract_convert_and_upload(v)
-            else:
-                new_tool_result[k] = v
+                new_tool_result.update(**await extract_convert_and_upload(v))
 
         if tgz_flag:
             return new_tool_result
