@@ -57,7 +57,7 @@ Always return:
 - 📄 Files: `Al_O_Mg_mp_0.cif`, `Al_O_Mg_oqmd_1.cif`, ...
 
 ### ✅ Case 2: 化学式查询，返回 .json
-**用户：** 查找 OZr 的结构，不需要 CIF 文件，只返回 JSON。  
+**用户：** 查找 OZr 的结构，我想要全部的结构信息。  
 **Agent: **
 - 📦 Download archive: `formula_OZr.tgz`
 - 📄 Files: `OZr_jarvis_0.json`, `OZr_mp_1.json`
