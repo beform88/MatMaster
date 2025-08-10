@@ -200,7 +200,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
 
 
 # 总应该在最后
-def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
+def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> dict:
         # 两步操作：
@@ -228,6 +228,41 @@ async def default_after_tool_callback(tool, args, tool_context, tool_response):
 
 
 def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
+    """Decorator that processes tool responses containing tgz files from OSS.
+
+    This decorator performs the following operations:
+    1. Calls the original after-tool callback function
+    2. If the original callback returns a result, uses that result
+    3. For CalculationMCPTool responses containing tgz file URLs:
+       - Extracts the tgz files
+       - Converts the contents
+       - Uploads the processed files back to OSS
+       - Returns a new result with updated file URLs
+
+    Args:
+        func: The after-tool callback function to be decorated
+
+    Returns:
+        A wrapper function that processes the tool response
+
+    Raises:
+        TypeError: If the tool is not of type CalculationMCPTool
+
+    Example:
+        The decorator processes responses containing tgz file URLs like:
+        {
+            "result1": "https://example.com/file1.tgz",
+            "result2": "normal_value"
+        }
+        And converts them to:
+        {
+            "result1": "https://example.com/file1.tgz",
+            "result2": "normal_value"
+            “file1_part1”: "https://new-url/file1_part1",
+            "file1_part1": "https://new-url/file1_part2",
+        }
+    """
+
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext,
                       tool_response: Union[dict, CallToolResult]) -> Optional[dict]:
@@ -241,7 +276,7 @@ def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
         if not isinstance(tool, CalculationMCPTool):
             raise TypeError("Not CalculationMCPTool type")
 
-        # 检查是否有有效的图像数据
+        # 检查是否为有效的 json 字典
         if not (tool_response and
                 tool_response.content and
                 tool_response.content[0].text and
@@ -267,7 +302,29 @@ def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
     return wrapper
 
 
-def check_tool_response(func: AfterToolCallback) -> AfterToolCallback:
+def catch_after_tool_callback_error(func: AfterToolCallback) -> AfterToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext,
+                      tool_response: Union[dict, CallToolResult]) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 after_tool_callback；
+        # 2. 如果调用的 after_tool_callback 有返回值，以这个为准
+        try:
+            if (after_tool_result := await func(tool, args, tool_context, tool_response)) is not None:
+                return after_tool_result
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "traceback": traceback.format_exc()
+            }
+
+    return wrapper
+
+
+# 总应该在最后
+def check_before_tool_callback_effect(func: AfterToolCallback) -> AfterToolCallback:
     """A decorator that checks the tool response type before executing the callback function.
 
     This decorator wraps an AfterToolCallback function and checks if the tool_response
@@ -294,6 +351,7 @@ def check_tool_response(func: AfterToolCallback) -> AfterToolCallback:
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext,
                       tool_response: Union[dict, CallToolResult]) -> Optional[dict]:
+        # if `before_tool_callback` return dict
         if type(tool_response) is dict:
             return
 

@@ -10,9 +10,10 @@ from google.adk.events import Event, EventActions
 from google.adk.tools import transfer_to_agent
 from pydantic import Field
 
-from agents.matmaster_agent.base_agents.callback import check_tool_response, default_before_tool_callback, \
-    catch_tool_call_error, check_job_create, set_dpdispatcher_env, get_ak_projectId, default_after_tool_callback, \
-    _get_ak, _get_projectId, tgz_oss_to_oss_list
+from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
+    catch_before_tool_callback_error, check_job_create, set_dpdispatcher_env, get_ak_projectId, \
+    default_after_tool_callback, \
+    _get_ak, _get_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -94,7 +95,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         """
 
         # Todo: support List[before_tool_callback]
-        before_tool_callback = catch_tool_call_error(
+        before_tool_callback = catch_before_tool_callback_error(
             check_job_create(
                 set_dpdispatcher_env(
                     get_ak_projectId(
@@ -103,7 +104,8 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                 )
             )
         )
-        after_tool_callback = check_tool_response(tgz_oss_to_oss_list(after_tool_callback))
+        after_tool_callback = check_before_tool_callback_effect(
+            catch_after_tool_callback_error(tgz_oss_to_oss_list(after_tool_callback)))
 
         super().__init__(
             model=model,
