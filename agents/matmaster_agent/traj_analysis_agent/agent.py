@@ -13,6 +13,7 @@ from agents.matmaster_agent.constant import BohriumStorge
 from agents.matmaster_agent.logger import logger
 from agents.matmaster_agent.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
+    TrajAnalysisMCPServerUrl,
 )
 from agents.matmaster_agent.utils.helper_func import is_json
 
@@ -55,8 +56,7 @@ async def after_tool_callback(tool: BaseTool, args: Dict[str, Any], tool_context
 
 toolset = CalculationMCPToolset(
     connection_params=SseServerParams(
-        url="https://traj-analysis-mcp-uuid1753018121.app-space.dplink.cc/sse?"
-            "token=5e75ed9197b741dcb267612ca20a096d"
+        url=TrajAnalysisMCPServerUrl
     ),
     storage=BohriumStorge
 )
