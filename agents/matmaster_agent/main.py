@@ -6,7 +6,7 @@ from google.genai import types
 from rich import print
 
 from agents.matmaster_agent.agent import root_agent
-from agents.matmaster_agent.constant import AppName, UserId, DBUrl, SystemRole
+from agents.matmaster_agent.constant import DBUrl
 from agents.matmaster_agent.logger import logger
 
 
@@ -25,14 +25,14 @@ async def agent_main() -> None:
     # Initialize session service and create new session
     session_service = DatabaseSessionService(db_url=DBUrl)
     session = await session_service.create_session(
-        app_name=AppName,
-        user_id=UserId,
+        app_name="matmaster_agent",
+        user_id="matmaster_agent_user",
     )
     logger.info(f"Current Session: {session.id}")
 
     # Set up the agent runner with root agent and session service
     runner = Runner(
-        app_name=AppName,
+        app_name="matmaster_agent",
         agent=root_agent,
         session_service=session_service
     )
@@ -58,6 +58,7 @@ async def agent_main() -> None:
     # user_input = "计算https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/12158/13844/store/upload/b8ec23aa-eb16-4114-bb06-b7722df7b1f2/SnSe.tgz的能带"
     # user_input = "使用NEB方法搜索H迁移的过渡态，初态结构文件： https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/eab31774-4f1d-4e49-9d37-c6c8059ef704/H-trans-is-opt.poscar，末态结构文件：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/97045d53-fafc-462d-962f-2a1180df8b66/H-trans-fs-opt.poscar"
     user_input = "请帮我查找3个包含 铝（Al）、氧（O） 和 镁（Mg） 的晶体结构。"
+    # user_input = "切换到ABACUS_calculation_agent，并使用generata_bulk_structure 创建体相铝晶体（Al），采用fcc结构，晶格常数设为4.05Å"
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input
@@ -85,8 +86,6 @@ async def agent_main() -> None:
                             print(f"🧑 用户：{part.text}")
                         elif role == "model":
                             print(f"🤖 智能体：{part.text}")
-                        elif role == SystemRole:
-                            print(f"🖥️ 系统: {part.text}")
 
         # Get next user input
         user_input = input("🧑 用户：")

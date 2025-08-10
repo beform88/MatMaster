@@ -11,12 +11,7 @@ TMP_FRONTEND_STATE_KEY = "tmp_frontend_state"
 MATMASTER_AGENT_NAME = "matmaster_agent"
 
 # Agent Constant
-SystemRole = "system"
 ModelRole = "model"
-
-# Runner
-AppName = "matmodeler"
-UserId = "matmodeler_user"
 
 # DB
 DBUrl = os.getenv("SESSION_API_URL")
@@ -59,7 +54,6 @@ OPENAPI_HOST = ""
 DFLOW_HOST = ""
 DFLOW_K8S_API_SERVER = ""
 BOHRIUM_API_URL = ""
-
 
 CURRENT_ENV = os.getenv("OPIK_PROJECT_NAME", "prod")
 if CURRENT_ENV == "test":
