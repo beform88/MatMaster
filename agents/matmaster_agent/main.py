@@ -57,8 +57,8 @@ async def agent_main() -> None:
     #               "INCAR=https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/48237/46562/store/upload/d3be80b8-b584-457d-921c-2c926878082d/INCAR")
     # user_input = "计算https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/12158/13844/store/upload/b8ec23aa-eb16-4114-bb06-b7722df7b1f2/SnSe.tgz的能带"
     # user_input = "使用NEB方法搜索H迁移的过渡态，初态结构文件： https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/eab31774-4f1d-4e49-9d37-c6c8059ef704/H-trans-is-opt.poscar，末态结构文件：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/97045d53-fafc-462d-962f-2a1180df8b66/H-trans-fs-opt.poscar"
-    # user_input = "请帮我查找3个包含 铝（Al）、氧（O） 和 镁（Mg） 的晶体结构。"
-    user_input = "切换到ABACUS_calculation_agent，并使用generata_bulk_structure 创建体相铝晶体（Al），采用fcc结构，晶格常数设为4.05Å"
+    user_input = "请帮我查找3个包含 铝（Al）、氧（O） 和 镁（Mg） 的晶体结构。"
+    # user_input = "切换到ABACUS_calculation_agent，并使用generata_bulk_structure 创建体相铝晶体（Al），采用fcc结构，晶格常数设为4.05Å"
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input

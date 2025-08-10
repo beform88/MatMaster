@@ -18,6 +18,8 @@ from agents.matmaster_agent.constant import (
     Transfer2Agent,
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
+from agents.matmaster_agent.utils.helper_func import is_json
+from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload
 
 
 # before_tool_callback
@@ -223,6 +225,47 @@ def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
 # after_tool_callback
 async def default_after_tool_callback(tool, args, tool_context, tool_response):
     return
+
+
+def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext,
+                      tool_response: Union[dict, CallToolResult]) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (after_tool_result := await func(tool, args, tool_context, tool_response)) is not None:
+            return after_tool_result
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            raise TypeError("Not CalculationMCPTool type")
+
+        # 检查是否有有效的图像数据
+        if not (tool_response and
+                tool_response.content and
+                tool_response.content[0].text and
+                is_json(tool_response.content[0].text)):
+            return None
+
+        tool_results = json.loads(tool_response.content[0].text)
+
+        new_tool_result = {}
+        tgz_flag = False
+        for k, v in tool_results.items():
+            if (
+                    type(v) == str and
+                    v.startswith("https") and
+                    v.endswith("tgz")):
+                tgz_flag = True
+                new_tool_result[k] = await extract_convert_and_upload(v)
+            else:
+                new_tool_result[k] = v
+
+        if tgz_flag:
+            return new_tool_result
+
+    return wrapper
 
 
 def check_tool_response(func: AfterToolCallback) -> AfterToolCallback:
