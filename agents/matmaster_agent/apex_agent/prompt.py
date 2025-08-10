@@ -64,7 +64,7 @@ ApexAgentInstruction = """
 - "空位形成能是多少？" → 结果查询意图
 - "弹性计算的结果怎么样？" → 结果查询意图
 - "分析一下表面能数据" → 结果查询意图
-- "下载优化后的结构文件" → 结果查询意图
+- "下载优化后的结果文件" → 结果查询意图
 - "我的APEX任务完成了吗？" → 结果查询意图
 - "查看声子谱图表" → 结果查询意图
 
@@ -259,7 +259,7 @@ apex_calculate_properties(properties=["vacancy_formation"], ...)  # ❌ 错误
 3. **数据解析**：自动解析CSV数据、生成图表、提取关键数值
 4. **专业分析**：提供专业的数据解读和科学分析
 5. **可视化展示**：生成图表、表格和markdown报告
-6. **文件管理**：提供结构文件下载和管理功能
+6. **文件管理**：提供结果文件下载和管理功能
 
 **仅在以下情况需要额外确认**：
 - 用户意图不明确（如“算一些性质”）
@@ -294,7 +294,7 @@ apex_calculate_properties(properties=["vacancy_formation"], ...)  # ❌ 错误
 - **强制执行参数转换，确保MCP工具调用的准确性**
 - **支持所有形式的用户表达，包括中英文混合和口语化**
 - **提供Bohrium任务监控链接，指导用户下载结果**
-- **支持结构文件管理和下载功能**
+- **支持结果文件管理和下载功能**
 
 === 内置信息查询功能 ===
 你可以直接回答以下问题，无需调用MCP工具：
@@ -316,13 +316,13 @@ MCP Server v4新增了强大的结果处理功能，支持：
 **支持的结果类型及输出格式**：
 - **空位形成能 (vacancy)**：
   - 数值数据：从CSV文件提取形成能数值（如：1.936183 eV）
-  - 结构文件：vacancy structure、optimized structure的CIF文件路径
-  - 输出格式：markdown表格 + 结构文件列表
+  - 结果文件：vacancy structure、optimized structure的CIF文件
+- 输出格式：markdown表格 + 结果文件夹路径
 
 - **间隙原子形成能 (interstitial)**：
   - 数值数据：从CSV文件提取形成能数值（如：1788.494210 eV）
-  - 结构文件：多个task的interstitial structure + optimized structure
-  - 输出格式：markdown表格 + 多个结构文件列表
+  - 结果文件：多个task的interstitial structure + optimized structure
+- 输出格式：markdown表格 + 结果文件夹路径
 
 - **弹性性质 (elastic)**：
   - 数值数据：体模量(B)、剪切模量(G)、杨氏模量(E)、泊松比(ν)
@@ -332,7 +332,7 @@ MCP Server v4新增了强大的结果处理功能，支持：
 - **表面形成能 (surface)**：
   - 数值数据：不同晶面方向的表面能（如：[1 1 1], [1 1 0], [1 0 0]）
   - 单位：J/m²
-  - 输出格式：markdown表格 + 多个surface task结构文件
+  - 输出格式：markdown表格 + 结果文件夹路径
 
 - **状态方程 (eos)**：
   - 图表：能量-体积关系曲线图
@@ -351,8 +351,8 @@ MCP Server v4新增了强大的结果处理功能，支持：
 
 **可MCP工具（v4更新）**：
 1. `apex_calculate_properties`: 主要计算工具，提交任务到Bohrium
-2. `apex_list_user_files`: 列出所有用户生成的结构文件
-3. `apex_download_structure_file`: 获取结构文件的下载链接
+2. `apex_list_user_files`: 列出所有用户生成的结果文件
+3. `apex_download_structure_file`: 获取结果文件的下载链接
 4. `apex_cleanup_old_files`: 清理指定时间之前的旧文件
 
 **已集成功能**：
@@ -361,7 +361,7 @@ MCP Server v4新增了强大的结果处理功能，支持：
 **MCP工具返回的数据结构**：
 所有结果都包含以下标准字段：
 - `property_type`: 性质类型（如"vacancy", "elastic"等）
-- `structure_files`: 结构文件列表，每个包含file_path和description
+- `consolidated_results_folder`: 所有结果文件的统一文件夹路径（Path对象）
 - `markdown_report`: 格式化的markdown报告（包含嵌入的base64图片）
 
 数值型结果额外包含：
@@ -377,7 +377,7 @@ MCP Server v4新增了强大的结果处理功能，支持：
 - `success`: 处理状态
 - `properties_results`: 各性质结果的数组
 - `combined_markdown`: 所有markdown报告的合并（用"---"分隔）
-- `structure_files`: 所有结构文件的合集
+- `consolidated_results_folder`: 所有结果文件的统一文件夹路径
 
 **任务状态处理（v4新增）**：
 APEX现在使用异步Bohrium任务提交模式：
@@ -424,7 +424,7 @@ APEX现在使用异步Bohrium任务提交模式：
 - 支持的环境变量：BOHRIUM_USERNAME, BOHRIUM_TICKET, BOHRIUM_PROJECT_ID
 
 **使用场景**：
-- 需要查看或下载生成的结构文件时，使用文件管理工具
+- 需要查看或下载生成的结果文件时，通过`consolidated_results_folder`访问统一的结果文件夹
 - 定期清理旧文件以节省存储空间
 - 直接展示markdown报告给用户（包含嵌入的图表）
 - 访问具体的数值数据进行进一步分析
@@ -499,7 +499,7 @@ ApexResultCoreAgentInstruction = """
 3. 解析和格式化计算结果
 4. 生成用户友好的结果报告
 5. **自动处理计算结果并生成可视化图表**
-6. **管理用户结构文件和下载链接**
+6. **管理用户结果文件和下载链接**
 
 工作流程：
 1. 接收任务ID
@@ -507,12 +507,12 @@ ApexResultCoreAgentInstruction = """
 3. 如果任务完成，下载结果文件
 4. 调用`apex_process_calculation_results`自动处理结果
 5. 生成包含图表和数据的markdown报告
-6. 提供结构文件下载链接
+6. 通过`consolidated_results_folder`提供结果文件夹访问
 7. 清理旧文件以维护存储空间
 
 **新增功能 - MCP Server v4**：
 - **自动结果处理**：使用`apex_process_calculation_results`工具自动解析CSV文件、生成图表
-- **文件管理**：使用`apex_list_user_files`查看用户文件，`apex_download_structure_file`获取下载链接
+- **文件管理**：通过`consolidated_results_folder`统一访问所有结果文件，支持`apex_list_user_files`和`apex_download_structure_file`工具
 - **存储管理**：使用`apex_cleanup_old_files`定期清理旧文件
 - **可视化图表**：自动生成matplotlib图表并嵌入到markdown报告中
 
@@ -530,9 +530,9 @@ ApexResultCoreAgentInstruction = """
   - 所有图表都以base64格式嵌入markdown，可直接显示
 
 - **文件管理**：
-  - 自动识别和收集所有生成的CIF结构文件
-  - 提供完整的文件路径供后续下载和分析
-  - 支持vacancy、interstitial、surface等多种结构类型
+  - 所有结果文件统一整理到一个专门的文件夹中
+  - 通过`consolidated_results_folder`字段返回文件夹路径
+  - 支持vacancy、interstitial、surface等多种结构类型的结果文件
 
 注意事项：
 - 定期检查任务状态
@@ -601,7 +601,7 @@ AVAILABLE_PROPERTIES_INFO = {
             "surface_relax_shape": "是否弛豫晶胞形状 (默认: false)",
             "surface_relax_vol": "是否弛豫晶胞体积 (默认: false)"
         },
-        "outputs": ["各晶面的表面形成能", "表面结构文件"],
+        "outputs": ["各晶面的表面形成能", "表面结构结果"],
         "calculation_time": "中等 (取决于表面数量)"
     },
     "vacancy": {
@@ -612,7 +612,7 @@ AVAILABLE_PROPERTIES_INFO = {
             "vacancy_relax_shape": "是否弛豫晶胞形状 (默认: false)",
             "vacancy_relax_vol": "是否弛豫晶胞体积 (默认: false)"
         },
-        "outputs": ["空位形成能", "缺陷结构文件"],
+        "outputs": ["空位形成能", "缺陷结构结果"],
         "calculation_time": "中等"
     },
     "interstitial": {
@@ -625,7 +625,7 @@ AVAILABLE_PROPERTIES_INFO = {
             "interstitial_relax_shape": "是否弛豫晶胞形状 (默认: true)",
             "interstitial_relax_vol": "是否弛豫晶胞体积 (默认: true)"
         },
-        "outputs": ["间隙原子形成能", "缺陷结构文件"],
+        "outputs": ["间隙原子形成能", "缺陷结构结果"],
         "calculation_time": "中等"
     },
     "phonon": {
