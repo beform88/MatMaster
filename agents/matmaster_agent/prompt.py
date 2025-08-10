@@ -10,6 +10,7 @@ from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
 from agents.matmaster_agent.crystalformer_agent.constant import CrystalformerAgentName
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
+from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
 
 GlobalInstruction = """
 ---
@@ -122,6 +123,14 @@ Purpose: provide multiple service towards data-driven research about High Entrop
 example query:
     what is the possible structure of CoCrFe2Ni0.5VMn?
     search paper with title "..." and extract structural HEA data from it
+
+- {HEACALCULATOR_AGENT_NAME}
+Purpose:
+This agent works for high entropy alloy (HEA) formation energy and convex hull data calculations. It can calculate formation energies and generate convex hull data for all binary pairs in a given chemical system using specified ASE databases or model heads.
+Example Query:
+- "请帮我计算 Ti-Zr-Hf-Co-Nb 的所有二元组分形成能凸包"
+- "用 deepmd3.1.0_dpa3_Alloy_tongqi 数据库计算 TiZrNb 的形成能"
+- "生成 Fe-Ni 的凸包数据"  
     
 - {OPTIMADE_DATABASE_AGENT_NAME}
 Purpose:

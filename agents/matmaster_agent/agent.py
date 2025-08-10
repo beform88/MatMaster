@@ -38,6 +38,9 @@ from agents.matmaster_agent.organic_reaction_agent.agent import (
 from agents.matmaster_agent.HEA_assistant_agent.agent import (
     init_HEA_assistant_agent
 )
+from agents.matmaster_agent.HEACalculator_agent.agent import (
+    init_hea_calculator_agent,
+)
 class MatMasterAgent(HandleFileUploadLlmAgent):
 
     def __init__(self, llm_config):
@@ -53,6 +56,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
         organic_reaction_agent = init_organic_reaction_agent(llm_config)
         HEA_assistant_agent = init_HEA_assistant_agent(llm_config)
+        hea_calculator_agent = init_hea_calculator_agent(llm_config, use_deepseek=True)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -69,7 +73,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 abacus_calculator_agent,
                 invar_agent,
                 organic_reaction_agent,
-                HEA_assistant_agent
+                HEA_assistant_agent,
+                hea_calculator_agent
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
