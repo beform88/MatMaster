@@ -20,7 +20,7 @@ MODEL_MAPPING = {
     ("litellm_proxy", "gemini-2.0-flash"): "litellm_proxy/gemini-2.0-flash",
     ("litellm_proxy", "gemini-2.5-flash"): "litellm_proxy/gemini-2.5-flash",
     # ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini/gemini-2.5-pro",
-    ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini-2.5-pro-preview-06-05",
+    ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini-2.5-pro",
     ("litellm_proxy", "claude-sonnet-4"): "litellm_proxy/claude-sonnet-4",
     # ("gemini", "gemini1.5-turbo"): "gemini/gemini1.5-turbo",
     # ("gemini", "gemini2.5-pro"): "gemini/gemini-2.5-pro-preview-03-25",
