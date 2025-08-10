@@ -30,6 +30,7 @@ class Optimade_Agent(CalculationMCPLlmAgent):
             description=OptimadeAgentDescription,
             instruction=OptimadeAgentInstruction,
             tools=[mcp_tools],
+            render_tool_response=True
         )
 
 

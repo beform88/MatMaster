@@ -8,6 +8,7 @@ from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.adk.tools import transfer_to_agent
+from mcp.types import CallToolResult
 from pydantic import Field
 
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
@@ -59,13 +60,14 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         Inherits all attributes from LlmAgent.
     """
 
-    loading: bool = Field(False, description="Whether the agent is in loading state", exclude=True)
+    loading: bool = Field(False, description="Whether the agent display loading state", exclude=True)
+    render_tool_response: bool = Field(False, description="Whether render tool response in frontend", exclude=True)
 
     def __init__(self, model, name, instruction='', description='', sub_agents=None,
                  global_instruction='', tools=None, output_key=None,
                  before_agent_callback=None, before_model_callback=None,
                  before_tool_callback=default_before_tool_callback, after_tool_callback=default_after_tool_callback,
-                 after_model_callback=None, after_agent_callback=None, loading=False,
+                 after_model_callback=None, after_agent_callback=None, loading=False, render_tool_response=False,
                  disallow_transfer_to_parent=False):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
@@ -126,6 +128,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         )
 
         self.loading = loading
+        self.render_tool_response = render_tool_response
 
     # Execution Order: user_question -> chembrain_llm -> event -> user_agree_transfer -> retrosyn_llm (param) -> event
     #                  -> user_agree_param -> retrosyn_llm (function_call) -> event -> tool_call
@@ -134,8 +137,8 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         try:
             async for event in super()._run_async_impl(ctx):
-                if self.loading:
-                    if is_function_call(event):
+                if is_function_call(event):
+                    if self.loading:
                         loading_title_msg = f"正在调用 {event.content.parts[0].function_call.name}..."
                         loading_desc_msg = f"结果生成中，请稍等片刻..."
                         logger.info(loading_title_msg)
@@ -144,12 +147,42 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                             actions=EventActions(state_delta={TMP_FRONTEND_STATE_KEY: {LOADING_STATE_KEY: LOADING_START,
                                                                                        LOADING_TITLE: loading_title_msg,
                                                                                        LOADING_DESC: loading_desc_msg}}))
-                    elif is_function_response(event):
+                elif is_function_response(event):
+                    if self.loading:
                         logger.info(f"{event.content.parts[0].function_response.name} 调用结束")
                         yield Event(
                             author=self.name,
                             actions=EventActions(state_delta={TMP_FRONTEND_STATE_KEY: {LOADING_STATE_KEY: LOADING_END}})
                         )
+
+                    if self.render_tool_response:
+                        tool_response = event.content.parts[0].function_response.response
+                        if tool_response.get("result", None) is not None and isinstance(tool_response['result'],
+                                                                                        CallToolResult):
+                            raw_result = event.content.parts[0].function_response.response['result'].content[0].text
+                            dict_result = jsonpickle.loads(raw_result)
+                        else:
+                            dict_result = tool_response
+
+                        job_result = await parse_result(dict_result)
+
+                        # Render Frontend Job-Result Component
+                        job_result_comp_data = {
+                            "eventType": 1,
+                            "eventData": {
+                                "contentType": 1,
+                                "renderType": '@bohrium-chat/matmodeler/dialog-file',
+                                "content": {
+                                    JOB_RESULT_KEY: job_result
+                                },
+                            }
+                        }
+                        for result_event in all_text_event(ctx,
+                                                           self.name,
+                                                           f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
+                                                           ModelRole):
+                            yield result_event
+
                 yield event
         except BaseExceptionGroup as err:
             from agents.matmaster_agent.agent import (
