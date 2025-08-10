@@ -34,10 +34,6 @@ async def update_session_state(ctx: InvocationContext, author: str):
 
 
 async def parse_result(result: dict):
-    # 添加空值检查
-    if result is None:
-        return [{"status": "error", "msg": "Result is None or invalid"}]
-
     parsed_result = []
     for k, v in result.items():
         if type(v) in [int, float]:

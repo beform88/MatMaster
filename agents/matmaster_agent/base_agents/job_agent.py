@@ -356,15 +356,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                                   ModelRole)
                     else:  # Job Success
                         raw_result = results_res.content[0].text
-                        try:
-                            dict_result = jsonpickle.loads(raw_result)
-                            if dict_result is None:
-                                # 如果解析失败，创建一个默认结果
-                                dict_result = {"status": "error", "msg": "Failed to parse result"}
-                        except Exception as e:
-                            # 如果jsonpickle.loads失败，创建错误结果
-                            dict_result = {"status": "error", "msg": f"Failed to parse result: {str(e)}"}
-
+                        dict_result = jsonpickle.loads(raw_result)
                         ctx.session.state['long_running_jobs'][origin_job_id]['job_result'] = await parse_result(
                             dict_result)
 
