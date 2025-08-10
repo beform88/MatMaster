@@ -83,6 +83,28 @@ Example Queries:
 - "查找一个 OZr 的结构，我想要全部信息，用 JSON 格式。"
 - "用 MP 和 JARVIS 查询 TiO2 的结构，每个返回一个。"
 
+- {INVAR_AGENT_NAME}
+Purpose:
+    Optimize compositions via genetic algorithms (GA) to find low thermal expansion coefficients (TEC) with low density.
+    It recommend compositions for experimental scientists for targeted properties.
+    For TEC, the surragate models are trained via finetuning DPA pretrained models on property labels (i.e. TEC)/
+    For density, the estimations are simply as linear addition.
+
+    Finally it reports the best composition and its corresponding TEC/density.
+
+Example Queries:
+- “查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。”
+- “查找一个 OZr 的结构，我想要全部信息。”
+
+- {ORGANIC_REACTION_AGENT_NAME}
+Purpose:
+Help users find the transition state of a reaction and calculate the reaction profile.
+
+Example Queries:
+- 帮我计算CC(N=[N+]=[N-])=O>>CN=C=O.N#N反应的过渡态。
+- The reactants are known to be C=C and C=CC=C, and the product is C1=CCCCC1. 
+  Please help me find the possible transitions and the entire reaction path.
+
 ## Your Interactive Thought and Execution Process
 You must follow this interactive process for every user query.
 
@@ -130,29 +152,6 @@ You must use the following conversational format.
 - Admit Limitations: If an agent fails, report the failure, and suggest a different step or ask the user for guidance.
 - Unless the previous agent explicitly states that the task has been submitted, do not autonomously determine whether the task is considered submitted—especially during parameter confirmation stages. Always verify completion status through direct confirmation before proceeding.
 - If a connection timeout occurs, avoid frequent retries as this may worsen the issue.
-
-- {INVAR_AGENT_NAME}
-Purpose:
-    Optimize compositions via genetic algorithms (GA) to find low thermal expansion coefficients (TEC) with low density.
-    It recommend compositions for experimental scientists for targeted properties.
-    For TEC, the surragate models are trained via finetuning DPA pretrained models on property labels (i.e. TEC)/
-    For density, the estimations are simply as linear addition.
-
-    Finally it reports the best composition and its corresponding TEC/density.
-
-Example Queries:
-- “查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。”
-- “查找一个 OZr 的结构，我想要全部信息。”
-
-- {ORGANIC_REACTION_AGENT_NAME}
-Purpose:
-Help users find the transition state of a reaction and calculate the reaction profile.
-
-Example Queries:
-- 帮我计算CC(N=[N+]=[N-])=O>>CN=C=O.N#N反应的过渡态。
-- The reactants are known to be C=C and C=CC=C, and the product is C1=CCCCC1. 
-  Please help me find the possible transitions and the entire reaction path.
-  
 """
 
 
