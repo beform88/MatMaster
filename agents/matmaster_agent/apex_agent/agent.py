@@ -48,33 +48,20 @@ toolset = CalculationMCPToolset(
 
 
 class ApexAgent(BaseAsyncJobAgent):
-    """APEX材料性质计算智能体"""
+    """
+    APEX材料性质计算智能体 (v4更新)
+    
+    支持功能：
+    - 材料性质计算（空位、间隙、弹性、表面、EOS、声子、γ表面）
+    - 异步Bohrium任务提交和状态监控
+    - 智能用户意图识别和参数转换
+    - 结构文件管理和下载
+    - 存储空间管理
+    - Bohrium认证信息动态配置
+    """
     
     def __init__(self, llm_config):
-        # 动态生成包含性质信息的指令
-        from .prompt import get_available_properties_info
-        
-        properties_info = get_available_properties_info()
-        eos_info = f"EOS (状态方程): {properties_info['eos']['description']}"
-        elastic_info = f"Elastic (弹性性质): {properties_info['elastic']['description']}"
-        surface_info = f"Surface (表面形成能): {properties_info['surface']['description']}"
-        vacancy_info = f"Vacancy (空位形成能): {properties_info['vacancy']['description']}"
-        interstitial_info = f"Interstitial (间隙原子形成能): {properties_info['interstitial']['description']}"
-        phonon_info = f"Phonon (声子谱): {properties_info['phonon']['description']}"
-        gamma_info = f"Gamma (γ表面): {properties_info['gamma']['description']}"
-        
-        # 格式化指令
-        formatted_instruction = ApexAgentInstruction.format(
-            eos_info=eos_info,
-            elastic_info=elastic_info,
-            surface_info=surface_info,
-            vacancy_info=vacancy_info,
-            interstitial_info=interstitial_info,
-            phonon_info=phonon_info,
-            gamma_info=gamma_info
-        )
-        
-        # 使用constant.py中定义的配置
+        # 使用constant.py中定义的配置（v4更新）
         toolset.storage = ApexBohriumStorage
         toolset.executor = ApexBohriumExecutor
         
@@ -83,7 +70,7 @@ class ApexAgent(BaseAsyncJobAgent):
             mcp_tools=[toolset],
             agent_name=ApexAgentName,
             agent_description=ApexAgentDescription,
-            agent_instruction=formatted_instruction,
+            agent_instruction=ApexAgentInstruction,  # 直接使用静态指令，不再动态格式化
             dflow_flag=False,  # APEX使用Bohrium异步任务，不使用dflow
             supervisor_agent=MATMASTER_AGENT_NAME
         )
