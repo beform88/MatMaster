@@ -805,35 +805,3 @@ DEFAULT_WORKFLOW_CONFIG = {
     "pool_size": 1,
     "scass_type": "c16_m32_cpu"
 }
-
-# 辅助函数
-def get_available_properties_info():
-    """获取可用性质信息"""
-    return AVAILABLE_PROPERTIES_INFO
-
-def get_property_parameter_guide(property_type: str):
-    """获取特定性质的参数指导"""
-    return PROPERTY_PARAMETER_GUIDES.get(property_type, {})
-
-def get_default_parameters():
-    """获取默认参数"""
-    return DEFAULT_PARAMETERS
-
-def get_default_workflow_config():
-    """获取默认工作流配置"""
-    return DEFAULT_WORKFLOW_CONFIG
-
-def validate_parameters(property_type: str, parameters: dict):
-    """验证参数（简化版本）"""
-    if property_type not in AVAILABLE_PROPERTIES_INFO:
-        return {
-            "valid": False,
-            "error": f"不支持的性质类型: {property_type}"
-        }
-    
-    return {
-        "valid": True,
-        "message": f"{property_type} 参数验证通过",
-        "property_type": property_type,
-        "parameters": parameters
-    }
