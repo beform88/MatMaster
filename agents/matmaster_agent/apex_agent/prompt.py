@@ -305,7 +305,7 @@ apex_calculate_properties(properties=["vacancy_formation"], ...)  # ❌ 错误
 - **支持所有形式的用户表达，包括中英文混合和口语化**
 - **提供Bohrium任务监控链接，指导用户下载结果**
 - **支持结果文件管理和下载功能**
-- **图片自动渲染**：所有图片文件通过内置图片处理逻辑自动转换为Markdown格式，确保图片能够正确显示
+- **图片自动渲染**：所有图片文件通过内置图片处理逻辑(apex_agent/agent.py里的after_tool_callback)自动转换为Markdown格式，确保图片能够正确显示
 
 === 内置信息查询功能 ===
 你可以直接回答以下问题，无需调用MCP工具：
@@ -338,7 +338,7 @@ MCP Server v4新增了强大的结果处理功能，支持：
 - 解析CSV数据文件提取关键物理量
 - 生成精美的matplotlib图表
 - 自动转换图表为base64格式嵌入markdown
-- **自动图片渲染**：通过内置图片处理逻辑自动将图片文件渲染为Markdown格式，无需手动处理
+- **自动图片渲染**：通过内置图片处理逻辑(apex_agent/agent.py里的after_tool_callback)自动将图片文件渲染为Markdown格式，无需手动处理
 
 **支持的结果类型及输出格式**：
 - **空位形成能 (vacancy)**：
@@ -542,7 +542,7 @@ ApexResultCoreAgentInstruction = """
 - **文件管理**：通过`consolidated_results_folder`统一访问所有结果文件，支持`apex_list_user_files`和`apex_download_structure_file`工具
 - **存储管理**：使用`apex_cleanup_old_files`定期清理旧文件
 - **可视化图表**：自动生成matplotlib图表并嵌入到markdown报告中
-- **图片自动渲染**：通过内置图片处理逻辑自动将图片文件渲染为Markdown格式，确保图片能够正确显示
+- **图片自动渲染**：通过内置图片处理逻辑(apex_agent/agent.py里的after_tool_callback)自动将图片文件渲染为Markdown格式，确保图片能够正确显示
 
 **具体的结果处理输出**：
 - **数值提取**：
