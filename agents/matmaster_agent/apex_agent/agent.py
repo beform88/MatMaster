@@ -136,28 +136,16 @@ class ApexAgent(BaseAsyncJobAgent):
         toolset.storage = ApexBohriumStorage
         toolset.executor = ApexBohriumExecutor
         
-        # 创建支持回调函数的MCP工具集
-        callback_toolset = CalculationMCPToolset(
-            connection_params=sse_params,
-            storage=ApexBohriumStorage,
-            executor=ApexBohriumExecutor,
-            async_mode=True,
-            wait=False,
-            logging_callback=matmodeler_logging_handler,
-            before_tool_callback=before_tool_callback,
-            after_tool_callback=after_tool_callback
-        )
-        
         super().__init__(
             model=llm_config.gpt_4o,
             agent_name=ApexAgentName,
             agent_description=ApexAgentDescription,
             agent_instruction=ApexAgentInstruction,  # 直接使用静态指令，不再动态格式化
-            mcp_tools=[callback_toolset],  # 使用支持回调函数的工具集
+            mcp_tools=[toolset],
             dflow_flag=False,  # APEX使用Bohrium异步任务，不使用dflow
             supervisor_agent=MATMASTER_AGENT_NAME
         )
-
+        
 
 def init_apex_agent(llm_config=None, use_deepseek=False) -> BaseAgent:
     """初始化APEX材料性质计算智能体"""
