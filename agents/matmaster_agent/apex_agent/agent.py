@@ -10,6 +10,7 @@ from google.adk.tools.tool_context import ToolContext
 from mcp.types import CallToolResult
 
 from agents.matmaster_agent.base_agents.job_agent import (
+    BaseAsyncJobAgent,
     CalculationMCPLlmAgent,
     ResultCalculationMCPLlmAgent,
     SubmitCoreCalculationMCPLlmAgent,
@@ -115,7 +116,7 @@ toolset = CalculationMCPToolset(
 )
 
 
-class ApexAgent(CalculationMCPLlmAgent):
+class ApexAgent(BaseAsyncJobAgent):
     """
     APEX材料性质计算智能体 (v4更新)
     
@@ -127,6 +128,7 @@ class ApexAgent(CalculationMCPLlmAgent):
     - 存储空间管理
     - Bohrium认证信息动态配置
     - 自动图片渲染为Markdown格式
+    - 异步任务处理（继承BaseAsyncJobAgent）
     """
     
     def __init__(self, llm_config):
@@ -134,14 +136,26 @@ class ApexAgent(CalculationMCPLlmAgent):
         toolset.storage = ApexBohriumStorage
         toolset.executor = ApexBohriumExecutor
         
-        super().__init__(
-            model=llm_config.gpt_4o,
-            name=ApexAgentName,
-            description=ApexAgentDescription,
-            instruction=ApexAgentInstruction,  # 直接使用静态指令，不再动态格式化
-            tools=[toolset],
+        # 创建支持回调函数的MCP工具集
+        callback_toolset = CalculationMCPToolset(
+            connection_params=sse_params,
+            storage=ApexBohriumStorage,
+            executor=ApexBohriumExecutor,
+            async_mode=True,
+            wait=False,
+            logging_callback=matmodeler_logging_handler,
             before_tool_callback=before_tool_callback,
             after_tool_callback=after_tool_callback
+        )
+        
+        super().__init__(
+            model=llm_config.gpt_4o,
+            agent_name=ApexAgentName,
+            agent_description=ApexAgentDescription,
+            agent_instruction=ApexAgentInstruction,  # 直接使用静态指令，不再动态格式化
+            mcp_tools=[callback_toolset],  # 使用支持回调函数的工具集
+            dflow_flag=False,  # APEX使用Bohrium异步任务，不使用dflow
+            supervisor_agent=MATMASTER_AGENT_NAME
         )
 
 
