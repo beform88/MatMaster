@@ -20,8 +20,12 @@ def is_json(json_str):
     return True
 
 
-async def is_tuple_float(data) -> bool:
-    return isinstance(data, tuple) and all(isinstance(x, float) for x in data)
+async def is_float_sequence(data) -> bool:
+    return isinstance(data, (tuple, list)) and all(isinstance(x, float) for x in data)
+
+
+async def is_str_sequence(data) -> bool:
+    return isinstance(data, (tuple, list)) and all(isinstance(x, str) for x in data)
 
 
 async def is_matmodeler_file(filename: str) -> bool:
@@ -85,8 +89,11 @@ async def parse_result(result: dict):
                 else:
                     parsed_result.append(JobResult(name=k, data=filename,
                                                    type=JobResultType.RegularFile, url=v).model_dump(mode="json"))
-        elif await is_tuple_float(v):
+        elif await is_float_sequence(v):
             parsed_result.append(JobResult(name=k, data=f"{tuple([float(item) for item in v])}",
+                                           type=JobResultType.Value).model_dump(mode="json"))
+        elif await is_str_sequence(v):
+            parsed_result.append(JobResult(name=k, data=f"{tuple([str(item) for item in v])}",
                                            type=JobResultType.Value).model_dump(mode="json"))
         else:
             parsed_result.append({"status": "error", "msg": f"{k}({type(v)}) is not supported parse, v={v}"})
