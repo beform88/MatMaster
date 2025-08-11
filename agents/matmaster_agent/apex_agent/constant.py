@@ -12,7 +12,8 @@ ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
 ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.0.4"
+    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.1.0"
+    #"registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-prod:0.0.3"
 
 
 # APEX专用的Bohrium存储配置
@@ -32,7 +33,7 @@ APEX_SUPPORTED_RESULT_PROPERTIES = [
     "gamma", "phonon", "eos"
 ]
 
-# MCP工具名称 (v4更新：apex_process_calculation_results已集成到apex_calculate_properties中)
+# MCP工具名称 
 APEX_NEW_MCP_TOOLS = [
     "apex_list_user_files", 
     "apex_download_structure_file",
@@ -47,11 +48,6 @@ APEX_TASK_STATUSES = {
     "failed": "失败"
 }
 
-# # Bohrium相关常量
-# BOHRIUM_JOB_LINKS = {
-#     "jobs_portal": "https://bohrium.dp.tech/jobs",
-#     "detail_template": "https://bohrium.dp.tech/jobs/detail/{job_id}"
-# }
 
 # Bohrium认证配置方式更新
 BOHRIUM_AUTH_METHOD = {
