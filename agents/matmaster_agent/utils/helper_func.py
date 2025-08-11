@@ -37,6 +37,10 @@ async def is_matmodeler_file(filename: str) -> bool:
             filename == "STRU")
 
 
+async def is_image_file(filename: str) -> bool:
+    return (filename.endswith((".png", ".jpg", ".jpeg")))
+
+
 def flatten_dict(d, parent_key='', sep='_'):
     """
     将多层嵌套的字典拉平为一级字典
@@ -67,6 +71,37 @@ def flatten_dict(d, parent_key='', sep='_'):
 
 
 async def parse_result(result: dict):
+    """
+    Parse and flatten a nested dictionary result into a list of standardized JobResult objects.
+
+    Processes a dictionary (potentially nested) and converts it into serialized JobResult objects.
+    Handles various data types including numbers, strings, sequences, and file URLs.
+    For image URLs, automatically generates both file reference and markdown representation.
+
+    Args:
+        result (dict): Input dictionary to parse. May contain:
+                      - Nested dictionaries (automatically flattened)
+                      - Primitive values (int, float, str)
+                      - Sequences (of numbers or strings)
+                      - URLs (regular files or MatModeler files)
+
+    Returns:
+        list: Serialized JobResult objects with appropriate types:
+              - Value: For primitive types and sequences
+              - MatModelerFile/RegularFile: For recognized file URLs
+              - Additional markdown representation for image files
+              - Error messages for unsupported types
+
+    Example:
+        >>> parse_result({"value": 42, "structure": "http://example.com/structure.cif", "phonon": "http://example.com/phonon.png"})
+
+        >>> [
+        >>>    {"name": "value", "data": 42, "type": "Value"},
+        >>>    {"name": "structure", "data": "structure.cif", "type": "MatModelerFile", "url": "http://example.com/structure.cif"},
+        >>>    {"name": "phonon", "data": "phonon.png", "type": "RegularFile", "url": "http://example.com/phonon.png"}
+        >>>    {"name": "markdown_image_phonon", "data": "![phonon.png](http://example.com/phonon.png)", "type": "Value"}
+        >>> ]
+    """
     parsed_result = []
     new_result = {}
     for k, v in result.items():
@@ -89,6 +124,10 @@ async def parse_result(result: dict):
                 else:
                     parsed_result.append(JobResult(name=k, data=filename,
                                                    type=JobResultType.RegularFile, url=v).model_dump(mode="json"))
+                if await is_image_file(filename):
+                    # Extra Add Markdown Image
+                    parsed_result.append(JobResult(name=f"markdown_image_{k}", data=f"![{filename}]({v})",
+                                                   type=JobResultType.Value).model_dump(mode="json"))
         elif await is_float_sequence(v):
             parsed_result.append(JobResult(name=k, data=f"{tuple([float(item) for item in v])}",
                                            type=JobResultType.Value).model_dump(mode="json"))
