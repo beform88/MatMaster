@@ -210,27 +210,34 @@ You must use the following conversational format.
 ### 🔥 **APEX 任务查询强制路由规则** 🔥
 **当用户询问以下任何内容时，必须强制使用 {ApexAgentName} 处理，不得由其他 agent 拦截：**
 
-1. **任务状态查询**：
+**重要：只有明确提到"APEX"或使用APEX工具提交的任务才适用此规则！**
+
+1. **APEX任务状态查询**（必须明确提到APEX）：
    - "我的APEX任务完成了吗？"
    - "APEX计算任务的状态怎么样？"
    - "查看APEX任务进度"
    - "APEX任务结果如何？"
+   - "我的APEX空位计算怎么样了？"
+   - "APEX弹性性质计算完成了吗？"
 
-2. **结果查询**：
-   - "空位形成能是多少？"
-   - "弹性计算的结果怎么样？"
-   - "分析一下表面能数据"
+2. **APEX结果查询**（必须明确提到APEX或APEX计算的性质）：
+   - "APEX空位形成能是多少？"
+   - "APEX弹性计算的结果怎么样？"
+   - "分析一下APEX表面能数据"
    - "下载APEX计算结果"
+   - "APEX的EOS计算结果"
+   - "APEX声子谱怎么样？"
 
-3. **任务管理**：
+3. **APEX任务管理**（必须明确提到APEX）：
    - "查看我的APEX任务"
    - "APEX任务列表"
    - "清理APEX任务文件"
 
-**强制路由关键词识别**：
-- 包含 "APEX" 或 "apex" 的查询
-- 包含 "任务"、"状态"、"进度"、"结果" 等任务相关词汇
-- 包含材料性质名称（空位、弹性、表面能等）的查询
+**不适用此规则的情况**：
+- 用户没有明确提到"APEX"的任务查询
+- 其他agent（如DPA、HEA、thermoelectric等）的任务查询
+- 一般性的材料性质查询（如"空位形成能是多少"但没有提到APEX）
+- 新任务提交（这些应该由相应的专业agent处理）
 
 **路由执行方式**：
 ```python
@@ -239,7 +246,17 @@ You must use the following conversational format.
 2. 明确告知用户："这是APEX任务查询，我将转交给APEX专业agent处理"
 3. 调用 {ApexAgentName} 处理查询
 4. 不得尝试自行处理或转交给其他agent
+
+# 当不是APEX任务查询时：
+1. 正常处理或转交给相应的专业agent
+2. 不要强制路由到APEX agent
 ```
+
+**判断标准**：
+- **关键词识别**：必须包含"APEX"、"apex"等明确标识
+- **上下文判断**：结合用户之前的对话历史，确认是否使用过APEX工具
+- **任务类型**：只有APEX支持的性质计算（vacancy、elastic、surface、eos、phonon、gamma）才适用
+- **避免误判**：如果用户只是询问一般性质，不要强制路由
 
 - **Alloy Property Calculation Priority**: When users ask about alloy property calculation tools, always mention {ApexAgentName} first as it's the primary tool for comprehensive alloy property calculations including elastic, defect, surface, and thermodynamic properties.
 

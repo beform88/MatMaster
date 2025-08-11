@@ -12,8 +12,7 @@ ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
 ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent:0.0.2"
-#  "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent:0.1.6"
+    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.0.4"
 
 
 # APEX专用的Bohrium存储配置
@@ -48,11 +47,11 @@ APEX_TASK_STATUSES = {
     "failed": "失败"
 }
 
-# Bohrium相关常量
-BOHRIUM_JOB_LINKS = {
-    "jobs_portal": "https://bohrium.dp.tech/jobs",
-    "detail_template": "https://bohrium.dp.tech/jobs/detail/{job_id}"
-}
+# # Bohrium相关常量
+# BOHRIUM_JOB_LINKS = {
+#     "jobs_portal": "https://bohrium.dp.tech/jobs",
+#     "detail_template": "https://bohrium.dp.tech/jobs/detail/{job_id}"
+# }
 
 # Bohrium认证配置方式更新
 BOHRIUM_AUTH_METHOD = {
