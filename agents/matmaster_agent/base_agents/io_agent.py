@@ -5,7 +5,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
 
 from agents.matmaster_agent.constant import ModelRole
-from agents.matmaster_agent.utils import context_function_event
+from agents.matmaster_agent.utils.event_utils import context_function_event
 
 
 class HandleFileUploadLlmAgent(LlmAgent):
