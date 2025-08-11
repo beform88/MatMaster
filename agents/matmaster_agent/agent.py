@@ -8,7 +8,6 @@ from agents.matmaster_agent.callback import matmaster_before_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 
-from agents.matmaster_agent.prompt import GlobalInstruction, AgentInstruction, AgentDescription
 from agents.matmaster_agent.piloteye_electro_agent.agent import (
     init_piloteye_electro_agent,
 )
@@ -18,6 +17,12 @@ from agents.matmaster_agent.DPACalculator_agent.agent import (
 from agents.matmaster_agent.thermoelectric_agent.agent import (
     init_thermoelectric_agent
 )
+from agents.matmaster_agent.piloteye_electro_agent.agent import init_piloteye_electro_agent
+from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
+from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
+from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_database_agent
+from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
+
 from agents.matmaster_agent.prompt import (
     AgentDescription,
     AgentInstruction,
@@ -28,15 +33,16 @@ from agents.matmaster_agent.prompt import (
 class MatMasterAgent(HandleFileUploadLlmAgent):
 
     def __init__(self, llm_config):
-        unielf_agent = init_piloteye_electro_agent(llm_config)
+        piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
+        optimade_agent = init_optimade_database_agent(llm_config)
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
         thermoelectric_agent = init_thermoelectric_agent(llm_config)
+        superconductor_agent = init_superconductor_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
             model=llm_config.gpt_4o,
-            sub_agents=[unielf_agent, thermoelectric_agent],
-            sub_agents=[piloteye_electro_agent, dpa_calculator_agent,thermoelectric_agent],
+            sub_agents=[piloteye_electro_agent, dpa_calculator_agent, optimade_agent, thermoelectric_agent, superconductor_agent],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
             description=AgentDescription,
