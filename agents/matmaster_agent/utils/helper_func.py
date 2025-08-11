@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
@@ -70,7 +71,7 @@ def flatten_dict(d, parent_key='', sep='_'):
     return dict(items)
 
 
-async def parse_result(result: dict):
+async def parse_result(result: dict) -> List[dict]:
     """
     Parse and flatten a nested dictionary result into a list of standardized JobResult objects.
 

@@ -174,15 +174,14 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                 "contentType": 1,
                                 "renderType": '@bohrium-chat/matmodeler/dialog-file',
                                 "content": {
-                                    JOB_RESULT_KEY: job_result
+                                    JOB_RESULT_KEY: [item for item in job_result if item.get("status", None) is None]
                                 },
                             }
                         }
 
                         # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                         for system_job_result_event in context_function_event(ctx, self.name, "system_job_result",
-                                                                              job_result_comp_data['eventData'][
-                                                                                  'content'],
+                                                                              {JOB_RESULT_KEY: job_result},
                                                                               ModelRole):
                             yield system_job_result_event
 
@@ -378,8 +377,9 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                 "contentType": 1,
                                 "renderType": '@bohrium-chat/matmodeler/dialog-file',
                                 "content": {
-                                    JOB_RESULT_KEY: ctx.session.state['long_running_jobs'][origin_job_id][
-                                        'job_result']
+                                    JOB_RESULT_KEY: [item for item in
+                                                     ctx.session.state['long_running_jobs'][origin_job_id][
+                                                         'job_result'] if item.get("status", None) is None]
                                 },
                             }
                         }
@@ -402,7 +402,9 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
 
                         # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                         for event in context_function_event(ctx, self.name, "system_job_result",
-                                                            job_result_comp_data['eventData']['content'],
+                                                            {
+                                                                JOB_RESULT_KEY: ctx.session.state['long_running_jobs'][
+                                                                    origin_job_id]['job_result']},
                                                             ModelRole):
                             yield event
 
