@@ -194,7 +194,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                                ModelRole):
                                 yield result_event
                 yield event
-        except BaseExceptionGroup as err:
+        except BaseException as err:
             from agents.matmaster_agent.agent import (
                 root_agent as matmaster_agent,
             )
@@ -256,7 +256,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         yield function_event
                 else:
                     yield event
-        except Exception as err:
+        except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name,
                                                       ctx.agent.parent_agent.parent_agent.parent_agent):
                 yield error_event
@@ -296,7 +296,7 @@ class SubmitRenderAgent(LlmAgent):
                     ctx.session.state["render_job_list"] = False
                     ctx.session.state["render_job_id"] = []
                     await update_session_state(ctx, self.name)
-        except BaseExceptionGroup as err:
+        except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name,
                                                       ctx.agent.parent_agent.parent_agent.parent_agent):
                 yield error_event
@@ -415,7 +415,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                                     ModelRole):
                     yield event
             yield Event(author=self.name)
-        except BaseExceptionGroup as err:
+        except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name,
                                                       ctx.agent.parent_agent.parent_agent.parent_agent):
                 yield error_event
