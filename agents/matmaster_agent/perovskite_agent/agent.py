@@ -21,18 +21,17 @@ perovskite_toolset = CalculationMCPToolset(
 def init_perovskite_agent(llm_config, use_deepseek: bool = False):
     """Initialize Perovskite Solar Cell Data Analysis Agent using CalculationMCPLlmAgent."""
     # Choose model per flag with sensible fallbacks
-    model = getattr(llm_config, 'gpt_4o', None)
-    if use_deepseek and hasattr(llm_config, 'deepseek_chat'):
+    if use_deepseek :
         model = llm_config.deepseek_chat
-    elif model is None and hasattr(llm_config, 'deepseek_chat'):
-        model = llm_config.deepseek_chat
+    else:
+        model = llm_config.gpt_4o
 
     return CalculationMCPLlmAgent(
         model=model,
         name=PerovskiteAgentName,
         description=PerovskiteAgentDescription,
         instruction=PerovskiteAgentInstruction,
-        tools=[perovskite_toolset]
+        tools=[perovskite_toolset],
     )
 
 
