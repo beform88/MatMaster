@@ -145,46 +145,7 @@ class ApexAgent(BaseAsyncJobAgent):
             dflow_flag=False,  # APEX使用Bohrium异步任务，不使用dflow
             supervisor_agent=MATMASTER_AGENT_NAME
         )
-    
-    async def _process_tool_response(self, tool_response: CallToolResult) -> str:
-        """重写工具响应处理方法，实现图片自动渲染"""
-        try:
-            if not (tool_response and
-                    tool_response.content and
-                    tool_response.content[0].text):
-                return "工具响应为空"
-            
-            response_text = tool_response.content[0].text
-            
-            # 检查是否是JSON格式的响应
-            if is_json(response_text):
-                response_data = json.loads(response_text)
-                
-                # 检查是否包含图表图片数据
-                if 'chart_image' in response_data and response_data['chart_image']:
-                    # 生成markdown图片格式
-                    markdown_image = f"![apex_chart]({response_data['chart_image']})"
-                    print(f"[APEX] Generated markdown image for tool response")
-                    return markdown_image
-                
-                # 检查是否包含其他图片数据
-                elif 'plot' in response_data and response_data['plot']:
-                    markdown_image = f"![apex_plot]({response_data['plot']})"
-                    print(f"[APEX] Generated markdown plot for tool response")
-                    return markdown_image
-                
-                # 检查是否包含markdown报告（可能已经包含图片）
-                elif 'markdown_report' in response_data and response_data['markdown_report']:
-                    print(f"[APEX] Found markdown report in tool response")
-                    return response_data['markdown_report']
-            
-            # 如果不是JSON或没有图片数据，返回原始响应
-            return response_text
-            
-        except Exception as e:
-            print(f"[APEX] Failed to process tool response: {str(e)}")
-            return tool_response.content[0].text if tool_response.content else "处理工具响应时出错"
-
+        
 
 def init_apex_agent(llm_config=None, use_deepseek=False) -> BaseAgent:
     """初始化APEX材料性质计算智能体"""
@@ -201,7 +162,19 @@ def init_apex_agent(llm_config=None, use_deepseek=False) -> BaseAgent:
         if hasattr(deepseek_config, 'deepseek_chat'):
             llm_config = deepseek_config
 
-    return ApexAgent(llm_config)
+    # 使用constant.py中定义的配置（v4更新）
+    toolset.storage = ApexBohriumStorage
+    toolset.executor = ApexBohriumExecutor
+    
+    return CalculationMCPLlmAgent(
+        model=llm_config.gpt_4o,
+        name=ApexAgentName,
+        description=ApexAgentDescription,
+        instruction=ApexAgentInstruction,  # 直接使用静态指令，不再动态格式化
+        tools=[toolset],
+        before_tool_callback=before_tool_callback,
+        after_tool_callback=after_tool_callback
+    )
 
 
 # 创建独立的root_agent实例供ADK使用
