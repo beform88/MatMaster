@@ -162,19 +162,7 @@ def init_apex_agent(llm_config=None, use_deepseek=False) -> BaseAgent:
         if hasattr(deepseek_config, 'deepseek_chat'):
             llm_config = deepseek_config
 
-    # 使用constant.py中定义的配置（v4更新）
-    toolset.storage = ApexBohriumStorage
-    toolset.executor = ApexBohriumExecutor
-    
-    return CalculationMCPLlmAgent(
-        model=llm_config.gpt_4o,
-        name=ApexAgentName,
-        description=ApexAgentDescription,
-        instruction=ApexAgentInstruction,  # 直接使用静态指令，不再动态格式化
-        tools=[toolset],
-        before_tool_callback=before_tool_callback,
-        after_tool_callback=after_tool_callback
-    )
+    return ApexAgent(llm_config)
 
 
 # 创建独立的root_agent实例供ADK使用
