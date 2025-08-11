@@ -12,7 +12,7 @@ ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
 ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.0.1"
+    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent:0.0.2"
 #  "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent:0.1.6"
 
 
