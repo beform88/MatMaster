@@ -13,6 +13,7 @@ instruction_en = (
 
 # from thermoelectric
 from agents.matmaster_agent.prompt import TransferAgentDescription
+TransferAgentDescription
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 TrajAnalysisAgentName = "traj_analysis_agent"
