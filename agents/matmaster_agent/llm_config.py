@@ -17,7 +17,7 @@ MODEL_MAPPING = {
     ("openai", "claude-sonnet-4-20250514"): "openai/claude-sonnet-4-20250514",
     ("openai", "gemini-2.5-flash-preview-05-20"): "openai/gemini-2.5-flash-preview-05-20",
     ("azure", "gpt-4o"): "azure/gpt-4o",
-    ("azure", "gpt-4o-mini"): "azure/gpt-4o-mini"
+    ("azure", "gpt-4o-mini"): "azure/gpt-4o-mini",
     ("litellm_proxy", "gemini-2.0-flash"): "litellm_proxy/gemini-2.0-flash",
     ("litellm_proxy", "gemini-2.5-flash"): "litellm_proxy/gemini-2.5-flash",
     # ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini/gemini-2.5-pro",
