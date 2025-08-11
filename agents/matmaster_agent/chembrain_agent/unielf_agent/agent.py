@@ -3,7 +3,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from ...constant import BohriumStorge
 from .constant import UniELFAgentName, UniELFServerUrl
-from .prompt import instruction_en
+from .prompt import description, instruction_en
 from ..base import CalculationLlmAgent
 from ...llm_config import MatMasterLlmConfig
 
@@ -22,6 +22,7 @@ def init_unielf_agent(llm_config):
         name=UniELFAgentName,
         model=selected_model,
         instruction=instruction_en,
+        description=description,
         tools=[toolset]
     )
     return unielf_agent

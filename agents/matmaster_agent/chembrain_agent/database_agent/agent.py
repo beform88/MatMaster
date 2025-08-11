@@ -4,7 +4,7 @@ from google.adk.agents import LlmAgent
 from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.tool_context import ToolContext
 
-from .prompt import instructions_v1
+from .prompt import instructions_v1, instructions_v1_zh, instructions_cch_v1
 from ...llm_config import MatMasterLlmConfig
 from ..tools.database import DatabaseManager
 
@@ -32,13 +32,15 @@ def init_database_agent(config):
     db_manager = DatabaseManager('polymer_db')
     get_table_field_info = db_manager.init_get_table_field_info()
     query_table = db_manager.init_query_table()
+    get_table_field = db_manager.init_get_table_fields()
 
     database_agent = LlmAgent(
-        name="database_agent",
+        name="poly_database_agent",
         model=selected_model,
-        instruction=instructions_v1,
-        description="Construct database queries based on user's question and summarize the results.",
-        tools=[get_table_field_info, query_table],
+        # instruction=instructions_v1,
+        instruction=instructions_cch_v1,
+        description="Search the database based on user's needs and briefly summarize the results.",
+        tools=[get_table_field_info, query_table, get_table_field],
         output_key="query_result",
         # before_model_callback=update_invoke_message,
         after_tool_callback=save_query_results,

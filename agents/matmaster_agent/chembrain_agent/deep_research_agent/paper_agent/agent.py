@@ -59,7 +59,7 @@ def mock_get_paper_content_and_picture(paper_url):
 
 
 def create_update_invoke_message_with_agent_name(agent_name: str):
-    def update_invoke_message_with_agent_name(
+    async def update_invoke_message_with_agent_name(
             callback_context: CallbackContext,
             llm_request: LlmRequest
     ) -> Optional[LlmResponse]:
@@ -73,9 +73,10 @@ def create_update_invoke_message_with_agent_name(agent_name: str):
 
         # query paper content and picture from database
         db_manager = DatabaseManager(callback_context.state['db_name'])
+        await db_manager.async_init() # Initialize DatabaseManager asynchronously
         fetch_paper_content = db_manager.init_fetch_paper_content()
         print(f"Fetching paper content from database... : {paper_url}")
-        paper_content = fetch_paper_content(paper_url)
+        paper_content = await fetch_paper_content(paper_url)
         message = paper_content.get('main_txt', '')
         picture_mapping = paper_content.get('figures', [])
 
@@ -102,11 +103,11 @@ def create_update_invoke_message_with_agent_name(agent_name: str):
 def init_paper_agent(config, name, run_id):
     """Initialize the researcher agent with the given configuration."""
     # Select the model based on the configuration
-    # selected_model = config.gemini_2_5_pro
-    selected_model = config.gpt_4o
+    selected_model = config.gemini_2_5_pro
+    # selected_model = config.gpt_4o
 
     paper_agent = LlmAgent(
-        name=f"paper_agent_{name}",
+        name=f"poly_paper_agent_{name}",
         instruction=instructions_v2_en,
         model=selected_model,
         description="Paper agent that read one particular paper to extract information about user's query",

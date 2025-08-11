@@ -64,6 +64,6 @@ class Aggregator(BaseAgent):
 
 
 root_agent = SequentialAgent(
-    name="root",
+    name="poly_root",
     sub_agents=[PlannerAndRunner(name="planner"), Aggregator(name="collector")]
 )
