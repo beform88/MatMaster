@@ -43,67 +43,6 @@ from .prompt import (
 )
 
 
-async def before_tool_callback(tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext):
-    """工具调用前的回调函数"""
-    agent_name = tool_context.agent_name
-    tool_name = tool.name
-    print(f"[Callback] Before tool call for tool '{tool_name}' in agent '{agent_name}'")
-    print(f"[Callback] Args: {args}")
-
-
-async def after_tool_callback(tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext,
-                              tool_response: CallToolResult):
-    """APEX计算结果的后处理，将图片文件自动渲染为Markdown格式"""
-    tool_info = {
-        "after": {
-            'tool_name': tool.name,
-            'tool_args': args,
-            'tool_response': tool_response.content[0].text if (tool_response and len(tool_response.content)) else None
-        }
-    }
-
-    # 检查是否有有效的响应数据
-    if not (tool_response and
-            tool_response.content and
-            tool_response.content[0].text):
-        print("[Callback] Tool response is empty")
-        return None
-
-    try:
-        response_text = tool_response.content[0].text
-        
-        # 检查是否是JSON格式的响应
-        if is_json(response_text):
-            response_data = json.loads(response_text)
-            
-            # 检查是否包含图表图片数据
-            if 'chart_image' in response_data and response_data['chart_image']:
-                # 生成markdown图片格式
-                markdown_image = f"![apex_chart]({response_data['chart_image']})"
-                tool_info['after']['tool_response'] = markdown_image
-                print(f"[Callback] Generated markdown image for {tool.name}")
-                return markdown_image
-            
-            # 检查是否包含其他图片数据
-            elif 'plot' in response_data and response_data['plot']:
-                markdown_image = f"![apex_plot]({response_data['plot']})"
-                tool_info['after']['tool_response'] = markdown_image
-                print(f"[Callback] Generated markdown plot for {tool.name}")
-                return markdown_image
-            
-            # 检查是否包含markdown报告（可能已经包含图片）
-            elif 'markdown_report' in response_data and response_data['markdown_report']:
-                print(f"[Callback] Found markdown report in {tool.name} response")
-                return response_data['markdown_report']
-        
-        # 如果不是JSON或没有图片数据，返回原始响应
-        return response_text
-        
-    except Exception as e:
-        print(f"[Callback] Failed to process tool response: {str(e)}")
-        return tool_response.content[0].text if tool_response.content else None
-
-
 # 配置SSE参数
 sse_params = SseServerParams(url=ApexServerUrl)
 toolset = CalculationMCPToolset(
