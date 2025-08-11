@@ -157,41 +157,42 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                         )
 
                     # Parse Tool Response
-                    tool_response = event.content.parts[0].function_response.response
-                    if tool_response.get("result", None) is not None and isinstance(tool_response['result'],
-                                                                                    CallToolResult):
-                        raw_result = event.content.parts[0].function_response.response['result'].content[0].text
-                        dict_result = jsonpickle.loads(raw_result)
-                    else:
-                        dict_result = tool_response
+                    if not isinstance(self, SubmitCoreCalculationMCPLlmAgent):
+                        tool_response = event.content.parts[0].function_response.response
+                        if tool_response.get("result", None) is not None and isinstance(tool_response['result'],
+                                                                                        CallToolResult):
+                            raw_result = event.content.parts[0].function_response.response['result'].content[0].text
+                            dict_result = jsonpickle.loads(raw_result)
+                        else:
+                            dict_result = tool_response
 
-                    job_result = await parse_result(dict_result)
+                        job_result = await parse_result(dict_result)
 
-                    job_result_comp_data = {
-                        "eventType": 1,
-                        "eventData": {
-                            "contentType": 1,
-                            "renderType": '@bohrium-chat/matmodeler/dialog-file',
-                            "content": {
-                                JOB_RESULT_KEY: job_result
-                            },
+                        job_result_comp_data = {
+                            "eventType": 1,
+                            "eventData": {
+                                "contentType": 1,
+                                "renderType": '@bohrium-chat/matmodeler/dialog-file',
+                                "content": {
+                                    JOB_RESULT_KEY: job_result
+                                },
+                            }
                         }
-                    }
 
-                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                    for system_job_result_event in context_function_event(ctx, self.name, "system_job_result",
-                                                                          job_result_comp_data['eventData']['content'],
-                                                                          ModelRole):
-                        yield system_job_result_event
+                        # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                        for system_job_result_event in context_function_event(ctx, self.name, "system_job_result",
+                                                                              job_result_comp_data['eventData'][
+                                                                                  'content'],
+                                                                              ModelRole):
+                            yield system_job_result_event
 
-                    # Render Tool Response Event
-                    if self.render_tool_response:
-                        for result_event in all_text_event(ctx,
-                                                           self.name,
-                                                           f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
-                                                           ModelRole):
-                            yield result_event
-
+                        # Render Tool Response Event
+                        if self.render_tool_response:
+                            for result_event in all_text_event(ctx,
+                                                               self.name,
+                                                               f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
+                                                               ModelRole):
+                                yield result_event
                 yield event
         except BaseExceptionGroup as err:
             from agents.matmaster_agent.agent import (
@@ -255,7 +256,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         yield function_event
                 else:
                     yield event
-        except BaseExceptionGroup as err:
+        except Exception as err:
             async for error_event in send_error_event(err, ctx, self.name,
                                                       ctx.agent.parent_agent.parent_agent.parent_agent):
                 yield error_event

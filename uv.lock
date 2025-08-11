@@ -1487,7 +1487,7 @@ requires-dist = [
     { name = "bohr-agent-sdk", specifier = ">=0.1.23" },
     { name = "google-adk", specifier = "==1.7.0" },
     { name = "opik", specifier = ">=1.8.6" },
-    { name = "oss2", specifier = "==2.18.0" },
+    { name = "oss2", specifier = ">=2.18.0" },
     { name = "pymysql", specifier = ">=1.1.1" },
 ]
 
