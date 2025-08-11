@@ -148,6 +148,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                                                        LOADING_TITLE: loading_title_msg,
                                                                                        LOADING_DESC: loading_desc_msg}}))
                 elif is_function_response(event):
+                    # Loading Event
                     if self.loading:
                         logger.info(f"{event.content.parts[0].function_response.name} 调用结束")
                         yield Event(
@@ -155,28 +156,36 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                             actions=EventActions(state_delta={TMP_FRONTEND_STATE_KEY: {LOADING_STATE_KEY: LOADING_END}})
                         )
 
-                    if self.render_tool_response:
-                        tool_response = event.content.parts[0].function_response.response
-                        if tool_response.get("result", None) is not None and isinstance(tool_response['result'],
-                                                                                        CallToolResult):
-                            raw_result = event.content.parts[0].function_response.response['result'].content[0].text
-                            dict_result = jsonpickle.loads(raw_result)
-                        else:
-                            dict_result = tool_response
+                    # Parse Tool Response
+                    tool_response = event.content.parts[0].function_response.response
+                    if tool_response.get("result", None) is not None and isinstance(tool_response['result'],
+                                                                                    CallToolResult):
+                        raw_result = event.content.parts[0].function_response.response['result'].content[0].text
+                        dict_result = jsonpickle.loads(raw_result)
+                    else:
+                        dict_result = tool_response
 
-                        job_result = await parse_result(dict_result)
+                    job_result = await parse_result(dict_result)
 
-                        # Render Frontend Job-Result Component
-                        job_result_comp_data = {
-                            "eventType": 1,
-                            "eventData": {
-                                "contentType": 1,
-                                "renderType": '@bohrium-chat/matmodeler/dialog-file',
-                                "content": {
-                                    JOB_RESULT_KEY: job_result
-                                },
-                            }
+                    job_result_comp_data = {
+                        "eventType": 1,
+                        "eventData": {
+                            "contentType": 1,
+                            "renderType": '@bohrium-chat/matmodeler/dialog-file',
+                            "content": {
+                                JOB_RESULT_KEY: job_result
+                            },
                         }
+                    }
+
+                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                    for system_job_result_event in context_function_event(ctx, self.name, "system_job_result",
+                                                                          job_result_comp_data['eventData']['content'],
+                                                                          ModelRole):
+                        yield system_job_result_event
+
+                    # Render Tool Response Event
+                    if self.render_tool_response:
                         for result_event in all_text_event(ctx,
                                                            self.name,
                                                            f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
@@ -300,7 +309,8 @@ class SubmitValidatorAgent(LlmAgent):
             ctx.session.state["long_running_jobs_count_ori"] = ctx.session.state["long_running_jobs_count"]
             await update_session_state(ctx, self.name)
         else:
-            submit_validator_msg = "No Job Submitted."
+            submit_validator_msg = ("Submission is not currently open. If parameters need to be confirmed, "
+                                    "please show the user the parameters requiring confirmation.")
 
         for function_event in context_function_event(ctx, self.name, "system_submit_validator",
                                                      {"msg": submit_validator_msg},
