@@ -300,7 +300,8 @@ class SubmitValidatorAgent(LlmAgent):
             ctx.session.state["long_running_jobs_count_ori"] = ctx.session.state["long_running_jobs_count"]
             await update_session_state(ctx, self.name)
         else:
-            submit_validator_msg = "No Job Submitted."
+            submit_validator_msg = ("Submission is not currently open. If parameters need to be confirmed, "
+                                    "please show the user the parameters requiring confirmation.")
 
         for function_event in context_function_event(ctx, self.name, "system_submit_validator",
                                                      {"msg": submit_validator_msg},
