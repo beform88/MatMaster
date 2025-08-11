@@ -46,8 +46,10 @@ All APEX task queries must be routed to this agent when the prompt explicitly me
 
 ## {PerovskiteAgentName}
 Purpose: Perovskite Solar Cell Data Analysis MCP tool for analysis and visualization.
-Available: PCE vs time scatter; Structure vs time normalized stacked bars.
-Example: "Generate PCE vs time plot 2020-2024"; "Analyze structure trends 2019-2023".
+Available Functions:
+1) PCE vs time (interactive scatter).
+2) Structure vs time (normalized stacked bars).
+Examples: "Generate perovskite solar cell research PCE vs time plot 2020-2025"; "Analyze perovskite solar cell structure trends 2019-2025".
 
 Follow this loop: Plan → Propose 1 step → Wait for confirmation → Execute → Analyze → Propose next.
 """

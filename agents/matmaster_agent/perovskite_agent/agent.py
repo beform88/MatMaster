@@ -4,8 +4,6 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.job_agent import (
     BaseAsyncJobAgent,
-    ResultCalculationMCPLlmAgent,
-    SubmitCoreCalculationMCPLlmAgent,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, BohriumStorge, LOCAL_EXECUTOR
 from agents.matmaster_agent.logger import matmodeler_logging_handler
@@ -45,26 +43,10 @@ class PerovskiteAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.deepseek_chat,
-            mcp_tools=[perovskite_toolset],
             agent_name=PerovskiteAgentName,
             agent_description=PerovskiteAgentDescription,
             agent_instruction=PerovskiteAgentInstruction,
-            submit_core_agent_class=SubmitCoreCalculationMCPLlmAgent,
-            submit_core_agent_name=f"{PerovskiteAgentName}_submit_core_agent",
-            submit_core_agent_description="Perovskite plot job submit core agent",
-            submit_core_agent_instruction="Confirm parameters then submit perovskite plotting jobs.",
-            submit_render_agent_name=f"{PerovskiteAgentName}_submit_render_agent",
-            result_core_agent_class=ResultCalculationMCPLlmAgent,
-            result_core_agent_name=f"{PerovskiteAgentName}_result_core_agent",
-            result_core_agent_instruction="Query and render perovskite plot results.",
-            result_transfer_agent_name=f"{PerovskiteAgentName}_result_transfer_agent",
-            result_transfer_agent_instruction="Transfer perovskite tasks if needed.",
-            transfer_agent_name=f"{PerovskiteAgentName}_transfer_agent",
-            transfer_agent_instruction="Route perovskite-related requests.",
-            submit_agent_name=f"{PerovskiteAgentName}_submit_agent",
-            submit_agent_description="Coordinates perovskite plotting submission and frontend display",
-            result_agent_name=f"{PerovskiteAgentName}_result_agent",
-            result_agent_description="Query status and retrieve perovskite plot results",
+            mcp_tools=[perovskite_toolset],
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )
