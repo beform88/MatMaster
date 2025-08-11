@@ -8,36 +8,6 @@ from google.genai import types
 from .tools.database import DatabaseManager
 from ..constant import FRONTEND_STATE_KEY
 
-
-# 回调组合器函数
-def combine_before_model_callbacks(*callbacks) -> Callable:
-    """组合多个 before_model_callback 函数为一个回调链
-    
-    该函数解决了 ADK 框架不直接支持回调列表的问题，通过创建一个组合回调函数，
-    按顺序执行多个回调，直到其中一个返回非 None 值或全部执行完毕。
-    
-    Args:
-        *callbacks: 可变数量的回调函数，每个函数应有签名：
-                   async def callback(CallbackContext, LlmRequest) -> Optional[LlmResponse]
-                   
-    Returns:
-        Callable: 组合后的回调函数，可直接用于 before_model_callback 参数
-        
-    Example:
-        >>> combined = combine_before_model_callbacks(rate_limit_callback, custom_callback)
-        >>> agent = LlmAgent(..., before_model_callback=combined)
-    """
-    async def combined_callback(callback_context: CallbackContext, llm_request: LlmRequest) -> Optional[LlmResponse]:
-        """按顺序执行所有回调函数，如果任一返回非None值则停止并返回该值"""
-        for callback in callbacks:
-            if callback is not None:
-                result = await callback(callback_context, llm_request)
-                if result is not None:
-                    return result
-        return None
-    return combined_callback
-
-
 def combine_after_model_callbacks(*callbacks) -> Callable:
     """组合多个 after_model_callback 函数为一个回调链
     
@@ -65,7 +35,7 @@ def combine_after_model_callbacks(*callbacks) -> Callable:
 def init_chembrain_before_agent(llm_config):
     """prepare state before agent runs"""
 
-    def chembrain_before_agent(callback_context: CallbackContext) -> Union[types.Content, None]:
+    async def chembrain_before_agent(callback_context: CallbackContext) -> Union[types.Content, None]:
         callback_context.state[FRONTEND_STATE_KEY] = callback_context.state.get(FRONTEND_STATE_KEY, {})
         callback_context.state[FRONTEND_STATE_KEY]['biz'] = callback_context.state[FRONTEND_STATE_KEY].get('biz', {})
 
@@ -73,6 +43,7 @@ def init_chembrain_before_agent(llm_config):
         callback_context.state['current_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         callback_context.state['db_name'] = 'polymer_db' # 使用默认数据库
         db_manager = DatabaseManager('polymer_db')
+        await db_manager.async_init() # Call the async init method
         callback_context.state['available_tables'] = db_manager.table_schema
 
         prompt = ""
@@ -104,16 +75,12 @@ def init_chembrain_before_agent(llm_config):
 
 # before_model_callback
 async def chembrain_before_model(callback_context: CallbackContext, llm_request: LlmRequest) -> Optional[LlmResponse]:
-    # 这个函数目前不做任何处理，保留用于扩展
-    _ = callback_context, llm_request  # 避免未使用参数警告
-    return None
+    return
 
 
 # after_model_callback
 async def chembrain_after_model(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
-    # 这个函数目前不做任何处理，保留用于扩展
-    _ = callback_context, llm_response  # 避免未使用参数警告
-    return None
+    return
 
 
 def enforce_single_tool_call(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:

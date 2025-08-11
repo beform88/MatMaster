@@ -110,8 +110,8 @@ def init_deep_research_agent(llm_config):
     report_agent = init_report_agent(llm_config)
 
     root_agent = SequentialAgent(
-        name="deep_research_agent",
-        description="The agent to perform deep research literature review and generate a scientific report",
+        name="poly_deep_research_agent",
+        description="Summarize the content of single/multiple papers to generate a review or report.",
         sub_agents=[paper_group_agent, report_agent],
         before_agent_callback=paper_list_before_agent
     )
