@@ -58,6 +58,7 @@ For alloy property calculations, you have several specialized tools:
    - Density optimization via genetic algorithms
 
 4. **{DPACalulator_AGENT_NAME}** - **Deep potential simulations**
+   - Structure building (including bulk, interface, molecule, and adsorbates) and optimization
    - Molecular dynamics for alloys
    - Phonon calculations
    - Elastic constants via ML potentials
@@ -159,8 +160,7 @@ Purpose:
     Finally it reports the best composition and its corresponding TEC/density.
 
 Example Queries:
-- "查找3个包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
-- "查找一个 OZr 的结构，我想要全部信息。"
+- "设计一个TEC < 5的INVAR合金，要求包含Fe、Ni、Co、Cr元素, 其中Fe的比例大于0.35"
 
 - {ORGANIC_REACTION_AGENT_NAME}
 Purpose:
