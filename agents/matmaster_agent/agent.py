@@ -101,10 +101,9 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
 
 
 def init_matmaster_agent() -> LlmAgent:
-    matmodeler_agent = MatMasterAgent(MatMasterLlmConfig)
-    track_adk_agent_recursive(matmodeler_agent, MatMasterLlmConfig.opik_tracer)
-
-    return matmodeler_agent
+    matmaster_agent = MatMasterAgent(MatMasterLlmConfig)
+    track_adk_agent_recursive(matmaster_agent, MatMasterLlmConfig.opik_tracer)
+    return matmaster_agent
 
 
 # Global instance of the agent

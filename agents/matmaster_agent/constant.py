@@ -37,8 +37,8 @@ BohriumExecutor = {
         "batch_type": "OpenAPI",
         "context_type": "OpenAPI",
         "remote_profile": {
-        "access_key": os.getenv("BOHRIUM_ACCESS_KEY"),
-        "project_id": os.getenv("BOHRIUM_PROJECT_ID"),
+            "access_key": "",
+            "project_id": -1,
             "app_key": "agent",
             "image_address": "registry.dp.tech/dptech/dp/native/prod-19853/dpa-mcp:0.0.0",
             "platform": "ali",
