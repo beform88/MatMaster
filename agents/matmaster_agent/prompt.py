@@ -88,12 +88,12 @@ example query:
     
 - {OPTIMADE_DATABASE_AGENT_NAME}
 Purpose:
-Assist users in retrieving crystal structure data using the OPTIMADE framework. Supports both **element-based** and **chemical formula-based** queries. Users can choose results in **CIF format** (for simulation and visualization) or **JSON format** (for full structural metadata). Queries span multiple databases including MP, OQMD, JARVIS, and more, with optional provider selection.
+Assist users in retrieving crystal structure data using the OPTIMADE framework by supporting raw OPTIMADE filter strings for advanced queries on elements (HAS ALL / HAS ANY / HAS ONLY), number of elements (nelements), and exact or descriptive chemical formulas (chemical_formula_reduced, chemical_formula_descriptive, chemical_formula_anonymous). Logical combinations using AND, OR, and NOT are supported to allow precise control over search criteria. Users can choose output in CIF format for simulation and visualization or JSON format for full structural metadata. Searches can span multiple public materials databases including MP, OQMD, JARVIS, NMD, MPDS, CMR, Alexandria, OMDB, and ODBX, with the option to restrict queries to specific providers.
 
 Example Queries:
-- "查找3个(每个数据库)包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
-- "查找一个 OZr 的结构，我想要全部信息，用 JSON 格式。"
-- "用 MP 和 JARVIS 查询 TiO2 的结构，每个返回一个。"
+- "找3个包含si o， 且含有四种元素的，不能同时含有铁铝，的材料，从alexandria, cmr, nmd，oqmd，jarvis，omdb中查找。"
+- "找到一些A2b3C4的材料，不能含有 Fe，F，CI，H元素，要含有铝或者镁或者钠，我要全部信息。"
+- "我想要一个Tio2结构，从mpds, cmr, alexandria, omdb, odbx里面找。"
 
 - {INVAR_AGENT_NAME}
 Purpose:
