@@ -22,8 +22,7 @@ BohriumStorge = {
     "plugin": {
         "type": "bohrium",
         "access_key": "",
-        "access_key": os.getenv("BOHRIUM_ACCESS_KEY"),
-        "project_id": os.getenv("BOHRIUM_PROJECT_ID"),
+        "project_id": -1,
         "app_key": "agent"
     }
 }
