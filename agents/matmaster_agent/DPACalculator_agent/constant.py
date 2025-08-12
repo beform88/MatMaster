@@ -6,7 +6,7 @@ DPACalulator_AGENT_NAME = "dpa_calculator_agent"
 if CURRENT_ENV in ["test", "uat"]:
     DPAMCPServerUrl = "http://pfmx1355864.bohrium.tech:50001/sse"
 else:
-    DPAMCPServerUrl = "https://2b1905b5d4641830901acf76c957cfb1.app-space.dplink.cc/sse?token=c8470446801844a0a4f0e9f85f7f5587"
+    DPAMCPServerUrl = "https://dpa-uuid1750659890.app-space.dplink.cc/sse?token=7c2e8de61ec94f4e80ebcef1ac17c92e"
 DPACalulator_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 DPACalulator_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["image_address"] = \
     "registry.dp.tech/dptech/dpa-calculator:9fb11626"
