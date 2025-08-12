@@ -138,3 +138,20 @@ async def parse_result(result: dict) -> List[dict]:
         else:
             parsed_result.append({"status": "error", "msg": f"{k}({type(v)}) is not supported parse, v={v}"})
     return parsed_result
+
+
+def get_same_function_call(current_function_calls: List):
+    first_function_call = current_function_calls[0]
+    repeat_index = []
+
+    for index, function_call in enumerate(current_function_calls[1:]):
+        if (
+                function_call.name == first_function_call.name and
+                json.dumps(function_call.args, sort_keys=True) == json.dumps(first_function_call.args, sort_keys=True)
+        ):
+            repeat_index.append(index + 1)
+
+    if repeat_index:
+        return repeat_index
+    else:
+        return

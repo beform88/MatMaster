@@ -13,8 +13,8 @@ from pydantic import Field
 
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
     catch_before_tool_callback_error, check_job_create, set_dpdispatcher_env, get_ak_projectId, \
-    default_after_tool_callback, \
-    _get_ak, _get_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error
+    default_after_tool_callback, _get_ak, _get_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
+    default_after_model_callback
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -67,8 +67,8 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                  global_instruction='', tools=None, output_key=None,
                  before_agent_callback=None, before_model_callback=None,
                  before_tool_callback=default_before_tool_callback, after_tool_callback=default_after_tool_callback,
-                 after_model_callback=None, after_agent_callback=None, loading=False, render_tool_response=False,
-                 disallow_transfer_to_parent=False):
+                 after_model_callback=default_after_model_callback, after_agent_callback=None, loading=False,
+                 render_tool_response=False, disallow_transfer_to_parent=False):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
         Args:
