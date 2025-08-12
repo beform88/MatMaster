@@ -24,6 +24,7 @@ ABACUS_AGENT_INSTRUCTION = """
                 "Do not try to modify the input files without explicit permission when errors occured."
                 "The LCAO basis is prefered."
                 "If path to output files are provided, always tell the users the path to output files in the response."
+                "`abacus_collect_data` **SHOULD NOT BE USED** after any tool function finished unless explicitly requested."
 """
 
 
