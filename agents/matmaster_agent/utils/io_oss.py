@@ -67,23 +67,16 @@ async def file_to_base64(file_path: Path) -> Tuple[Path, str]:
 
 # Step3: Upload to OSS
 async def upload_to_oss_wrapper(b64_data: str, oss_path: str, filename: str) -> Dict[str, dict]:
-    def _sync_upload_base64_to_oss(data: str, oss_path: str) -> dict:
+    def _sync_upload_base64_to_oss(data: str, oss_path: str) -> str:
         try:
             auth = oss2.ProviderAuth(EnvironmentVariableCredentialsProvider())
             endpoint = os.environ["OSS_ENDPOINT"]
             bucket_name = os.environ["OSS_BUCKET_NAME"]
             bucket = oss2.Bucket(auth, endpoint, bucket_name)
-
             bucket.put_object(oss_path, base64.b64decode(data))
-            return {
-                "status": "success",
-                "oss_path": f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}",
-            }
+            return f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}"
         except Exception as e:
-            logger.exception(
-                f"[upload_base64_to_oss] OSS 上传失败: oss_path={oss_path} error={str(e)}"
-            )
-            return {"status": "error", "reason": str(e)}
+            return str(e)
 
     async def upload_base64_to_oss(data: str, oss_path: str) -> dict:
         return await asyncio.to_thread(_sync_upload_base64_to_oss, data, oss_path)

@@ -17,10 +17,11 @@ MODEL_MAPPING = {
     ("openai", "claude-sonnet-4-20250514"): "openai/claude-sonnet-4-20250514",
     ("openai", "gemini-2.5-flash-preview-05-20"): "openai/gemini-2.5-flash-preview-05-20",
     ("azure", "gpt-4o"): "azure/gpt-4o",
+    ("azure", "gpt-4o-mini"): "azure/gpt-4o-mini",
     ("litellm_proxy", "gemini-2.0-flash"): "litellm_proxy/gemini-2.0-flash",
     ("litellm_proxy", "gemini-2.5-flash"): "litellm_proxy/gemini-2.5-flash",
     # ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini/gemini-2.5-pro",
-    ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini-2.5-pro-preview-06-05",
+    ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini-2.5-pro",
     ("litellm_proxy", "claude-sonnet-4"): "litellm_proxy/claude-sonnet-4",
     # ("gemini", "gemini1.5-turbo"): "gemini/gemini1.5-turbo",
     # ("gemini", "gemini2.5-pro"): "gemini/gemini-2.5-pro-preview-03-25",
@@ -50,6 +51,7 @@ class LLMConfig(object):
         deepseek_provider = "deepseek"
 
         gpt_4o = "gpt-4o"
+        gpt_4o_mini = "gpt-4o-mini"
         gemini_2_5_flash = "gemini-2.5-flash"
         gemini_2_0_flash = "gemini-2.0-flash"
         gemini_2_5_pro = "gemini-2.5-pro"

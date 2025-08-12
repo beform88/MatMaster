@@ -1,62 +1,17 @@
-import json
-from typing import Any, Dict
-
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
-from google.adk.tools.tool_context import ToolContext
-from mcp.types import CallToolResult
 
 from agents.matmaster_agent.base_agents.job_agent import CalculationMCPLlmAgent
 from agents.matmaster_agent.constant import BohriumStorge
-from agents.matmaster_agent.logger import logger
 from agents.matmaster_agent.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
+    TrajAnalysisMCPServerUrl,
 )
-from agents.matmaster_agent.utils.helper_func import is_json
-
-
-async def before_tool_callback(tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext):
-    agent_name = tool_context.agent_name
-    tool_name = tool.name
-    print(f"[Callback] Before tool call for tool '{tool_name}' in agent '{agent_name}'")
-    print(f"[Callback] Args: {args}")
-
-
-async def after_tool_callback(tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext,
-                              tool_response: CallToolResult):
-    """轨迹处理工具的后处理，将base64图像上传至OSS并生成Markdown格式"""
-    tool_info = {
-        "after": {
-            'tool_name': tool.name,
-            'tool_args': args,
-            'tool_response': tool_response.content[0].text if (tool_response and len(tool_response.content)) else None
-        }
-    }
-
-    # 检查是否有有效的图像数据
-    if not (tool_response and
-            tool_response.content and
-            tool_response.content[0].text and
-            is_json(tool_response.content[0].text) and
-            json.loads(tool_response.content[0].text).get('plot', None) is not None):
-        print("[Callback] Tool response is not JSON")
-        return None
-
-    try:
-        markdown_image = f"![traj_png]({json.loads(tool_response.content[0].text)['plot']})"
-        tool_info['after']['tool_response'] = markdown_image
-        return markdown_image
-    except Exception as e:
-        logger.error(f"Failed to process traj image: {str(e)}")
-    return None
-
 
 toolset = CalculationMCPToolset(
     connection_params=SseServerParams(
-        url="https://traj-analysis-mcp-uuid1753018121.app-space.dplink.cc/sse?"
-            "token=5e75ed9197b741dcb267612ca20a096d"
+        url=TrajAnalysisMCPServerUrl
     ),
     storage=BohriumStorge
 )
@@ -91,7 +46,5 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         Prioritizes displaying analysis plots in embedded Markdown format
         Also provides downloadable image file links
         """,
-        tools=[toolset],
-        before_tool_callback=before_tool_callback,
-        after_tool_callback=after_tool_callback
+        tools=[toolset]
     )

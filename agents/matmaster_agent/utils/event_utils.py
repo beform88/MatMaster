@@ -1,5 +1,6 @@
 import traceback
 import uuid
+from typing import Iterable
 from typing import Optional
 
 from google.adk.agents.invocation_context import InvocationContext
@@ -152,26 +153,40 @@ async def send_error_event(err, ctx, author, error_handle_agent=None):
     if not error_handle_agent:
         error_handle_agent = ctx.agent.parent_agent
 
-    # 构建更详细的错误信息
-    error_details = [
-        f"Exception Group caught with {len(err.exceptions)} exceptions:",
-        f"Message: {str(err)}",
-        "\nIndividual exceptions:"
-    ]
+    # 判断是否是异常组
+    if isinstance(err, BaseExceptionGroup):
+        error_details = [
+            f"Exception Group caught with {len(err.exceptions)} exceptions:",
+            f"Message: {str(err)}",
+            "\nIndividual exceptions:"
+        ]
+        exceptions: Optional[Iterable[BaseException]] = err.exceptions
+    else:
+        error_details = [
+            "Single Exception caught:",
+            f"Type: {type(err).__name__}",
+            f"Message: {str(err)}",
+            "\nTraceback:",
+            "".join(traceback.format_tb(err.__traceback__))
+        ]
+        exceptions = None  # 单一异常时不再循环子异常
 
-    # 添加每个子异常的详细信息
-    for i, exc in enumerate(err.exceptions, 1):
-        error_details.append(f"\nException #{i}:")
-        error_details.append(f"Type: {type(exc).__name__}")
-        error_details.append(f"Message: {str(exc)}")
-        error_details.append(f"Traceback: {''.join(traceback.format_tb(exc.__traceback__))}")
+    # 如果是异常组，逐个子异常处理
+    if exceptions:
+        for i, exc in enumerate(exceptions, 1):
+            error_details.append(f"\nException #{i}:")
+            error_details.append(f"Type: {type(exc).__name__}")
+            error_details.append(f"Message: {str(exc)}")
+            error_details.append(f"Traceback: {''.join(traceback.format_tb(exc.__traceback__))}")
 
-    # 将所有信息合并为一个字符串
+    # 合并错误信息
     detailed_error = "\n".join(error_details)
-    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+
+    # 发送系统错误事件
     for event in context_function_event(ctx, author, "system_detail_error",
                                         {"msg": detailed_error}, ModelRole):
         yield event
 
+    # 调用错误处理 Agent
     async for error_event in error_handle_agent.run_async(ctx):
         yield error_event

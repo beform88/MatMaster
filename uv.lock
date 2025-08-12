@@ -7,15 +7,6 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "absolufy-imports"
-version = "0.3.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/74/0f/9da9dc9a12ebf4622ec96d9338d221e0172699e7574929f65ec8fdb30f9c/absolufy_imports-0.3.1.tar.gz", hash = "sha256:c90638a6c0b66826d1fb4880ddc20ef7701af34192c94faf40b95d32b59f9793", size = 4724 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/a4/b65c9fbc2c0c09c0ea3008f62d2010fd261e62a4881502f03a6301079182/absolufy_imports-0.3.1-py2.py3-none-any.whl", hash = "sha256:49bf7c753a9282006d553ba99217f48f947e3eef09e18a700f8a82f75dc7fc5c", size = 5937 },
-]
-
-[[package]]
 name = "aiofiles"
 version = "24.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -607,10 +598,9 @@ wheels = [
 
 [[package]]
 name = "google-adk"
-version = "1.9.0"
+version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "absolufy-imports" },
     { name = "anyio" },
     { name = "authlib" },
     { name = "click" },
@@ -640,9 +630,9 @@ dependencies = [
     { name = "watchdog" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f5/27/edb76b8ebff0b27ec517de4238ae4e3a1c0649cd23807cd6afc08a34a644/google_adk-1.9.0.tar.gz", hash = "sha256:b76df1a816c2e177e1aee525d980b9a3c1143a2a5343e39905cf161390f06856", size = 1606399 }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/66/9f8e03226c6205e4ae9472e19f8470db6ecdadc1cfd2ad683e60bb7a8f95/google_adk-1.7.0.tar.gz", hash = "sha256:1bb86371e794e9ec73e0cc45bca529512862ecb5cd57132e77262b0de3f88dec", size = 1560499 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3c/c0/7ea1c2406281790004b01572e6728302d51958efc38a31ea0fa5506b9ed0/google_adk-1.9.0-py3-none-any.whl", hash = "sha256:b476271a2aedcbcdf2f1ce5d41a6dabde9f1c596a70258832d4afdb527fc589a", size = 1828708 },
+    { url = "https://files.pythonhosted.org/packages/db/3f/fd6c0780ff34531d3f4cd1551db206a2f9906fadee6d6f0cd3c83fb63521/google_adk-1.7.0-py3-none-any.whl", hash = "sha256:924bb7d65771ae6c03e0ab64d4e3a3a4d0fb02682faeb7735c2be302adade94c", size = 1750509 },
 ]
 
 [[package]]
@@ -1495,9 +1485,9 @@ dependencies = [
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "bohr-agent-sdk", specifier = ">=0.1.23" },
-    { name = "google-adk", specifier = ">=1.7.0" },
+    { name = "google-adk", specifier = "==1.7.0" },
     { name = "opik", specifier = ">=1.8.6" },
-    { name = "oss2", specifier = "==2.18.0" },
+    { name = "oss2", specifier = ">=2.18.0" },
     { name = "pymysql", specifier = ">=1.1.1" },
 ]
 
