@@ -66,7 +66,7 @@ class LLMConfig(object):
                     DEFAULT_MODEL
                 )
             )
-
+        
         self.gpt_4o_mini = _init_model(gpt_provider, gpt_4o_mini)
         self.gpt_4o = _init_model(gpt_provider, gpt_4o)
         self.gemini_2_0_flash = _init_model(litellm_provider, gemini_2_0_flash)
