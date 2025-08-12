@@ -62,11 +62,22 @@ async def default_before_tool_callback(tool, args, tool_context):
     return
 
 
-def _get_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
-    session_state = ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
-    access_key = session_state[FRONTEND_STATE_KEY]['biz'].get('ak', None)
-    if access_key is None:
-        access_key = os.getenv("BOHRIUM_ACCESS_KEY", None)
+def _get_session_state(ctx: Union[InvocationContext, ToolContext]):
+    return ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
+
+
+def _get_ak(ctx: Union[InvocationContext, ToolContext]):
+    session_state = _get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv("BOHRIUM_ACCESS_KEY")
+
+
+def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
+    session_state = _get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv("BOHRIUM_PROJECT_ID")
+
+
+def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
+    access_key = _get_ak(ctx)
     if access_key is not None:
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
@@ -78,11 +89,8 @@ def _get_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
     return access_key, executor, storage
 
 
-def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
-    session_state = ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
-    project_id = session_state[FRONTEND_STATE_KEY]['biz'].get('projectId', None)
-    if project_id is None:
-        project_id = os.getenv("BOHRIUM_PROJECT_ID", None)
+def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
+    project_id = _get_projectId(ctx)
     if project_id is not None:
         if executor is not None:
             if executor['type'] == "dispatcher":  # BohriumExecutor
@@ -98,8 +106,10 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage
     return project_id, executor, storage
 
 
-def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
-    access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
+def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
+    access_key = _get_ak(ctx)
+    if not access_key:
+        raise ValueError("AccessKey not found")
     username = ak_to_username(access_key=access_key)
     if username:
         if executor is not None:
@@ -116,8 +126,8 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
         raise RuntimeError("Failed to get username")
 
 
-def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
-    access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
+def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
+    access_key = _get_ak(ctx)
     if not access_key:
         raise ValueError("AccessKey not found")
     ticket = ak_to_ticket(access_key=access_key)
@@ -135,11 +145,7 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
         raise RuntimeError("Failed to get ticket")
 
 
-def _get_current_env(executor):
-    if CURRENT_ENV:
-        current_env = CURRENT_ENV
-    else:
-        current_env = "prod"
+def _inject_current_env(executor):
     if executor is not None:
         if executor['type'] == "dispatcher":  # BohriumExecutor
             # Redundant set for resources/envs keys
@@ -148,10 +154,10 @@ def _get_current_env(executor):
             executor['resources']['envs']['CURRENT_ENV'] = str(CURRENT_ENV)
         elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
             executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
-    return current_env, executor
+    return executor
 
 
-def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
+def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
         # 两步操作：
@@ -169,14 +175,13 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
             raise TypeError("Not CalculationMCPTool type, current tool does not have <storage>")
 
         # 获取 access_key
-
-        access_key, tool.executor, tool.storage = _get_ak(tool_context, tool.executor, tool.storage)
+        access_key, tool.executor, tool.storage = _inject_ak(tool_context, tool.executor, tool.storage)
         if access_key is None:
             raise ValueError("Failed to get access_key")
 
         # 获取 project_id
         try:
-            project_id, tool.executor, tool.storage = _get_projectId(tool_context, tool.executor, tool.storage)
+            project_id, tool.executor, tool.storage = _inject_projectId(tool_context, tool.executor, tool.storage)
         except ValueError as e:
             raise ValueError("ProjectId is invalid") from e
         if project_id is None:
@@ -188,7 +193,7 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
     return wrapper
 
 
-def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
+def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
         # 先执行前面的回调链
@@ -196,13 +201,23 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
             return before_tool_result
 
         # 注入 username
-        _, tool.executor = _get_username(tool_context, tool.executor)
+        _, tool.executor = _inject_username(tool_context, tool.executor)
 
         # 注入 ticket
-        _, tool.executor = _get_ticket(tool_context, tool.executor)
+        _, tool.executor = _inject_ticket(tool_context, tool.executor)
+
+    return wrapper
+
+
+def inject_current_env(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+        # 先执行前面的回调链
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
 
         # 注入当前环境
-        _, tool.executor = _get_current_env(tool.executor)
+        tool.executor = _inject_current_env(tool.executor)
 
     return wrapper
 
