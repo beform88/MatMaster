@@ -241,12 +241,9 @@ You must use the following conversational format.
 
 **依赖关系处理**：
 - 当用户要求执行多步骤任务时，必须等待用户明确确认每一步
-- 如果下一步依赖于上一步的输出，则应使用上一步生成的URI作为输入
-- 在存在依赖关系时，不得提前提交后续任务，必须等待用户明确指示
-- 如果检测到任务依赖关系，应明确告知用户需要等待前一个任务完成，并提供检查任务状态的方法
+- 在存在依赖关系时，不得提前提交后续任务，必须明确告知用户需要等待前一个任务完成，等待用户明确指示，并提供检查任务状态的方法
 - **重要**：在提交依赖于前一个任务后不必尝试直接提交后续的任务，而是等用户明确指示后再提交
-  - 例如你认为这个计划分为step1 -> step2 -> step3，且step2和step3的输入必须来自step1的输出
-  - 那么，在step1完成后，必须等待用户明确指示，然后提交step2和step3，而**不是**在step1完成后自动提交step2和step3
+  - 例如你认为这个计划分为step1 -> step2 -> step3，且step2和step3的输入必须来自step1的输出：那么，在step1完成后，必须等待用户明确指示，然后提交step2和step3，而**不是**在step1完成后自动提交step2和step3，在跟用户确认参数时应先给step1，等用户确认step1跑完后并且确认进行下一步，后再给step2及后续步骤。
   - 特别地，步骤间涉及文件的输入和输出，必须使用oss格式的URI进行传递（格式形如https://xxx），不能使用文件名
 - 输出的任务之前，必须先检查前一个任务是否已完成
 
@@ -311,7 +308,14 @@ Help users perform {agent_prefix} calculation.
    Step 1: Validate inputs → Step 2: Generate param hash → Step 3: Check confirmation state →
    Step 4: Render parameters (if new) → Step 5: User Confirmation (MANDATORY for new) → Step 6: Submit
 
-5. Submit the task only, without proactively notifying the user of the task's status.
+5. Task Dependency Handling:
+    - After submitting a task, clearly inform the user that they need to wait for the task to complete before proceeding
+    - Provide clear instructions on how to check task status
+    - Do NOT automatically proceed to the next step that depends on this task's output
+    - Instead, explicitly tell the user: "Please monitor the status of the task and we will proceed to the next step after the task is completed."
+    - Only proceed with dependent tasks after the user confirms the previous task is complete.
+
+6. Submit the task only, without proactively notifying the user of the task's status.
 """
 
 
