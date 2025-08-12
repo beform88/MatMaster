@@ -11,7 +11,6 @@ from agents.matmaster_agent.crystalformer_agent.constant import CrystalformerAge
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
 from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
-from agents.matmaster_agent.ssebrain_agent.constant import SSE_DATABASE_AGENT_NAME, SSE_DEEP_RESEARCH_AGENT_NAME
 from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
 
 GlobalInstruction = """
@@ -136,11 +135,11 @@ For alloy property calculations, you have several specialized tools:
       - "生成 Fe-Ni 的凸包数据"  
 
 13. **{OPTIMADE_DATABASE_AGENT_NAME}**
-    - Purpose: Assist users in retrieving crystal structure data using the OPTIMADE framework. Supports both **element-based** and **chemical formula-based** queries. Users can choose results in **CIF format** (for simulation and visualization) or **JSON format** (for full structural metadata). Queries span multiple databases including MP, OQMD, JARVIS, and more, with optional provider selection.
+    - Purpose: Assist users in retrieving crystal structure data using the OPTIMADE framework by supporting raw OPTIMADE filter strings for advanced queries on elements (HAS ALL / HAS ANY / HAS ONLY), number of elements (nelements), and exact or descriptive chemical formulas (chemical_formula_reduced, chemical_formula_descriptive, chemical_formula_anonymous). Logical combinations using AND, OR, and NOT are supported to allow precise control over search criteria. Users can choose output in CIF format for simulation and visualization or JSON format for full structural metadata. Searches can span multiple public materials databases including MP, OQMD, JARVIS, NMD, MPDS, CMR, Alexandria, OMDB, and ODBX, with the option to restrict queries to specific providers.
     - Example Queries:
-      - "查找3个(每个数据库)包含 Al、O、Mg 的晶体结构，并保存为 CIF 文件。"
-      - "查找一个 OZr 的结构，我想要全部信息，用 JSON 格式。"
-      - "用 MP 和 JARVIS 查询 TiO2 的结构，每个返回一个。"
+      - "找3个包含si o， 且含有四种元素的，不能同时含有铁铝，的材料，从alexandria, cmr, nmd，oqmd，jarvis，omdb中查找。"
+      - "找到一些A2b3C4的材料，不能含有 Fe，F，CI，H元素，要含有铝或者镁或者钠，我要全部信息。"
+      - "我想要一个Tio2结构，从mpds, cmr, alexandria, omdb, odbx里面找。"
 
 14. **{INVAR_AGENT_NAME}**
     - Purpose: Optimize compositions via genetic algorithms (GA) to find low thermal expansion coefficients (TEC) with low density.
@@ -158,32 +157,7 @@ For alloy property calculations, you have several specialized tools:
       - "帮我计算CC(N=[N+]=[N-])=O>>CN=C=O.N#N反应的过渡态。"
       - "The reactants are known to be C=C and C=CC=C, and the product is C1=CCCCC1. Please help me find the possible transitions and the entire reaction path."
 
-16. **{SSE_DATABASE_AGENT_NAME}**
-    - Purpose: Specialized database query agent for solid-state electrolyte research. It helps users:
-      1. Query structured data about solid-state electrolytes including performance metrics, process parameters, and crystal structure data
-      2. Search for electrolytes with specific properties like high ionic conductivity and good air stability
-      3. Retrieve the most relevant papers from the database and return paper metadata in markdown tables
-      4. Support complex multi-table queries combining electrolyte properties with publication information
-    - Example Queries:
-      - "Find solid electrolytes with ionic conductivity > 2 mS/cm published in tier 1 journals"
-      - "Search for air-stable sulfide-based solid electrolytes"
-      - "Query solid electrolytes with specific crystal structures and their associated papers"
-
-17. **{SSE_DEEP_RESEARCH_AGENT_NAME}**
-    - Purpose: Deep literature research agent for solid-state electrolyte field. This agent performs comprehensive literature reviews by:
-      1. **Prerequisite**: Requires results from {SSE_DATABASE_AGENT_NAME} as the knowledge source - never call without database results first
-      2. Reading and analyzing multiple research papers simultaneously using parallel processing
-      3. Generating comprehensive scientific reports with literature synthesis
-      4. Providing in-depth analysis of mechanisms, novel research trends, and complex scientific topics
-      5. Creating structured reports for understanding research progress and knowledge gaps
-    - Example Use Cases:
-      - "Generate a literature review on the latest progress in ion conductivity of solid electrolytes"
-      - "Analyze research trends in air stability mechanisms of solid electrolytes" 
-      - "Create a comprehensive report on sulfide-based electrolyte developments"
-
-**⚠️ Important**: Always use {SSE_DATABASE_AGENT_NAME} first to gather relevant papers, then use this agent for deep analysis.
-
-18. **{PerovskiteAgentName}**
+16. **{PerovskiteAgentName}**
     - Purpose: Perovskite Solar Cell Data Analysis MCP tool for analysis and visualization.
     - Available Functions:
       1) PCE vs time (interactive scatter).

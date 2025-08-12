@@ -1,4 +1,6 @@
+import copy
 import json
+import logging
 import os
 import traceback
 from functools import wraps
@@ -6,8 +8,10 @@ from typing import Optional, Union
 
 import aiohttp
 from dp.agent.adapter.adk import CalculationMCPTool
+from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.agents.llm_agent import AfterToolCallback, BeforeToolCallback
+from google.adk.models import LlmResponse
 from google.adk.tools import BaseTool, ToolContext
 from mcp.types import CallToolResult
 
@@ -18,8 +22,39 @@ from agents.matmaster_agent.constant import (
     Transfer2Agent,
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
-from agents.matmaster_agent.utils.helper_func import is_json
+from agents.matmaster_agent.utils.helper_func import is_json, get_same_function_call
 from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload
+
+logger = logging.getLogger(__name__)
+
+
+# after_model_callback
+async def default_after_model_callback(callback_context: CallbackContext,
+                                       llm_response: LlmResponse) -> Optional[LlmResponse]:
+    # 检查响应是否有效
+    if not (llm_response and llm_response.content and llm_response.content.parts and len(llm_response.content.parts)):
+        return None
+
+    # 获取所有函数调用
+    current_function_calls = [part.function_call for part in llm_response.content.parts if part.function_call]
+
+    # 如果没有函数调用，直接返回
+    if not current_function_calls:
+        return None
+
+    # 处理多个函数调用的情况
+    if len(current_function_calls) > 1:
+        logger.info("Count of Function Calls > 1, check name & args now")
+        repeat_indexes = get_same_function_call(current_function_calls)
+
+        if repeat_indexes is not None:
+            logger.info("Same Function Calls Detected, Remove Now")
+            # 创建不包含重复索引的新部分列表
+            llm_response.content.parts = [part for index, part in enumerate(copy.deepcopy(llm_response.content.parts))
+                                          if index not in repeat_indexes]
+            return llm_response
+
+    return None
 
 
 # before_tool_callback
