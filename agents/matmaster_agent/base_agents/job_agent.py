@@ -14,7 +14,7 @@ from pydantic import Field
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
     catch_before_tool_callback_error, check_job_create, inject_username_ticket, inject_ak_projectId, \
     default_after_tool_callback, _inject_ak, _inject_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
-    default_after_model_callback, inject_current_env
+    default_after_model_callback, inject_current_env, inject_machineType
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -98,11 +98,13 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
         # Todo: support List[before_tool_callback]
         before_tool_callback = catch_before_tool_callback_error(
-            check_job_create(
-                inject_current_env(
-                    inject_username_ticket(
-                        inject_ak_projectId(
-                            before_tool_callback
+            inject_machineType(
+                check_job_create(
+                    inject_current_env(
+                        inject_username_ticket(
+                            inject_ak_projectId(
+                                before_tool_callback
+                            )
                         )
                     )
                 )
