@@ -47,6 +47,9 @@ from agents.matmaster_agent.ssebrain_agent.agent import (
 from agents.matmaster_agent.chembrain_agent.agent import (
     init_chembrain_agent,
 )
+from agents.matmaster_agent.perovskite_agent.agent import (
+    init_perovskite_agent,
+)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -67,6 +70,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         hea_calculator_agent = init_hea_calculator_agent(llm_config, use_deepseek=True)
         ssebrain_agent = init_solid_state_electrolyte_research_agent(llm_config)
         chembrain_agent = init_chembrain_agent(llm_config)
+        perovskite_agent = init_perovskite_agent(llm_config, use_deepseek=True)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -87,6 +91,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 hea_calculator_agent,
                 ssebrain_agent,
                 chembrain_agent,
+                perovskite_agent,
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
