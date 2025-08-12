@@ -155,3 +155,13 @@ def get_same_function_call(current_function_calls: List):
         return repeat_index
     else:
         return
+
+
+def check_None_wrapper(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)  # 注意这里应该是 *args, **kwargs 而不是 args, kwargs
+        if result is None:
+            raise ValueError(f"'{func.__name__.replace("_get_", "")}' was not found, please provide it!")
+        return result  # 通常装饰器应该返回原函数的结果
+
+    return wrapper

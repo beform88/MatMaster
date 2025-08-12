@@ -22,7 +22,7 @@ from agents.matmaster_agent.constant import (
     Transfer2Agent,
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
-from agents.matmaster_agent.utils.helper_func import is_json, get_same_function_call
+from agents.matmaster_agent.utils.helper_func import is_json, get_same_function_call, check_None_wrapper
 from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload
 
 logger = logging.getLogger(__name__)
@@ -66,11 +66,13 @@ def _get_session_state(ctx: Union[InvocationContext, ToolContext]):
     return ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
 
 
+@check_None_wrapper
 def _get_ak(ctx: Union[InvocationContext, ToolContext]):
     session_state = _get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv("BOHRIUM_ACCESS_KEY")
 
 
+@check_None_wrapper
 def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
     session_state = _get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv("BOHRIUM_PROJECT_ID")
@@ -78,38 +80,34 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
 
 def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
     access_key = _get_ak(ctx)
-    if access_key is not None:
-        if executor is not None:
-            if executor['type'] == "dispatcher":  # BohriumExecutor
-                executor['machine']['remote_profile']['access_key'] = access_key
-            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
-                executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
-        if storage is not None:  # BohriumStorage
-            storage['plugin']['access_key'] = access_key
+    if executor is not None:
+        if executor['type'] == "dispatcher":  # BohriumExecutor
+            executor['machine']['remote_profile']['access_key'] = access_key
+        elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
+            executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
+    if storage is not None:  # BohriumStorage
+        storage['plugin']['access_key'] = access_key
     return access_key, executor, storage
 
 
 def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
     project_id = _get_projectId(ctx)
-    if project_id is not None:
-        if executor is not None:
-            if executor['type'] == "dispatcher":  # BohriumExecutor
-                executor['machine']['remote_profile']['project_id'] = int(project_id)
-                # Redundant set for resources/envs keys
-                executor["resources"] = executor.get("resources", {})
-                executor["resources"]["envs"] = executor["resources"].get("envs", {})
-                executor["resources"]["envs"]["BOHRIUM_PROJECT_ID"] = int(project_id)
-            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
-                executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
-        if storage is not None:  # BohriumStorage
-            storage['plugin']['project_id'] = int(project_id)
+    if executor is not None:
+        if executor['type'] == "dispatcher":  # BohriumExecutor
+            executor['machine']['remote_profile']['project_id'] = int(project_id)
+            # Redundant set for resources/envs keys
+            executor["resources"] = executor.get("resources", {})
+            executor["resources"]["envs"] = executor["resources"].get("envs", {})
+            executor["resources"]["envs"]["BOHRIUM_PROJECT_ID"] = int(project_id)
+        elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
+            executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
+    if storage is not None:  # BohriumStorage
+        storage['plugin']['project_id'] = int(project_id)
     return project_id, executor, storage
 
 
 def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
     access_key = _get_ak(ctx)
-    if not access_key:
-        raise ValueError("AccessKey not found")
     username = ak_to_username(access_key=access_key)
     if username:
         if executor is not None:
@@ -128,8 +126,6 @@ def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
 
 def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
     access_key = _get_ak(ctx)
-    if not access_key:
-        raise ValueError("AccessKey not found")
     ticket = ak_to_ticket(access_key=access_key)
     if ticket:
         if executor is not None:
@@ -176,16 +172,12 @@ def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 获取 access_key
         access_key, tool.executor, tool.storage = _inject_ak(tool_context, tool.executor, tool.storage)
-        if access_key is None:
-            raise ValueError("Failed to get access_key")
 
         # 获取 project_id
         try:
             project_id, tool.executor, tool.storage = _inject_projectId(tool_context, tool.executor, tool.storage)
         except ValueError as e:
             raise ValueError("ProjectId is invalid") from e
-        if project_id is None:
-            raise RuntimeError("ProjectId was not provided. Please select the project first.")
 
         tool_context.state['ak'] = access_key
         tool_context.state['project_id'] = project_id
