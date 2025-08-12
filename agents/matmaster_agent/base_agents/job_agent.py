@@ -12,9 +12,9 @@ from mcp.types import CallToolResult
 from pydantic import Field
 
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
-    catch_before_tool_callback_error, check_job_create, set_dpdispatcher_env, get_ak_projectId, \
-    default_after_tool_callback, _get_ak, _get_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
-    default_after_model_callback
+    catch_before_tool_callback_error, check_job_create, inject_username_ticket, inject_ak_projectId, \
+    default_after_tool_callback, _inject_ak, _inject_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
+    default_after_model_callback, inject_current_env, inject_machineType
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -98,10 +98,14 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
         # Todo: support List[before_tool_callback]
         before_tool_callback = catch_before_tool_callback_error(
-            check_job_create(
-                set_dpdispatcher_env(
-                    get_ak_projectId(
-                        before_tool_callback
+            inject_machineType(
+                check_job_create(
+                    inject_current_env(
+                        inject_username_ticket(
+                            inject_ak_projectId(
+                                before_tool_callback
+                            )
+                        )
                     )
                 )
             )
@@ -329,11 +333,11 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
         try:
             await self.tools[0].get_tools()
             if not ctx.session.state["dflow"]:
-                access_key, Executor, BohriumStorge = _get_ak(ctx, get_BohriumExecutor(), get_BohriumStorage())
-                project_id, Executor, BohriumStorge = _get_projectId(ctx, Executor, BohriumStorge)
+                access_key, Executor, BohriumStorge = _inject_ak(ctx, get_BohriumExecutor(), get_BohriumStorage())
+                project_id, Executor, BohriumStorge = _inject_projectId(ctx, Executor, BohriumStorge)
             else:
-                access_key, Executor, BohriumStorge = _get_ak(ctx, get_DFlowExecutor(), get_BohriumStorage())
-                project_id, Executor, BohriumStorge = _get_projectId(ctx, Executor, BohriumStorge)
+                access_key, Executor, BohriumStorge = _inject_ak(ctx, get_DFlowExecutor(), get_BohriumStorage())
+                project_id, Executor, BohriumStorge = _inject_projectId(ctx, Executor, BohriumStorge)
 
             for origin_job_id in list(ctx.session.state['long_running_jobs'].keys()):
                 # 如果该任务结果已经在上下文中 && 用户没有请求这个任务结果，则不再重复查询
