@@ -10,4 +10,6 @@ else:
 DPACalulator_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 DPACalulator_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["image_address"] = \
     "registry.dp.tech/dptech/dpa-calculator:85b4fe74"
+DPACalulator_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["machine_type"] = \
+    "1 * NVIDIA V100_32g"
 DPACalulator_BOHRIUM_STORAGE = copy.deepcopy(BohriumStorge)
