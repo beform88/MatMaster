@@ -10,7 +10,7 @@ from agents.matmaster_agent.base_agents.io_agent import (
 )
 from agents.matmaster_agent.callback import matmaster_before_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-# from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
+from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.optimade_database_agent.agent import (
     init_optimade_database_agent,
