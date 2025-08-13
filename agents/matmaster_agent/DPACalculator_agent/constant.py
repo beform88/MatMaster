@@ -9,7 +9,7 @@ else:
     DPAMCPServerUrl = "https://dpa-uuid1750659890.app-space.dplink.cc/sse?token=7c2e8de61ec94f4e80ebcef1ac17c92e"
 DPACalulator_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 DPACalulator_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dpa-calculator:9fb11626"
+    "registry.dp.tech/dptech/dpa-calculator:0d3de19e"
 DPACalulator_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["machine_type"] = \
     "1 * NVIDIA V100_32g"
 DPACalulator_BOHRIUM_STORAGE = copy.deepcopy(BohriumStorge)
