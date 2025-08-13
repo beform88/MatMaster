@@ -1,20 +1,27 @@
 import copy
 
-from agents.matmaster_agent.constant import BohriumExecutor, BohriumStorge
+from agents.matmaster_agent.constant import BohriumExecutor, BohriumStorge,CURRENT_ENV
 
 # Agent Name
 ApexAgentName = "apex_agent"
 
 # MCP Server URL
-ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
-#ApexServerUrl = "http://0.0.0.0:50001/sse"
+if CURRENT_ENV in ["test", "uat"]:
+    ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
+else:
+    ApexServerUrl = "https://3ce3bd7d63a2c9c81983cc8e9bd02ae5.app-space.dplink.cc/sse?token=33d662e586f34a9e8f26d9d4fce29f27"
 
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
-ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.1.0"
-    #"registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-prod:0.0.3"
 
+if CURRENT_ENV in ["test", "uat"]:
+    # test
+    ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
+        "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.1.0"
+else:
+    # prod
+    ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
+        "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-prod:0.0.3"
 
 # APEX专用的Bohrium存储配置
 ApexBohriumStorage = copy.deepcopy(BohriumStorge)
