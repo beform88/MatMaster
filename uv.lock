@@ -7,6 +7,15 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "absolufy-imports"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/74/0f/9da9dc9a12ebf4622ec96d9338d221e0172699e7574929f65ec8fdb30f9c/absolufy_imports-0.3.1.tar.gz", hash = "sha256:c90638a6c0b66826d1fb4880ddc20ef7701af34192c94faf40b95d32b59f9793", size = 4724 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a3/a4/b65c9fbc2c0c09c0ea3008f62d2010fd261e62a4881502f03a6301079182/absolufy_imports-0.3.1-py2.py3-none-any.whl", hash = "sha256:49bf7c753a9282006d553ba99217f48f947e3eef09e18a700f8a82f75dc7fc5c", size = 5937 },
+]
+
+[[package]]
 name = "aiofiles"
 version = "24.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -598,9 +607,10 @@ wheels = [
 
 [[package]]
 name = "google-adk"
-version = "1.7.0"
+version = "1.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "absolufy-imports" },
     { name = "anyio" },
     { name = "authlib" },
     { name = "click" },
@@ -630,9 +640,9 @@ dependencies = [
     { name = "watchdog" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0e/66/9f8e03226c6205e4ae9472e19f8470db6ecdadc1cfd2ad683e60bb7a8f95/google_adk-1.7.0.tar.gz", hash = "sha256:1bb86371e794e9ec73e0cc45bca529512862ecb5cd57132e77262b0de3f88dec", size = 1560499 }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/1b/1f61a4e6f076d91e9354687d1ea71f61a950512c65eef4382434f7bd948d/google_adk-1.10.0.tar.gz", hash = "sha256:9a35fa6099c1a91c8b970ca98efb80640faad51d93520aa5d7c63ac08ebde8ba", size = 1620716 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/3f/fd6c0780ff34531d3f4cd1551db206a2f9906fadee6d6f0cd3c83fb63521/google_adk-1.7.0-py3-none-any.whl", hash = "sha256:924bb7d65771ae6c03e0ab64d4e3a3a4d0fb02682faeb7735c2be302adade94c", size = 1750509 },
+    { url = "https://files.pythonhosted.org/packages/82/a6/93819a03ace1457fcb8a811fcc7f3d3ee5546c69bf02078b10ea68d74fa3/google_adk-1.10.0-py3-none-any.whl", hash = "sha256:8f7a41be6cd1cc1d47319335fa799b260a683b2c56644d0a747112c5e0d017ba", size = 1841748 },
 ]
 
 [[package]]
@@ -1398,7 +1408,7 @@ wheels = [
 
 [[package]]
 name = "litellm"
-version = "1.75.0"
+version = "1.74.15.post2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1413,10 +1423,7 @@ dependencies = [
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1b/28/50837cb0246c42a8caac45610572883de7f478543cf4d143e84f099c0234/litellm-1.75.0.tar.gz", hash = "sha256:ec7fbfe79e1b9cd4a2b36ca9e71e71959d8fc43305b222e5f257aced1a0d1d63", size = 9928112 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/43/e10905870d42e927de3b095a9248f2764156c7eb45ec172d72be35cd2bb4/litellm-1.75.0-py3-none-any.whl", hash = "sha256:1657472f37d291b366050dd2035e3640eebd96142d6fa0f935ceb290a0e1d5ad", size = 8850420 },
-]
+sdist = { url = "https://files.pythonhosted.org/packages/8b/03/2a89d9280f595fe293c64adcc3bfbefe7a3677ec0210d293bfac63ae17dc/litellm-1.74.15.post2.tar.gz", hash = "sha256:8eddb1c8a6a5a7048f8ba16e652aba23d6ca996dd87cb853c874ba375aa32479", size = 9713752 }
 
 [[package]]
 name = "markdown-it-py"
@@ -1485,8 +1492,8 @@ dependencies = [
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "bohr-agent-sdk", specifier = ">=0.1.23" },
-    { name = "google-adk", specifier = "==1.7.0" },
-    { name = "opik", specifier = ">=1.8.6" },
+    { name = "google-adk", specifier = ">=1.10.0" },
+    { name = "opik", specifier = ">=1.8.19" },
     { name = "oss2", specifier = ">=2.18.0" },
     { name = "pymysql", specifier = ">=1.1.1" },
 ]
@@ -1790,7 +1797,7 @@ wheels = [
 
 [[package]]
 name = "opik"
-version = "1.8.17"
+version = "1.8.23"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "boto3-stubs", extra = ["bedrock-runtime"] },
@@ -1809,9 +1816,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "uuid6" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e0/72/a7d20721ab785e39db1616ff6c42281acb546136ec72bd7142e9c9217bb3/opik-1.8.17.tar.gz", hash = "sha256:b83712aa1fe784ace042152aa3a19484989d60a11cd4ab1e93006a87e9c82b97", size = 356497 }
+sdist = { url = "https://files.pythonhosted.org/packages/13/cf/9b0fc9cfa6b6958d4cda17ac599d6d3434fcce320254eaea120a7ef7e3b7/opik-1.8.23.tar.gz", hash = "sha256:d4a2e8cc41ed3ad44151a8e543fec584f803e17dd4a8043cef908b0111e72afa", size = 360062 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/a3/cb5aeed1018017146d1d18afcd7d71ace93accdefce12e595fb746ba8ee5/opik-1.8.17-py3-none-any.whl", hash = "sha256:c8da16a1521aeb7f779fe471de373eab01002eb156ce9b30adff5bd5abc554e2", size = 666824 },
+    { url = "https://files.pythonhosted.org/packages/f2/78/2521145b3f7af9b2c6eceed9243866849ae11f7d2e2d0a9ce92da77486f3/opik-1.8.23-py3-none-any.whl", hash = "sha256:47984fa28a4452bb0cff33544d38997027a3d4f75188f9617865b66a70fd306d", size = 676232 },
 ]
 
 [[package]]
