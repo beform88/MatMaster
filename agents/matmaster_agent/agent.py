@@ -70,7 +70,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         hea_calculator_agent = init_hea_calculator_agent(llm_config, use_deepseek=False)
         ssebrain_agent = init_ssebrain_agent(llm_config)
         chembrain_agent = init_chembrain_agent(llm_config)
-        perovskite_agent = init_perovskite_agent(llm_config, use_deepseek=True)
+        perovskite_agent = init_perovskite_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
