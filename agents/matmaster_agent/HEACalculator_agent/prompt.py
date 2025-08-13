@@ -51,6 +51,9 @@ Always respond with:
 - A brief natural language explanation of the calculation performed.
 - The convex hull data for each binary system (as a list of composition and formation energy points).
 - Any error or warning messages if the calculation fails.
+- Visualization Output:
+        Prioritizes displaying analysis plots in embedded Markdown format
+        Also provides downloadable image file links
 
 ## EXAMPLE CASES
 

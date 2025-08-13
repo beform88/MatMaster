@@ -10,6 +10,7 @@ from google.adk.events import Event, EventActions
 from google.adk.tools import transfer_to_agent
 from mcp.types import CallToolResult
 from pydantic import Field
+from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
     catch_before_tool_callback_error, check_job_create, inject_username_ticket, inject_ak_projectId, \
@@ -166,7 +167,10 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                         if tool_response.get("result", None) is not None and isinstance(tool_response['result'],
                                                                                         CallToolResult):
                             raw_result = event.content.parts[0].function_response.response['result'].content[0].text
-                            dict_result = jsonpickle.loads(raw_result)
+                            try:
+                                dict_result = jsonpickle.loads(raw_result)
+                            except ScannerError as err:
+                                raise type(err)(f"jsonpickle Error, raw_result = `{raw_result}`")
                         else:
                             dict_result = tool_response
 

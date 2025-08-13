@@ -25,7 +25,67 @@ ABACUS_AGENT_INSTRUCTION = """
                 "The LCAO basis is prefered."
                 "If path to output files are provided, always tell the users the path to output files in the response."
                 "`abacus_collect_data` **SHOULD NOT BE USED** after any tool function finished unless explicitly requested."
+
+                Since we use asynchronous job submission in this agent, **ONLY 1 TOOL FUNCTION** should be used for 1 step. **DO NOT USE abacus_collect_data
+                AND abacus_prepare_inputs_from_relax_results UNLESS EXPLITY REQUESTED**.
+
+                We briefly introduce functions of avaliable tool functions and suggested use method below:
+
+                Structure generation tools: basic structure generation utility.
+                - generate_bulk_structure: Generate simple bulk crystal structure.
+                - generate_molecule_structure: Generate strcuture file of limited number of simple molecules and atoms.
+
+                ABACUS input files generation:
+                - abacus_prepare: Prepare ABACUS input file directory from structure file and provided information.
+                    Should only be used when a structure file is avaliable (in cif, poscar or abacus/stru format)
+                    and generating ABACUS input file directory is explicity requested,
+                - abacus_modify_input: Modify ABACUS INPUT file in prepared ABACUS input file directory.
+                    Should only be used when abacus_prepare is finished or path to a prepared ABACUS input file directory is explicitly given.
+                - abacus_modify_stru: Modify ABACUS STRU file in prepared ABACUS input file directory.
+                    Should only be used when abacus_prepare is finished or path to a prepared ABACUS input file directory is explicitly given.
+                
+                Result collection;
+                - abacus_collect_data: Collect data from finished ABACUS job directory. **Should only be used** after an ABACUS job is finished.
+                
+                Property calculation:
+                - abacus_do_relax: Do relax (only relax the position of atoms in a cell) or cell-relax (relax the position of atoms and lattice parameters simutaneously)
+                    for a given structure. abacus_phonon_dispersiton should only be used after using this function to do a cell-relax calculation,
+                    and abacus_vibrational_analysis should only be used after using this function to do a cell-relax calculation. 
+                    This function will give a new ABACUS input file directory containing the relaxed structure in STRU file, and keep input parameters in
+                    original ABACUS input directory. Calculating properties should use the new directory.
+                    It is not necessary but strongly suggested using this tool function before calculating other properties like band, 
+                    Bader charge, DOS/PDOS and elastic properties 
+                - abacus_prepare_inputs_from_relax_results: This function will collect new ABACUS input file directory containing
+                    relaxed structure. Since abacus_do_relax has used this function and returned the path to new ABACUS input directory,
+                    this function has limited usage in current example and suggested not to use proactively.
+                - abacus_badercharge_run: Calculate the Bader charge of given structure.
+                - abacus_cal_band: Calculate the electronic band of given structure. Support two modes: `nscf` mode, do a nscf calculation
+                    after a scf calculation as normally done; `pyatb` mode, use PYATB to plot the band after a scf run. The default is PYATB.
+                    Currently 2D material is not supported.
+                - abacus_cal_elf: Calculate the electroic localization function of given system and return a cube file containing ELF.
+                - abacus_cal_charge_density_difference: Calculate the charge density difference of a given system divided into to subsystems.
+                    Atom indices should be explicitly requested if not certain.
+                - abacus_cal_spin_density: Calculate the spin density of given  structure. A cube file containing the spin density will be returned.
+                - abacus_dos_run: Calculate the DOS and PDOS of the given structure. Support non-magnetic and collinear spin-polarized now. 
+                    Support 3 modes to plot PDOS: 1. Plot PDOS for each element; 2. Plot PDOS for each shell of each element (d orbital for Pd for example),
+                    3. Plot PDOS for each orbital of each element (p_x, p_y and p_z for O for example). Path to plotted DOS and PDOS will be returned.
+                - abacus_cal_elastic: Calculate elastic tensor (in Voigt notation) and related bulk modulus, shear modulus and young's modulus and
+                    Poisson ratio from elastic tensor.
+                - abacus_eos: Fit Birch-Murnaghan equation of state for cubic crystal. This function should only be used for cubic crystal.
+                - abacus_phonon_dispersion: Calculate phonon dispersion curve for bulk material. Currently 2D material is not supported.
+                    Should only be used after using abacus_do_relax to do a cell-relax calculation is finished.
+                - abacus_vibrational_analysis: Do vibrational analysis using finite-difference method. Should only be used after using abacus_do_relax
+                    to do a relax calculation is finished. Indices of atoms considerer should be explicitly requested if not certain.
+                - abacus_run_md: Run ab-inito molecule dynamics calculation using ABACUS.
+
+                A typical workflow is: 
+                1. Using generate_bulk_structure to generate a strcuture file;
+                2. Using abacus_prepare to generate ABACUS input file directory;
+                3. (Optional) using abacus_modify_input and abacus_modify_stru to modify INPUT and STRU file in given ABACUS input file directory,
+                4. Using abacus_do_relax to do a cell-relax calculation for given material,
+                5. Do property calculations like phonon dispersion, band, etc.
 """
+
 
 
 ABACUS_SUBMIT_CORE_AGENT_DESCRIPTION = """A specialized ABACUS calculation job submit agent"""

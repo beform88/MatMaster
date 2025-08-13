@@ -8,9 +8,7 @@ else:
     ABACUS_CALCULATOR_URL = 'https://abacus-agent-tools-uuid1751014104.app-space.dplink.cc/sse?token=7cae849e8a324f2892225e070443c45b'
 ABACUS_CALCULATOR_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 ABACUS_CALCULATOR_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dp/native/prod-22618/abacusagenttools:v0.1-20250807"
-ABACUS_CALCULATOR_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["machine_type"] = \
-    "c4_m8_cpu"
+    "registry.dp.tech/dptech/dp/native/prod-22618/abacusagenttools:v0.1-20250813"
 ABACUS_CALCULATOR_BOHRIUM_STORAGE = copy.deepcopy(BohriumStorge)
 
 EXECUTOR_MAP = {
