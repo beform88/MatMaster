@@ -9,7 +9,7 @@ ApexAgentName = "apex_agent"
 if CURRENT_ENV in ["test", "uat"]:
     ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
 else:
-    ApexServerUrl = "https://3ce3bd7d63a2c9c81983cc8e9bd02ae5.app-space.dplink.cc/sse?token=33d662e586f34a9e8f26d9d4fce29f27"
+    ApexServerUrl = "https://3ce3bd7d63a2c9c81983cc8e9bd02ae5.app-space.dplink.cc/sse?token=6a9a5b47aa6b480ab96412e0460248ab"
 
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
