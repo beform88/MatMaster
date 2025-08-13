@@ -61,7 +61,8 @@ async def agent_main() -> None:
     # user_input = "切换到ABACUS_calculation_agent，并使用generata_bulk_structure 创建体相铝晶体（Al），采用fcc结构，晶格常数设为4.05Å"
     # user_input = "我想知道【元素组成，例：TiZrHfCoNiNb】在【计算器，例：dpa3】下的二元形成能？"
     # user_input = "高熵合金AlCoCr0.5FeNi2的可能结构是什么"
-    user_input = "调用 thermoelectric_agent 帮我生成10个具有Sn和Te元素的热电结构"
+    # user_input = "调用 thermoelectric_agent 帮我生成10个具有Sn和Te元素的热电结构"
+    user_input = "plot perovstite 2021 to 2025"
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input
