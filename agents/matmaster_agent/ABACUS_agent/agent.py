@@ -21,6 +21,7 @@ from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     BohriumExecutor,
     BohriumStorge,
+    LOCAL_EXECUTOR
 )
 
 from agents.matmaster_agent.ABACUS_agent.prompt import (
