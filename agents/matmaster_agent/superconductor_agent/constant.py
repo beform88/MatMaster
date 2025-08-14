@@ -5,6 +5,6 @@ SuperconductorAgentName = "superconductor_agent"
 if CURRENT_ENV in ["test", "uat"]:
    SuperconductorServerUrl="http://root@mllo1368252.bohrium.tech:50002/sse"
 else:
-   SuperconductorServerUrl="https://c4819d06b0ca810d38506453cfaae9d8.app-space.dplink.cc/sse?token=f9e2ba41ee0c4165a9bc0c7d08227bae"
+   SuperconductorServerUrl="https://45e81409831b77407fbc22afc09f0d78.app-space.dplink.cc/sse?token=53f7b7c134ed48e0b00823b6401f0925"
 
 	
