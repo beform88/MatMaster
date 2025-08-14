@@ -1,4 +1,3 @@
-import copy
 import json
 import logging
 import os
@@ -22,8 +21,9 @@ from agents.matmaster_agent.constant import (
     Transfer2Agent,
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
-from agents.matmaster_agent.utils.helper_func import is_json, get_same_function_call, check_None_wrapper
-from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload, update_tgz_dict
+from agents.matmaster_agent.utils.helper_func import is_json, check_None_wrapper, \
+    get_unique_function_call, update_llm_response, function_calls_to_str
+from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
 
@@ -36,28 +36,42 @@ async def default_after_model_callback(callback_context: CallbackContext,
         return None
 
     # 获取所有函数调用
-    current_function_calls = [part.function_call for part in llm_response.content.parts if part.function_call]
+    current_function_calls = [{"name": part.function_call.name, "args": part.function_call.args} for part in
+                              llm_response.content.parts if part.function_call]
 
     # 如果没有函数调用，直接返回
     if not current_function_calls:
         return None
 
-    current_function_calls_name = [item.name for item in current_function_calls]
-    logger.info(f"Number of current_function_calls: {len(current_function_calls)}, "
-                f"Names are: {current_function_calls_name},"
-                f"invocation_id = {callback_context.invocation_id}")
+    if (
+            callback_context.state.get("invocation_id_with_tool_call", None) is None or
+            callback_context.invocation_id != list(callback_context.state["invocation_id_with_tool_call"].keys())[0]
+    ):  # 首次调用 function_call 或新一轮对话
+        if len(current_function_calls) == 1:
+            logger.info(f"Single Function Call In New Turn")
+            logger.info(f"current_function_calls = {function_calls_to_str(current_function_calls)}")
 
-    # 处理多个函数调用的情况
-    if len(current_function_calls) > 1:
-        logger.info("Count of Function Calls > 1, check name & args now")
-        repeat_indexes = get_same_function_call(current_function_calls)
+            callback_context.state["invocation_id_with_tool_call"] = {
+                callback_context.invocation_id: current_function_calls
+            }
+        else:
+            logger.warning(f"Multi Function Calls In One Turn")
+            logger.info(f"current_function_calls = {function_calls_to_str(current_function_calls)}")
 
-        if repeat_indexes is not None:
-            logger.info("Same Function Calls Detected, Remove Now")
-            # 创建不包含重复索引的新部分列表
-            llm_response.content.parts = [part for index, part in enumerate(copy.deepcopy(llm_response.content.parts))
-                                          if index not in repeat_indexes]
-            return llm_response
+            callback_context.state["invocation_id_with_tool_call"] = {
+                callback_context.invocation_id: get_unique_function_call(current_function_calls)
+            }
+            return update_llm_response(llm_response, current_function_calls, [])
+    else:  # 同一轮对话又出现了 Function Call
+        logger.warning(f"Same InvocationId with Function Calls")
+        before_function_calls = callback_context.state["invocation_id_with_tool_call"][callback_context.invocation_id]
+        logger.info(f"before_function_calls = {function_calls_to_str(before_function_calls)},"
+                    f"current_function_calls = {function_calls_to_str(current_function_calls)}")
+
+        callback_context.state["invocation_id_with_tool_call"] = {
+            callback_context.invocation_id: get_unique_function_call(before_function_calls + current_function_calls)
+        }
+        return update_llm_response(llm_response, current_function_calls, before_function_calls)
 
     return None
 

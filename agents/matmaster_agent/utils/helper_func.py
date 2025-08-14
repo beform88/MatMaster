@@ -1,16 +1,38 @@
+import copy
 import json
+import logging
 from typing import List
 
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
+from google.adk.models import LlmResponse
+from google.genai.types import Part
 
 from agents.matmaster_agent.model import JobResult, JobResultType
+
+logger = logging.getLogger(__name__)
 
 
 async def update_session_state(ctx: InvocationContext, author: str):
     actions_with_update = EventActions(state_delta=ctx.session.state)
     system_event = Event(invocation_id=ctx.invocation_id, author=author, actions=actions_with_update)
     await ctx.session_service.append_event(ctx.session, system_event)
+
+
+def update_llm_response(llm_response: LlmResponse, current_function_calls: List[dict],
+                        before_function_calls: List[dict]):
+    new_indices = get_new_function_call_indices(current_function_calls, before_function_calls)
+    if not len(new_indices):  # 空列表
+        llm_response.content.parts = [Part(text="All Function Calls Are Occurred Before, Continue")]
+    elif len(new_indices) == len(current_function_calls):
+        pass
+    else:
+        llm_response.content.parts = [part for index, part in
+                                      enumerate(copy.deepcopy(llm_response.content.parts))
+                                      if index in new_indices]
+    logger.info(f"new_indices = {new_indices}")
+
+    return llm_response
 
 
 def is_json(json_str):
@@ -155,6 +177,66 @@ def get_same_function_call(current_function_calls: List):
         return repeat_index
     else:
         return
+
+
+def function_calls_to_str(function_calls: List[dict]) -> str:
+    """将 function_calls 列表转换为可打印的字符串格式。
+
+    Args:
+        function_calls: 函数调用列表，每个元素应有 `name` 和 `args` 属性。
+
+    Returns:
+        str: 格式化后的字符串，每行一个函数调用，格式为 `name(args)`。
+    """
+    if not function_calls:
+        return "[]"
+
+    lines = []
+    for call in function_calls:
+        # 确保 args 是字典或可 JSON 序列化的对象
+        args_str = json.dumps(call["args"], indent=2) if call.get("args") else "{}"
+        line = f"{call['name']}({args_str})"
+        lines.append(line)
+
+    return "\n".join(lines)
+
+
+def get_unique_function_call(function_calls: List[dict]):
+    seen = set()
+    unique = []
+    for call in function_calls:
+        key = (call["name"], json.dumps(call["args"], sort_keys=True))
+        if key not in seen:
+            seen.add(key)
+            unique.append(call)
+    return unique
+
+
+def get_new_function_call_indices(current_function_calls: List[dict], before_function_calls: List[dict]) -> List[int]:
+    """返回 current_function_calls 中不在 before_function_calls 的索引列表。
+
+    Args:
+        current_function_calls: 当前函数调用列表
+        before_function_calls: 之前的函数调用列表
+
+    Returns:
+        List[int]: 新出现的函数调用的索引列表
+    """
+    new_indices = []
+
+    # 提前计算 before_function_calls 的唯一标识集合，提高效率
+    before_keys = set()
+    for call in before_function_calls:
+        key = (call["name"], json.dumps(call["args"], sort_keys=True))
+        before_keys.add(key)
+
+    # 遍历 current_function_calls，检查是否在 before 集合中
+    for idx, call in enumerate(current_function_calls):
+        current_key = (call["name"], json.dumps(call["args"], sort_keys=True))
+        if current_key not in before_keys:
+            new_indices.append(idx)
+
+    return new_indices
 
 
 def check_None_wrapper(func):
