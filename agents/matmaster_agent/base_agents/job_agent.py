@@ -267,10 +267,11 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
                 if is_text(event):
-                    for function_event in context_function_event(ctx, self.name, "system_submit_core_info",
-                                                                 {"msg": event.content.parts[0].text},
-                                                                 ModelRole):
-                        yield function_event
+                    if not event.partial:
+                        for function_event in context_function_event(ctx, self.name, "system_submit_core_info",
+                                                                     {"msg": event.content.parts[0].text},
+                                                                     ModelRole):
+                            yield function_event
                 else:
                     yield event
         except BaseException as err:

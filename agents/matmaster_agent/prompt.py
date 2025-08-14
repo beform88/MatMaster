@@ -52,7 +52,6 @@ When multiple tools can perform the same calculation or property analysis, you M
 **Smart Tool Selection Guidelines**:
 - **For High-Accuracy Research**: Recommend {ApexAgentName} or ABACUS_calculation_agent
 - **For Fast Screening**: Recommend {DPACalulator_AGENT_NAME}
-- **For Structure Design**: Recommend {CrystalformerAgentName}
 - **For Electronic Properties**: Recommend ABACUS_calculation_agent
 - **For Alloy-Specific Calculations**: Always recommend {ApexAgentName}
 
