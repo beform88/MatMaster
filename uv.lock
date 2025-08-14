@@ -236,7 +236,7 @@ wheels = [
 
 [[package]]
 name = "bohr-agent-sdk"
-version = "0.1.100"
+version = "0.1.101"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "build" },
