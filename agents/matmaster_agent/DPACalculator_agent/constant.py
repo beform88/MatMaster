@@ -1,6 +1,10 @@
 import copy
 
-from agents.matmaster_agent.constant import BohriumExecutor, BohriumStorge, CURRENT_ENV
+from agents.matmaster_agent.constant import (
+    CURRENT_ENV,
+    BohriumExecutor,
+    BohriumStorge,
+)
 
 DPACalulator_AGENT_NAME = "dpa_calculator_agent"
 if CURRENT_ENV in ["test", "uat"]:
@@ -9,7 +13,7 @@ else:
     DPAMCPServerUrl = "https://dpa-uuid1750659890.app-space.dplink.cc/sse?token=7c2e8de61ec94f4e80ebcef1ac17c92e"
 DPACalulator_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 DPACalulator_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dpa-calculator:0d3de19e"
+    "registry.dp.tech/dptech/dpa-calculator:ed5a8baa"
 DPACalulator_BOHRIUM_EXECUTOR["machine"]["remote_profile"]["machine_type"] = \
-    "1 * NVIDIA V100_32g"
+    "c12_m64_1 * NVIDIA L4"
 DPACalulator_BOHRIUM_STORAGE = copy.deepcopy(BohriumStorge)
