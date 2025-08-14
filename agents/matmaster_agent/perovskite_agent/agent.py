@@ -12,6 +12,22 @@ from .prompt import (
     PerovskiteAgentInstruction,
 )
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+
+logging.info(f"Perovskite Agent URL: {PEROVSKITE_PLOT_URL}")
+import dotenv
+dotenv.load_dotenv()
+import os
+logging.info(f"Environment name: {os.getenv('OPIK_PROJECT_NAME')}")
+BOHRIUM_PROJECT_ID = os.getenv('BOHRIUM_PROJECT_ID')
+logging.info(f"Bohrium Project ID: {BOHRIUM_PROJECT_ID}")
+
+print(f"Perovskite Agent URL: {PEROVSKITE_PLOT_URL}")
+print(f"Environment name: {os.getenv('OPIK_PROJECT_NAME')}")
+print(f"Bohrium Project ID: {BOHRIUM_PROJECT_ID}")
 
 perovskite_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=PEROVSKITE_PLOT_URL),
