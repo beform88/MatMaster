@@ -63,7 +63,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         superconductor_agent = init_superconductor_agent(llm_config)
         invar_agent = init_invar_agent(llm_config)
         crystalformer_agent = init_crystalformer_agent(llm_config)
-        apex_agent = init_apex_agent(llm_config, use_deepseek=True)
+        apex_agent = init_apex_agent(llm_config)
         abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
         organic_reaction_agent = init_organic_reaction_agent(llm_config)
         HEA_assistant_agent = init_HEA_assistant_agent(llm_config)

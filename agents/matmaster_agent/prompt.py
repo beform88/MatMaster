@@ -68,7 +68,7 @@ For alloy property calculations, you have several specialized tools:
    - Example Query: [Examples missing]
 
 6. **{ApexAgentName}**
-   - Purpose: Comprehensive alloy and material property calculations using APEX framework, including:
+   - Purpose: Comprehensive alloy and material property calculations using APEX framework,Users must provide POSCAR format structure file, including:
      - Elastic properties (bulk modulus, shear modulus, Young's modulus, Poisson's ratio)
      - Vacancy formation energies
      - Interstitial atom energies  
