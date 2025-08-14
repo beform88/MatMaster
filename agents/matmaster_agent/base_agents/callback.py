@@ -287,11 +287,15 @@ def inject_machineType(func: BeforeToolCallback) -> BeforeToolCallback:
 # 总应该在最后
 def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> dict:
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
         try:
+            # 如果 tool 为 Transfer2Agent，直接 return
+            if tool.name == Transfer2Agent:
+                return None
+
             if (before_tool_result := await func(tool, args, tool_context)) is not None:
                 return before_tool_result
 
@@ -395,6 +399,10 @@ def catch_after_tool_callback_error(func: AfterToolCallback) -> AfterToolCallbac
         # 1. 调用被装饰的 after_tool_callback；
         # 2. 如果调用的 after_tool_callback 有返回值，以这个为准
         try:
+            # 如果 tool 为 Transfer2Agent，直接 return
+            if tool.name == Transfer2Agent:
+                return None
+
             if (after_tool_result := await func(tool, args, tool_context, tool_response)) is not None:
                 return after_tool_result
         except Exception as e:
