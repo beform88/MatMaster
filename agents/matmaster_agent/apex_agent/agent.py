@@ -40,6 +40,7 @@ from .prompt import (
     ApexResultTransferAgentName,
     ApexTransferAgentName,
     ApexTransferAgentInstruction,
+    ApexPropertiesAgentInstruction,
 )
 
 
@@ -71,9 +72,6 @@ class ApexAgent(BaseAsyncJobAgent):
     """
     
     def __init__(self, llm_config):
-        # # 使用constant.py中定义的配置
-        # toolset.storage = ApexBohriumStorage
-        # toolset.executor = ApexBohriumExecutor
         
         super().__init__(
             model=llm_config.gpt_4o,
@@ -81,25 +79,10 @@ class ApexAgent(BaseAsyncJobAgent):
             agent_description=ApexAgentDescription,
             agent_instruction=ApexAgentInstruction,  
             mcp_tools=[toolset],
-            dflow_flag=False,  # APEX使用Bohrium异步任务，不使用dflow
+            dflow_flag=False,  
             supervisor_agent=MATMASTER_AGENT_NAME
         )
-        
 
 def init_apex_agent(llm_config) -> BaseAgent:
     """初始化APEX材料性质计算智能体"""
-    # if llm_config is None:
-    #     # 如果没有提供llm_config，使用默认配置
-    #     from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-    #     llm_config = MatMasterLlmConfig
-
     return ApexAgent(llm_config)
-
-
-# # 创建独立的root_agent实例供ADK使用
-# try:
-#     from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-#     root_agent = init_apex_agent(MatMasterLlmConfig, use_deepseek=True)
-# except ImportError:
-#     # 如果导入失败，设置为None
-#     root_agent = None
