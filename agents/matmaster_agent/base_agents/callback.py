@@ -23,7 +23,7 @@ from agents.matmaster_agent.constant import (
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
 from agents.matmaster_agent.utils.helper_func import is_json, get_same_function_call, check_None_wrapper
-from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload
+from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload, update_tgz_dict
 
 logger = logging.getLogger(__name__)
 
@@ -372,19 +372,8 @@ def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
                 is_json(tool_response.content[0].text)):
             return None
 
-        tool_results = json.loads(tool_response.content[0].text)
-
-        new_tool_result = {}
-        tgz_flag = False
-        for k, v in tool_results.items():
-            new_tool_result[k] = v
-            if (
-                    type(v) == str and
-                    v.startswith("https") and
-                    v.endswith("tgz")):
-                tgz_flag = True
-                new_tool_result.update(**await extract_convert_and_upload(v))
-
+        tool_result = json.loads(tool_response.content[0].text)
+        tgz_flag, new_tool_result = await update_tgz_dict(tool_result)
         if tgz_flag:
             return new_tool_result
 

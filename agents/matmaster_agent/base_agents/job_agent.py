@@ -43,6 +43,7 @@ from agents.matmaster_agent.prompt import (
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result
+from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload, update_tgz_dict
 
 logger = logging.getLogger(__name__)
 
@@ -384,8 +385,11 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     else:  # Job Success
                         raw_result = results_res.content[0].text
                         dict_result = jsonpickle.loads(raw_result)
+
+                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+
                         ctx.session.state['long_running_jobs'][origin_job_id]['job_result'] = await parse_result(
-                            dict_result)
+                            new_tool_result)
 
                         # Render Frontend Job-Result Component
                         job_result_comp_data = {
