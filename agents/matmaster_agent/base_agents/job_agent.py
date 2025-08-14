@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import AsyncGenerator, override
+from typing import AsyncGenerator, override, Optional
 
 import jsonpickle
 from google.adk.agents import LlmAgent, SequentialAgent
@@ -63,13 +63,14 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
     loading: bool = Field(False, description="Whether the agent display loading state", exclude=True)
     render_tool_response: bool = Field(False, description="Whether render tool response in frontend", exclude=True)
+    supervisor_agent: Optional[str] = Field(None, description="Which one is the supervisor_agent")
 
     def __init__(self, model, name, instruction='', description='', sub_agents=None,
                  global_instruction='', tools=None, output_key=None,
                  before_agent_callback=None, before_model_callback=None,
                  before_tool_callback=default_before_tool_callback, after_tool_callback=default_after_tool_callback,
                  after_model_callback=default_after_model_callback, after_agent_callback=None, loading=False,
-                 render_tool_response=False, disallow_transfer_to_parent=False):
+                 render_tool_response=False, disallow_transfer_to_parent=False, supervisor_agent=None):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
         Args:
@@ -129,11 +130,13 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
             after_tool_callback=after_tool_callback,
             after_model_callback=after_model_callback,
             after_agent_callback=after_agent_callback,
-            disallow_transfer_to_parent=disallow_transfer_to_parent
+            disallow_transfer_to_parent=disallow_transfer_to_parent,
+            supervisor_agent=supervisor_agent
         )
 
         self.loading = loading
         self.render_tool_response = render_tool_response
+        self.supervisor_agent = supervisor_agent
 
     # Execution Order: user_question -> chembrain_llm -> event -> user_agree_transfer -> retrosyn_llm (param) -> event
     #                  -> user_agree_param -> retrosyn_llm (function_call) -> event -> tool_call
@@ -201,6 +204,12 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                                ModelRole):
                                 yield result_event
                 yield event
+
+            # If specified supervisor_agent, transfer back
+            if self.supervisor_agent:
+                for function_event in context_function_event(ctx, self.name, "transfer_to_agent", None, ModelRole,
+                                                             {"agent_name": self.supervisor_agent}):
+                    yield function_event
         except BaseException as err:
             from agents.matmaster_agent.agent import (
                 root_agent as matmaster_agent,
