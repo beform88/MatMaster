@@ -16,7 +16,7 @@ ApexResultTransferAgentName = "apex_result_transfer_agent"
 ApexTransferAgentName = "apex_transfer_agent"
 
 # APEX Agent Descriptions
-ApexAgentDescription = "APEX材料性质计算智能体，专注于材料性质计算"
+ApexAgentDescription = "APEX材料性质计算智能体，专注于合金材料性质计算"
 ApexSubmitAgentDescription = "APEX任务提交智能体"
 ApexResultAgentDescription = "APEX结果处理智能体"
 
