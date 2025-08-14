@@ -12,6 +12,7 @@ from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
 from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
 from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
+from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
 
 GlobalInstruction = """
 ---
@@ -163,6 +164,13 @@ For alloy property calculations, you have several specialized tools:
       1) PCE vs time (interactive scatter).
       2) Structure vs time (normalized stacked bars).
       Examples: "Generate perovskite solar cell research PCE vs time plot 2020-2025"; "Analyze perovskite solar cell structure trends 2019-2025".
+
+17. **{ABACUS_AGENT_NAME}**
+    - Purpose: Do DFT calculation using ABACUS, including:
+    - Basic structure building
+    - Prepare ABACUS input file directory (containing INPUT, STRU, pseudopotential and orbital file)
+    - Do geometry optimization, molecule dynamics and various property calculation, including band, phonon spectrum, elastic properties, DOS/PDOS, Bader charge and so on.
+    - Collect properties from ABACUS job directory after calculation finishes
 
 ## Response Formatting
 You must use the following conversational format.
