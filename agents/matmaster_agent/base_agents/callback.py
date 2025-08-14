@@ -44,7 +44,8 @@ async def default_after_model_callback(callback_context: CallbackContext,
 
     current_function_calls_name = [item.name for item in current_function_calls]
     logger.info(f"Number of current_function_calls: {len(current_function_calls)}, "
-                f"Names are: {current_function_calls_name}")
+                f"Names are: {current_function_calls_name},"
+                f"invocation_id = {callback_context.invocation_id}")
 
     # 处理多个函数调用的情况
     if len(current_function_calls) > 1:
