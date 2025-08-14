@@ -7,7 +7,7 @@ from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DAT
 from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
 from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
-from agents.matmaster_agent.crystalformer_agent.constant import CrystalformerAgentName
+from agents.matmaster_agent.structure_generate_agent.constant import StructureGenerateAgentName
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
 from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
@@ -102,14 +102,20 @@ For alloy property calculations, you have several specialized tools:
      If user mention superconductor, please just us all tools in SuperconductorAgentName
    - Example Query: [Examples missing]
 
-9. **{CrystalformerAgentName}**
-   - Purpose: This agent works for crystal structure generation with conditional properties. It can generate structures with specific properties like bandgap, shear modulus, bulk modulus, ambient pressure, high pressure, and sound velocity. Users can specify target values and conditions for these properties.
-   - Example Query:
-     - "Generate structures with a bandgap of 1.5 eV and shear modulus greater than 50 GPa."
+9. **{StructureGenerateAgentName}**
+   - Purpose: A comprehensive crystal structure generation agent that handles all types of structure creation tasks, including:
+     - **ASE-based structure building**: Bulk crystals (sc, fcc, bcc, hcp, diamond, zincblende, rocksalt), molecules from G2 database, surface slabs with Miller indices, adsorbate systems, and two-material interfaces
+     - **CALYPSO evolutionary structure prediction**: Novel crystal discovery for given chemical elements using evolutionary algorithms and particle swarm optimization
+     - **CrystalFormer conditional generation**: Property-targeted structure design with specific bandgap, shear modulus, bulk modulus, ambient/high pressure properties, and sound velocity using MCMC sampling
+     
+     This agent serves as the central hub for ALL structure generation needs and automatically routes to the appropriate method based on user requirements.
+   - Example Queries:
+     - ASE Building: "Build fcc Cu bulk structure with lattice parameter 3.6 Å", "Create Al(111) surface slab with 4 layers", "Construct CO/Pt(111) adsorbate system"
+     - CALYPSO Prediction: "Predict stable structures for Mg-O-Si system", "Discover new phases for Ti-Al alloy", "Find unknown crystal configurations for Fe-Ni-Co"
+     - CrystalFormer Generation: "Generate structures with bandgap 1.5 eV and bulk modulus > 100 GPa", "Create materials with minimized shear modulus", "Design structures with high sound velocity"
 
 10. **{DPACalulator_AGENT_NAME}**
     - Purpose: Performs deep potential-based simulations, including:
-      - structure building
       - optimization, 
       - molecular simulation (MD)
       - phonon calculation
