@@ -1,57 +1,31 @@
 import copy
 
-from agents.matmaster_agent.constant import BohriumExecutor, BohriumStorge
+from agents.matmaster_agent.constant import (
+    BohriumExecutor,
+    BohriumStorge,
+    CURRENT_ENV,
+)
 
 # Agent Name
 ApexAgentName = "apex_agent"
 
 # MCP Server URL
-ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
-#ApexServerUrl = "http://0.0.0.0:50001/sse"
-
+if CURRENT_ENV in ["test", "uat"]:
+    ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
+else:
+    #ApexServerUrl = "http://hoxz1368496.bohrium.tech:50001/sse"
+    ApexServerUrl = "https://apex-prime-uuid1754990126.app-space.dplink.cc/sse?token=46b5982f38854ac3b05b3d55e6347e80"
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
-ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
-    "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.1.0"
-    #"registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-prod:0.0.3"
 
+if CURRENT_ENV in ["test", "uat"]:
+    # test
+    ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
+        "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.1.1"
+else:
+    # prod
+    ApexBohriumExecutor["machine"]["remote_profile"]["image_address"] = \
+        "registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-prod:0.0.4"
 
 # APEX专用的Bohrium存储配置
 ApexBohriumStorage = copy.deepcopy(BohriumStorge)
-
-# 结果处理相关常量
-APEX_RESULT_PROCESSING_FEATURES = {
-    "auto_markdown_generation": True,
-    "chart_visualization": True,
-    "structure_file_management": True,
-    "result_file_download": True
-}
-
-# 支持的结果处理性质类型
-APEX_SUPPORTED_RESULT_PROPERTIES = [
-    "vacancy", "interstitial", "elastic", "surface", 
-    "gamma", "phonon", "eos"
-]
-
-# MCP工具名称 
-APEX_NEW_MCP_TOOLS = [
-    "apex_list_user_files", 
-    "apex_download_structure_file",
-    "apex_cleanup_old_files"
-]
-
-# 任务状态相关常量
-APEX_TASK_STATUSES = {
-    "submitted": "已提交到Bohrium",
-    "running": "正在运行",
-    "completed": "已完成",
-    "failed": "失败"
-}
-
-
-# Bohrium认证配置方式更新
-BOHRIUM_AUTH_METHOD = {
-    "type": "config_file_embedded",
-    "description": "认证信息嵌入在APEX配置文件中",
-    "fields": ["bohrium_username", "bohrium_ticket", "bohrium_project_id"]
-}

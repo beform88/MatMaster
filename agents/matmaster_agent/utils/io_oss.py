@@ -116,3 +116,18 @@ async def extract_convert_and_upload(tgz_url: str, temp_dir: str = "./tmp") -> d
     finally:
         # 清理临时目录
         shutil.rmtree(temp_path, ignore_errors=True)
+
+
+async def update_tgz_dict(tool_result: dict):
+    new_tool_result = {}
+    tgz_flag = False
+    for k, v in tool_result.items():
+        new_tool_result[k] = v
+        if (
+                type(v) == str and
+                v.startswith("https") and
+                v.endswith("tgz")):
+            tgz_flag = True
+            new_tool_result.update(**await extract_convert_and_upload(v))
+
+    return tgz_flag, new_tool_result

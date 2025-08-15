@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import AsyncGenerator, override
+from typing import AsyncGenerator, override, Optional
 
 import jsonpickle
 from google.adk.agents import LlmAgent, SequentialAgent
@@ -10,11 +10,12 @@ from google.adk.events import Event, EventActions
 from google.adk.tools import transfer_to_agent
 from mcp.types import CallToolResult
 from pydantic import Field
+from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
-    catch_before_tool_callback_error, check_job_create, set_dpdispatcher_env, get_ak_projectId, \
-    default_after_tool_callback, _get_ak, _get_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
-    default_after_model_callback
+    catch_before_tool_callback_error, check_job_create, inject_username_ticket, inject_ak_projectId, \
+    default_after_tool_callback, _inject_ak, _inject_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
+    default_after_model_callback, inject_current_env, inject_machineType
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -42,6 +43,7 @@ from agents.matmaster_agent.prompt import (
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result
+from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload, update_tgz_dict
 
 logger = logging.getLogger(__name__)
 
@@ -62,13 +64,14 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
     loading: bool = Field(False, description="Whether the agent display loading state", exclude=True)
     render_tool_response: bool = Field(False, description="Whether render tool response in frontend", exclude=True)
+    supervisor_agent: Optional[str] = Field(None, description="Which one is the supervisor_agent")
 
     def __init__(self, model, name, instruction='', description='', sub_agents=None,
                  global_instruction='', tools=None, output_key=None,
                  before_agent_callback=None, before_model_callback=None,
                  before_tool_callback=default_before_tool_callback, after_tool_callback=default_after_tool_callback,
                  after_model_callback=default_after_model_callback, after_agent_callback=None, loading=False,
-                 render_tool_response=False, disallow_transfer_to_parent=False):
+                 render_tool_response=False, disallow_transfer_to_parent=False, supervisor_agent=None):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
         Args:
@@ -98,10 +101,14 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
         # Todo: support List[before_tool_callback]
         before_tool_callback = catch_before_tool_callback_error(
-            check_job_create(
-                set_dpdispatcher_env(
-                    get_ak_projectId(
-                        before_tool_callback
+            inject_machineType(
+                check_job_create(
+                    inject_current_env(
+                        inject_username_ticket(
+                            inject_ak_projectId(
+                                before_tool_callback
+                            )
+                        )
                     )
                 )
             )
@@ -124,11 +131,13 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
             after_tool_callback=after_tool_callback,
             after_model_callback=after_model_callback,
             after_agent_callback=after_agent_callback,
-            disallow_transfer_to_parent=disallow_transfer_to_parent
+            disallow_transfer_to_parent=disallow_transfer_to_parent,
+            supervisor_agent=supervisor_agent
         )
 
         self.loading = loading
         self.render_tool_response = render_tool_response
+        self.supervisor_agent = supervisor_agent
 
     # Execution Order: user_question -> chembrain_llm -> event -> user_agree_transfer -> retrosyn_llm (param) -> event
     #                  -> user_agree_param -> retrosyn_llm (function_call) -> event -> tool_call
@@ -162,7 +171,10 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                         if tool_response.get("result", None) is not None and isinstance(tool_response['result'],
                                                                                         CallToolResult):
                             raw_result = event.content.parts[0].function_response.response['result'].content[0].text
-                            dict_result = jsonpickle.loads(raw_result)
+                            try:
+                                dict_result = jsonpickle.loads(raw_result)
+                            except ScannerError as err:
+                                raise type(err)(f"jsonpickle Error, raw_result = `{raw_result}`")
                         else:
                             dict_result = tool_response
 
@@ -193,6 +205,12 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                                ModelRole):
                                 yield result_event
                 yield event
+
+            # If specified supervisor_agent, transfer back
+            if self.supervisor_agent:
+                for function_event in context_function_event(ctx, self.name, "transfer_to_agent", None, ModelRole,
+                                                             {"agent_name": self.supervisor_agent}):
+                    yield function_event
         except BaseException as err:
             from agents.matmaster_agent.agent import (
                 root_agent as matmaster_agent,
@@ -249,10 +267,11 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
                 if is_text(event):
-                    for function_event in context_function_event(ctx, self.name, "system_submit_core_info",
-                                                                 {"msg": event.content.parts[0].text},
-                                                                 ModelRole):
-                        yield function_event
+                    if not event.partial:
+                        for function_event in context_function_event(ctx, self.name, "system_submit_core_info",
+                                                                     {"msg": event.content.parts[0].text},
+                                                                     ModelRole):
+                            yield function_event
                 else:
                     yield event
         except BaseException as err:
@@ -329,11 +348,11 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
         try:
             await self.tools[0].get_tools()
             if not ctx.session.state["dflow"]:
-                access_key, Executor, BohriumStorge = _get_ak(ctx, get_BohriumExecutor(), get_BohriumStorage())
-                project_id, Executor, BohriumStorge = _get_projectId(ctx, Executor, BohriumStorge)
+                access_key, Executor, BohriumStorge = _inject_ak(ctx, get_BohriumExecutor(), get_BohriumStorage())
+                project_id, Executor, BohriumStorge = _inject_projectId(ctx, Executor, BohriumStorge)
             else:
-                access_key, Executor, BohriumStorge = _get_ak(ctx, get_DFlowExecutor(), get_BohriumStorage())
-                project_id, Executor, BohriumStorge = _get_projectId(ctx, Executor, BohriumStorge)
+                access_key, Executor, BohriumStorge = _inject_ak(ctx, get_DFlowExecutor(), get_BohriumStorage())
+                project_id, Executor, BohriumStorge = _inject_projectId(ctx, Executor, BohriumStorge)
 
             for origin_job_id in list(ctx.session.state['long_running_jobs'].keys()):
                 # 如果该任务结果已经在上下文中 && 用户没有请求这个任务结果，则不再重复查询
@@ -367,8 +386,11 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     else:  # Job Success
                         raw_result = results_res.content[0].text
                         dict_result = jsonpickle.loads(raw_result)
+
+                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+
                         ctx.session.state['long_running_jobs'][origin_job_id]['job_result'] = await parse_result(
-                            dict_result)
+                            new_tool_result)
 
                         # Render Frontend Job-Result Component
                         job_result_comp_data = {

@@ -1,4 +1,3 @@
-import copy
 import json
 import logging
 import os
@@ -22,8 +21,9 @@ from agents.matmaster_agent.constant import (
     Transfer2Agent,
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
-from agents.matmaster_agent.utils.helper_func import is_json, get_same_function_call
-from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload
+from agents.matmaster_agent.utils.helper_func import is_json, check_None_wrapper, \
+    get_unique_function_call, update_llm_response, function_calls_to_str
+from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
 
@@ -36,23 +36,42 @@ async def default_after_model_callback(callback_context: CallbackContext,
         return None
 
     # 获取所有函数调用
-    current_function_calls = [part.function_call for part in llm_response.content.parts if part.function_call]
+    current_function_calls = [{"name": part.function_call.name, "args": part.function_call.args} for part in
+                              llm_response.content.parts if part.function_call]
 
     # 如果没有函数调用，直接返回
     if not current_function_calls:
         return None
 
-    # 处理多个函数调用的情况
-    if len(current_function_calls) > 1:
-        logger.info("Count of Function Calls > 1, check name & args now")
-        repeat_indexes = get_same_function_call(current_function_calls)
+    if (
+            callback_context.state.get("invocation_id_with_tool_call", None) is None or
+            callback_context.invocation_id != list(callback_context.state["invocation_id_with_tool_call"].keys())[0]
+    ):  # 首次调用 function_call 或新一轮对话
+        if len(current_function_calls) == 1:
+            logger.info(f"Single Function Call In New Turn")
+            logger.info(f"current_function_calls = {function_calls_to_str(current_function_calls)}")
 
-        if repeat_indexes is not None:
-            logger.info("Same Function Calls Detected, Remove Now")
-            # 创建不包含重复索引的新部分列表
-            llm_response.content.parts = [part for index, part in enumerate(copy.deepcopy(llm_response.content.parts))
-                                          if index not in repeat_indexes]
-            return llm_response
+            callback_context.state["invocation_id_with_tool_call"] = {
+                callback_context.invocation_id: current_function_calls
+            }
+        else:
+            logger.warning(f"Multi Function Calls In One Turn")
+            logger.info(f"current_function_calls = {function_calls_to_str(current_function_calls)}")
+
+            callback_context.state["invocation_id_with_tool_call"] = {
+                callback_context.invocation_id: get_unique_function_call(current_function_calls)
+            }
+            return update_llm_response(llm_response, current_function_calls, [])
+    else:  # 同一轮对话又出现了 Function Call
+        logger.warning(f"Same InvocationId with Function Calls")
+        before_function_calls = callback_context.state["invocation_id_with_tool_call"][callback_context.invocation_id]
+        logger.info(f"before_function_calls = {function_calls_to_str(before_function_calls)},"
+                    f"current_function_calls = {function_calls_to_str(current_function_calls)}")
+
+        callback_context.state["invocation_id_with_tool_call"] = {
+            callback_context.invocation_id: get_unique_function_call(before_function_calls + current_function_calls)
+        }
+        return update_llm_response(llm_response, current_function_calls, before_function_calls)
 
     return None
 
@@ -62,44 +81,58 @@ async def default_before_tool_callback(tool, args, tool_context):
     return
 
 
-def _get_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
-    session_state = ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
-    access_key = session_state[FRONTEND_STATE_KEY]['biz'].get('ak', None)
-    if access_key is None:
-        access_key = os.getenv("BOHRIUM_ACCESS_KEY", None)
-    if access_key is not None:
-        if executor is not None:
-            if executor['type'] == "dispatcher":  # BohriumExecutor
-                executor['machine']['remote_profile']['access_key'] = access_key
-            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
-                executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
-        if storage is not None:  # BohriumStorage
-            storage['plugin']['access_key'] = access_key
+def _get_session_state(ctx: Union[InvocationContext, ToolContext]):
+    return ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
+
+
+@check_None_wrapper
+def _get_ak(ctx: Union[InvocationContext, ToolContext]):
+    session_state = _get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv("BOHRIUM_ACCESS_KEY")
+
+
+@check_None_wrapper
+def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
+    session_state = _get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv("BOHRIUM_PROJECT_ID")
+
+
+@check_None_wrapper
+def _get_machineType(ctx: Union[InvocationContext, ToolContext]):
+    session_state = _get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('machineType') or os.getenv("MACHINE_TYPE", "c32_m64_cpu")
+
+
+def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
+    access_key = _get_ak(ctx)
+    if executor is not None:
+        if executor['type'] == "dispatcher":  # BohriumExecutor
+            executor['machine']['remote_profile']['access_key'] = access_key
+        elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
+            executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
+    if storage is not None:  # BohriumStorage
+        storage['plugin']['access_key'] = access_key
     return access_key, executor, storage
 
 
-def _get_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
-    session_state = ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
-    project_id = session_state[FRONTEND_STATE_KEY]['biz'].get('projectId', None)
-    if project_id is None:
-        project_id = os.getenv("BOHRIUM_PROJECT_ID", None)
-    if project_id is not None:
-        if executor is not None:
-            if executor['type'] == "dispatcher":  # BohriumExecutor
-                executor['machine']['remote_profile']['project_id'] = int(project_id)
-                # Redundant set for resources/envs keys
-                executor["resources"] = executor.get("resources", {})
-                executor["resources"]["envs"] = executor["resources"].get("envs", {})
-                executor["resources"]["envs"]["BOHRIUM_PROJECT_ID"] = int(project_id)
-            elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
-                executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
-        if storage is not None:  # BohriumStorage
-            storage['plugin']['project_id'] = int(project_id)
+def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
+    project_id = _get_projectId(ctx)
+    if executor is not None:
+        if executor['type'] == "dispatcher":  # BohriumExecutor
+            executor['machine']['remote_profile']['project_id'] = int(project_id)
+            # Redundant set for resources/envs keys
+            executor["resources"] = executor.get("resources", {})
+            executor["resources"]["envs"] = executor["resources"].get("envs", {})
+            executor["resources"]["envs"]["BOHRIUM_PROJECT_ID"] = int(project_id)
+        elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
+            executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
+    if storage is not None:  # BohriumStorage
+        storage['plugin']['project_id'] = int(project_id)
     return project_id, executor, storage
 
 
-def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
-    access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
+def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
+    access_key = _get_ak(ctx)
     username = ak_to_username(access_key=access_key)
     if username:
         if executor is not None:
@@ -116,10 +149,8 @@ def _get_username(ctx: Union[InvocationContext, ToolContext], executor):
         raise RuntimeError("Failed to get username")
 
 
-def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
-    access_key, _, _ = _get_ak(ctx, executor=None, storage=None)
-    if not access_key:
-        raise ValueError("AccessKey not found")
+def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
+    access_key = _get_ak(ctx)
     ticket = ak_to_ticket(access_key=access_key)
     if ticket:
         if executor is not None:
@@ -135,11 +166,7 @@ def _get_ticket(ctx: Union[InvocationContext, ToolContext], executor):
         raise RuntimeError("Failed to get ticket")
 
 
-def _get_current_env(executor):
-    if CURRENT_ENV:
-        current_env = CURRENT_ENV
-    else:
-        current_env = "prod"
+def _inject_current_env(executor):
     if executor is not None:
         if executor['type'] == "dispatcher":  # BohriumExecutor
             # Redundant set for resources/envs keys
@@ -148,10 +175,21 @@ def _get_current_env(executor):
             executor['resources']['envs']['CURRENT_ENV'] = str(CURRENT_ENV)
         elif executor["type"] == "local" and executor.get("dflow", False):  # DFlowExecutor
             executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
-    return current_env, executor
+    return executor
 
 
-def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
+def _inject_machine_type(ctx: Union[InvocationContext, ToolContext], executor):
+    machine_type = _get_machineType(ctx)
+    if executor is not None:
+        if executor['type'] == "dispatcher":  # BohriumExecutor
+            current_machine_type = executor['machine']['remote_profile']['machine_type']
+            if not current_machine_type:
+                executor['machine']['remote_profile']['machine_type'] = str(machine_type)
+
+    return executor
+
+
+def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
         # 两步操作：
@@ -169,18 +207,13 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
             raise TypeError("Not CalculationMCPTool type, current tool does not have <storage>")
 
         # 获取 access_key
-
-        access_key, tool.executor, tool.storage = _get_ak(tool_context, tool.executor, tool.storage)
-        if access_key is None:
-            raise ValueError("Failed to get access_key")
+        access_key, tool.executor, tool.storage = _inject_ak(tool_context, tool.executor, tool.storage)
 
         # 获取 project_id
         try:
-            project_id, tool.executor, tool.storage = _get_projectId(tool_context, tool.executor, tool.storage)
+            project_id, tool.executor, tool.storage = _inject_projectId(tool_context, tool.executor, tool.storage)
         except ValueError as e:
             raise ValueError("ProjectId is invalid") from e
-        if project_id is None:
-            raise RuntimeError("ProjectId was not provided. Please select the project first.")
 
         tool_context.state['ak'] = access_key
         tool_context.state['project_id'] = project_id
@@ -188,7 +221,7 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
     return wrapper
 
 
-def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
+def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
         # 先执行前面的回调链
@@ -196,13 +229,23 @@ def set_dpdispatcher_env(func: BeforeToolCallback) -> BeforeToolCallback:
             return before_tool_result
 
         # 注入 username
-        _, tool.executor = _get_username(tool_context, tool.executor)
+        _, tool.executor = _inject_username(tool_context, tool.executor)
 
         # 注入 ticket
-        _, tool.executor = _get_ticket(tool_context, tool.executor)
+        _, tool.executor = _inject_ticket(tool_context, tool.executor)
+
+    return wrapper
+
+
+def inject_current_env(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+        # 先执行前面的回调链
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
 
         # 注入当前环境
-        _, tool.executor = _get_current_env(tool.executor)
+        tool.executor = _inject_current_env(tool.executor)
 
     return wrapper
 
@@ -234,14 +277,40 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
     return wrapper
 
 
+def inject_machineType(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 如果 tool 为 Transfer2Agent，不做 ak 和 project_id 设置/校验
+        if tool.name == Transfer2Agent:
+            return None
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            raise TypeError("Not CalculationMCPTool type, current tool does not have <storage>")
+
+        _inject_machine_type(tool_context, tool.executor)
+
+    return wrapper
+
+
 # 总应该在最后
 def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> dict:
+    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
         try:
+            # 如果 tool 为 Transfer2Agent，直接 return
+            if tool.name == Transfer2Agent:
+                return None
+
             if (before_tool_result := await func(tool, args, tool_context)) is not None:
                 return before_tool_result
 
@@ -318,19 +387,8 @@ def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
                 is_json(tool_response.content[0].text)):
             return None
 
-        tool_results = json.loads(tool_response.content[0].text)
-
-        new_tool_result = {}
-        tgz_flag = False
-        for k, v in tool_results.items():
-            new_tool_result[k] = v
-            if (
-                    type(v) == str and
-                    v.startswith("https") and
-                    v.endswith("tgz")):
-                tgz_flag = True
-                new_tool_result.update(**await extract_convert_and_upload(v))
-
+        tool_result = json.loads(tool_response.content[0].text)
+        tgz_flag, new_tool_result = await update_tgz_dict(tool_result)
         if tgz_flag:
             return new_tool_result
 
@@ -345,6 +403,10 @@ def catch_after_tool_callback_error(func: AfterToolCallback) -> AfterToolCallbac
         # 1. 调用被装饰的 after_tool_callback；
         # 2. 如果调用的 after_tool_callback 有返回值，以这个为准
         try:
+            # 如果 tool 为 Transfer2Agent，直接 return
+            if tool.name == Transfer2Agent:
+                return None
+
             if (after_tool_result := await func(tool, args, tool_context, tool_response)) is not None:
                 return after_tool_result
         except Exception as e:

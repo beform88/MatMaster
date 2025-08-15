@@ -41,7 +41,7 @@ BohriumExecutor = {
             "app_key": "agent",
             "image_address": "registry.dp.tech/dptech/dp/native/prod-19853/dpa-mcp:0.0.0",
             "platform": "ali",
-            "machine_type": "c32_m64_cpu"
+            "machine_type": ""
         }
     },
     "resources": {

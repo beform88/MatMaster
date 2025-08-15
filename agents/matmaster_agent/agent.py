@@ -10,7 +10,7 @@ from agents.matmaster_agent.base_agents.io_agent import (
 )
 from agents.matmaster_agent.callback import matmaster_before_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-# from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
+from agents.matmaster_agent.structure_generate_agent.agent import init_structure_generate_agent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.optimade_database_agent.agent import (
     init_optimade_database_agent,
@@ -62,15 +62,15 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         # thermoelectric_agent = init_thermoelectric_agent(llm_config)
         # superconductor_agent = init_superconductor_agent(llm_config)
         # invar_agent = init_invar_agent(llm_config)
-        # crystalformer_agent = init_crystalformer_agent(llm_config)
-        # apex_agent = init_apex_agent(llm_config, use_deepseek=True)
+        structure_generate_agent = init_structure_generate_agent(llm_config)
+        # apex_agent = init_apex_agent(llm_config)
         # abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
         # organic_reaction_agent = init_organic_reaction_agent(llm_config)
         # HEA_assistant_agent = init_HEA_assistant_agent(llm_config)
-        # hea_calculator_agent = init_hea_calculator_agent(llm_config, use_deepseek=True)
+        # hea_calculator_agent = init_hea_calculator_agent(llm_config, use_deepseek=False)
         # ssebrain_agent = init_ssebrain_agent(llm_config)
         # chembrain_agent = init_chembrain_agent(llm_config)
-        # perovskite_agent = init_perovskite_agent(llm_config, use_deepseek=True)
+        # perovskite_agent = init_perovskite_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -84,7 +84,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 # thermoelectric_agent,
                 # superconductor_agent,
                 # apex_agent,
-                # crystalformer_agent,
+                structure_generate_agent,
                 # abacus_calculator_agent,
                 # invar_agent,
                 # organic_reaction_agent,

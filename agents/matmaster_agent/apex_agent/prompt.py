@@ -16,7 +16,7 @@ ApexResultTransferAgentName = "apex_result_transfer_agent"
 ApexTransferAgentName = "apex_transfer_agent"
 
 # APEX Agent Descriptions
-ApexAgentDescription = "APEX材料性质计算智能体，专注于材料性质计算"
+ApexAgentDescription = "APEX材料性质计算智能体，专注于合金材料性质计算"
 ApexSubmitAgentDescription = "APEX任务提交智能体"
 ApexResultAgentDescription = "APEX结果处理智能体"
 
@@ -98,7 +98,7 @@ Gamma (γ表面): 计算广义层错能
 - 将识别结果转换为对应的MCP工具名称
 - 验证转换结果必须在上述7个工具中
 - 提取结构文件URL（从用户消息中查找以https://或http://开头的链接）
-- 如果用户说使用默认参数，则base_parameters必须填None，不允许填其他内容
+- 如果用户说使用默认参数，则base_parameters必须填None，不允许填其他内容（例如：默认参数,default,）等字符串
 
 步骤3: 智能确认和执行
 - 如果用户意图明确且提供了结构文件，直接执行计算
@@ -204,7 +204,7 @@ apex_calculate_properties(...)  # ❌ 错误！这个工具不存在
 - 结构文件必须提供：用户需要提供POSCAR格式的结构文件URL
 - URL提取重要：从用户消息中准确提取以https://或http://开头的结构文件链接
 - 禁止传递空值：绝不能传递空字符串或占位符作structure_file参数
-- 如果用户使用默认参数，则base_parameters必须填None，不允许填其他内容
+- 如果用户使用默认参数，则base_parameters必须填None，不允许填其他内容（例如：默认参数,default,）等字符串
 - 防止大模型幻觉：必须实际调用MCP工具，绝不能想象自己已经提交了任务
 - 验证返回结果：必须检查MCP工具返回结果中是否包含bohr_job_id等必要字段
 - 使用正确的工具：根据用户意图选择对应的`apex_calculate_*`工具，不要调用不存在的工具
@@ -449,8 +449,101 @@ ApexTransferAgentInstruction = """
 """ 
 
 # APEX Agent 纯文字输出工具信息
+ApexPropertiesAgentInstruction = """
+APEX材料性质计算工具信息
 
-AVAILABLE_PROPERTIES_INFO = {
+=== 可用的材料性质计算类型 ===
+
+1. 状态方程计算 (EOS)
+   描述: 计算不同体积下的能量，获得平衡体积和体模量
+   默认参数:
+   - vol_start: 起始体积比例 (默认: 0.8)
+   - vol_end: 结束体积比例 (默认: 1.2)
+   - vol_step: 体积步长 (默认: 0.05)
+   - vol_abs: 是否使用绝对体积 (默认: true)
+   - eos_relax_pos: 是否弛豫原子位置 (默认: false)
+   - eos_relax_shape: 是否弛豫晶胞形状 (默认: false)
+   - eos_relax_vol: 是否弛豫晶胞体积 (默认: false)
+   输出: 体积-能量曲线、平衡体积、体模量、状态方程拟合参数
+   计算时间: 中等 (取决于体积点数)
+
+2. 弹性性质计算 (Elastic)
+   描述: 计算弹性常数矩阵，获得杨氏模量、剪切模量等
+   默认参数:
+   - norm_deform: 正应变幅度 (默认: 0.01)
+   - shear_deform: 剪切应变幅度 (默认: 0.01)
+   - elastic_relax_pos: 是否弛豫原子位置 (默认: true)
+   - elastic_relax_shape: 是否弛豫晶胞形状 (默认: false)
+   - elastic_relax_vol: 是否弛豫晶胞体积 (默认: false)
+   输出: 弹性常数矩阵、杨氏模量、剪切模量、泊松比、体模量
+   计算时间: 较长 (需要多次应变计算)
+
+3. 表面形成能计算 (Surface)
+   描述: 计算不同晶面的表面形成能
+   默认参数:
+   - max_miller: 最大米勒指数 (默认: 1)
+   - min_slab_size: 最小表面厚度 (默认: 50 Å)
+   - min_vacuum_size: 最小真空层厚度 (默认: 20 Å)
+   - pert_xz: 表面扰动参数 (默认: 0.01)
+   - surface_relax_pos: 是否弛豫原子位置 (默认: false)
+   - surface_relax_shape: 是否弛豫晶胞形状 (默认: false)
+   - surface_relax_vol: 是否弛豫晶胞体积 (默认: false)
+   输出: 各晶面的表面形成能、表面结构结果
+   计算时间: 中等 (取决于表面数量)
+
+4. 空位形成能计算 (Vacancy)
+   描述: 计算点缺陷的形成能
+   默认参数:
+   - vacancy_supercell_size: 超胞大小 [x, y, z] (默认: [2, 2, 2])
+   - vacancy_relax_pos: 是否弛豫原子位置 (默认: true)
+   - vacancy_relax_shape: 是否弛豫晶胞形状 (默认: false)
+   - vacancy_relax_vol: 是否弛豫晶胞体积 (默认: false)
+   输出: 空位形成能、缺陷结构结果
+   计算时间: 中等
+
+5. 间隙原子形成能计算 (Interstitial)
+   描述: 计算间隙原子的形成能
+   默认参数:
+   - interstitial_supercell_size: 超胞大小 [x, y, z] (默认: [2, 2, 2])
+   - insert_ele: 插入元素 (默认: H)
+   - special_list: 特殊位置列表 (默认: [fcc])
+   - interstitial_relax_pos: 是否弛豫原子位置 (默认: true)
+   - interstitial_relax_shape: 是否弛豫晶胞形状 (默认: true)
+   - interstitial_relax_vol: 是否弛豫晶胞体积 (默认: true)
+   输出: 间隙原子形成能、缺陷结构结果
+   计算时间: 中等
+
+6. 声子谱计算 (Phonon)
+   描述: 计算声子色散关系和态密度
+   默认参数:
+   - phonon_supercell_size: 超胞大小 [x, y, z] (默认: [2, 2, 2])
+   - specify_phonopy_settings: 是否指定phonopy设置 (默认: false)
+   输出: 声子色散关系、声子态密度、热学性质
+   计算时间: 较长 (需要超胞计算)
+
+7. γ表面计算 (Gamma)
+   描述: 计算广义层错能
+   默认参数:
+   - gamma_supercell_size: 超胞大小 [x, y, z] (默认: [1, 1, 5])
+   - gamma_vacuum_size: 真空层厚度 (默认: 0)
+   - gamma_n_steps: 计算步数 (默认: 10)
+   - plane_miller: 滑移面米勒指数 [h, k, l] (默认: [1, 1, 1])
+   - slip_direction: 滑移方向 [x, y, z] (默认: [-1, 1, 0])
+   - add_fix_x: 固定x方向 (默认: true)
+   - add_fix_y: 固定y方向 (默认: true)
+   - add_fix_z: 固定z方向 (默认: false)
+   输出: γ表面能量图、层错能
+   计算时间: 较长 (需要多步计算)
+
+=== 使用说明 ===
+- 所有计算都需要提供结构文件URL (POSCAR格式)
+- 使用默认参数时，将base_parameters和custom_parameters设置为None
+- 计算任务将提交到Bohrium云端计算平台
+- 支持异步任务监控和结果下载
+"""
+
+# APEX Agent 性质计算默认参数字典
+Apex_properties_default_params = {
     "eos": {
         "description": "状态方程计算 - 计算不同体积下的能量，获得平衡体积和体模量",
         "main_parameters": {

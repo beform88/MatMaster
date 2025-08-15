@@ -9,7 +9,7 @@ from ....constant import TMP_FRONTEND_STATE_KEY
 from .callback import update_invoke_message, save_response
 from .constant import ReportAgentName, ReportAgentOutKey
 from .prompt import description
-from .prompt import instructions_v4_en
+from .prompt import instructions_v4_zh
 from agents.matmaster_agent.ssebrain_agent.constant import LOADING_STATE_KEY, LOADING_END
 
 
@@ -19,7 +19,7 @@ class ReportAgent(LlmAgent):
 
         super().__init__(name=ReportAgentName,
                          model=selected_model,
-                         instruction=instructions_v4_en,
+                         instruction=instructions_v4_zh,
                          description=description,
                          output_key=ReportAgentOutKey,
                          before_model_callback=update_invoke_message,

@@ -36,7 +36,7 @@ mcp_tools = CalculationMCPToolset(
 class HEACalculatorAgent(CalculationMCPLlmAgent):
     def __init__(self, llm_config):
         super().__init__(
-            model=llm_config.deepseek_chat,
+            model=llm_config.gpt_4o,
             name=HEACALCULATOR_AGENT_NAME,
             description=HEACALC_AGENT_DESCRIPTION,
             instruction=HEACALC_AGENT_INSTRUCTION,
