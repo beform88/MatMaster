@@ -18,7 +18,7 @@ from agents.matmaster_agent.constant import (
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
     OPENAPI_HOST,
-    Transfer2Agent,
+    Transfer2Agent, LOCAL_EXECUTOR,
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
 from agents.matmaster_agent.utils.helper_func import is_json, check_None_wrapper, \
@@ -313,6 +313,14 @@ def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCall
 
             if (before_tool_result := await func(tool, args, tool_context)) is not None:
                 return before_tool_result
+
+            # Override Sync Tool
+            if tool_context.state["sync_tools"]:
+                for sync_tool in tool_context.state["sync_tools"]:
+                    if tool.name == sync_tool:
+                        tool.async_mode = False
+                        tool.wait = True
+                        tool.executor = LOCAL_EXECUTOR
 
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:

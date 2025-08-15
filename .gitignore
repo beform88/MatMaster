@@ -12,3 +12,6 @@ requires.txt
 SOURCES.txt
 top_level.txt
 llm_contents_report.json
+/extract_user_question.py
+/user_questions
+/traces/

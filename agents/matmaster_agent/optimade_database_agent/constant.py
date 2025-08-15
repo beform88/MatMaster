@@ -1,4 +1,4 @@
-OPTIMADE_DATABASE_AGENT_NAME = "Optimade_Agent"
+OPTIMADE_DATABASE_AGENT_NAME = "optimade_agent"
 
 from agents.matmaster_agent.constant import CURRENT_ENV
 
