@@ -42,8 +42,9 @@ from agents.matmaster_agent.prompt import (
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
+from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result
-from agents.matmaster_agent.utils.io_oss import extract_convert_and_upload, update_tgz_dict
+from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
 
@@ -179,17 +180,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                             dict_result = tool_response
 
                         job_result = await parse_result(dict_result)
-
-                        job_result_comp_data = {
-                            "eventType": 1,
-                            "eventData": {
-                                "contentType": 1,
-                                "renderType": '@bohrium-chat/matmodeler/dialog-file',
-                                "content": {
-                                    JOB_RESULT_KEY: [item for item in job_result if item.get("status", None) is None]
-                                },
-                            }
-                        }
+                        job_result_comp_data = get_frontend_job_result_data(job_result)
 
                         # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                         for system_job_result_event in context_function_event(ctx, self.name, "system_job_result",
@@ -227,6 +218,41 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
 
         try:
             async for event in super()._run_async_impl(ctx):
+                # Only For Sync Tool Call
+                if (
+                        is_function_call(event) and
+                        ctx.session.state["sync_tools"] and
+                        event.content.parts[0].function_call.name in ctx.session.state["sync_tools"]
+                ):
+                    event.long_running_tool_ids = None  # Untag Async Job
+                    ctx.session.state['long_running_jobs_count'] += 1
+                    await update_session_state(ctx, self.name)
+
+                if (
+                        is_function_response(event) and
+                        ctx.session.state["sync_tools"] and
+                        event.content.parts[0].function_response.name in ctx.session.state["sync_tools"]
+                ):
+                    raw_result = event.content.parts[0].function_response.response["result"].content[0].text
+                    dict_result = jsonpickle.loads(raw_result)
+                    tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+                    parsed_result = await parse_result(new_tool_result)
+                    job_result_comp_data = get_frontend_job_result_data(parsed_result)
+
+                    for frontend_job_result_event in all_text_event(ctx,
+                                                                    self.name,
+                                                                    f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
+                                                                    ModelRole):
+                        yield frontend_job_result_event
+
+                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                    for db_job_result_event in context_function_event(ctx, self.name, "system_job_result",
+                                                                      {JOB_RESULT_KEY: parsed_result},
+                                                                      ModelRole):
+                        yield db_job_result_event
+                # END
+
+                # Only for Long Running Tools Call
                 if event.long_running_tool_ids:
                     ctx.session.state['long_running_ids'] += event.long_running_tool_ids
                     await update_session_state(ctx, self.name)
@@ -264,6 +290,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             ctx.session.state["render_job_id"].append(origin_job_id)
                             ctx.session.state['long_running_jobs_count'] += 1
                             await update_session_state(ctx, self.name)
+                # END
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
                 if is_text(event):
@@ -391,20 +418,8 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
 
                         ctx.session.state['long_running_jobs'][origin_job_id]['job_result'] = await parse_result(
                             new_tool_result)
-
-                        # Render Frontend Job-Result Component
-                        job_result_comp_data = {
-                            "eventType": 1,
-                            "eventData": {
-                                "contentType": 1,
-                                "renderType": '@bohrium-chat/matmodeler/dialog-file',
-                                "content": {
-                                    JOB_RESULT_KEY: [item for item in
-                                                     ctx.session.state['long_running_jobs'][origin_job_id][
-                                                         'job_result'] if item.get("status", None) is None]
-                                },
-                            }
-                        }
+                        job_result_comp_data = get_frontend_job_result_data(
+                            ctx.session.state['long_running_jobs'][origin_job_id]['job_result'])
 
                         # Only for debug
                         if os.getenv("MODE", None) == "debug":
@@ -464,8 +479,9 @@ class BaseAsyncJobAgent(LlmAgent):
     submit_agent: SequentialAgent
     result_agent: SequentialAgent
     # transfer_agent: LlmAgent
-    dflow_flag: False = Field(False, description="Whether the agent is dflow related", exclude=True)
+    dflow_flag: bool = Field(False, description="Whether the agent is dflow related", exclude=True)
     supervisor_agent: str
+    sync_tools: Optional[list] = Field(None, description="These tools will sync run on the server")
 
     def __init__(
             self,
@@ -475,7 +491,8 @@ class BaseAsyncJobAgent(LlmAgent):
             agent_instruction: str,
             mcp_tools: list,
             dflow_flag: bool,
-            supervisor_agent: str
+            supervisor_agent: str,
+            sync_tools: Optional[list] = None
     ):
         agent_prefix = agent_name.replace("_agent", "")
 
@@ -551,12 +568,14 @@ class BaseAsyncJobAgent(LlmAgent):
             dflow_flag=dflow_flag,
             # sub_agents=[submit_agent, result_agent, transfer_agent],
             sub_agents=[submit_agent, result_agent],
-            supervisor_agent=supervisor_agent
+            supervisor_agent=supervisor_agent,
+            sync_tools=sync_tools
         )
 
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         ctx.session.state["dflow"] = self.dflow_flag
+        ctx.session.state["sync_tools"] = self.sync_tools
         await update_session_state(ctx, self.name)
 
         if ctx.session.state[FRONTEND_STATE_KEY]["biz"].get("origin_id", None) is not None:
