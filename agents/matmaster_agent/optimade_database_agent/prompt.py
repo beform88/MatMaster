@@ -19,6 +19,20 @@ You can call **three MCP tools**:
        providers: list[str] = [...]
    )
    - Sends ONE raw OPTIMADE filter string to all chosen providers at once.
+   You can search for materials using any valid OPTIMADE filter expression, including:
+     1. **Element filters** — specify required or excluded elements:
+        - Must contain all: `elements HAS ALL "Al","O","Mg"`
+        - Exactly these: `elements HAS ONLY "Si","O"`
+        - Any match: `elements HAS ANY "Al","O"`
+     2. **Formula filters** — match chemical formulas:
+        - Reduced: `chemical_formula_reduced="O2Si"`
+        - Descriptive: `chemical_formula_descriptive CONTAINS "H2O"`
+        - Anonymous: `chemical_formula_anonymous="A2B"`
+     3. **Numeric filters** — filter by number of distinct elements:
+        - Exactly 3: `nelements=3`
+        - Between 2 and 7: `nelements>=2 AND nelements<=7`
+     4. **Logical combinations** — combine conditions with parentheses:
+        - `(elements HAS ANY "Si" AND elements HAS ANY "O") AND NOT (elements HAS ANY "H")`
 
 2) fetch_structures_with_spg(
        base_filter: str,
