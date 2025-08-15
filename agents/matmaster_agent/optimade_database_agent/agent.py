@@ -24,8 +24,8 @@ mcp_tools = CalculationMCPToolset(
 class Optimade_Agent(CalculationMCPLlmAgent):
     def __init__(self, llm_config):
         super().__init__(
-            model=llm_config.deepseek_chat,
-            # model=llm_config.gpt_4o,
+            # model=llm_config.deepseek_chat,
+            model=llm_config.gpt_4o,
             name=OptimadeAgentName,
             description=OptimadeAgentDescription,
             instruction=OptimadeAgentInstruction,
