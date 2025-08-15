@@ -176,8 +176,7 @@ When multiple tools can perform the same calculation or property analysis, you M
 13. **{ABACUS_AGENT_NAME}** - **DFT calculation using ABACUS**
     - Purpose: Perform DFT calculations using ABACUS code
     - Capabilities:
-      - Basic structure building
-      - Prepare ABACUS input files (INPUT, STRU, pseudopotential, orbital files)
+      - Prepare ABACUS input files (INPUT, STRU, pseudopotential, orbital files) from structure files (supprors CIF, VASP POSCAR and ABACUS STRU format)
       - Geometry optimization, molecular dynamics
       - Property calculations: band structure, phonon spectrum, elastic properties, DOS/PDOS, Bader charge
       - Result collection from ABACUS job directories
