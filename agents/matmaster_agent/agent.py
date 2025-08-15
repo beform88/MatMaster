@@ -1,97 +1,98 @@
 from google.adk.agents import LlmAgent
 from opik.integrations.adk import track_adk_agent_recursive
 
-from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
-from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
-from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
-from agents.matmaster_agent.apex_agent.agent import init_apex_agent
+# from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
+# from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
+# from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
+# from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
 from agents.matmaster_agent.callback import matmaster_before_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
+# from agents.matmaster_agent.crystalformer_agent.agent import init_crystalformer_agent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.optimade_database_agent.agent import (
     init_optimade_database_agent,
 )
-from agents.matmaster_agent.piloteye_electro_agent.agent import (
-    init_piloteye_electro_agent,
-)
+# from agents.matmaster_agent.piloteye_electro_agent.agent import (
+#     init_piloteye_electro_agent,
+# )
 from agents.matmaster_agent.prompt import (
     AgentDescription,
     AgentInstruction,
     GlobalInstruction,
 )
-from agents.matmaster_agent.superconductor_agent.agent import (
-    init_superconductor_agent,
-)
-from agents.matmaster_agent.thermoelectric_agent.agent import (
-    init_thermoelectric_agent,
-)
-from agents.matmaster_agent.traj_analysis_agent.agent import (
-    init_traj_analysis_agent,
-)
-from agents.matmaster_agent.organic_reaction_agent.agent import (
-    init_organic_reaction_agent,
-)
-from agents.matmaster_agent.HEA_assistant_agent.agent import (
-    init_HEA_assistant_agent
-)
-from agents.matmaster_agent.HEACalculator_agent.agent import (
-    init_hea_calculator_agent,
-)
-from agents.matmaster_agent.ssebrain_agent.agent import (
-    init_ssebrain_agent,
-)
-from agents.matmaster_agent.chembrain_agent.agent import (
-    init_chembrain_agent,
-)
-from agents.matmaster_agent.perovskite_agent.agent import (
-    init_perovskite_agent,
-)
+# from agents.matmaster_agent.superconductor_agent.agent import (
+#     init_superconductor_agent,
+# )
+# from agents.matmaster_agent.thermoelectric_agent.agent import (
+#     init_thermoelectric_agent,
+# )
+# from agents.matmaster_agent.traj_analysis_agent.agent import (
+#     init_traj_analysis_agent,
+# )
+# from agents.matmaster_agent.organic_reaction_agent.agent import (
+#     init_organic_reaction_agent,
+# )
+# from agents.matmaster_agent.HEA_assistant_agent.agent import (
+#     init_HEA_assistant_agent
+# )
+# from agents.matmaster_agent.HEACalculator_agent.agent import (
+#     init_hea_calculator_agent,
+# )
+# from agents.matmaster_agent.ssebrain_agent.agent import (
+#     init_ssebrain_agent,
+# )
+# from agents.matmaster_agent.chembrain_agent.agent import (
+#     init_chembrain_agent,
+# )
+# from agents.matmaster_agent.perovskite_agent.agent import (
+#     init_perovskite_agent,
+# )
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
 
     def __init__(self, llm_config):
-        piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
-        traj_analysis_agent = init_traj_analysis_agent(llm_config)
+        # piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
+        # traj_analysis_agent = init_traj_analysis_agent(llm_config)
         optimade_agent = init_optimade_database_agent(llm_config)
-        dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
-        thermoelectric_agent = init_thermoelectric_agent(llm_config)
-        superconductor_agent = init_superconductor_agent(llm_config)
-        invar_agent = init_invar_agent(llm_config)
-        crystalformer_agent = init_crystalformer_agent(llm_config)
-        apex_agent = init_apex_agent(llm_config, use_deepseek=True)
-        abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
-        organic_reaction_agent = init_organic_reaction_agent(llm_config)
-        HEA_assistant_agent = init_HEA_assistant_agent(llm_config)
-        hea_calculator_agent = init_hea_calculator_agent(llm_config, use_deepseek=True)
-        ssebrain_agent = init_ssebrain_agent(llm_config)
-        chembrain_agent = init_chembrain_agent(llm_config)
-        perovskite_agent = init_perovskite_agent(llm_config, use_deepseek=True)
+        # dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
+        # thermoelectric_agent = init_thermoelectric_agent(llm_config)
+        # superconductor_agent = init_superconductor_agent(llm_config)
+        # invar_agent = init_invar_agent(llm_config)
+        # crystalformer_agent = init_crystalformer_agent(llm_config)
+        # apex_agent = init_apex_agent(llm_config, use_deepseek=True)
+        # abacus_calculator_agent = init_abacus_calculation_agent(llm_config)
+        # organic_reaction_agent = init_organic_reaction_agent(llm_config)
+        # HEA_assistant_agent = init_HEA_assistant_agent(llm_config)
+        # hea_calculator_agent = init_hea_calculator_agent(llm_config, use_deepseek=True)
+        # ssebrain_agent = init_ssebrain_agent(llm_config)
+        # chembrain_agent = init_chembrain_agent(llm_config)
+        # perovskite_agent = init_perovskite_agent(llm_config, use_deepseek=True)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
-            model=llm_config.gpt_4o,
+            # model=llm_config.gpt_4o,
+            model=llm_config.deepseek_chat,
             sub_agents=[
-                piloteye_electro_agent,
-                traj_analysis_agent,
-                dpa_calculator_agent,
+                # piloteye_electro_agent,
+                # traj_analysis_agent,
+                # dpa_calculator_agent,
                 optimade_agent,
-                thermoelectric_agent,
-                superconductor_agent,
-                apex_agent,
-                crystalformer_agent,
-                abacus_calculator_agent,
-                invar_agent,
-                organic_reaction_agent,
-                HEA_assistant_agent,
-                hea_calculator_agent,
-                ssebrain_agent,
-                chembrain_agent,
-                perovskite_agent,
+                # thermoelectric_agent,
+                # superconductor_agent,
+                # apex_agent,
+                # crystalformer_agent,
+                # abacus_calculator_agent,
+                # invar_agent,
+                # organic_reaction_agent,
+                # HEA_assistant_agent,
+                # hea_calculator_agent,
+                # ssebrain_agent,
+                # chembrain_agent,
+                # perovskite_agent,
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
