@@ -51,7 +51,15 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
             agent_description=StructureGenerateAgentDescription,
             agent_instruction=StructureGenerateAgentInstruction,
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME
+            supervisor_agent=MATMASTER_AGENT_NAME,
+            sync_tools=[
+                'build_bulk_structure',
+                'build_supercell_structure',
+                'build_molecule_structure',
+                'build_surface_slab',
+                'build_surface_adsorbate',
+                'build_surface_interface'
+            ]
         )
 
 def init_structure_generate_agent(llm_config) -> BaseAgent:
