@@ -149,7 +149,7 @@ When multiple tools can perform the same calculation or property analysis, you M
    - Example Query: [Examples missing]
 
 10. **{OPTIMADE_DATABASE_AGENT_NAME}** - **Crystal structure database search**
-    - Purpose: An agent specialized in retrieving crystal structure data using the OPTIMADE protocol. Supports raw OPTIMADE filter strings, space-group-specific queries, and band-gap-specific queries across multiple materials databases. Enables precise control over search criteria with advanced element, formula, and property filters, and returns results in CIF or JSON format. For band-gap related tasks, JSON is the default output format to include complete metadata.
+    - Purpose: Retrieve crystal structure data using OPTIMADE framework
     - Capabilities:
       - Perform advanced queries on elements, number of elements, chemical formulas (reduced, descriptive, anonymous)
       - Use logical operators (AND, OR, NOT) with parentheses for complex filtering
