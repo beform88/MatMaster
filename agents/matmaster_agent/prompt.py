@@ -151,14 +151,19 @@ When multiple tools can perform the same calculation or property analysis, you M
 10. **{OPTIMADE_DATABASE_AGENT_NAME}** - **Crystal structure database search**
     - Purpose: Retrieve crystal structure data using OPTIMADE framework
     - Capabilities:
-      - Advanced queries on elements, number of elements, chemical formulas
-      - Logical combinations using AND, OR, and NOT
-      - Multiple database support (AFLOW, Alexandria, CMR, COD, JARVIS, MatCloud, Matterverse, MP, MPDD, MPDS, OQMD, TCOD, TwoDMatpedia, etc.)
-      - Output in CIF or JSON format
+      - Perform advanced queries on elements, number of elements, chemical formulas (reduced, descriptive, anonymous)
+      - Use logical operators (AND, OR, NOT) with parentheses for complex filtering
+      - Query specific space group numbers (1–230) with provider-specific field mappings
+      - Search by band-gap range with provider-specific property mappings
+      - Retrieve data from multiple OPTIMADE-compliant databases simultaneously
+      - Supported providers include: Alexandria, CMR, COD, MCloud, MCloudArchive, MP, MPDD, MPDS, NMD, ODBX, OMDB, OQMD, TCOD, TwoDMatpedia, and more
+      - Output results in: - `.cif`(Crystallographic Information File for visualization/simulation); - `.json`(Full metadata and structure details)
     - Example Queries:
-      - "找3个包含si o， 且含有四种元素的，不能同时含有铁铝，的材料，从alexandria, cmr, nmd，oqmd，jarvis，omdb中查找。"
-      - "找到一些A2b3C4的材料，不能含有 Fe，F，CI，H元素，要含有铝或者镁或者钠，我要全部信息。"
-      - "我想要一个Tio2结构，从mpds, cmr, alexandria, omdb, odbx里面找。"
+      - "找3个含油 Si O，且含有四种元素的，不能同时含有铁铝的材料，从 alexandria, cmr, nmd, oqmd, omdb 中查找。"
+      - "找到一些 A2B3C4 的材料，不能含 Fe, F, Cl, H 元素，要含有铝或者镁或者钠，我要全部信息。"
+      - "找一些 ZrO，从 mpds, cmr, alexandria, omdb, odbx 里面找。"
+      - "查找 gamma 相的 TiAl 合金。"
+      - "找一些含铝的，能带在 1.0–2.0的材料。"
 
 11. **{ORGANIC_REACTION_AGENT_NAME}** - **Organic reaction specialist**
     - Purpose: Find transition states and calculate reaction profiles
