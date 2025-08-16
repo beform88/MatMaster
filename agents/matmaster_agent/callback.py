@@ -21,5 +21,6 @@ async def matmaster_before_agent(callback_context: CallbackContext) -> Optional[
     callback_context.state["dflow"] = callback_context.state.get("dflow", False)
     callback_context.state["ak"] = callback_context.state.get("ak", None)
     callback_context.state["project_id"] = callback_context.state.get("project_id", None)
+    callback_context.state["sync_tools"] = callback_context.state.get("sync_tools", None)
     callback_context.state["invocation_id_with_tool_call"] = callback_context.state.get("invocation_id_with_tool_call",
                                                                                         None)
