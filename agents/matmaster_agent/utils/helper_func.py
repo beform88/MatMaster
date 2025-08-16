@@ -162,21 +162,15 @@ async def parse_result(result: dict) -> List[dict]:
     return parsed_result
 
 
-def get_same_function_call(current_function_calls: List):
-    first_function_call = current_function_calls[0]
-    repeat_index = []
+def is_same_function_call(current_function_call: dict, expected_function_call: dict) -> bool:
+    if (
+            current_function_call["function_name"] == expected_function_call["function_name"] and
+            json.dumps(current_function_call["function_args"], sort_keys=True) == json.dumps(
+        expected_function_call["function_args"], sort_keys=True)
+    ):
+        return True
 
-    for index, function_call in enumerate(current_function_calls[1:]):
-        if (
-                function_call.name == first_function_call.name and
-                json.dumps(function_call.args, sort_keys=True) == json.dumps(first_function_call.args, sort_keys=True)
-        ):
-            repeat_index.append(index + 1)
-
-    if repeat_index:
-        return repeat_index
-    else:
-        return
+    return False
 
 
 def function_calls_to_str(function_calls: List[dict]) -> str:
