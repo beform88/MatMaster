@@ -22,11 +22,12 @@ def evaluation_task(dataset_item):
     expected_function_call = {}
     if dataset_item["input"].get("contents", None):
         user_query = dataset_item['input']['contents'][0]['parts'][0]['text']
-        if dataset_item["expected_output"]["content"]["parts"][0].get("function_call"):
-            expected_function_call = {
-                "function_name": dataset_item["expected_output"]["content"]["parts"][0]["function_call"]["name"],
-                "function_args": dataset_item["expected_output"]["content"]["parts"][0]["function_call"]["args"]
-            }
+        for part in dataset_item['expected_output']['content']['parts']:
+            if part.get("function_call"):
+                expected_function_call = {
+                    "function_name": part["function_call"]["name"],
+                    "function_args": part["function_call"]["args"]
+                }
     else:
         user_query = dataset_item["input"]["parts"][0]['text']
         if dataset_item["expected_output"]["content"]["parts"][0].get("function_call"):
