@@ -13,5 +13,8 @@ dependencies = [
     "pymysql>=1.1.1",
 ]
 
+[tool.setuptools]
+packages = ["agents"]  # 明确指定只包含 agents 包
+
 [tool.hatch.build.targets.wheel]
 packages = ["agents"]
