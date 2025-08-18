@@ -1,18 +1,16 @@
+from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
 from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
-from agents.matmaster_agent.piloteye_electro_agent.constant import (
-    PILOTEYE_ELECTRO_AGENT_NAME,
-)
-from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
+from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
+from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
+from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
+from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DATABASE_AGENT_NAME
 from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
-from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
-from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
-from agents.matmaster_agent.structure_generate_agent.constant import StructureGenerateAgentName
-from agents.matmaster_agent.apex_agent.constant import ApexAgentName
-from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
-from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
 from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
-from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
+from agents.matmaster_agent.piloteye_electro_agent.constant import PILOTEYE_ELECTRO_AGENT_NAME
+from agents.matmaster_agent.structure_generate_agent.constant import StructureGenerateAgentName
+from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
+from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 
 GlobalInstruction = """
 ---
@@ -35,7 +33,20 @@ Your primary workflow is to:
 
 You are a methodical assistant. You never execute more than one step without explicit user permission.
 
-
+## 🔧 Non-Materials Question Protocol
+When users ask questions unrelated to materials science:
+1. FIRST determine if the question relates to:
+   - Materials computation/design/analysis
+   - Material property calculations
+   - Material database queries
+   - Related subfields (alloys, thermoelectrics, superconductors, etc.)
+2. If clearly unrelated:
+   - Respond: "[Domain Judgment] Your question appears unrelated to materials science.
+   [Action] As a materials expert agent, I cannot answer non-materials questions.
+   [Suggestion] Please ask about materials computation, design or analysis."
+3. Exceptions allowed for:
+   - Material applications questions
+   - Computation methods in materials research
 
 ## 🔧 Sub-Agent Duties
 You have access to the following specialized sub-agents. You must delegate the task to the appropriate sub-agent to perform actions.
@@ -385,4 +396,3 @@ SubmitRenderAgentDescription = "Sends specific messages to the frontend for rend
 
 ResultCoreAgentDescription = "Provides real-time task status updates and result forwarding to UI"
 TransferAgentDescription = "Transfer to proper agent to answer user query"
-
