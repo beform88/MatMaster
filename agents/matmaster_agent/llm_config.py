@@ -31,8 +31,7 @@ MODEL_MAPPING = {
     ("volcengine", "Doubao-Seed-1.6-thinking"): "volcengine/ep-20250627141021-h4wch"
 }
 
-# DEFAULT_MODEL = "azure/gpt-4o-mini"
-DEFAULT_MODEL = "azure/gpt-4o"
+DEFAULT_MODEL = "azure/gpt-4o-mini"
 
 
 class LLMConfig(object):
@@ -66,13 +65,13 @@ class LLMConfig(object):
         def _init_model(provider_key: str, model_name: str):
             return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL))
 
-        # self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
+        self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
         self.gpt_4o = _init_model(azure_provider, gpt_4o)
-        # self.gemini_2_0_flash = _init_model(litellm_provider, gemini_2_0_flash)
-        # self.gemini_2_5_flash = _init_model(litellm_provider, gemini_2_5_flash)
-        # self.gemini_2_5_pro = _init_model(litellm_provider, gemini_2_5_pro)
-        # self.claude_sonnet_4 = _init_model(litellm_provider, claude_sonnet_4)
-        # self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
+        self.gemini_2_0_flash = _init_model(litellm_provider, gemini_2_0_flash)
+        self.gemini_2_5_flash = _init_model(litellm_provider, gemini_2_5_flash)
+        self.gemini_2_5_pro = _init_model(litellm_provider, gemini_2_5_pro)
+        self.claude_sonnet_4 = _init_model(litellm_provider, claude_sonnet_4)
+        self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
 
         # tracing
         self.opik_tracer = OpikTracer()

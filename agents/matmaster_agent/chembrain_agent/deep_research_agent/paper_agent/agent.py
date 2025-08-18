@@ -103,8 +103,8 @@ def create_update_invoke_message_with_agent_name(agent_name: str):
 def init_paper_agent(config, name, run_id):
     """Initialize the researcher agent with the given configuration."""
     # Select the model based on the configuration
-    # selected_model = config.gemini_2_5_pro
-    selected_model = config.gpt_4o
+    selected_model = config.gemini_2_5_pro
+    # selected_model = config.gpt_4o
 
     paper_agent = LlmAgent(
         name=f"poly_paper_agent_{name}",
