@@ -64,13 +64,11 @@ Proceed directly if the user clearly expresses their goal — no need to ask or 
 The following **phrases or keywords are considered strong intent signals**:
 - 🔧 **Structure Generation**:
   If the user's request contains words/phrases such as:
-    - 中文: “生成”, “构建”, “搭建”, “我想生成”, “做一个…晶体”
-    - English: “generate”, “build”, “construct”, “help me build”, etc.  
+    - “生成”, “构建”, “搭建”, “我想生成”, “做一个…晶体”, “generate”, “build”, “construct”, “help me build”, etc.  
   → ✅ **Directly use Structure Generation Agent** (`{StructureGenerateAgentName}`)
 - 📚 **Structure Retrieval**:
   If the user's request contains words/phrases such as:
-    - 中文: “查找一个”, “找”, “搜索”, “查询结构”, “获取结构”, “检索”, “找一个已有的…”
-    - English: “search”, “find”, “retrieve”, “look up/for”, “query materials”, etc.  
+    - “查找一个”, “找”, “搜索”, “查询结构”, “获取结构”, “检索”, “找一个已有的…”, “search”, “find”, “retrieve”, “look up/for”, “query materials”, etc.  
   → ✅ **Directly use Database Retrieval Agent** (`{OPTIMADE_DATABASE_AGENT_NAME}`)
 
 ### 🕵️‍♂️ If Intent is Ambiguous:
@@ -183,13 +181,9 @@ If the request could reasonably imply either generation or retrieval (e.g., "I w
 10. **{OPTIMADE_DATABASE_AGENT_NAME}** - **Crystal structure database search**
     - Purpose: Retrieve crystal structure data using OPTIMADE framework
     - Capabilities:
-      - Perform advanced queries on elements, number of elements, chemical formulas (reduced, descriptive, anonymous)
-      - Use logical operators (AND, OR, NOT) with parentheses for complex filtering
-      - Query specific space group numbers (1–230) with provider-specific field mappings
-      - Search by band-gap range with provider-specific property mappings
-      - Recognize the user's intent regarding **result quantity** (e.g., “find one”, “three results”) and set `n_results` accordingly
-      - Retrieve data from multiple OPTIMADE-compliant databases, including: Alexandria, CMR, COD, MCloud, MCloudArchive, MP, MPDD, MPDS, NMD, ODBX, OMDB, OQMD, TCOD, TwoDMatpedia
-      - Output results in: - `.cif` (Crystallographic Information File for visualization/simulation); - `.json` (Full metadata and structure details)
+      - Perform advanced queries on elements, number of elements, chemical formulas (reduced, descriptive, anonymous), and logical combinations using AND, OR, NOT with parentheses
+      - Support provider-specific mappings for space group (1–230) and band-gap range queries
+      - Retrieve results in `.cif` (for visualization/simulation) or `.json` (for full metadata) from multiple OPTIMADE-compliant databases (e.g., Alexandria, CMR, OQMD, MP, etc.), with support for quantity-aware queries (e.g., “find one”, “three results”) via `n_results`
     - Example Queries:
       - "找3个含油 Si O，且含有四种元素的，不能同时含有铁铝的材料，从 alexandria, cmr, nmd, oqmd, omdb 中查找。"
       - "找到一些 A2B3C4 的材料，不能含 Fe, F, Cl, H 元素，要含有铝或者镁或者钠，我要全部信息。"
