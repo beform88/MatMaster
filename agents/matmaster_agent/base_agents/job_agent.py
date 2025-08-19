@@ -234,7 +234,10 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         event.content.parts[0].function_response.name in ctx.session.state["sync_tools"]
                 ):
                     raw_result = event.content.parts[0].function_response.response["result"].content[0].text
-                    dict_result = jsonpickle.loads(raw_result)
+                    try:
+                        dict_result = jsonpickle.loads(raw_result)
+                    except ScannerError as err:
+                        raise type(err)(f"jsonpickle Error, raw_result = `{raw_result}`")
                     tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
                     parsed_result = await parse_result(new_tool_result)
                     job_result_comp_data = get_frontend_job_result_data(parsed_result)
