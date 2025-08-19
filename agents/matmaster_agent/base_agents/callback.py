@@ -180,7 +180,8 @@ def _inject_current_env(executor):
 
 def _inject_machine_type(ctx: Union[InvocationContext, ToolContext], executor):
     machine_type = _get_machineType(ctx)
-    logger.info(f"biz = {ctx.session.state[FRONTEND_STATE_KEY]['biz']}; "
+    session_state = _get_session_state(ctx)
+    logger.info(f"biz = {session_state[FRONTEND_STATE_KEY]['biz']}; "
                 f"machineType = {machine_type}")
     if executor is not None:
         if executor['type'] == "dispatcher":  # BohriumExecutor
