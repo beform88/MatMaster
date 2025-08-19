@@ -1,16 +1,21 @@
 import copy
 import json
 import logging
-from typing import List
+from typing import List, Union
 
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.adk.models import LlmResponse
+from google.adk.tools import ToolContext
 from google.genai.types import Part
 
 from agents.matmaster_agent.model import JobResult, JobResultType
 
 logger = logging.getLogger(__name__)
+
+
+def get_session_state(ctx: Union[InvocationContext, ToolContext]):
+    return ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
 
 
 async def update_session_state(ctx: InvocationContext, author: str):

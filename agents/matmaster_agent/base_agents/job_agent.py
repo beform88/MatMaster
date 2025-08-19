@@ -43,7 +43,7 @@ from agents.matmaster_agent.prompt import (
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
-from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result
+from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
@@ -233,11 +233,15 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         ctx.session.state["sync_tools"] and
                         event.content.parts[0].function_response.name in ctx.session.state["sync_tools"]
                 ):
-                    raw_result = event.content.parts[0].function_response.response["result"].content[0].text
+                    try:
+                        raw_result = event.content.parts[0].function_response.response["result"].content[0].text
+                    except KeyError as err:
+                        raise type(err)(f"[KeyError] "
+                                        f"function_response = `{event.content.parts[0].function_response.response}`")
                     try:
                         dict_result = jsonpickle.loads(raw_result)
                     except ScannerError as err:
-                        raise type(err)(f"jsonpickle Error, raw_result = `{raw_result}`")
+                        raise type(err)(f"[jsonpickle ScannerError] raw_result = `{raw_result}`")
                     tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
                     parsed_result = await parse_result(new_tool_result)
                     job_result_comp_data = get_frontend_job_result_data(parsed_result)
@@ -577,11 +581,16 @@ class BaseAsyncJobAgent(LlmAgent):
 
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        ctx.session.state["dflow"] = self.dflow_flag
-        ctx.session.state["sync_tools"] = self.sync_tools
+        session_state = get_session_state(ctx)
+        session_state["dflow"] = self.dflow_flag
+        session_state["sync_tools"] = self.sync_tools
         await update_session_state(ctx, self.name)
 
-        if ctx.session.state[FRONTEND_STATE_KEY]["biz"].get("origin_id", None) is not None:
+        if (
+                session_state[FRONTEND_STATE_KEY]["biz"].get("origin_id", None) is not None and
+                list(session_state['long_running_jobs'].keys()) and
+                session_state[FRONTEND_STATE_KEY]["biz"]['origin_id'] in list(session_state['long_running_jobs'].keys())
+        ):
             async for result_event in self.result_agent.run_async(ctx):
                 yield result_event
         else:

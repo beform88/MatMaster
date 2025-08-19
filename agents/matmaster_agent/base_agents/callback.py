@@ -22,7 +22,7 @@ from agents.matmaster_agent.constant import (
 )
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
 from agents.matmaster_agent.utils.helper_func import is_json, check_None_wrapper, \
-    get_unique_function_call, update_llm_response, function_calls_to_str
+    get_unique_function_call, update_llm_response, function_calls_to_str, get_session_state
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
@@ -81,25 +81,21 @@ async def default_before_tool_callback(tool, args, tool_context):
     return
 
 
-def _get_session_state(ctx: Union[InvocationContext, ToolContext]):
-    return ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
-
-
 @check_None_wrapper
 def _get_ak(ctx: Union[InvocationContext, ToolContext]):
-    session_state = _get_session_state(ctx)
+    session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv("BOHRIUM_ACCESS_KEY")
 
 
 @check_None_wrapper
 def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
-    session_state = _get_session_state(ctx)
+    session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv("BOHRIUM_PROJECT_ID")
 
 
 @check_None_wrapper
 def _get_machineType(ctx: Union[InvocationContext, ToolContext]):
-    session_state = _get_session_state(ctx)
+    session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY]['biz'].get('machineType') or os.getenv("MACHINE_TYPE", "c32_m64_cpu")
 
 
@@ -180,7 +176,7 @@ def _inject_current_env(executor):
 
 def _inject_machine_type(ctx: Union[InvocationContext, ToolContext], executor):
     machine_type = _get_machineType(ctx)
-    session_state = _get_session_state(ctx)
+    session_state = get_session_state(ctx)
     logger.info(f"biz = {session_state[FRONTEND_STATE_KEY]['biz']}; "
                 f"machineType = {machine_type}")
     if executor is not None:
