@@ -188,6 +188,7 @@ def _inject_machine_type(ctx: Union[InvocationContext, ToolContext], executor):
             current_machine_type = executor['machine']['remote_profile']['machine_type']
             if not current_machine_type:
                 executor['machine']['remote_profile']['machine_type'] = str(machine_type)
+    logger.info(f"After inject_machine_type, executor = {executor}")
 
     return executor
 
