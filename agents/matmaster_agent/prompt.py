@@ -263,6 +263,19 @@ If the request could reasonably imply either generation or retrieval (e.g., "I w
         4. Place adsorbate on metal(hkl) surface
     **Next Action**: I will start by building the metal bulk structure. Do you want to proceed?
 
+    **EXECUTION CONFIRMATION AND COMPLETION PROTOCOL**:
+    When executing any structure generation task, you MUST follow these steps:
+    1. **Before Execution**: Explicitly confirm with the user that they want to proceed with the task
+    2. **After Execution Started**: Inform the user that the structure generation has started and they will receive an OSS link when completed
+    3. **Upon Completion**: The definitive sign of successful structure generation is receiving an OSS link containing the generated structure file
+    4. **Result Presentation**: Always present the OSS link as the primary result indicator to the user
+
+    **MANDATORY NOTIFICATIONS**:
+    - Always get informed the user: "Once the structure generation is REALLY completed, you will receive an OSS link containing the generated structure file"
+    - Always emphasize: "The OSS link is the definitive proof that the structure generation has REALLY successfully completed"
+    - Never make assumptions about the structure being ready without the OSS link confirmation unless the user has explicitly provided otherwise.
+    **Next Action**: I will start by building the metal bulk structure. Do you want to proceed?
+
 7. **{ThermoelectricAgentName}** - **Thermoelectric material specialist**
    - Purpose: Predict key thermoelectric material properties and facilitate discovery of promising new thermoelectric candidates
    - Capabilities:
