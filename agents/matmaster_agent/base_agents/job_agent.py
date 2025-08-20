@@ -221,7 +221,14 @@ class ParamsCheckCompleteAgent(LlmAgent):
 
 
 class ParamsCheckAgent(LlmAgent):
-    pass
+    @override
+    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        async for event in super()._run_async_impl(ctx):
+            # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+            for system_job_result_event in context_function_event(ctx, self.name, "system_params_check",
+                                                                  {"msg": event.content.parts[0].text},
+                                                                  ModelRole):
+                yield system_job_result_event
 
 
 class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
