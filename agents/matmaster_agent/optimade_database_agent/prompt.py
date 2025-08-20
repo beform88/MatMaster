@@ -128,4 +128,5 @@ Always return:
      min_bg: 1.0  
      max_bg: 2.0  
      as_format: "json"  # 默认输出json格式，对于能带相关查询
+     n_results: 4
 """
