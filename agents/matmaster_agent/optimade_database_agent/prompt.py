@@ -115,13 +115,14 @@ Always return:
      as_format: "cif"  
      providers: ["mpds","cmr","alexandria","omdb","odbx"]
 
-4) 用户：查找gamma相的TiAl合金
+4) 用户：查找一个gamma相的TiAl合金
    → Tool: fetch_structures_with_spg  
      base_filter: elements HAS ONLY "Ti","Al"  
      spg_number: 123  # γ-TiAl (L1₀) 常记作 P4/mmm，为 123空间群  
      as_format: "cif"
+     n_results: 1
 
-5) 用户：找一些含铝的，能带在1.0-2.0间的材料
+5) 用户：检索四个含铝的，能带在1.0-2.0间的材料
    → Tool: fetch_structures_with_bandgap  
      base_filter: elements HAS ALL "Al"  
      min_bg: 1.0  
