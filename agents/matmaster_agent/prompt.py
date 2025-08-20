@@ -511,6 +511,38 @@ def gen_result_agent_description():
     return "Query status and retrieve results"
 
 
+def gen_params_check_complete_agent_instruction():
+    return f"""
+Analyze the most recent message from the 'Assistant' or 'Agent' (the immediate preceding message before the user's current turn). Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested.
+
+Return `True` ONLY IF ALL of the following conditions are met:
+1.  The message explicitly and finally lists all parameters that need user confirmation (e.g., element, structure type, dimensions).
+2.  The message's intent is to conclude the parameter collection phase and advance the conversation to the next step (typically, awaiting a "yes" or "no" response from the user to proceed with an action).
+3.  The message does not indicate that the parameter discussion is still ongoing (e.g., lacks phrases like "also need," "next, please provide," "what is the...").
+
+Return `False` in ANY of these cases:
+1.  The message does not mention any specific parameters to confirm.
+2.  The message is asking for or soliciting new parameter information (e.g., "What element would you like?", "Please provide the lattice constant.").
+3.  The message states or implies that parameter collection is not yet finished and further questions will follow.
+4.  There are currently no parameters awaiting user confirmation.
+
+**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm these parameters:...") is considered the completion of the parameter presentation task. Therefore, return `True` at the point the agent makes that request, NOT after the user has confirmed.
+
+**Examples:**
+- Message: "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"
+  - **Analysis:** Parameters are explicitly listed (Cu, FCC), and a confirmation is requested to proceed. Collection is concluded.
+  - **Judgment: True**
+- Message: "To build the crystal, what element should I use?"
+  - **Analysis:** This is a request for a new parameter, not a request for confirmation of existing ones.
+  - **Judgment: False**
+- Message: "Element is set to Copper. Now, what is the desired lattice constant?"
+  - **Analysis:** One parameter is noted, but the conversation is actively moving to collect the next parameter. Collection is not concluded.
+  - **Judgment: False**
+
+Based on the rules above, output strictly either `True` or `False`.
+"""
+
+
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
 
 ResultCoreAgentDescription = "Provides real-time task status updates and result forwarding to UI"
