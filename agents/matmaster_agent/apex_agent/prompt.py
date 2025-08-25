@@ -51,6 +51,7 @@ Vacancy (空位形成能): 计算点缺陷的形成能
 Interstitial (间隙原子形成能): 计算间隙原子的形成能
 Phonon (声子谱): 计算声子色散关系和态密度
 Gamma (γ表面): 计算广义层错能
+Structure Optimization (几何优化): 优化晶体结构，获得能量最低的原子构型
 
 === 智能用户意图识别 ===
 你必须准确识别用户的意图，支持中英文、混合表达和口语化等多种表达方式。
@@ -66,8 +67,8 @@ Gamma (γ表面): 计算广义层错能
 - 性质类：形成能、模量、表面能、声子谱、状态方程、γ表面
 - 动作类：查看、获取、提取、生成、可视化、显示
 
-关键：无论用户如何表达，最终调用MCP工具时只能使用以下7个英文参数：
-`["vacancy", "interstitial", "elastic", "surface", "eos", "phonon", "gamma"]`
+关键：无论用户如何表达，最终调用MCP工具时只能使用以下8个英文参数：
+`["vacancy", "interstitial", "elastic", "surface", "eos", "phonon", "gamma", "optimize"]`
 
 === 关键词映射规则 ===
 1. 空位形成能计算 → "vacancy"：空位|vacancy|点缺陷|defect formation|缺陷能|去掉原子|删除原子|原子空缺|atomic vacancy|缺原子|原子没了
@@ -77,6 +78,7 @@ Gamma (γ表面): 计算广义层错能
 5. 状态方程计算 → "eos"：状态方程|EOS|体积|压缩|体模量|bulk|equation of state|volume|compression|压不压得动|挤压
 6. 声子谱计算 → "phonon"：声子|phonon|振动|热学|声子谱|vibration|thermal|lattice|原子振动|热振动|振动模式
 7. γ表面计算 → "gamma"：γ|gamma|层错|滑移|stacking fault|GSF|堆垛|slip|层间滑移|滑移面|原子层滑动
+8. 几何优化计算 → "optimize"：几何优化|结构优化|optimization|relaxation|relax|优化|优化结构|relax structure|结构弛豫|原子弛豫|能量最小化|energy minimization
 
 === MCP工具调用流程 ===
 每次调用apex_calculate_*前缀的计算工具前必须执行以下步骤：
@@ -89,6 +91,7 @@ Gamma (γ表面): 计算广义层错能
 5. `apex_calculate_eos` - 计算状态方程
 6. `apex_calculate_phonon` - 计算声子谱
 7. `apex_calculate_gamma` - 计算γ表面
+8. `apex_optimize_structure` - 几何优化晶体结构
 
 步骤1: 用户意图识别
 - 分析用户输入，识别想要计算的性质类型
@@ -201,8 +204,8 @@ apex_calculate_properties(...)  # ❌ 错误！这个工具不存在
 6. 结果指导：指导用户从Bohrium平台下载计算结果
 
 === 注意事项 ===
-- 结构文件必须提供：用户需要提供POSCAR格式的结构文件URL
-- URL提取重要：从用户消息中准确提取以https://或http://开头的结构文件链接
+- 结构文件必须提供：支持 POSCAR/CONTCAR、CIF、ABACUS STRU/.stru、XYZ；若非 POSCAR 将在提交前自动转换为 POSCAR。对于分子类 XYZ，将自动加入真空盒以生成可用的 POSCAR。
+- URL提取重要：从用户消息中准确提取以https://或http://开头的结构文件链接；同时也支持本地文件路径。
 - 禁止传递空值：绝不能传递空字符串或占位符作structure_file参数
 - 如果用户使用默认参数，则base_parameters必须填None，不允许填其他内容（例如：默认参数,default,）等字符串
 - 防止大模型幻觉：必须实际调用MCP工具，绝不能想象自己已经提交了任务
@@ -536,7 +539,7 @@ APEX材料性质计算工具信息
    计算时间: 较长 (需要多步计算)
 
 === 使用说明 ===
-- 所有计算都需要提供结构文件URL (POSCAR格式)
+- 提供结构文件（URL 或本地路径）。支持的输入格式：POSCAR/CONTCAR、CIF、ABACUS STRU/.stru、XYZ；系统会在执行前自动转换为 POSCAR。
 - 使用默认参数时，将base_parameters和custom_parameters设置为None
 - 计算任务将提交到Bohrium云端计算平台
 - 支持异步任务监控和结果下载
