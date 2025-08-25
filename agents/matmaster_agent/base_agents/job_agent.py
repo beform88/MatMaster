@@ -9,13 +9,13 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.adk.tools import transfer_to_agent
 from mcp.types import CallToolResult
-from pydantic import Field
+from pydantic import Field, BaseModel
 from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
     catch_before_tool_callback_error, check_job_create, inject_username_ticket, inject_ak_projectId, \
     default_after_tool_callback, _inject_ak, _inject_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
-    default_after_model_callback, inject_current_env, inject_machineType
+    default_after_model_callback, inject_current_env, inject_machineType, clear_function_call
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -39,6 +39,7 @@ from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
     SubmitRenderAgentDescription, gen_submit_core_agent_description, gen_submit_core_agent_instruction,
     gen_result_core_agent_instruction, gen_submit_agent_description, gen_result_agent_description,
+    gen_params_check_complete_agent_instruction,
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
@@ -209,6 +210,25 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
             async for error_event in send_error_event(err, ctx, self.name, matmaster_agent):
                 yield error_event
+
+
+class ParamsCheckComplete(BaseModel):
+    flag: bool
+
+
+class ParamsCheckCompleteAgent(LlmAgent):
+    pass
+
+
+class ParamsCheckAgent(LlmAgent):
+    @override
+    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        async for event in super()._run_async_impl(ctx):
+            # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+            for system_job_result_event in context_function_event(ctx, self.name, "system_params_check",
+                                                                  {"msg": event.content.parts[0].text},
+                                                                  ModelRole):
+                yield system_job_result_event
 
 
 class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
@@ -485,7 +505,8 @@ class ResultTransferLlmAgent(LlmAgent):
 class BaseAsyncJobAgent(LlmAgent):
     submit_agent: SequentialAgent
     result_agent: SequentialAgent
-    # transfer_agent: LlmAgent
+    params_need_check_agent: LlmAgent
+    params_check_agent: LlmAgent
     dflow_flag: bool = Field(False, description="Whether the agent is dflow related", exclude=True)
     supervisor_agent: str
     sync_tools: Optional[list] = Field(None, description="These tools will sync run on the server")
@@ -539,29 +560,31 @@ class BaseAsyncJobAgent(LlmAgent):
             instruction=gen_result_core_agent_instruction(agent_prefix)
         )
 
-        # 创建结果转移代理
-        result_transfer_agent = ResultTransferLlmAgent(
-            model=model,
-            name=f"{agent_prefix}_result_transfer_agent",
-            instruction="result_transfer_agent_instruction",
-            tools=[transfer_to_agent]
-        )
-
         # 创建结果序列代理
         result_agent = SequentialAgent(
             name=f"{agent_prefix}_result_agent",
             description=gen_result_agent_description(),
-            # sub_agents=[result_core_agent, result_transfer_agent]
             sub_agents=[result_core_agent]
         )
 
-        # # 创建转移代理
-        # transfer_agent = LlmAgent(
-        #     model=llm_config.gpt_4o,
-        #     name=transfer_agent_name,
-        #     description=TransferAgentDescription,
-        #     instruction=transfer_agent_instruction
-        # )
+        params_check_complete_agent = ParamsCheckCompleteAgent(
+            model=model,
+            name=f"{agent_prefix}_params_check_complete_agent",
+            instruction=gen_params_check_complete_agent_instruction(),
+            output_schema=ParamsCheckComplete,
+            disallow_transfer_to_parent=True,
+            disallow_transfer_to_peers=True
+        )
+
+        params_check_agent = ParamsCheckAgent(
+            model=model,
+            name=f"{agent_prefix}_params_check_agent",
+            instruction="你的指责是和用户确认需要调用工具的参数,不要直接调用工具",
+            tools=mcp_tools,
+            disallow_transfer_to_parent=True,
+            disallow_transfer_to_peers=True,
+            after_model_callback=clear_function_call
+        )
 
         # 初始化父类
         super().__init__(
@@ -571,10 +594,10 @@ class BaseAsyncJobAgent(LlmAgent):
             instruction=agent_instruction,
             submit_agent=submit_agent,
             result_agent=result_agent,
-            # transfer_agent=transfer_agent,
+            params_need_check_agent=params_check_complete_agent,
+            params_check_agent=params_check_agent,
             dflow_flag=dflow_flag,
-            # sub_agents=[submit_agent, result_agent, transfer_agent],
-            sub_agents=[submit_agent, result_agent],
+            sub_agents=[submit_agent, result_agent, params_check_complete_agent, params_check_agent],
             supervisor_agent=supervisor_agent,
             sync_tools=sync_tools
         )
@@ -586,22 +609,27 @@ class BaseAsyncJobAgent(LlmAgent):
         session_state["sync_tools"] = self.sync_tools
         await update_session_state(ctx, self.name)
 
+        async for result_event in self.result_agent.run_async(ctx):
+            yield result_event
+
         if (
                 session_state[FRONTEND_STATE_KEY]["biz"].get("origin_id", None) is not None and
                 list(session_state['long_running_jobs'].keys()) and
                 session_state[FRONTEND_STATE_KEY]["biz"]['origin_id'] in list(session_state['long_running_jobs'].keys())
-        ):
-            async for result_event in self.result_agent.run_async(ctx):
-                yield result_event
+        ):  # Only Query Job Result
+            pass
         else:
-            async for result_event in self.result_agent.run_async(ctx):
-                yield result_event
+            last_params_check_completed_event = None
+            async for params_check_complete_event in self.params_need_check_agent.run_async(ctx):
+                last_params_check_completed_event = params_check_complete_event
+            params_check_completed = json.loads(last_params_check_completed_event.content.parts[0].text)["flag"]
 
-            async for submit_event in self.submit_agent.run_async(ctx):
-                yield submit_event
-
-            # async for transfer_event in self.transfer_agent.run_async(ctx):
-            #     yield transfer_event
+            if not params_check_completed:
+                async for params_check_event in self.params_check_agent.run_async(ctx):
+                    yield params_check_event
+            else:
+                async for submit_event in self.submit_agent.run_async(ctx):
+                    yield submit_event
 
         for function_event in context_function_event(ctx, self.name, "transfer_to_agent", None, ModelRole,
                                                      {"agent_name": self.supervisor_agent}):

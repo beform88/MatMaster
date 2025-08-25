@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import os
@@ -74,6 +75,21 @@ async def default_after_model_callback(callback_context: CallbackContext,
         return update_llm_response(llm_response, current_function_calls, before_function_calls)
 
     return None
+
+
+async def clear_function_call(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
+    # 检查响应是否有效
+    if not (llm_response and llm_response.content and llm_response.content.parts and len(llm_response.content.parts)):
+        return None
+
+    origin_parts = copy.deepcopy(llm_response.content.parts)
+    llm_response.content.parts = []
+    for part in origin_parts:
+        if part.function_call:
+            part.function_call = None
+        llm_response.content.parts.append(part)
+
+    return llm_response
 
 
 # before_tool_callback
