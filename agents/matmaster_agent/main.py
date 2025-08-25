@@ -89,7 +89,7 @@ async def agent_main() -> None:
             logger.debug(f"Event received: {event}")
 
             # Extract and display text content from event
-            if event.content and event.content.parts:
+            if not event.partial and event.content and event.content.parts:
                 for part in event.content.parts:
                     if part.text:
                         role = event.content.role
