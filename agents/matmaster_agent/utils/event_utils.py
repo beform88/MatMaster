@@ -8,6 +8,7 @@ from google.adk.events import Event
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.constant import ModelRole
+from agents.matmaster_agent.utils.helper_func import update_session_state
 
 
 # event check funcs
@@ -149,7 +150,10 @@ def all_text_event(ctx: InvocationContext, author: str, text: str, role: str):
     yield context_text_event(ctx, author, text, role)
 
 
-async def send_error_event(err, ctx, author):
+async def send_error_event(err, ctx: InvocationContext, author):
+    ctx.session.state["error_occurred"] = True
+    await update_session_state(ctx, author)
+
     # 判断是否是异常组
     if isinstance(err, BaseExceptionGroup):
         error_details = [

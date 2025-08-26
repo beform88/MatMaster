@@ -375,6 +375,9 @@ class SubmitRenderAgent(LlmAgent):
 class SubmitValidatorAgent(LlmAgent):
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        if ctx.session.state["error_occurred"]:
+            return
+
         if ctx.session.state["long_running_jobs_count"] > ctx.session.state["long_running_jobs_count_ori"]:
             submit_validator_msg = "The Job has indeed been submitted."
             ctx.session.state["long_running_jobs_count_ori"] = ctx.session.state["long_running_jobs_count"]
