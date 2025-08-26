@@ -280,14 +280,23 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             raise TypeError("Not CalculationMCPTool type, current tool can't create job!")
 
         if tool.executor is not None:
-            url = f"{OPENAPI_HOST}/openapi/v1/job/create"
+            job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
+            user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
             payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
             params = {'accessKey': tool_context.state['ak']}
 
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, json=payload, params=params) as response:
+                async with session.get(user_project_list_url, params=params) as response:
+                    res = json.loads(await response.text())
+                    project_name = [item["project_name"] for item in res["data"]["items"] if
+                                    item["project_id"] == int(tool_context.state['project_id'])][0]
+
+            async with aiohttp.ClientSession() as session:
+                async with session.post(job_create_url, json=payload, params=params) as response:
                     res = json.loads(await response.text())
                     if res['code'] != 0:
+                        if res['code'] == 2000:
+                            res['error']['msg'] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
                         return res
 
     return wrapper
