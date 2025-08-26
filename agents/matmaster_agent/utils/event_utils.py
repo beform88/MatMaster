@@ -149,10 +149,7 @@ def all_text_event(ctx: InvocationContext, author: str, text: str, role: str):
     yield context_text_event(ctx, author, text, role)
 
 
-async def send_error_event(err, ctx, author, error_handle_agent=None):
-    if not error_handle_agent:
-        error_handle_agent = ctx.agent.parent_agent
-
+async def send_error_event(err, ctx, author):
     # 判断是否是异常组
     if isinstance(err, BaseExceptionGroup):
         error_details = [
@@ -186,7 +183,3 @@ async def send_error_event(err, ctx, author, error_handle_agent=None):
     for event in context_function_event(ctx, author, "system_detail_error",
                                         {"msg": detailed_error}, ModelRole):
         yield event
-
-    # 调用错误处理 Agent
-    async for error_event in error_handle_agent.run_async(ctx):
-        yield error_event

@@ -207,7 +207,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                 root_agent as matmaster_agent,
             )
 
-            async for error_event in send_error_event(err, ctx, self.name, matmaster_agent):
+            async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
 
 
@@ -329,8 +329,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 else:
                     yield event
         except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name,
-                                                      ctx.agent.parent_agent.parent_agent.parent_agent):
+            async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
 
 
@@ -369,8 +368,7 @@ class SubmitRenderAgent(LlmAgent):
                     ctx.session.state["render_job_id"] = []
                     await update_session_state(ctx, self.name)
         except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name,
-                                                      ctx.agent.parent_agent.parent_agent.parent_agent):
+            async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
 
 
@@ -482,8 +480,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     yield event
             yield Event(author=self.name)
         except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name,
-                                                      ctx.agent.parent_agent.parent_agent.parent_agent):
+            async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
 
 
