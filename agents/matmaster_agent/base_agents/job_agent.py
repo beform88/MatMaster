@@ -7,7 +7,6 @@ import jsonpickle
 from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
-from google.adk.tools import transfer_to_agent
 from mcp.types import CallToolResult
 from pydantic import Field, BaseModel
 from yaml.scanner import ScannerError
