@@ -49,3 +49,8 @@ class DFlowJobInfo(BaseModel):
     workflow_url: str
     job_result: Optional[List[JobResult]] = None
     job_in_ctx: bool = False
+
+
+class TransferCheck(BaseModel):
+    is_transfer: bool
+    target_agent: str

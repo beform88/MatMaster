@@ -1,55 +1,31 @@
+import logging
+
 from google.adk.agents import LlmAgent
 from opik.integrations.adk import track_adk_agent_recursive
 
 from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
 from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
+from agents.matmaster_agent.HEACalculator_agent.agent import init_hea_calculator_agent
+from agents.matmaster_agent.HEA_assistant_agent.agent import init_HEA_assistant_agent
 from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
 from agents.matmaster_agent.apex_agent.agent import init_apex_agent
-from agents.matmaster_agent.base_agents.io_agent import (
-    HandleFileUploadLlmAgent,
-)
-from agents.matmaster_agent.callback import matmaster_before_agent
+from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
+from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_check_transfer
+from agents.matmaster_agent.chembrain_agent.agent import init_chembrain_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-from agents.matmaster_agent.structure_generate_agent.agent import init_structure_generate_agent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-from agents.matmaster_agent.optimade_database_agent.agent import (
-    init_optimade_database_agent,
-)
-from agents.matmaster_agent.piloteye_electro_agent.agent import (
-    init_piloteye_electro_agent,
-)
-from agents.matmaster_agent.prompt import (
-    AgentDescription,
-    AgentInstruction,
-    GlobalInstruction,
-)
-from agents.matmaster_agent.superconductor_agent.agent import (
-    init_superconductor_agent,
-)
-from agents.matmaster_agent.thermoelectric_agent.agent import (
-    init_thermoelectric_agent,
-)
-from agents.matmaster_agent.traj_analysis_agent.agent import (
-    init_traj_analysis_agent,
-)
-from agents.matmaster_agent.organic_reaction_agent.agent import (
-    init_organic_reaction_agent,
-)
-from agents.matmaster_agent.HEA_assistant_agent.agent import (
-    init_HEA_assistant_agent
-)
-from agents.matmaster_agent.HEACalculator_agent.agent import (
-    init_hea_calculator_agent,
-)
-from agents.matmaster_agent.ssebrain_agent.agent import (
-    init_ssebrain_agent,
-)
-from agents.matmaster_agent.chembrain_agent.agent import (
-    init_chembrain_agent,
-)
-from agents.matmaster_agent.perovskite_agent.agent import (
-    init_perovskite_agent,
-)
+from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_database_agent
+from agents.matmaster_agent.organic_reaction_agent.agent import init_organic_reaction_agent
+from agents.matmaster_agent.perovskite_agent.agent import init_perovskite_agent
+from agents.matmaster_agent.piloteye_electro_agent.agent import init_piloteye_electro_agent
+from agents.matmaster_agent.prompt import AgentDescription, AgentInstruction, GlobalInstruction
+from agents.matmaster_agent.ssebrain_agent.agent import init_ssebrain_agent
+from agents.matmaster_agent.structure_generate_agent.agent import init_structure_generate_agent
+from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
+from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
+from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
+
+logging.getLogger("google_adk.google.adk.tools.base_authenticated_tool").setLevel(logging.ERROR)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -96,7 +72,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
             description=AgentDescription,
-            before_agent_callback=matmaster_before_agent
+            before_agent_callback=matmaster_prepare_state,
+            after_model_callback=matmaster_check_transfer,
         )
 
 

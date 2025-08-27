@@ -1,13 +1,25 @@
+import json
+import logging
+import uuid
 from datetime import datetime
 from typing import Optional
 
+import litellm
 from google.adk.agents.callback_context import CallbackContext
+from google.adk.models import LlmResponse
 from google.genai import types
+from google.genai.types import FunctionCall, Part
 
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY
+from agents.matmaster_agent.model import TransferCheck
+from agents.matmaster_agent.prompt import get_transfer_check_prompt
+from agents.matmaster_agent.utils.llm_response_utils import has_function_call
+
+logger = logging.getLogger(__name__)
 
 
-async def matmaster_before_agent(callback_context: CallbackContext) -> Optional[types.Content]:
+# before_agent_callback
+async def matmaster_prepare_state(callback_context: CallbackContext) -> Optional[types.Content]:
     callback_context.state['current_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     callback_context.state["error_occurred"] = False
 
@@ -26,3 +38,39 @@ async def matmaster_before_agent(callback_context: CallbackContext) -> Optional[
     callback_context.state["sync_tools"] = callback_context.state.get("sync_tools", None)
     callback_context.state["invocation_id_with_tool_call"] = callback_context.state.get("invocation_id_with_tool_call",
                                                                                         None)
+
+
+# after_model_callback
+async def matmaster_check_transfer(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[
+    LlmResponse]:
+    # 检查响应是否有效
+    if not (
+            llm_response and
+            not llm_response.partial and
+            llm_response.content and
+            llm_response.content.parts and
+            len(llm_response.content.parts) and
+            llm_response.content.parts[0].text
+    ):
+        return None
+
+    prompt = get_transfer_check_prompt().format(response_text=llm_response.content.parts[0].text)
+    response = litellm.completion(model="azure/gpt-4o", messages=[{"role": "user", "content": prompt}],
+                                  response_format=TransferCheck)
+
+    result: dict = json.loads(response.choices[0].message.content)
+    is_transfer = bool(result.get("is_transfer", False))
+    target_agent = str(result.get("target_agent", ""))
+
+    if (
+            is_transfer and
+            not has_function_call(llm_response)
+    ):
+        logger.warning(f"Detected Agent Transfer Hallucination, add `transfer_to_agent`")
+        function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
+        llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id, name="transfer_to_agent",
+                                                                          args={"agent_name": target_agent})))
+
+        return llm_response
+
+    return None
