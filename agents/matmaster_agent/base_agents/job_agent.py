@@ -213,6 +213,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
 class ParamsCheckComplete(BaseModel):
     flag: bool
+    reason: str
 
 
 class ParamsCheckCompleteAgent(LlmAgent):
@@ -623,8 +624,12 @@ class BaseAsyncJobAgent(LlmAgent):
             async for params_check_complete_event in self.params_need_check_agent.run_async(ctx):
                 last_params_check_completed_event = params_check_complete_event
             params_check_completed = json.loads(last_params_check_completed_event.content.parts[0].text)["flag"]
+            params_check_reason = json.loads(last_params_check_completed_event.content.parts[0].text)["reason"]
 
             if not params_check_completed:
+                for params_check_reason_event in all_text_event(ctx, self.name, params_check_reason, ModelRole):
+                    yield params_check_reason_event
+
                 async for params_check_event in self.params_check_agent.run_async(ctx):
                     yield params_check_event
             else:
