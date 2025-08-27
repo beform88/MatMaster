@@ -11,6 +11,9 @@ dependencies = [
     "oss2>=2.18.0",
     "aiofiles>=24.1.0",
     "pymysql>=1.1.1",
+    "anyio>=4.10.0",
+    "pytest-asyncio>=1.1.0",
+    "litellm>=1.74.15.post2",
 ]
 
 [tool.hatch.build.targets.wheel]
