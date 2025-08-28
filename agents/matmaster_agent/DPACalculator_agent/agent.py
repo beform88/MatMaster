@@ -41,12 +41,6 @@ mcp_tools_dpa = CalculationMCPToolset(
     executor=DPACalulator_BOHRIUM_EXECUTOR,
     async_mode=True,
     wait=False,
-    # executor_map={
-    #     "build_bulk_structure": None,
-    #     "build_molecule_structure": None,
-    #     "build_surface_slab": None,
-    #     "build_surface_adsorbate": None
-    # },
     logging_callback=matmodeler_logging_handler
 )
 
