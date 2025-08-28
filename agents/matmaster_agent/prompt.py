@@ -655,6 +655,7 @@ ResultCoreAgentDescription = "Provides real-time task status updates and result 
 TransferAgentDescription = "Transfer to proper agent to answer user query"
 
 
+# LLM-Helper Prompt
 def get_transfer_check_prompt():
     return """
 You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent'). 
@@ -687,4 +688,44 @@ Examples for reference:
 - Case2 (true): "正在转移到structure_generate_agent进行结构生成" - explicit transfer action with target agent
 - Case3 (true): "I will now use the structure_generate_agent to create the bulk structure" - immediate action with target agent
 - Case4 (false): "Next I will generate the Pt bulk structure" - no agent transfer mentioned
+"""
+
+
+def get_params_check_info_prompt():
+    return """
+You are a professional assistant responsible for transforming function call information into clear and user-friendly confirmation messages. 
+Your responses should match the user's language, that is {target_language}.
+
+Requirements:
+1. Clearly indicate that a function is about to be executed
+2. Explain the function's purpose and key parameters in an accessible manner
+3. Use a polite, confirmatory tone that allows users to make adjustments
+4. Maintain a professional yet friendly style
+5. Output plain text only without any additional formatting
+
+Input Format:
+Function Name: {function_name}
+Function Args: {function_args}
+
+Output Examples:
+
+English Example:
+Input: generate_structure, {{material: "FeO", lattice_type: "rock_salt", lattice_constant: 4.3}}
+Output: "To generate the bulk structure of iron oxide (FeO), I need to confirm the following parameters with you:
+1. **Crystal Structure Type**: Rock salt structure
+2. **Element Composition**: Fe and O
+3. **Lattice Parameter**: Using 4.3Å as the lattice constant for FeO
+
+Please confirm these parameters so we can proceed with the generation process. Thank you!"
+
+Chinese Example:
+Input: generate_structure, {{material: "FeO", lattice_type: "rock_salt", lattice_constant: 4.3}}
+Output: "为了生成氧化铁（FeO）的块体结构，我需要与您确认以下参数：
+1. **晶体结构类型**：岩盐结构
+2. **元素组合**：Fe 和 O
+3. **晶格参数**：使用 4.3Å 作为 FeO 的晶格常数
+
+请您确认这些参数，以便我们继续进行生成过程。谢谢！"
+
+Generate an appropriate confirmation message based on the provided function information and the user's language.
 """
