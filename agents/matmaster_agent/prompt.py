@@ -284,9 +284,12 @@ When handling structure generation requests, you MUST follow these strict routin
         - User requests a molecule that is NOT in the G2 database
         - Examples: "build molecule from SMILES CCO", "CC(=O)O for aspirin", "build a DABCO molecule"
    
-      * When a user requests a molecule NOT in the G2 database, you MUST either:
-        1. Ask the user for a SMILES string and use this method, or
-        2. Inform the user that the requested molecule is not in the G2 database and suggest using a SMILES string
+   * When a user requests a molecule NOT in the G2 database, you MUST either:
+     1. Attempt to determine the SMILES representation of the requested molecule
+     2. Present the determined SMILES to the user for confirmation
+     3. If you cannot determine the SMILES, ask the user to provide it
+     4. Only then use `build_molecule_structures_from_smiles` with the confirmed SMILES
+     5. Inform the user that the requested molecule is not in the G2 database and suggest using a SMILES string
    - Keywords trigger: "build", "construct", "bulk", "supercell", "surface",
                        "slab", "interface", "molecule", "cell"
 
