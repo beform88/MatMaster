@@ -675,7 +675,10 @@ Based on the rules above, output a JSON object.
 
 
 def gen_params_check_info_agent_instruction():
-    return """你的指责是和用户确认需要调用工具的参数,不要直接调用工具"""
+    return """
+Your task is to confirm with users the parameters needed to call tools. Do not directly invoke any tools. 
+If any parameter is a file path or filename, you must request an accessible HTTP URL containing the file instead of accepting a local filename.
+"""
 
 
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
