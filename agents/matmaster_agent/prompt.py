@@ -630,7 +630,8 @@ def gen_result_agent_description():
 
 def gen_params_check_completed_agent_instruction():
     return """
-Analyze the most recent message from the 'Assistant' or 'Agent' (the immediate preceding message before the user's current turn). Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested.
+Analyze the most recent message from the 'Assistant' or 'Agent' that contains parameter information (this may not necessarily be the immediate preceding message). 
+Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested in that message.
 
 Your output MUST be a valid JSON object with the following structure:
 {{
@@ -652,7 +653,7 @@ Return `flag: false` in ANY of these cases:
 
 **语言要求 (Language Requirement):** 在输出JSON时，请观察对话上下文使用的主要语言。如果上下文主要是中文，那么`reason`字段必须用中文书写。如果上下文主要是英文或其他语言，则使用相应的语言。请确保语言选择与对话上下文保持一致。
 
-**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm these parameters:...") is considered the completion of the parameter presentation task. Therefore, return `true` at the point the agent makes that request, NOT after the user has confirmed.
+**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm these parameters:...") is considered the completion of the parameter presentation task. Therefore, return `true` for the message where that request is made, NOT after the user has confirmed. Look for the most recent message where parameters are presented for confirmation, even if it's not the very last message.
 
 **Examples:**
 - Message: "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"
