@@ -77,7 +77,7 @@ async def default_after_model_callback(callback_context: CallbackContext,
     return None
 
 
-async def clear_function_call(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
+async def remove_function_call(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
     # 检查响应是否有效
     if not (llm_response and llm_response.content and llm_response.content.parts and len(llm_response.content.parts)):
         return None
@@ -296,7 +296,8 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
                     res = json.loads(await response.text())
                     if res['code'] != 0:
                         if res['code'] == 2000:
-                            res['error']['msg'] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
+                            res['error'][
+                                'msg'] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
                         return res
 
     return wrapper

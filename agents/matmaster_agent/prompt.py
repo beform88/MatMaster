@@ -600,7 +600,7 @@ def gen_result_agent_description():
     return "Query status and retrieve results"
 
 
-def gen_params_check_complete_agent_instruction():
+def gen_params_check_completed_agent_instruction():
     return """
 Analyze the most recent message from the 'Assistant' or 'Agent' (the immediate preceding message before the user's current turn). Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested.
 
@@ -645,6 +645,10 @@ Based on the rules above, output a JSON object.
 """
 
 
+def gen_params_check_info_agent_instruction():
+    return """你的指责是和用户确认需要调用工具的参数,不要直接调用工具"""
+
+
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
 
 ResultCoreAgentDescription = "Provides real-time task status updates and result forwarding to UI"
@@ -659,13 +663,15 @@ Analyze the provided RESPONSE TEXT to determine if it explicitly indicates a tra
 Guidelines:
 1. **Transfer Intent**: The RESPONSE TEXT must explicitly indicate an immediate transfer action to a specific agent, not just mention or describe the agent's function.
 2. **Target Clarity**: The target agent must be clearly identified by name (e.g., "xxx agent" or another explicitly named agent).
-3. **Action Directness**: Look for explicit transfer verbs like "transfer", "connect", "hand over", or "redirect", or clear transitional phrases indicating the conversation is being passed to another agent.
-4. **Key Indicators**:
-   - ✅ Explicit transfer statements: "I will transfer you to", "Let me connect you with", "Redirecting to", "Handing over to"
-   - ✅ Immediate action indicators: "正在转移", "Switching to", "Now connecting to"
+3. **Action Directness**: Look for explicit transfer verbs like "transfer", "connect", "hand over", "redirect", or clear transitional phrases like "I will now use", "Switching to", "Activating" that indicate the conversation is being passed to another agent.
+4. **Language Consideration**: Evaluate both English and Chinese transfer indications equally.
+5. **Key Indicators**:
+   - ✅ Explicit transfer statements: "I will transfer you to", "Let me connect you with", "Redirecting to", "Handing over to", "正在转移", "切换到"
+   - ✅ Immediate action indicators: "Now using", "Switching to", "Activating the", "I will now use the", "正在使用"
    - ❌ Mere mentions of agent capabilities or potential future use
    - ❌ Descriptions of what an agent could do without transfer intent
    - ❌ Suggestions or recommendations without explicit transfer instruction
+   - ❌ Future tense plans without immediate action
 
 RESPONSE TEXT (previous LLM's response to evaluate):
 {response_text}
@@ -679,4 +685,6 @@ Provide your evaluation in the following JSON format:
 Examples for reference:
 - Case1 (false): "使用结构生成智能体（structure_generate_agent）根据用户要求创建 FCC Cu 的块体结构" - only mentions agent, no transfer action
 - Case2 (true): "正在转移到structure_generate_agent进行结构生成" - explicit transfer action with target agent
+- Case3 (true): "I will now use the structure_generate_agent to create the bulk structure" - immediate action with target agent
+- Case4 (false): "Next I will generate the Pt bulk structure" - no agent transfer mentioned
 """
