@@ -628,7 +628,10 @@ class BaseAsyncJobAgent(LlmAgent):
 
             if not params_check_completed:
                 # Tell User Why Params Check Uncompleted
-                for params_check_reason_event in all_text_event(ctx, self.name, params_check_reason, ModelRole):
+                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                for params_check_reason_event in context_function_event(ctx, self.name,
+                                                                        "system_params_check_block_reason",
+                                                                        {"msg": params_check_reason}, ModelRole):
                     yield params_check_reason_event
 
                 # Call ParamsCheckInfoAgent to generate params needing check
