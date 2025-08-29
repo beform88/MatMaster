@@ -364,12 +364,12 @@ MANDATORY NOTIFICATIONS:
     - Capabilities:
       - Perform advanced queries on elements, number of elements, chemical formulas (reduced, descriptive, anonymous), and logical combinations using AND, OR, NOT with parentheses
       - Support provider-specific mappings for space group (1–230) and band-gap range queries
-      - Retrieve results in `.cif` (for visualization/simulation) or `.json` (for full metadata) from multiple OPTIMADE-compliant databases (e.g., Alexandria, CMR, OQMD, MP, etc.), with support for quantity-aware queries (e.g., “find one”, “three results”) via `n_results`
+      - Retrieve results in .cif (for visualization/simulation) or .json (for full metadata) from multiple OPTIMADE-compliant databases (e.g., Alexandria, CMR, OQMD, MP, etc.), and present them in a structured table (default columns: ID, Provider, Formula, Elements, Space group, Download link). Supports quantity-aware queries via n_results
     - Example Queries:
       - "找3个含油 Si O，且含有四种元素的，不能同时含有铁铝的材料，从 alexandria, cmr, nmd, oqmd, omdb 中查找。"
       - "找到一些 A2B3C4 的材料，不能含 Fe, F, Cl, H 元素，要含有铝或者镁或者钠，我要全部信息。"
       - "找一些 ZrO，从 mpds, cmr, alexandria, omdb, odbx 里面找。"
-      - "查找 gamma 相的 TiAl 合金。"
+      - "查找一个 gamma 相的 TiAl 合金。"
       - "找一些含铝的，能带在 1.0–2.0 的材料。"
 
 11. **{ORGANIC_REACTION_AGENT_NAME}** - **Organic reaction specialist**
