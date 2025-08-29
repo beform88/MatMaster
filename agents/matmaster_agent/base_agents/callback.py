@@ -102,8 +102,12 @@ async def remove_function_call(callback_context: CallbackContext, llm_response: 
             part.function_call = None
         llm_response.content.parts.append(part)
 
+    logger.info(f"llm_generated_text = {llm_generated_text}")
+
     if not llm_response.content.parts[0].text:
         llm_response.content.parts[0].text = llm_generated_text
+
+    logger.info(f"final llm_response_text = {llm_response.content.parts[0].text}")
 
     return llm_response
 
