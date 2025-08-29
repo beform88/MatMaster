@@ -364,13 +364,25 @@ MANDATORY NOTIFICATIONS:
     - Capabilities:
       - Perform advanced queries on elements, number of elements, chemical formulas (reduced, descriptive, anonymous), and logical combinations using AND, OR, NOT with parentheses
       - Support provider-specific mappings for space group (1–230) and band-gap range queries
-      - Retrieve results in .cif (for visualization/simulation) or .json (for full metadata) from multiple OPTIMADE-compliant databases (e.g., Alexandria, CMR, OQMD, MP, etc.), and present them in a structured table (default columns: ID, Provider, Formula, Elements, Space group, Download link). Supports quantity-aware queries via n_results
+      - Retrieve results in .cif (for visualization/simulation) or .json (for full metadata) from multiple OPTIMADE-compliant databases (e.g., Alexandria, CMR, OQMD, MP, etc.), and present **all retrieved entries** in a single complete Markdown table (default columns: ID, Provider, Formula, Elements, Space group, Download link). Supports quantity-aware queries via `n_results`
     - Example Queries:
       - "找3个含油 Si O，且含有四种元素的，不能同时含有铁铝的材料，从 alexandria, cmr, nmd, oqmd, omdb 中查找。"
       - "找到一些 A2B3C4 的材料，不能含 Fe, F, Cl, H 元素，要含有铝或者镁或者钠，我要全部信息。"
       - "找一些 ZrO，从 mpds, cmr, alexandria, omdb, odbx 里面找。"
       - "查找一个 gamma 相的 TiAl 合金。"
       - "找一些含铝的，能带在 1.0–2.0 的材料。"
+
+   ## ⚠️ Mandatory Table Display Rule:
+      ** The Markdown table must always be displayed exactly as returned by the `optimade_agent`, with **all entries included in full**. No omission, truncation, summarization, filtering, or ellipses are allowed.  
+      ** 你必须展示完整的optimade agent返回的表格！禁止只展示部分optimade_agent返回的表格或遗漏表格及任何信息！
+
+   ## RESPONSE FORMAT
+   The response must always have three parts in order:  
+   1) A brief explanation of the applied filters and providers.  
+   2) A 📈 Markdown table listing all retrieved results.  
+   3) A 📦 download link for an archive (.tgz).  
+   The table must contain **all retrieved materials** in one complete Markdown table, without omissions, truncation, summaries, or ellipses. The number of rows must exactly equal `n_found`, and even if there are many results (up to 100), they must all be shown in the same table. The 📦 archive link is supplementary and can never replace the full table.  
+   表格中必须包含**所有检索到的材料**，必须完整列在一个 Markdown 表格中，绝对不能省略、缩写、总结或用“...”只展示部分，你必须展示全部检索到的材料在表格中！即使结果数量很多（最多 100 条），也必须全部列出。📦 压缩包链接只能作为补充，绝不能替代表格。  
 
 11. **{ORGANIC_REACTION_AGENT_NAME}** - **Organic reaction specialist**
     - Purpose: Find transition states and calculate reaction profiles
