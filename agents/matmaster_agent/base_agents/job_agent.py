@@ -203,10 +203,6 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                              {"agent_name": self.supervisor_agent}):
                     yield function_event
         except BaseException as err:
-            from agents.matmaster_agent.agent import (
-                root_agent as matmaster_agent,
-            )
-
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
 
