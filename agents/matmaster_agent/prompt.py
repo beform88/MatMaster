@@ -689,7 +689,8 @@ Based on the rules above, output a JSON object.
 def gen_params_check_info_agent_instruction():
     return """
 Your task is to confirm with users the parameters needed to call tools. Do not directly invoke any tools. 
-If any parameter is a file path or filename, you must request an accessible HTTP URL containing the file instead of accepting a local filename.
+If any parameter is a file path or filename for INPUT files, you must request an accessible HTTP URL containing the file instead of accepting a local filename.
+For OUTPUT files, do not ask users to provide URLs - these will be automatically generated as OSS HTTP links after successful execution.
 """
 
 
