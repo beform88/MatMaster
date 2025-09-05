@@ -5,9 +5,6 @@ import os
 
 load_dotenv()
 
-# Get the base URL for GPT-5 from environment variables
-GPT_BASE_URL = os.getenv("GPT_BASE_URL", "https://llm.dp.tech")
-
 MODEL_MAPPING = {
     ("openai", "gpt-4o-mini"): "openai/gpt-4o-mini",
     ("openai", "gpt-4o"): "openai/gpt-4o",
@@ -77,10 +74,8 @@ class LLMConfig(object):
         def _init_model(provider_key: str, model_name: str):
             # For GPT-5 models, we need to pass the base_url parameter
             if provider_key == "openai" and model_name.startswith("gpt-5"):
-                os.environ["GPT_BASE_URL"] = GPT_BASE_URL
-                os.environ["OPENAI_API_KEY"] =  os.getenv("GPT_KEY", None)
                 return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL), 
-                              base_url=GPT_BASE_URL)
+                              base_url="https://llm.dp.tech")
             return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL))
 
         self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
