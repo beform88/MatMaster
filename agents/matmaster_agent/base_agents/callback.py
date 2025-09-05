@@ -96,7 +96,7 @@ async def remove_function_call(callback_context: CallbackContext, llm_response: 
 
             prompt = get_params_check_info_prompt().format(target_language=callback_context.state["target_language"],
                                                            function_name=function_name, function_args=function_args)
-            response = litellm.completion(model="azure/gpt-4o", messages=[{"role": "user", "content": prompt}])
+            response = litellm.completion(model="gpt-5-chat", messages=[{"role": "user", "content": prompt}])
             llm_generated_text += response.choices[0].message.content
 
             part.function_call = None

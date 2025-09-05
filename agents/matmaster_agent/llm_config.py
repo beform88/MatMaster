@@ -1,8 +1,12 @@
 from dotenv import load_dotenv
 from google.adk.models.lite_llm import LiteLlm
 from opik.integrations.adk import OpikTracer
+import os
 
 load_dotenv()
+
+# Get the base URL for GPT-5 from environment variables
+GPT_BASE_URL = os.getenv("GPT_BASE_URL", "https://llm.dp.tech")
 
 MODEL_MAPPING = {
     ("openai", "gpt-4o-mini"): "openai/gpt-4o-mini",
@@ -14,6 +18,10 @@ MODEL_MAPPING = {
     ("openai", "claude-sonnet-4-20250514"): "openai/claude-sonnet-4-20250514",
     ("openai", "gemini-2.5-flash-preview-05-20"): "openai/gemini-2.5-flash-preview-05-20",
     ("openai", "qwen-plus"): "openai/qwen-plus",
+    ("openai", "gpt-5"): "openai/gpt-5",
+    ("openai", "gpt-5-nano"): "openai/gpt-5-nano",
+    ("openai", "gpt-5-mini"): "openai/gpt-5-mini",
+    ("openai", "gpt-5-chat"): "openai/gpt-5-chat",
     ("azure", "gpt-4o"): "azure/gpt-4o",
     ("azure", "gpt-4o-mini"): "azure/gpt-4o-mini",
     ("litellm_proxy", "gemini-2.0-flash"): "litellm_proxy/gemini-2.0-flash",
@@ -31,8 +39,8 @@ MODEL_MAPPING = {
     ("volcengine", "Doubao-Seed-1.6-thinking"): "volcengine/ep-20250627141021-h4wch"
 }
 
-DEFAULT_MODEL = "azure/gpt-4o-mini"
-
+# DEFAULT_MODEL = "azure/gpt-4o-mini"
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "azure/gpt-4o-mini")
 
 class LLMConfig(object):
     _instance = None
@@ -60,9 +68,19 @@ class LLMConfig(object):
         gemini_2_5_pro = "gemini-2.5-pro"
         claude_sonnet_4 = "claude-sonnet-4"
         deepseek_chat = 'deepseek-chat'
+        gpt_5 = "gpt-5"
+        gpt_5_nano = "gpt-5-nano"
+        gpt_5_mini = "gpt-5-mini"
+        gpt_5_chat = "gpt-5-chat"
 
         # Helper to init any provider model
         def _init_model(provider_key: str, model_name: str):
+            # For GPT-5 models, we need to pass the base_url parameter
+            if provider_key == "openai" and model_name.startswith("gpt-5"):
+                os.environ["GPT_BASE_URL"] = GPT_BASE_URL
+                os.environ["OPENAI_API_KEY"] =  os.getenv("GPT_KEY", None)
+                return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL), 
+                              base_url=GPT_BASE_URL)
             return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL))
 
         self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
@@ -72,6 +90,12 @@ class LLMConfig(object):
         self.gemini_2_5_pro = _init_model(litellm_provider, gemini_2_5_pro)
         self.claude_sonnet_4 = _init_model(litellm_provider, claude_sonnet_4)
         self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
+        
+        # GPT-5 models
+        self.gpt_5 = _init_model(openai_provider, gpt_5)
+        self.gpt_5_nano = _init_model(openai_provider, gpt_5_nano)
+        self.gpt_5_mini = _init_model(openai_provider, gpt_5_mini)
+        self.gpt_5_chat = _init_model(openai_provider, gpt_5_chat)
 
         # tracing
         self.opik_tracer = OpikTracer()
