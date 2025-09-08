@@ -10,6 +10,9 @@ from rich import print
 from agents.matmaster_agent.agent import root_agent
 from agents.matmaster_agent.constant import DBUrl
 from agents.matmaster_agent.logger import logger
+import litellm
+
+litellm._turn_on_debug()
 
 
 async def agent_main() -> None:

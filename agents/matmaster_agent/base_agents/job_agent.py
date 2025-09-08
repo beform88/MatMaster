@@ -33,6 +33,7 @@ from agents.matmaster_agent.constant import (
     get_BohriumStorage,
     get_DFlowExecutor,
 )
+from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
 from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
@@ -569,7 +570,8 @@ class BaseAsyncJobAgent(LlmAgent):
         )
 
         params_check_completed_agent = ParamsCheckCompletedAgent(
-            model=model,
+            model=MatMasterLlmConfig.gpt_4o,
+            # model=model,
             name=f"{agent_prefix}_params_check_completed_agent",
             instruction=gen_params_check_completed_agent_instruction(),
             output_schema=ParamsCheckComplete,
