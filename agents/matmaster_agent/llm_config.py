@@ -25,6 +25,10 @@ MODEL_MAPPING = {
     ("litellm_proxy", "gemini-2.5-flash"): "litellm_proxy/gemini-2.5-flash",
     ("litellm_proxy", "gemini-2.5-pro"): "litellm_proxy/gemini-2.5-pro",
     ("litellm_proxy", "claude-sonnet-4"): "litellm_proxy/claude-sonnet-4",
+    ("litellm_proxy", "gpt-5"): "litellm_proxy/azure/gpt-5",
+    ("litellm_proxy", "gpt-5-mini"): "litellm_proxy/azure/gpt-5-mini",
+    ("litellm_proxy", "gpt-5-nano"): "litellm_proxy/azure/gpt-5-nano",
+    ("litellm_proxy", "gpt-5-chat"): "litellm_proxy/azure/gpt-5-chat",
     # ("gemini", "gemini1.5-turbo"): "gemini/gemini1.5-turbo",
     # ("gemini", "gemini2.5-pro"): "gemini/gemini-2.5-pro-preview-03-25",
     # ("deepseek", "deepseek-reasoner"): "deepseek/deepseek-reasoner",
@@ -38,6 +42,7 @@ MODEL_MAPPING = {
 
 # DEFAULT_MODEL = "azure/gpt-4o-mini"
 DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "azure/gpt-4o-mini")
+
 
 class LLMConfig(object):
     _instance = None
@@ -72,10 +77,6 @@ class LLMConfig(object):
 
         # Helper to init any provider model
         def _init_model(provider_key: str, model_name: str):
-            # For GPT-5 models, we need to pass the base_url parameter
-            if provider_key == "openai" and model_name.startswith("gpt-5"):
-                return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL), 
-                              base_url="https://llm.dp.tech")
             return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL))
 
         self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
@@ -85,12 +86,12 @@ class LLMConfig(object):
         self.gemini_2_5_pro = _init_model(litellm_provider, gemini_2_5_pro)
         self.claude_sonnet_4 = _init_model(litellm_provider, claude_sonnet_4)
         self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
-        
+
         # GPT-5 models
-        self.gpt_5 = _init_model(openai_provider, gpt_5)
-        self.gpt_5_nano = _init_model(openai_provider, gpt_5_nano)
-        self.gpt_5_mini = _init_model(openai_provider, gpt_5_mini)
-        self.gpt_5_chat = _init_model(openai_provider, gpt_5_chat)
+        self.gpt_5 = _init_model(litellm_provider, gpt_5)
+        self.gpt_5_nano = _init_model(litellm_provider, gpt_5_nano)
+        self.gpt_5_mini = _init_model(litellm_provider, gpt_5_mini)
+        self.gpt_5_chat = _init_model(litellm_provider, gpt_5_chat)
 
         # tracing
         self.opik_tracer = OpikTracer()
