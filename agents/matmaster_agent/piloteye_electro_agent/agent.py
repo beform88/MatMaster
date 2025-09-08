@@ -65,7 +65,7 @@ piloteye_electro_tool = CalculationMCPToolset(
 class PiloteyeElectroAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             mcp_tools=[piloteye_electro_tool],
             agent_name=PiloteyeElectroAgentName,
             agent_description=PiloteyeElectroAgentDescription,

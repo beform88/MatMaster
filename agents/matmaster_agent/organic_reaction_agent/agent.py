@@ -65,7 +65,7 @@ class OragnicReactionAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
             agent_name=ORGANIC_REACTION_AGENT_NAME,
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             agent_description=description,
             agent_instruction=instruction_en,
             mcp_tools=tools,

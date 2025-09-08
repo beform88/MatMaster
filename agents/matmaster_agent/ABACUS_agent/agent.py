@@ -65,7 +65,7 @@ mcp_tools_abacus = CalculationMCPToolset(
 class ABACUSCalculatorAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             mcp_tools=[mcp_tools_abacus],
             agent_name=ABACUS_AGENT_NAME,
             agent_description=ABACUS_AGENT_DESCRIPTION,

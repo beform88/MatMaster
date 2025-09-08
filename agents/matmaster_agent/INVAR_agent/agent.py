@@ -50,7 +50,7 @@ class INVARAgent(BaseAsyncJobAgent):
         super().__init__(
             agent_name=INVAR_AGENT_NAME,
             mcp_tools=[mcp_tools_invar],
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             agent_description=INVARAgentDescription,
             agent_instruction=INVARAgentInstruction,
             dflow_flag=False,
