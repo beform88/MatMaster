@@ -59,7 +59,7 @@ toolset = CalculationMCPToolset(
 class SuperconductorAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             mcp_tools=[toolset],
             agent_name=SuperconductorAgentName,
             agent_description=SuperconductorAgentDescription,

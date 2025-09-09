@@ -27,7 +27,7 @@ class ChemBrainAgent(LlmAgent):
         retrosyn_agent = init_retrosyn_agent(llm_config)
 
         super().__init__(name="chembrain_agent",
-                         model=llm_config.gpt_4o,
+                         model=llm_config.gpt_5_chat,
                          description=description,
                          sub_agents=[
                              database_agent,

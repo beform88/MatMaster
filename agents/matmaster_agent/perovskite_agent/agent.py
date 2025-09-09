@@ -37,7 +37,7 @@ perovskite_toolset = CalculationMCPToolset(
 def init_perovskite_agent(llm_config):
     """Initialize Perovskite Solar Cell Data Analysis Agent using CalculationMCPLlmAgent."""
     # Choose model per flag with sensible fallbacks
-    model = llm_config.gpt_4o
+    model = llm_config.gpt_5_chat
 
     return CalculationMCPLlmAgent(
         model=model,

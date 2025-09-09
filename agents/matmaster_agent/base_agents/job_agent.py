@@ -33,6 +33,7 @@ from agents.matmaster_agent.constant import (
     get_BohriumStorage,
     get_DFlowExecutor,
 )
+from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
 from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
@@ -41,7 +42,8 @@ from agents.matmaster_agent.prompt import (
     gen_params_check_completed_agent_instruction, gen_params_check_info_agent_instruction,
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
-    context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
+    context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium, \
+    context_function_call_event
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
@@ -195,7 +197,25 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                                f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
                                                                ModelRole):
                                 yield result_event
-                yield event
+
+                # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
+                if is_text(event):
+                    if not event.partial:
+                        for part in event.content.parts:
+                            if part.text:
+                                for system_calculation_mcp_agent_event in context_function_event(ctx, self.name,
+                                                                                                 "system_calculation_mcp_agent",
+                                                                                                 {"msg": part.text},
+                                                                                                 ModelRole):
+                                    yield system_calculation_mcp_agent_event
+                            elif part.function_call:
+                                yield context_function_call_event(ctx, self.name,
+                                                                  function_call_id=part.function_call.id,
+                                                                  function_call_name=part.function_call.name,
+                                                                  role=ModelRole, args=part.function_call.args)
+
+                else:
+                    yield event
 
             # If specified supervisor_agent, transfer back
             if self.supervisor_agent:
@@ -569,7 +589,8 @@ class BaseAsyncJobAgent(LlmAgent):
         )
 
         params_check_completed_agent = ParamsCheckCompletedAgent(
-            model=model,
+            model=MatMasterLlmConfig.gpt_4o,
+            # model=model,
             name=f"{agent_prefix}_params_check_completed_agent",
             instruction=gen_params_check_completed_agent_instruction(),
             output_schema=ParamsCheckComplete,

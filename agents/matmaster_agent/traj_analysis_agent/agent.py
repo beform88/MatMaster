@@ -19,7 +19,7 @@ toolset = CalculationMCPToolset(
 
 def init_traj_analysis_agent(llm_config) -> BaseAgent:
     return CalculationMCPLlmAgent(
-        model=llm_config.gpt_4o,
+        model=llm_config.gpt_5_chat,
         name=TrajAnalysisAgentName,
         description='An agent designed to perform trajectory analysis, including calculations like '
                     'Solvation Structure Analysis, Mean Squared Displacement (MSD) and Radial Distribution Function (RDF), '

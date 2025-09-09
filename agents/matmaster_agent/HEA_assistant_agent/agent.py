@@ -22,7 +22,7 @@ toolset = CalculationMCPToolset(
 class HEA_assistant_Agent(CalculationMCPLlmAgent):
     def __init__(self, llm_config):
         super().__init__(
-            model = llm_config.gpt_4o,
+            model = llm_config.gpt_5_chat,
             name=HEA_assistant_AgentName,
             description=HEA_assistant_AgentDescription,
             instruction=HEA_assistant_AgentInstruction,

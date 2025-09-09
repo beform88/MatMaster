@@ -54,7 +54,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             sub_agents=[
                 piloteye_electro_agent,
                 traj_analysis_agent,
@@ -92,7 +92,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
 
             error_handel_agent = LlmAgent(
                 name="error_handel_agent",
-                model=LiteLlm(model="azure/gpt-4o")
+                model=LiteLlm(model="litellm_proxy/azure/gpt-5-chat"),
             )
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
