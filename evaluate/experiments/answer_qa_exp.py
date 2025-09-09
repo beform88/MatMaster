@@ -14,7 +14,7 @@ client = Opik()
 
 dataset = client.get_or_create_dataset(name=MATMASTER_ANSWER_QUALITY)
 dataset.clear()
-dataset_json = load_dataset_json("answer_qa_exp.json")
+dataset_json = load_dataset_json(__file__.replace(".py", ".json"))
 dataset.insert_from_json(dataset_json)
 
 evaluate(
