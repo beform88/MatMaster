@@ -17,7 +17,7 @@ toolset = CalculationMCPToolset(
 
 # Create agent
 def init_unielf_agent(llm_config):
-    selected_model = llm_config.gpt_4o
+    selected_model = llm_config.gpt_5_chat
     unielf_agent = CalculationLlmAgent(
         name=UniELFAgentName,
         model=selected_model,

@@ -21,7 +21,7 @@ class SSEBrainAgent(LlmAgent):
         deep_research_agent = init_deep_research_agent(llm_config)
 
         super().__init__(name="ssebrain_agent",
-                         model=llm_config.gpt_4o,
+                         model=llm_config.gpt_5_chat,
                          description=description,
                          sub_agents=[
                              database_agent,

@@ -50,7 +50,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             sub_agents=[
                 piloteye_electro_agent,
                 traj_analysis_agent,

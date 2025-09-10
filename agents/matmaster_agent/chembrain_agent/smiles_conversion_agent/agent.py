@@ -16,7 +16,7 @@ toolset = CalculationMCPToolset(connection_params=SseServerParams(url=SMILESConv
 
 class SMILESConversionAgent(CalculationLlmAgent):
     def __init__(self, llm_config):
-        selected_model = llm_config.gpt_4o
+        selected_model = llm_config.gpt_5_chat
 
         super().__init__(model=selected_model,
                          name=SMILESConversionAgentName,

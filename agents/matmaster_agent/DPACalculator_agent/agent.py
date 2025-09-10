@@ -56,7 +56,7 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
         super().__init__(
             agent_name=DPACalulator_AGENT_NAME,
             mcp_tools=[mcp_tools_dpa],
-            model=llm_config.gpt_4o,
+            model=llm_config.gpt_5_chat,
             agent_description=DPAAgentDescription,
             agent_instruction=DPAAgentInstruction,
             dflow_flag=False,

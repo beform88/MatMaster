@@ -55,7 +55,7 @@ async def matmaster_check_transfer(callback_context: CallbackContext, llm_respon
         return None
 
     prompt = get_transfer_check_prompt().format(response_text=llm_response.content.parts[0].text)
-    response = litellm.completion(model="azure/gpt-4o", messages=[{"role": "user", "content": prompt}],
+    response = litellm.completion(model="azure/gpt-5-chat", messages=[{"role": "user", "content": prompt}],
                                   response_format=TransferCheck)
 
     result: dict = json.loads(response.choices[0].message.content)
