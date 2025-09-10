@@ -11,6 +11,7 @@ from agents.matmaster_agent.piloteye_electro_agent.constant import PILOTEYE_ELEC
 from agents.matmaster_agent.structure_generate_agent.constant import StructureGenerateAgentName
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
+from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 
 GlobalInstruction = """
 ---
@@ -77,6 +78,8 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "organic" → {ORGANIC_REACTION_AGENT_NAME}
    - "structure" → {StructureGenerateAgentName}
    - "optimade" → {OPTIMADE_DATABASE_AGENT_NAME}
+   - "traj" → {TrajAnalysisAgentName}
+   - "trajectory" → {TrajAnalysisAgentName}
    - "sse" → SSE-related agents (context dependent)
 
 3. **If No Explicit Tool Mention**: When user asks for property calculations without specifying a tool:
@@ -97,7 +100,7 @@ When multiple tools can perform the same calculation or property analysis, you M
 - Even if the user provides a structure file (local path or HTTP/HTTPS URI), you MUST NOT narrow or filter the tool list
 - Always enumerate ALL tools capable of the requested property first, THEN ask the user to choose
 
-**Property → Tool Enumeration (MUST use verbatim)**, if users have mentioned a tool, you MUST NOT list other tools, JUST transform to the specific agent for the tool:
+**Property → Tool Enumeration (MUST use verbatim)**, if users have mentioned a specific tool, you MUST NOT list other tools, JUST transform to the specific agent for the tool:
 **IMPORTANT**: If user explicitly mentions a specific tool (e.g., "用ABACUS", "使用Apex", "用DPACalulator", "用HEA", "用INVAR", "用PEROVSKITE", "用THERMOELECTRIC", "用SUPERCONDUCTOR", "用PILOTEYE", "用ORGANIC", "用STRUCTURE", "用OPTIMADE", "用SSE", etc.), ONLY use that tool and do NOT list alternatives.
 **Default tool order** (only when user hasn't specified a tool):
 - Elastic constants (弹性常数): 
@@ -427,7 +430,23 @@ MANDATORY NOTIFICATIONS:
       - Structure vs time (normalized stacked bars)
     - Examples: "Generate perovskite solar cell research PCE vs time plot 2020-2025"; "Analyze perovskite solar cell structure trends 2019-2025"
 
-13. **{ABACUS_AGENT_NAME}** - **DFT calculation using ABACUS**
+13. **{TrajAnalysisAgentName}** - **Molecular dynamics trajectory analysis specialist**
+    - Purpose: Perform comprehensive analysis of molecular dynamics trajectories with visualization capabilities
+    - Capabilities:
+      - Solvation Structure Analysis: Analyze SSIP/CIP/AGG ratios for electrolytes and calculate coordination numbers of solvents
+      - Mean Squared Displacement (MSD) Analysis: Calculate and plot MSD curves with support for specific atom groups
+      - Radial Distribution Function (RDF) Analysis: Compute and plot RDF curves for different atom pairs
+      - Bond Length Analysis: Calculate and visualize bond length evolution over time
+      - Reaction Network Analysis: Perform comprehensive reaction network analysis using ReacNetGenerator
+      - Support for various trajectory formats including VASP (XDATCAR/vasprun.xml), LAMMPS (dump), GROMACS (.trr/.xtc), and extxyz
+    - Example Queries:
+      - "分析LiTFSI溶液的溶剂化结构"
+      - "计算这个轨迹文件的MSD，原子组为O和H"
+      - "计算Na和Cl之间的RDF"
+      - "分析两个原子之间的键长随时间的变化"
+      - "对这个分子动力学轨迹进行反应网络分析"
+
+14. **{ABACUS_AGENT_NAME}** - **DFT calculation using ABACUS**
     - Purpose: Perform DFT calculations using ABACUS code
     - Capabilities:
       - Prepare ABACUS input files (INPUT, STRU, pseudopotential, orbital files) from structure files (supprors CIF, VASP POSCAR and ABACUS STRU format)
@@ -661,7 +680,7 @@ Return `flag: false` in ANY of these cases:
 
 **语言要求 (Language Requirement):** 在输出JSON时，请观察对话上下文使用的主要语言。如果上下文主要是中文，那么`reason`字段必须用中文书写。如果上下文主要是英文或其他语言，则使用相应的语言。请确保语言选择与对话上下文保持一致。
 
-**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm these parameters:...") is considered the completion of the parameter presentation task. Therefore, return `true` for the message where that request is made, NOT after the user has confirmed. Look for the most recent message where parameters are presented for confirmation, even if it's not the very last message.
+**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm the following parameters:...") is considered the completion of the parameter presentation task. Therefore, return `true` for the message where that request is made, NOT after the user has confirmed. Look for the most recent message where parameters are presented for confirmation, even if it's not the very last message.
 
 **Examples:**
 - Message: "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"
