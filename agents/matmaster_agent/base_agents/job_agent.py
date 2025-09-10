@@ -199,7 +199,9 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                 yield result_event
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
-                if is_text(event):
+                if isinstance(self, SubmitCoreCalculationMCPLlmAgent):
+                    yield event
+                elif is_text(event):
                     if not event.partial:
                         for part in event.content.parts:
                             if part.text:
@@ -213,7 +215,6 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                                   function_call_id=part.function_call.id,
                                                                   function_call_name=part.function_call.name,
                                                                   role=ModelRole, args=part.function_call.args)
-
                 else:
                     yield event
 
