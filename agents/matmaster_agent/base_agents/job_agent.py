@@ -277,11 +277,13 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     try:
                         raw_result = event.content.parts[0].function_response.response["result"].content[0].text
                     except KeyError as err:
+                        yield event
                         raise type(err)(f"[KeyError] "
                                         f"function_response = `{event.content.parts[0].function_response.response}`")
                     try:
                         dict_result = jsonpickle.loads(raw_result)
                     except ScannerError as err:
+                        yield event
                         raise type(err)(f"[jsonpickle ScannerError] raw_result = `{raw_result}`")
                     tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
                     parsed_result = await parse_result(new_tool_result)
