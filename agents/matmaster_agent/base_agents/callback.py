@@ -7,6 +7,7 @@ from functools import wraps
 from typing import Optional, Union
 
 import aiohttp
+import litellm
 from dp.agent.adapter.adk import CalculationMCPTool
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.invocation_context import InvocationContext
@@ -21,6 +22,7 @@ from agents.matmaster_agent.constant import (
     OPENAPI_HOST,
     Transfer2Agent, LOCAL_EXECUTOR,
 )
+from agents.matmaster_agent.prompt import get_params_check_info_prompt
 from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
 from agents.matmaster_agent.utils.helper_func import is_json, check_None_wrapper, \
     get_unique_function_call, update_llm_response, function_calls_to_str, get_session_state
@@ -77,17 +79,35 @@ async def default_after_model_callback(callback_context: CallbackContext,
     return None
 
 
-async def clear_function_call(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
+async def remove_function_call(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
     # 检查响应是否有效
     if not (llm_response and llm_response.content and llm_response.content.parts and len(llm_response.content.parts)):
         return None
 
     origin_parts = copy.deepcopy(llm_response.content.parts)
     llm_response.content.parts = []
+    llm_generated_text = ""
     for part in origin_parts:
         if part.function_call:
+            function_name = part.function_call.name
+            function_args = part.function_call.args
+
+            logger.info(f"FunctionCall will be removed, name = {function_name}, args = {function_args}")
+
+            prompt = get_params_check_info_prompt().format(target_language=callback_context.state["target_language"],
+                                                           function_name=function_name, function_args=function_args)
+            response = litellm.completion(model="azure/gpt-4o", messages=[{"role": "user", "content": prompt}])
+            llm_generated_text += response.choices[0].message.content
+
             part.function_call = None
         llm_response.content.parts.append(part)
+
+    logger.info(f"llm_generated_text = {llm_generated_text}")
+
+    if not llm_response.content.parts[0].text:
+        llm_response.content.parts[0].text = llm_generated_text
+
+    logger.info(f"final llm_response_text = {llm_response.content.parts[0].text}")
 
     return llm_response
 
@@ -285,9 +305,13 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
             params = {'accessKey': tool_context.state['ak']}
 
+            logger.info(f"[check_job_create] project_id = {tool_context.state['project_id']}, "
+                        f"ak = {tool_context.state['ak']}")
+
             async with aiohttp.ClientSession() as session:
                 async with session.get(user_project_list_url, params=params) as response:
                     res = json.loads(await response.text())
+                    logger.info(f"[check_job_create] res = {res}")
                     project_name = [item["project_name"] for item in res["data"]["items"] if
                                     item["project_id"] == int(tool_context.state['project_id'])][0]
 
@@ -296,7 +320,8 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
                     res = json.loads(await response.text())
                     if res['code'] != 0:
                         if res['code'] == 2000:
-                            res['error']['msg'] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
+                            res['error'][
+                                'msg'] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
                         return res
 
     return wrapper

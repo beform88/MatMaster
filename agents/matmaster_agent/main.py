@@ -10,6 +10,9 @@ from rich import print
 from agents.matmaster_agent.agent import root_agent
 from agents.matmaster_agent.constant import DBUrl
 from agents.matmaster_agent.logger import logger
+import litellm
+
+litellm._turn_on_debug()
 
 
 async def agent_main() -> None:
@@ -65,8 +68,8 @@ async def agent_main() -> None:
     # user_input = "高熵合金AlCoCr0.5FeNi2的可能结构是什么"
     # user_input = "调用 thermoelectric_agent 帮我生成10个具有Sn和Te元素的热电结构"
     # user_input = "plot perovstite 2021 to 2025"
-    user_input = "帮我创建一个 FCC Bulk Cu 的结构"
-    # user_input = "find some al2o3"
+    # user_input = "帮我创建一个 FCC Bulk Cu 的结构"
+    user_input = "帮我检索TiO2"
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input

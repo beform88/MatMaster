@@ -14,7 +14,7 @@ from yaml.scanner import ScannerError
 from agents.matmaster_agent.base_agents.callback import check_before_tool_callback_effect, default_before_tool_callback, \
     catch_before_tool_callback_error, check_job_create, inject_username_ticket, inject_ak_projectId, \
     default_after_tool_callback, _inject_ak, _inject_projectId, tgz_oss_to_oss_list, catch_after_tool_callback_error, \
-    default_after_model_callback, inject_current_env, inject_machineType, clear_function_call
+    default_after_model_callback, inject_current_env, inject_machineType, remove_function_call
 from agents.matmaster_agent.base_agents.io_agent import (
     HandleFileUploadLlmAgent,
 )
@@ -33,15 +33,17 @@ from agents.matmaster_agent.constant import (
     get_BohriumStorage,
     get_DFlowExecutor,
 )
+from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
 from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
     SubmitRenderAgentDescription, gen_submit_core_agent_description, gen_submit_core_agent_instruction,
     gen_result_core_agent_instruction, gen_submit_agent_description, gen_result_agent_description,
-    gen_params_check_complete_agent_instruction,
+    gen_params_check_completed_agent_instruction, gen_params_check_info_agent_instruction,
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
-    context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium
+    context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium, \
+    context_function_call_event
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
@@ -195,7 +197,25 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                                f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
                                                                ModelRole):
                                 yield result_event
-                yield event
+
+                # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
+                if is_text(event):
+                    if not event.partial:
+                        for part in event.content.parts:
+                            if part.text:
+                                for system_calculation_mcp_agent_event in context_function_event(ctx, self.name,
+                                                                                                 "system_calculation_mcp_agent",
+                                                                                                 {"msg": part.text},
+                                                                                                 ModelRole):
+                                    yield system_calculation_mcp_agent_event
+                            elif part.function_call:
+                                yield context_function_call_event(ctx, self.name,
+                                                                  function_call_id=part.function_call.id,
+                                                                  function_call_name=part.function_call.name,
+                                                                  role=ModelRole, args=part.function_call.args)
+
+                else:
+                    yield event
 
             # If specified supervisor_agent, transfer back
             if self.supervisor_agent:
@@ -203,10 +223,6 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                                              {"agent_name": self.supervisor_agent}):
                     yield function_event
         except BaseException as err:
-            from agents.matmaster_agent.agent import (
-                root_agent as matmaster_agent,
-            )
-
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
 
@@ -216,20 +232,24 @@ class ParamsCheckComplete(BaseModel):
     reason: str
 
 
-class ParamsCheckCompleteAgent(LlmAgent):
+class ParamsCheckCompletedAgent(LlmAgent):
     pass
 
 
-class ParamsCheckAgent(LlmAgent):
+class ParamsCheckInfoAgent(LlmAgent):
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        async for event in super()._run_async_impl(ctx):
-            # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-            if not event.partial:
-                for system_job_result_event in context_function_event(ctx, self.name, "system_params_check",
-                                                                      {"msg": event.content.parts[0].text},
-                                                                      ModelRole):
-                    yield system_job_result_event
+        try:
+            async for event in super()._run_async_impl(ctx):
+                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                if not event.partial:
+                    for system_job_result_event in context_function_event(ctx, self.name, "system_params_check",
+                                                                          {"msg": event.content.parts[0].text},
+                                                                          ModelRole):
+                        yield system_job_result_event
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
 
 
 class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
@@ -506,8 +526,8 @@ class ResultTransferLlmAgent(LlmAgent):
 class BaseAsyncJobAgent(LlmAgent):
     submit_agent: SequentialAgent
     result_agent: SequentialAgent
-    params_need_check_agent: LlmAgent
-    params_check_agent: LlmAgent
+    params_check_completed_agent: LlmAgent
+    params_check_info_agent: LlmAgent
     dflow_flag: bool = Field(False, description="Whether the agent is dflow related", exclude=True)
     supervisor_agent: str
     sync_tools: Optional[list] = Field(None, description="These tools will sync run on the server")
@@ -568,23 +588,24 @@ class BaseAsyncJobAgent(LlmAgent):
             sub_agents=[result_core_agent]
         )
 
-        params_check_complete_agent = ParamsCheckCompleteAgent(
-            model=model,
-            name=f"{agent_prefix}_params_check_complete_agent",
-            instruction=gen_params_check_complete_agent_instruction(),
+        params_check_completed_agent = ParamsCheckCompletedAgent(
+            model=MatMasterLlmConfig.gpt_4o,
+            # model=model,
+            name=f"{agent_prefix}_params_check_completed_agent",
+            instruction=gen_params_check_completed_agent_instruction(),
             output_schema=ParamsCheckComplete,
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True
         )
 
-        params_check_agent = ParamsCheckAgent(
+        params_check_info_agent = ParamsCheckInfoAgent(
             model=model,
-            name=f"{agent_prefix}_params_check_agent",
-            instruction="你的指责是和用户确认需要调用工具的参数,不要直接调用工具",
+            name=f"{agent_prefix}_params_check_info_agent",
+            instruction=gen_params_check_info_agent_instruction(),
             tools=mcp_tools,
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
-            after_model_callback=clear_function_call
+            after_model_callback=remove_function_call
         )
 
         # 初始化父类
@@ -595,10 +616,10 @@ class BaseAsyncJobAgent(LlmAgent):
             instruction=agent_instruction,
             submit_agent=submit_agent,
             result_agent=result_agent,
-            params_need_check_agent=params_check_complete_agent,
-            params_check_agent=params_check_agent,
+            params_check_completed_agent=params_check_completed_agent,
+            params_check_info_agent=params_check_info_agent,
             dflow_flag=dflow_flag,
-            sub_agents=[submit_agent, result_agent, params_check_complete_agent, params_check_agent],
+            sub_agents=[submit_agent, result_agent, params_check_completed_agent, params_check_info_agent],
             supervisor_agent=supervisor_agent,
             sync_tools=sync_tools
         )
@@ -621,17 +642,22 @@ class BaseAsyncJobAgent(LlmAgent):
             pass
         else:
             last_params_check_completed_event = None
-            async for params_check_complete_event in self.params_need_check_agent.run_async(ctx):
-                last_params_check_completed_event = params_check_complete_event
+            async for params_check_completed_event in self.params_check_completed_agent.run_async(ctx):
+                last_params_check_completed_event = params_check_completed_event
             params_check_completed = json.loads(last_params_check_completed_event.content.parts[0].text)["flag"]
             params_check_reason = json.loads(last_params_check_completed_event.content.parts[0].text)["reason"]
 
             if not params_check_completed:
-                for params_check_reason_event in all_text_event(ctx, self.name, params_check_reason, ModelRole):
+                # Tell User Why Params Check Uncompleted
+                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                for params_check_reason_event in context_function_event(ctx, self.name,
+                                                                        "system_params_check_block_reason",
+                                                                        {"msg": params_check_reason}, ModelRole):
                     yield params_check_reason_event
 
-                async for params_check_event in self.params_check_agent.run_async(ctx):
-                    yield params_check_event
+                # Call ParamsCheckInfoAgent to generate params needing check
+                async for params_check_info_event in self.params_check_info_agent.run_async(ctx):
+                    yield params_check_info_event
             else:
                 async for submit_event in self.submit_agent.run_async(ctx):
                     yield submit_event

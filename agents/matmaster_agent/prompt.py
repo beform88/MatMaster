@@ -97,19 +97,21 @@ When multiple tools can perform the same calculation or property analysis, you M
 - Even if the user provides a structure file (local path or HTTP/HTTPS URI), you MUST NOT narrow or filter the tool list
 - Always enumerate ALL tools capable of the requested property first, THEN ask the user to choose
 
-**Property → Tool Enumeration (MUST use verbatim)**:
-- Elastic constants (弹性常数): list ALL of these tools, exactly in this order:
+**Property → Tool Enumeration (MUST use verbatim)**, if users have mentioned a tool, you MUST NOT list other tools, JUST transform to the specific agent for the tool:
+**IMPORTANT**: If user explicitly mentions a specific tool (e.g., "用ABACUS", "使用Apex", "用DPACalulator", "用HEA", "用INVAR", "用PEROVSKITE", "用THERMOELECTRIC", "用SUPERCONDUCTOR", "用PILOTEYE", "用ORGANIC", "用STRUCTURE", "用OPTIMADE", "用SSE", etc.), ONLY use that tool and do NOT list alternatives.
+**Default tool order** (only when user hasn't specified a tool):
+- Elastic constants (弹性常数): 
   1) {ApexAgentName}
   2) {ABACUS_AGENT_NAME}
   3) {DPACalulator_AGENT_NAME}
-- Phonon calculations (声子计算): list ALL of these tools, exactly in this order:
+- Phonon calculations (声子计算): 
   1) {ApexAgentName}
   2) {ABACUS_AGENT_NAME}
   3) {DPACalulator_AGENT_NAME}
-- Molecular dynamics (分子动力学): list ALL of these tools, exactly in this order:
+- Molecular dynamics (分子动力学): 
   1) {ABACUS_AGENT_NAME}
   2) {DPACalulator_AGENT_NAME}
-- Structure optimization (结构优化): list ALL of these tools, exactly in this order:
+- Structure optimization (结构优化): 
   1) {ApexAgentName}
   2) {ABACUS_AGENT_NAME}
   3) {DPACalulator_AGENT_NAME}
@@ -242,7 +244,7 @@ When handling structure generation requests, you MUST follow these strict routin
 
 **Identify Structure Generation Type**
 
-1. ASE Building
+1. ASE or OpenBabel Building
    - build_bulk_structure_by_template
      * Use when user requests:
        - Standard crystal structures (**ONLY**: sc, fcc, bcc, hcp, diamond, zincblende, rocksalt)
@@ -256,12 +258,40 @@ When handling structure generation requests, you MUST follow these strict routin
        - Wyckoff positions with coordinates
        - Lattice parameters (a, b, c, α, β, γ)
    
-   - Other ASE-supported cases:
+   - Other supported cases:
        - Supercells from existing structures
-       - Molecules (G2 database) or single atoms
+       - Molecules from G2 database or from SMILES strings
        - Surfaces, slabs, interfaces
        - Adsorbates on surfaces
+
+   #### **MOLECULE STRUCTURE GENERATION PROTOCOL**
+   When handling molecule structure generation requests, you MUST follow these strict routing rules:
+
+   **Identify Molecule Structure Generation Type**
+
+   1. **G2 Database Molecule Building**
+      - build_molecule_structure_from_g2database
+      * Use ONLY when user requests a molecule that is confirmed to be in the ASE G2 database
+      * Supports 100+ G2 database molecules:
+        PH3, P2, CH3CHO, H2COH, CS, OCHCHO, C3H9C, CH3COF, CH3CH2OCH3, HCOOH, HCCl3, HOCl, H2, SH2, C2H2, C4H4NH, CH3SCH3, SiH2_s3B1d, CH3SH, CH3CO, CO, ClF3, SiH4, C2H6CHOH, CH2NHCH2, isobutene, HCO, bicyclobutane, LiF, Si, C2H6, CN, ClNO, S, SiF4, H3CNH2, methylenecyclopropane, CH3CH2OH, F, NaCl, CH3Cl, CH3SiH3, AlF3, C2H3, ClF, PF3, PH2, CH3CN, cyclobutene, CH3ONO, SiH3, C3H6_D3h, CO2, NO, trans-butane, H2CCHCl, LiH, NH2, CH, CH2OCH2, C6H6, CH3CONH2, cyclobutane, H2CCHCN, butadiene, C, H2CO, CH3COOH, HCF3, CH3S, CS2, SiH2_s1A1d, C4H4S, N2H4, OH, CH3OCH3, C5H5N, H2O, HCl, CH2_s1A1d, CH3CH2SH, CH3NO2, Cl, Be, BCl3, C4H4O, Al, CH3O, CH3OH, C3H7Cl, isobutane, Na, CCl4, CH3CH2O, H2CCHF, C3H7, CH3, O3, P, C2H4, NCCN, S2, AlCl3, SiCl4, SiO, C3H4_D2d, H, COF2, 2-butyne, C2H5, BF3, N2O, F2O, SO2, H2CCl2, CF3CN, HCN, C2H6NH, OCS, B, ClO, C3H8, HF, O2, SO, NH, C2F4, NF3, CH2_s3B1d, CH3CH2Cl, CH3COCl, NH3, C3H9N, CF4, C3H6_Cs, Si2H6, HCOOCH3, O, CCH, N, Si2, C2H6SO, C5H8, H2CF2, Li2, CH2SCH2, C2Cl4, C3H4_C3v, CH3COCH3, F2, CH4, SH, H2CCO, CH3CH2NH2, Li, N2, Cl2, H2O2, Na2, BeH, C3H4_C2v, NO2
+      * Examples: "build a H2O molecule", "create CO from G2 database"
    
+      * IMPORTANT: Before using this method, you MUST verify that the requested molecule is in the list above
+      * If the molecule is NOT in the list (e.g., DABCO, caffeine, etc.), DO NOT use this method
+
+   2. **SMILES-based Molecule Building**
+      - build_molecule_structures_from_smiles
+      * Use when:
+        - User explicitly provides a SMILES string representation of a molecule
+        - User requests a molecule that is NOT in the G2 database
+        - Examples: "build molecule from SMILES CCO", "CC(=O)O for aspirin", "build a DABCO molecule"
+   
+   * When a user requests a molecule NOT in the G2 database, you MUST either:
+     1. Attempt to determine the SMILES representation of the requested molecule
+     2. Present the determined SMILES to the user for confirmation
+     3. If you cannot determine the SMILES, ask the user to provide it
+     4. Only then use `build_molecule_structures_from_smiles` with the confirmed SMILES
+     5. Inform the user that the requested molecule is not in the G2 database and suggest using a SMILES string
    - Keywords trigger: "build", "construct", "bulk", "supercell", "surface",
                        "slab", "interface", "molecule", "cell"
 
@@ -441,7 +471,7 @@ You must use the following conversational format.
 
 ## CRITICAL RULES TO PREVENT HALLUCINATION
 0. Strictly follow the rules below UNLESS the USERS explicitly instruct you to break them.
-1. **NEVER report execution status before actually executing**: Do not claim "Transferring to..." (正在转移/我将转移/我已转移……) or "Executing..." (正在执行/我将执行/我已执行……) unless you have actually initiated the transfer or execution
+1. **NEVER report execution status before actually executing**: Do not claim "Transferring to..." (正在转移/我将转移/我已转移……) or "Executing..." (正在执行/我将执行/我已执行……) or "Submitting.../Submitted..." (正在提交/我将提交/任务已提交) unless you have actually initiated the transfer or execution
 2. **ONLY report real results**: Never fabricate or imagine results that haven't actually occurred
 3. **BE HONEST about limitations**: If you cannot perform a task, clearly state so rather than pretending to do it
 4. **WAIT for actual responses**: When you initiate a tool call or transfer, wait for the actual response before proceeding
@@ -612,9 +642,10 @@ def gen_result_agent_description():
     return "Query status and retrieve results"
 
 
-def gen_params_check_complete_agent_instruction():
+def gen_params_check_completed_agent_instruction():
     return """
-Analyze the most recent message from the 'Assistant' or 'Agent' (the immediate preceding message before the user's current turn). Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested.
+Analyze the most recent message from the 'Assistant' or 'Agent' that contains parameter information (this may not necessarily be the immediate preceding message). 
+Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested in that message.
 
 Your output MUST be a valid JSON object with the following structure:
 {{
@@ -636,7 +667,7 @@ Return `flag: false` in ANY of these cases:
 
 **语言要求 (Language Requirement):** 在输出JSON时，请观察对话上下文使用的主要语言。如果上下文主要是中文，那么`reason`字段必须用中文书写。如果上下文主要是英文或其他语言，则使用相应的语言。请确保语言选择与对话上下文保持一致。
 
-**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm these parameters:...") is considered the completion of the parameter presentation task. Therefore, return `true` at the point the agent makes that request, NOT after the user has confirmed.
+**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm these parameters:...") is considered the completion of the parameter presentation task. Therefore, return `true` for the message where that request is made, NOT after the user has confirmed. Look for the most recent message where parameters are presented for confirmation, even if it's not the very last message.
 
 **Examples:**
 - Message: "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"
@@ -657,12 +688,21 @@ Based on the rules above, output a JSON object.
 """
 
 
+def gen_params_check_info_agent_instruction():
+    return """
+Your task is to confirm with users the parameters needed to call tools. Do not directly invoke any tools. 
+If any parameter is a file path or filename for INPUT files, you must request an accessible HTTP URL containing the file instead of accepting a local filename.
+For OUTPUT files, do not ask users to provide URLs - these will be automatically generated as OSS HTTP links after successful execution.
+"""
+
+
 SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
 
 ResultCoreAgentDescription = "Provides real-time task status updates and result forwarding to UI"
 TransferAgentDescription = "Transfer to proper agent to answer user query"
 
 
+# LLM-Helper Prompt
 def get_transfer_check_prompt():
     return """
 You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent'). 
@@ -671,13 +711,15 @@ Analyze the provided RESPONSE TEXT to determine if it explicitly indicates a tra
 Guidelines:
 1. **Transfer Intent**: The RESPONSE TEXT must explicitly indicate an immediate transfer action to a specific agent, not just mention or describe the agent's function.
 2. **Target Clarity**: The target agent must be clearly identified by name (e.g., "xxx agent" or another explicitly named agent).
-3. **Action Directness**: Look for explicit transfer verbs like "transfer", "connect", "hand over", or "redirect", or clear transitional phrases indicating the conversation is being passed to another agent.
-4. **Key Indicators**:
-   - ✅ Explicit transfer statements: "I will transfer you to", "Let me connect you with", "Redirecting to", "Handing over to"
-   - ✅ Immediate action indicators: "正在转移", "Switching to", "Now connecting to"
+3. **Action Directness**: Look for explicit transfer verbs like "transfer", "connect", "hand over", "redirect", or clear transitional phrases like "I will now use", "Switching to", "Activating" that indicate the conversation is being passed to another agent.
+4. **Language Consideration**: Evaluate both English and Chinese transfer indications equally.
+5. **Key Indicators**:
+   - ✅ Explicit transfer statements: "I will transfer you to", "Let me connect you with", "Redirecting to", "Handing over to", "正在转移", "切换到"
+   - ✅ Immediate action indicators: "Now using", "Switching to", "Activating the", "I will now use the", "正在使用"
    - ❌ Mere mentions of agent capabilities or potential future use
    - ❌ Descriptions of what an agent could do without transfer intent
    - ❌ Suggestions or recommendations without explicit transfer instruction
+   - ❌ Future tense plans without immediate action
 
 RESPONSE TEXT (previous LLM's response to evaluate):
 {response_text}
@@ -691,4 +733,46 @@ Provide your evaluation in the following JSON format:
 Examples for reference:
 - Case1 (false): "使用结构生成智能体（structure_generate_agent）根据用户要求创建 FCC Cu 的块体结构" - only mentions agent, no transfer action
 - Case2 (true): "正在转移到structure_generate_agent进行结构生成" - explicit transfer action with target agent
+- Case3 (true): "I will now use the structure_generate_agent to create the bulk structure" - immediate action with target agent
+- Case4 (false): "Next I will generate the Pt bulk structure" - no agent transfer mentioned
+"""
+
+
+def get_params_check_info_prompt():
+    return """
+You are a professional assistant responsible for transforming function call information into clear and user-friendly confirmation messages. 
+Your responses should match the user's language, that is {target_language}.
+
+Requirements:
+1. Clearly indicate that a function is about to be executed
+2. Explain the function's purpose and key parameters in an accessible manner
+3. Use a polite, confirmatory tone that allows users to make adjustments
+4. Maintain a professional yet friendly style
+5. Output plain text only without any additional formatting
+
+Input Format:
+Function Name: {function_name}
+Function Args: {function_args}
+
+Output Examples:
+
+English Example:
+Input: generate_structure, {{material: "FeO", lattice_type: "rock_salt", lattice_constant: 4.3}}
+Output: "To generate the bulk structure of iron oxide (FeO), I need to confirm the following parameters with you:
+1. **Crystal Structure Type**: Rock salt structure
+2. **Element Composition**: Fe and O
+3. **Lattice Parameter**: Using 4.3Å as the lattice constant for FeO
+
+Please confirm these parameters so we can proceed with the generation process. Thank you!"
+
+Chinese Example:
+Input: generate_structure, {{material: "FeO", lattice_type: "rock_salt", lattice_constant: 4.3}}
+Output: "为了生成氧化铁（FeO）的块体结构，我需要与您确认以下参数：
+1. **晶体结构类型**：岩盐结构
+2. **元素组合**：Fe 和 O
+3. **晶格参数**：使用 4.3Å 作为 FeO 的晶格常数
+
+请您确认这些参数，以便我们继续进行生成过程。谢谢！"
+
+Generate an appropriate confirmation message based on the provided function information and the user's language.
 """

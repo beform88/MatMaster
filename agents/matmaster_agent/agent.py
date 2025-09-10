@@ -1,6 +1,9 @@
 import logging
+from typing import override, AsyncGenerator
 
-from google.adk.agents import LlmAgent
+from google.adk.agents import LlmAgent, InvocationContext
+from google.adk.events import Event
+from google.adk.models.lite_llm import LiteLlm
 from opik.integrations.adk import track_adk_agent_recursive
 
 from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
@@ -24,6 +27,7 @@ from agents.matmaster_agent.structure_generate_agent.agent import init_structure
 from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
+from agents.matmaster_agent.utils.event_utils import send_error_event
 
 logging.getLogger("google_adk.google.adk.tools.base_authenticated_tool").setLevel(logging.ERROR)
 
@@ -75,6 +79,24 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             before_agent_callback=matmaster_prepare_state,
             after_model_callback=matmaster_check_transfer,
         )
+
+    @override
+    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        try:
+            # Delegate to parent implementation for the actual processing
+            async for event in super()._run_async_impl(ctx):
+                yield event
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
+
+            error_handel_agent = LlmAgent(
+                name="error_handel_agent",
+                model=LiteLlm(model="litellm_proxy/azure/gpt-5-chat"),
+            )
+            # 调用错误处理 Agent
+            async for error_handel_event in error_handel_agent.run_async(ctx):
+                yield error_handel_event
 
 
 def init_matmaster_agent() -> LlmAgent:
