@@ -305,9 +305,13 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
             params = {'accessKey': tool_context.state['ak']}
 
+            logger.info(f"[check_job_create] project_id = {tool_context.state['project_id']}, "
+                        f"ak = {tool_context.state['ak']}")
+
             async with aiohttp.ClientSession() as session:
                 async with session.get(user_project_list_url, params=params) as response:
                     res = json.loads(await response.text())
+                    logger.info(f"[check_job_create] res = {res}")
                     project_name = [item["project_name"] for item in res["data"]["items"] if
                                     item["project_id"] == int(tool_context.state['project_id'])][0]
 
