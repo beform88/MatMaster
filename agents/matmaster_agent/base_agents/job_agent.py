@@ -43,7 +43,7 @@ from agents.matmaster_agent.prompt import (
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium, \
-    context_function_call_event, get_function_call_indexes, context_multipart2function_event
+    get_function_call_indexes, context_multipart2function_event
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
@@ -222,6 +222,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 class ParamsCheckComplete(BaseModel):
     flag: bool
     reason: str
+    analyzed_message: str
 
 
 class ParamsCheckCompletedAgent(LlmAgent):
@@ -638,15 +639,19 @@ class BaseAsyncJobAgent(LlmAgent):
             last_params_check_completed_event = None
             async for params_check_completed_event in self.params_check_completed_agent.run_async(ctx):
                 last_params_check_completed_event = params_check_completed_event
-            params_check_completed = json.loads(last_params_check_completed_event.content.parts[0].text)["flag"]
-            params_check_reason = json.loads(last_params_check_completed_event.content.parts[0].text)["reason"]
+            params_check_completed_json = json.loads(last_params_check_completed_event.content.parts[0].text)
+            params_check_completed = params_check_completed_json["flag"]
+            params_check_reason = params_check_completed_json["reason"]
+            params_check_msg = params_check_completed_json["analyzed_message"]
 
             if not params_check_completed:
                 # Tell User Why Params Check Uncompleted
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 for params_check_reason_event in context_function_event(ctx, self.name,
                                                                         "system_params_check_block_reason",
-                                                                        {"msg": params_check_reason}, ModelRole):
+                                                                        {"reason": params_check_reason,
+                                                                         "analyzed_message": params_check_msg},
+                                                                        ModelRole):
                     yield params_check_reason_event
 
                 # Call ParamsCheckInfoAgent to generate params needing check

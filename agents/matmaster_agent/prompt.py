@@ -651,13 +651,14 @@ def gen_result_agent_description():
 
 def gen_params_check_completed_agent_instruction():
     return """
-Analyze the most recent message from the 'Assistant' or 'Agent' that contains parameter information (this may not necessarily be the immediate preceding message). 
+Analyze the most recent message where the 'author' field ends with '_agent' and which contains parameter information. This message may not be the immediate preceding one.
 Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested in that message.
 
 Your output MUST be a valid JSON object with the following structure:
 {{
     "flag": <boolean>,
-    "reason": <string>  // *Present reason if flag is False, else return empty string*
+    "reason": <string>,  // *Present reason if flag is False, else return empty string*
+    "analyzed_message": <string>  // *Quote the specific message snippet that was analyzed to make this determination.*
 }}
 
 Return `flag: true` ONLY IF ALL of the following conditions are met:
@@ -679,17 +680,17 @@ Return `flag: false` in ANY of these cases:
 **Examples:**
 - Message: "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"
   - **Analysis:** Parameters are explicitly listed (Cu, FCC), and a confirmation is requested to proceed. Collection is concluded.
-  - **Output:** {{"flag": true}}
+  - **Output:** {{"flag": true, "reason": "", "analyzed_message": "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"}}
 
 - Message: "To build the crystal, what element should I use?"
   - **Analysis:** This is a request for a new parameter, not a request for confirmation of existing ones. (Violates Condition 2 for 'true' / Matches Condition 2 for 'false')
-  - **Output (英文上下文):** {{"flag": false, "reason": "Message is soliciting new parameter information ('what element') rather than requesting confirmation."}}
-  - **Output (中文上下文):** {{"flag": false, "reason": "消息正在征求新的参数信息（'使用什么元素'），而不是请求确认。"}}
+  - **Output (英文上下文):** {{"flag": false, "reason": "Message is soliciting new parameter information ('what element') rather than requesting confirmation.", "analyzed_message": "To build the crystal, what element should I use?"}}
+  - **Output (中文上下文):** {{"flag": false, "reason": "消息正在征求新的参数信息（'使用什么元素'），而不是请求确认。", "analyzed_message": "To build the crystal, what element should I use?"}}
 
 - Message: "Element is set to Copper. Now, what is the desired lattice constant?"
   - **Analysis:** One parameter is noted, but the conversation is actively moving to collect the next parameter. Collection is not concluded. (Violates Condition 1 and 3 for 'true' / Matches Condition 3 for 'false')
-  - **Output (英文上下文):** {{"flag": false, "reason": "Parameter collection is not finished; the message is asking for the next parameter ('lattice constant')."}}
-  - **Output (中文上下文):** {{"flag": false, "reason": "参数收集未完成；消息正在询问下一个参数（'晶格常数'）。"}}
+  - **Output (英文上下文):** {{"flag": false, "reason": "Parameter collection is not finished; the message is asking for the next parameter ('lattice constant').", "analyzed_message": "Element is set to Copper. Now, what is the desired lattice constant?"}}
+  - **Output (中文上下文):** {{"flag": false, "reason": "参数收集未完成；消息正在询问下一个参数（'晶格常数'）。", "analyzed_message": "Element is set to Copper. Now, what is the desired lattice constant?"}}
 
 Based on the rules above, output a JSON object.
 """
