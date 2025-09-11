@@ -713,17 +713,18 @@ TransferAgentDescription = "Transfer to proper agent to answer user query"
 # LLM-Helper Prompt
 def get_transfer_check_prompt():
     return """
-You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent'). 
+You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent').
 Analyze the provided RESPONSE TEXT to determine if it explicitly indicates a transfer action.
 
 Guidelines:
 1. **Transfer Intent**: The RESPONSE TEXT must explicitly indicate an immediate transfer action to a specific agent, not just mention or describe the agent's function.
-2. **Target Clarity**: The target agent must be clearly identified by name (e.g., "xxx agent" or another explicitly named agent).
-3. **Action Directness**: Look for explicit transfer verbs like "transfer", "connect", "hand over", "redirect", or clear transitional phrases like "I will now use", "Switching to", "Activating" that indicate the conversation is being passed to another agent.
+2. **Target Clarity**: The target agent must be clearly identified by name (e.g., "xxx agent" or another explicitly named agent). This includes identification via a JSON object like `{{"agent_name": "xxx_agent"}}`.
+3. **Action Directness**: Look for explicit transfer verbs like "transfer", "connect", "hand over", "redirect", or clear transitional phrases like "I will now use", "Switching to", "Activating" that indicate the conversation is being passed to another agent. The presence of a standalone JSON object specifying an agent name is also considered an explicit transfer instruction.
 4. **Language Consideration**: Evaluate both English and Chinese transfer indications equally.
 5. **Key Indicators**:
    - ✅ Explicit transfer statements: "I will transfer you to", "Let me connect you with", "Redirecting to", "Handing over to", "正在转移", "切换到"
    - ✅ Immediate action indicators: "Now using", "Switching to", "Activating the", "I will now use the", "正在使用"
+   - ✅ **Explicit JSON transfer object:** A JSON object like `{{"agent_name": "target_agent"}}` is a direct and explicit instruction to transfer.
    - ❌ Mere mentions of agent capabilities or potential future use
    - ❌ Descriptions of what an agent could do without transfer intent
    - ❌ Suggestions or recommendations without explicit transfer instruction
@@ -743,6 +744,7 @@ Examples for reference:
 - Case2 (true): "正在转移到structure_generate_agent进行结构生成" - explicit transfer action with target agent
 - Case3 (true): "I will now use the structure_generate_agent to create the bulk structure" - immediate action with target agent
 - Case4 (false): "Next I will generate the Pt bulk structure" - no agent transfer mentioned
+- Case5 (true): `{{"agent_name":"traj_analysis_agent"}}` - explicit JSON object instructing transfer
 """
 
 
