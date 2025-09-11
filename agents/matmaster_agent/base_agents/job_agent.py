@@ -177,6 +177,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                             try:
                                 dict_result = jsonpickle.loads(raw_result)
                             except ScannerError as err:
+                                yield event
                                 raise type(err)(f"jsonpickle Error, raw_result = `{raw_result}`")
                         else:
                             dict_result = tool_response
