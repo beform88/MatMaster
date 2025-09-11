@@ -453,12 +453,12 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
     - Examples: "Generate perovskite solar cell research PCE vs time plot 2020-2025"; "Analyze perovskite solar cell structure trends 2019-2025"
 
 13. **{TrajAnalysisAgentName}** - **Molecular dynamics trajectory analysis specialist**
-    - Purpose: Perform comprehensive analysis of molecular dynamics trajectories with visualization capabilities
+    - Purpose: Perform comprehensive analysis of molecular dynamics trajectories with visualization capabilities for MSD and RDF analyses
     - Capabilities:
       - Solvation Structure Analysis: Analyze SSIP/CIP/AGG ratios for electrolytes and calculate coordination numbers of solvents
       - Mean Squared Displacement (MSD) Analysis: Calculate and plot MSD curves with support for specific atom groups
       - Radial Distribution Function (RDF) Analysis: Compute and plot RDF curves for different atom pairs
-      - Bond Length Analysis: Calculate and visualize bond length evolution over time
+      - Bond Length Analysis: Calculate bond length evolution over time
       - Reaction Network Analysis: Perform comprehensive reaction network analysis using ReacNetGenerator
       - Support for various trajectory formats including VASP (XDATCAR/vasprun.xml), LAMMPS (dump), GROMACS (.trr/.xtc), and extxyz
     - Example Queries:

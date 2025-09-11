@@ -23,7 +23,7 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         name=TrajAnalysisAgentName,
         description='An agent designed to perform trajectory analysis, including calculations like '
                     'Solvation Structure Analysis, Mean Squared Displacement (MSD), Radial Distribution Function (RDF), '
-                    'Bond Length Analysis, and Reaction Network Analysis, along with generating corresponding visualizations.',
+                    'Bond Length Analysis, and Reaction Network Analysis, with visualization support for MSD and RDF.',
         instruction="""
         This agent specializes in analyzing molecular dynamics (MD) simulation trajectories,
         with the following key functionalities:
@@ -38,17 +38,19 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         - Allows computation for specific atom groups (requires user-provided atom indices/types)
         - If no atoms are specified, calculates MSD for all atoms by default
         - Supports various trajectory formats including VASP (XDATCAR/vasprun.xml), LAMMPS (dump), GROMACS (.trr/.xtc), and extxyz
+        - Provides visualization output of the MSD curve
 
         Radial Distribution Function (RDF) Analysis:
         - Computes and plots RDF curves for different atom pairs
         - Supports specifying central and neighboring atom types
         - If no atom types are specified, calculates RDF for all atom pairs by default
         - Supports various trajectory formats including VASP, LAMMPS, GROMACS, and extxyz
+        - Provides visualization output of the RDF curve
 
         Bond Length Analysis:
-        - Calculates and plots bond length evolution over time for specified atom pairs
+        - Calculates bond length evolution over time for specified atom pairs
         - Supports defining bonds based on a cutoff distance
-        - Provides both visualization and data file outputs
+        - Provides data file outputs
         - Supports various trajectory formats including VASP, LAMMPS, GROMACS, and extxyz
 
         Reaction Network Analysis:
@@ -58,8 +60,9 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         - Supports LAMMPS dump and extxyz trajectory formats
 
         Visualization Output:
-        - Prioritizes displaying analysis plots in embedded Markdown format
-        - Also provides downloadable image file links
+        - Visualization is supported for MSD and RDF analyses only
+        - MSD and RDF plots are displayed in embedded Markdown format
+        - Also provides downloadable image file links for MSD and RDF
         - Data files are provided for further analysis when applicable
         
         File Format Support:
