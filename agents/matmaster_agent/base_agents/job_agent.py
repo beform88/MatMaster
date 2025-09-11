@@ -441,7 +441,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     args={"job_id": origin_job_id, "executor": Executor}, tool_context=None)
                 if query_res.isError:
                     logger.error(query_res.content[0].text)
-                    continue
+                    raise RuntimeError(query_res.content[0].text)
                 status = query_res.content[0].text
                 if status != "Running":
                     ctx.session.state['long_running_jobs'][origin_job_id]['job_status'] = status
