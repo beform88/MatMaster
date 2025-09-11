@@ -43,7 +43,7 @@ from agents.matmaster_agent.prompt import (
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium, \
-    context_function_call_event
+    context_function_call_event, get_function_call_indexes, context_multipart2function_event
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
@@ -203,18 +203,9 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                     yield event
                 elif is_text(event):
                     if not event.partial:
-                        for part in event.content.parts:
-                            if part.text:
-                                for system_calculation_mcp_agent_event in context_function_event(ctx, self.name,
-                                                                                                 "system_calculation_mcp_agent",
-                                                                                                 {"msg": part.text},
-                                                                                                 ModelRole):
-                                    yield system_calculation_mcp_agent_event
-                            elif part.function_call:
-                                yield context_function_call_event(ctx, self.name,
-                                                                  function_call_id=part.function_call.id,
-                                                                  function_call_name=part.function_call.name,
-                                                                  role=ModelRole, args=part.function_call.args)
+                        for multi_part_event in context_multipart2function_event(ctx, self.name, event,
+                                                                                 "system_calculation_mcp_agent"):
+                            yield multi_part_event
                 else:
                     yield event
 
@@ -264,7 +255,8 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 if (
                         is_function_call(event) and
                         ctx.session.state["sync_tools"] and
-                        event.content.parts[0].function_call.name in ctx.session.state["sync_tools"]
+                        (function_indexes := get_function_call_indexes(event)) and
+                        event.content.parts[function_indexes[0]].function_call.name in ctx.session.state["sync_tools"]
                 ):
                     event.long_running_tool_ids = None  # Untag Async Job
                     ctx.session.state['long_running_jobs_count'] += 1
@@ -346,10 +338,9 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
                 if is_text(event):
                     if not event.partial:
-                        for function_event in context_function_event(ctx, self.name, "system_submit_core_info",
-                                                                     {"msg": event.content.parts[0].text},
-                                                                     ModelRole):
-                            yield function_event
+                        for multi_part_event in context_multipart2function_event(ctx, self.name, event,
+                                                                                 "system_submit_core_info"):
+                            yield multi_part_event
                 else:
                     yield event
         except BaseException as err:

@@ -36,11 +36,13 @@ def is_text_and_not_bohrium(event: Event):
     )
 
 
-def is_function_call(event: Event):
-    return (
-            has_part(event) and
-            event.content.parts[0].function_call
-    )
+def is_function_call(event: Event) -> bool:
+    """检查事件是否包含函数调用"""
+    return has_part(event) and any(part.function_call for part in event.content.parts)
+
+
+def get_function_call_indexes(event: Event):
+    return [index for index, part in enumerate(event.content.parts) if part.function_call]
 
 
 def is_function_response(event: Event):
@@ -142,6 +144,18 @@ def context_function_event(ctx: InvocationContext, author: str, function_call_na
     function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
     yield context_function_call_event(ctx, author, function_call_id, function_call_name, role, args)
     yield context_function_response_event(ctx, author, function_call_id, function_call_name, response, role)
+
+
+def context_multipart2function_event(ctx: InvocationContext, author: str, event: Event, function_call_name: str):
+    for part in event.content.parts:
+        if part.text:
+            for function_event in context_function_event(ctx, author, function_call_name, {"msg": part.text},
+                                                         ModelRole):
+                yield function_event
+        elif part.function_call:
+            yield context_function_call_event(ctx, author, function_call_id=part.function_call.id,
+                                              function_call_name=part.function_call.name, role=ModelRole,
+                                              args=part.function_call.args)
 
 
 # 数据库 & 前端都感知
