@@ -43,7 +43,6 @@ async def agent_main() -> None:
     )
 
     # Initial user prompt for material modeling
-    # user_input = "帮我构建FCC Bulk Au"
     # user_input = "使用 build_bulk_structure 创建体相铝晶体（Al），采用fcc结构，晶格常数设为4.05Å，并扩展为2×2×2超胞，输出文件命名为Al_bulk.cif"
     #   user_input = """
     #   run_molecular_dynamics 在优化后的Al体相结构(https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/110663/12791/store/0f23a0ea241566b00c8b401b2422457a2c2ef130/outputs/structure_file/Al_bulk.cif)上运行三阶段分子动力学模拟：
@@ -51,10 +50,6 @@ async def agent_main() -> None:
     # - 第二阶段：500K NPT系综退火 0.2 ps
     # - 第三阶段：300K NVT系综生产模拟 0.2 ps时间步长设为0.5 fs，每100步保存一次轨迹
     #   """
-    # user_input = (
-    #     "结构文件：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/4365d412-9b05-4831-9100-1f08f5b81d43/Si.cif,"
-    #     "模型文件：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/e7371db3-bd2c-4231-8337-0bbe46eb8786/dpa-2.4-7M.pt,"
-    #     "请帮我进行结构优化")
     # user_input = """
     # 使用 catalysis_agent 帮我计算吸附能，结构文件是：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/11909/14844/store/upload/bac96a53-8eb2-41e0-8c71-413769df5844/ads_energy.tgz
     # """
@@ -69,7 +64,8 @@ async def agent_main() -> None:
     # user_input = "调用 thermoelectric_agent 帮我生成10个具有Sn和Te元素的热电结构"
     # user_input = "plot perovstite 2021 to 2025"
     # user_input = "帮我创建一个 FCC Bulk Cu 的结构"
-    user_input = "帮我检索TiO2"
+    user_input = "帮我用DPA优化这个结构：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/110663/12791/store/7ba41529-5af4-4e38-a6fb-c569cd769dd9/outputs/structure_paths/structure_bulk.cif"
+    # user_input = "帮我检索TiO2"
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input

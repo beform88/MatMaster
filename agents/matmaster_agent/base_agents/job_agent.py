@@ -43,7 +43,7 @@ from agents.matmaster_agent.prompt import (
 )
 from agents.matmaster_agent.utils.event_utils import is_function_call, is_function_response, send_error_event, is_text, \
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium, \
-    context_function_call_event
+    get_function_call_indexes, context_multipart2function_event
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
@@ -177,6 +177,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                             try:
                                 dict_result = jsonpickle.loads(raw_result)
                             except ScannerError as err:
+                                yield event
                                 raise type(err)(f"jsonpickle Error, raw_result = `{raw_result}`")
                         else:
                             dict_result = tool_response
@@ -199,21 +200,13 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                                 yield result_event
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
-                if is_text(event):
+                if isinstance(self, SubmitCoreCalculationMCPLlmAgent):
+                    yield event
+                elif is_text(event):
                     if not event.partial:
-                        for part in event.content.parts:
-                            if part.text:
-                                for system_calculation_mcp_agent_event in context_function_event(ctx, self.name,
-                                                                                                 "system_calculation_mcp_agent",
-                                                                                                 {"msg": part.text},
-                                                                                                 ModelRole):
-                                    yield system_calculation_mcp_agent_event
-                            elif part.function_call:
-                                yield context_function_call_event(ctx, self.name,
-                                                                  function_call_id=part.function_call.id,
-                                                                  function_call_name=part.function_call.name,
-                                                                  role=ModelRole, args=part.function_call.args)
-
+                        for multi_part_event in context_multipart2function_event(ctx, self.name, event,
+                                                                                 "system_calculation_mcp_agent"):
+                            yield multi_part_event
                 else:
                     yield event
 
@@ -230,6 +223,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 class ParamsCheckComplete(BaseModel):
     flag: bool
     reason: str
+    analyzed_message: str
 
 
 class ParamsCheckCompletedAgent(LlmAgent):
@@ -263,7 +257,8 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 if (
                         is_function_call(event) and
                         ctx.session.state["sync_tools"] and
-                        event.content.parts[0].function_call.name in ctx.session.state["sync_tools"]
+                        (function_indexes := get_function_call_indexes(event)) and
+                        event.content.parts[function_indexes[0]].function_call.name in ctx.session.state["sync_tools"]
                 ):
                     event.long_running_tool_ids = None  # Untag Async Job
                     ctx.session.state['long_running_jobs_count'] += 1
@@ -277,11 +272,13 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     try:
                         raw_result = event.content.parts[0].function_response.response["result"].content[0].text
                     except KeyError as err:
+                        yield event
                         raise type(err)(f"[KeyError] "
                                         f"function_response = `{event.content.parts[0].function_response.response}`")
                     try:
                         dict_result = jsonpickle.loads(raw_result)
                     except ScannerError as err:
+                        yield event
                         raise type(err)(f"[jsonpickle ScannerError] raw_result = `{raw_result}`")
                     tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
                     parsed_result = await parse_result(new_tool_result)
@@ -343,10 +340,9 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
                 if is_text(event):
                     if not event.partial:
-                        for function_event in context_function_event(ctx, self.name, "system_submit_core_info",
-                                                                     {"msg": event.content.parts[0].text},
-                                                                     ModelRole):
-                            yield function_event
+                        for multi_part_event in context_multipart2function_event(ctx, self.name, event,
+                                                                                 "system_submit_core_info"):
+                            yield multi_part_event
                 else:
                     yield event
         except BaseException as err:
@@ -404,8 +400,8 @@ class SubmitValidatorAgent(LlmAgent):
             ctx.session.state["long_running_jobs_count_ori"] = ctx.session.state["long_running_jobs_count"]
             await update_session_state(ctx, self.name)
         else:
-            submit_validator_msg = ("The system is currently validating the parameters. "
-                                    "Please verify that they are correct. Submission will proceed once confirmed.")
+            submit_validator_msg = ("System is experiencing task submission hallucination; "
+                                    "I recommend retrying with the original parameters.")
 
         for function_event in context_function_event(ctx, self.name, "system_submit_validator",
                                                      {"msg": submit_validator_msg},
@@ -446,7 +442,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     args={"job_id": origin_job_id, "executor": Executor}, tool_context=None)
                 if query_res.isError:
                     logger.error(query_res.content[0].text)
-                    continue
+                    raise RuntimeError(query_res.content[0].text)
                 status = query_res.content[0].text
                 if status != "Running":
                     ctx.session.state['long_running_jobs'][origin_job_id]['job_status'] = status
@@ -644,15 +640,19 @@ class BaseAsyncJobAgent(LlmAgent):
             last_params_check_completed_event = None
             async for params_check_completed_event in self.params_check_completed_agent.run_async(ctx):
                 last_params_check_completed_event = params_check_completed_event
-            params_check_completed = json.loads(last_params_check_completed_event.content.parts[0].text)["flag"]
-            params_check_reason = json.loads(last_params_check_completed_event.content.parts[0].text)["reason"]
+            params_check_completed_json = json.loads(last_params_check_completed_event.content.parts[0].text)
+            params_check_completed = params_check_completed_json["flag"]
+            params_check_reason = params_check_completed_json["reason"]
+            params_check_msg = params_check_completed_json["analyzed_message"]
 
             if not params_check_completed:
                 # Tell User Why Params Check Uncompleted
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 for params_check_reason_event in context_function_event(ctx, self.name,
                                                                         "system_params_check_block_reason",
-                                                                        {"msg": params_check_reason}, ModelRole):
+                                                                        {"reason": params_check_reason,
+                                                                         "analyzed_message": params_check_msg},
+                                                                        ModelRole):
                     yield params_check_reason_event
 
                 # Call ParamsCheckInfoAgent to generate params needing check
