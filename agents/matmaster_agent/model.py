@@ -54,3 +54,7 @@ class DFlowJobInfo(BaseModel):
 class TransferCheck(BaseModel):
     is_transfer: bool
     target_agent: str
+
+
+class ModifiedUserQuery(BaseModel):
+    modified_user_query: str

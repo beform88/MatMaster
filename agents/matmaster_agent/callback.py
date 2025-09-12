@@ -6,13 +6,13 @@ from typing import Optional
 
 import litellm
 from google.adk.agents.callback_context import CallbackContext
-from google.adk.models import LlmResponse
+from google.adk.models import LlmResponse, LlmRequest
 from google.genai import types
 from google.genai.types import FunctionCall, Part
 
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY
-from agents.matmaster_agent.model import TransferCheck
-from agents.matmaster_agent.prompt import get_transfer_check_prompt
+from agents.matmaster_agent.model import TransferCheck, ModifiedUserQuery
+from agents.matmaster_agent.prompt import get_transfer_check_prompt, get_handle_ContentPolicyViolationError_prompt
 from agents.matmaster_agent.utils.llm_response_utils import has_function_call
 
 logger = logging.getLogger(__name__)
@@ -38,6 +38,24 @@ async def matmaster_prepare_state(callback_context: CallbackContext) -> Optional
     callback_context.state["sync_tools"] = callback_context.state.get("sync_tools", None)
     callback_context.state["invocation_id_with_tool_call"] = callback_context.state.get("invocation_id_with_tool_call",
                                                                                         None)
+
+
+# before_model_callback
+async def matmaster_handle_ContentPolicyViolationError(callback_context: CallbackContext, llm_request: LlmRequest) -> \
+        Optional[LlmResponse]:
+    user_query = llm_request.contents[0].parts[0].text
+    try:
+        litellm.completion(model="litellm_proxy/azure/gpt-5-chat", messages=[{"role": "user", "content": user_query}])
+    except BaseException as err:
+        if "ContentPolicyViolationError" in str(err):
+            logger.error(f"[ContentPolicyViolationError] user_query = {user_query}")
+            prompt = get_handle_ContentPolicyViolationError_prompt().format(user_query=user_query)
+            response = litellm.completion(model="azure/gpt-4o", messages=[{"role": "user", "content": prompt}],
+                                          response_format=ModifiedUserQuery)
+            result: dict = json.loads(response.choices[0].message.content)
+            modified_user_query = str(result.get("modified_user_query", user_query))
+            logger.info(f"[ContentPolicyViolationError] modified_user_query = {modified_user_query}")
+            callback_context.user_content.parts[0].text = modified_user_query
 
 
 # after_model_callback
