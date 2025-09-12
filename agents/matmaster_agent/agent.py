@@ -18,7 +18,7 @@ from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_c
 from agents.matmaster_agent.chembrain_agent.agent import init_chembrain_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-from agents.matmaster_agent.optimade_database_agent.agent import init_optimade_database_agent
+from agents.matmaster_agent.MrDice_agent.agent import init_MrDice_agent
 from agents.matmaster_agent.organic_reaction_agent.agent import init_organic_reaction_agent
 from agents.matmaster_agent.perovskite_agent.agent import init_perovskite_agent
 from agents.matmaster_agent.piloteye_electro_agent.agent import init_piloteye_electro_agent
@@ -38,7 +38,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
     def __init__(self, llm_config):
         piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
         traj_analysis_agent = init_traj_analysis_agent(llm_config)
-        optimade_agent = init_optimade_database_agent(llm_config)
+        mrdice_agent = init_MrDice_agent(llm_config)
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
         thermoelectric_agent = init_thermoelectric_agent(llm_config)
         superconductor_agent = init_superconductor_agent(llm_config)
@@ -60,7 +60,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 piloteye_electro_agent,
                 traj_analysis_agent,
                 dpa_calculator_agent,
-                optimade_agent,
+                mrdice_agent,
                 thermoelectric_agent,
                 superconductor_agent,
                 apex_agent,
