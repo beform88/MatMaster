@@ -47,14 +47,29 @@ jobs:
               }
             }
 
-            // 如果有匹配的标签，则添加它们
+            // 如果有匹配的标签，则先清除现有标签，再添加新标签
             if (labelsToAdd.size > 0) {
               const labelsArray = Array.from(labelsToAdd);
-              console.log(`Adding labels: ${labelsArray.join(', ')}`);
+              console.log(`Clearing existing labels and adding: ${labelsArray.join(', ')}`);
+
+              // 首先清除所有现有标签
+              try {
+                await github.rest.issues.removeAllLabels({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo
+                });
+                console.log('All existing labels removed');
+              } catch (error) {
+                console.log('Error removing labels:', error.message);
+              }
+
+              // 然后添加新的标签
               await github.rest.issues.addLabels({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 labels: labelsArray
               });
+              console.log('New labels added successfully');
             }
