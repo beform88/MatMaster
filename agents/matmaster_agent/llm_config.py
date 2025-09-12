@@ -95,10 +95,11 @@ class LLMConfig(object):
         self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
 
         # GPT-5 models
-        self.gpt_5 = _init_model(litellm_provider, gpt_5)
-        self.gpt_5_nano = _init_model(litellm_provider, gpt_5_nano)
-        self.gpt_5_mini = _init_model(litellm_provider, gpt_5_mini)
-        self.gpt_5_chat = _init_model(litellm_provider, gpt_5_chat)
+        # self.gpt_5 = _init_model(litellm_provider, gpt_5)
+        # self.gpt_5_nano = _init_model(litellm_provider, gpt_5_nano)
+        # self.gpt_5_mini = _init_model(litellm_provider, gpt_5_mini)
+        # self.gpt_5_chat = _init_model(litellm_provider, gpt_5_chat)
+        self.gpt_5_chat = _init_model(openai_provider, gpt_5_chat)
 
         # tracing
         self.opik_tracer = OpikTracer()

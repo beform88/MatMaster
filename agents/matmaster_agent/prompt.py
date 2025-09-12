@@ -4,7 +4,7 @@ from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AG
 from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
 from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
-from agents.matmaster_agent.optimade_database_agent.constant import OPTIMADE_DATABASE_AGENT_NAME
+from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
 from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
 from agents.matmaster_agent.piloteye_electro_agent.constant import PILOTEYE_ELECTRO_AGENT_NAME
@@ -76,7 +76,7 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "piloteye" → {PILOTEYE_ELECTRO_AGENT_NAME}
    - "organic" → {ORGANIC_REACTION_AGENT_NAME}
    - "structure" → {StructureGenerateAgentName}
-   - "optimade" → {OPTIMADE_DATABASE_AGENT_NAME}
+   - "mrdice" → {MrDice_Agent_Name}
    - "sse" → SSE-related agents (context dependent)
 
 3. **If No Explicit Tool Mention**: When user asks for property calculations without specifying a tool:
@@ -153,7 +153,7 @@ The following **phrases or keywords are considered strong intent signals**:
 - 📚 **Structure Retrieval**:
   If the user's request contains words/phrases such as:
     - “查找一个”, “找”, “搜索”, “查询结构”, “获取结构”, “检索”, “找一个已有的…”, “search”, “find”, “retrieve”, “look up/for”, “query materials”, etc.  
-  → ✅ **Directly use Database Retrieval Agent** (`{OPTIMADE_DATABASE_AGENT_NAME}`)
+  → ✅ **Directly use Database Retrieval Agent** (`{MrDice_Agent_Name}`)
 
 ### 🕵️‍♂️ If Intent is Ambiguous:
 If the request could reasonably imply either generation or retrieval (e.g., "I want an fcc Cu", "Give me something with Ti and O", "我想要一个 fcc 的铜"), follow this strict disambiguation protocol:
@@ -162,7 +162,7 @@ If the request could reasonably imply either generation or retrieval (e.g., "I w
 2. **Present both valid options**  
    Inform the user that the task could be completed in two distinct ways:
    - 📦 **Structure Generation** (`{StructureGenerateAgentName}`): For creating idealized or hypothetical structures  
-   - 🏛️ **Database Retrieval** (`{OPTIMADE_DATABASE_AGENT_NAME}`): For retrieving existing materials from known databases
+   - 🏛️ **Database Retrieval** (`{MrDice_Agent_Name}`): For retrieving existing materials from known databases
 3. **Explicitly require user selection**  
    You MUST request the user to choose one of the two paths before proceeding.
 4. **Do not proceed without clear intent**  
@@ -389,18 +389,19 @@ MANDATORY NOTIFICATIONS:
    - Purpose: [Description missing]
    - Example Query: [Examples missing]
 
-10. **{OPTIMADE_DATABASE_AGENT_NAME}** - **Crystal structure database search**
-    - Purpose: Retrieve crystal structure data using OPTIMADE framework
+10. **{MrDice_Agent_Name}** - **Crystal structure meta-database search**
+    - Purpose: Retrieve crystal structure data by coordinating multiple sub-agents:
+      * `optimade_agent` for OPTIMADE-compliant providers
+      * `openlam_agent` for OpenLAM database
+    - By default, queries **both sub-agents simultaneously** and merges results
     - Capabilities:
-      - Perform advanced queries on elements, number of elements, chemical formulas (reduced, descriptive, anonymous), and logical combinations using AND, OR, NOT with parentheses
-      - Support provider-specific mappings for space group (1–230) and band-gap range queries
-      - Retrieve results in .cif (for visualization/simulation) or .json (for full metadata) from multiple OPTIMADE-compliant databases (e.g., Alexandria, CMR, OQMD, MP, etc.), and present **all retrieved entries** in a single complete Markdown table (default columns: ID, Provider, Formula, Elements, Space group, Download link). Supports quantity-aware queries via `n_results`
+      - Formula-based, energy-based, time-based queries (OpenLAM)
+      - Element/space-group/band-gap/logic-based queries (OPTIMADE)
+      - Unified Markdown table with merged results (deduplicated by formula+ID)
     - Example Queries:
-      - "找3个含油 Si O，且含有四种元素的，不能同时含有铁铝的材料，从 alexandria, cmr, nmd, oqmd, omdb 中查找。"
-      - "找到一些 A2B3C4 的材料，不能含 Fe, F, Cl, H 元素，要含有铝或者镁或者钠，我要全部信息。"
-      - "找一些 ZrO，从 mpds, cmr, alexandria, omdb, odbx 里面找。"
-      - "查找一个 gamma 相的 TiAl 合金。"
-      - "找一些含铝的，能带在 1.0–2.0 的材料。"
+      - "找 Fe2O3 的晶体结构"
+      - "查找能量在 -10 到 20 eV 之间的材料"
+      - "找到含铝的、能带在 1.0–2.0 eV 之间的材料"
 
    ## ⚠️ Mandatory Table Display Rule:
       ** The Markdown table must always be displayed exactly as returned by the `optimade_agent`, with **all entries included in full**. No omission, truncation, summarization, filtering, or ellipses are allowed.  
