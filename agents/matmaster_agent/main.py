@@ -66,7 +66,8 @@ async def agent_main() -> None:
     # user_input = "帮我创建一个 FCC Bulk Cu 的结构"
     # user_input = "帮我用DPA优化这个结构：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/110663/12791/store/7ba41529-5af4-4e38-a6fb-c569cd769dd9/outputs/structure_paths/structure_bulk.cif"
     # user_input = "帮我检索TiO2"
-    user_input = "请你为我搭建一个氯化钠的结构"
+    # user_input = "请你为我搭建一个氯化钠的结构"
+    user_input = "用openlam查找一个TiO2"
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input

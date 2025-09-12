@@ -11,6 +11,7 @@ from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculatio
 from agents.matmaster_agent.HEACalculator_agent.agent import init_hea_calculator_agent
 from agents.matmaster_agent.HEA_assistant_agent.agent import init_HEA_assistant_agent
 from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
+from agents.matmaster_agent.MrDice_agent.agent import init_MrDice_agent
 from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
 from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_check_transfer, \
@@ -18,7 +19,6 @@ from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_c
 from agents.matmaster_agent.chembrain_agent.agent import init_chembrain_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-from agents.matmaster_agent.MrDice_agent.agent import init_MrDice_agent
 from agents.matmaster_agent.organic_reaction_agent.agent import init_organic_reaction_agent
 from agents.matmaster_agent.perovskite_agent.agent import init_perovskite_agent
 from agents.matmaster_agent.piloteye_electro_agent.agent import init_piloteye_electro_agent
