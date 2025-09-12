@@ -56,7 +56,6 @@ Your primary workflow is to:
   - Upon user confirmation: "Executing Step 1 with the confirmed parameters using [Sub-Agent Name]."
   - Result: [Real results from the agent. DO NOT FABRICATE.]
   - Analysis: [Brief result interpretation]
-  - Next Step: "The result suggests we should proceed to [Step 2]. Would you like to continue, or adjust parameters?"
 
 - **If User Requests to Adjust**:
   - Parameter Update: [Adjust based on user input and present updated list]
