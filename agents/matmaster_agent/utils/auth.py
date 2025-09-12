@@ -17,6 +17,7 @@ def ak_to_username(access_key: str) -> str:
         "Host": f"{OPENAPI_HOST.split('//')[1]}",
     }
     try:
+        logger.info(f"[ak_to_username] headers = {headers}")
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()  # 抛出HTTP错误异常
 

@@ -458,6 +458,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     else:  # Job Success
                         raw_result = results_res.content[0].text
                         dict_result = jsonpickle.loads(raw_result)
+                        logger.info(f"[ResultCalculationMCPLlmAgent] dict_result = {dict_result}")
 
                         tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
 
@@ -609,7 +610,6 @@ class BaseAsyncJobAgent(LlmAgent):
             name=agent_name,
             model=model,
             description=agent_description,
-            instruction=agent_instruction,
             submit_agent=submit_agent,
             result_agent=result_agent,
             params_check_completed_agent=params_check_completed_agent,
