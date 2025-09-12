@@ -37,7 +37,7 @@ MODEL_MAPPING = {
     ("volcengine", "deepseek-R1-0528"): "volcengine/ep-20250612143101-qf6n8",
     ("volcengine", "deepseek-Seed-1.6"): "volcengine/ep-20250627140204-clmmm",
     ("volcengine", "Doubao-Seed-1.6-flash"): "volcengine/ep-20250627141116-z2fv4",
-    ("volcengine", "Doubao-Seed-1.6-thinking"): "volcengine/ep-20250627141021-h4wch",
+    ("volcengine", "Doubao-Seed-1.6-thinking"): "volcengine/ep-20250627141021-h4wch"
 }
 
 # DEFAULT_MODEL = "azure/gpt-4o-mini"
@@ -77,14 +77,7 @@ class LLMConfig(object):
 
         # Helper to init any provider model
         def _init_model(provider_key: str, model_name: str):
-            model_id = MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL)
-            if provider_key == "openai" and model_name.startswith("gpt-5"):
-                return LiteLlm(
-                    model=model_id,
-                    api_base=os.getenv("GPT_BASE_URL", "https://llm.dp.tech/v1"),
-                    api_key=os.getenv("GPT_KEY"),
-                )
-            return LiteLlm(model=model_id)
+            return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL))
 
         self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
         self.gpt_4o = _init_model(azure_provider, gpt_4o)
@@ -95,11 +88,10 @@ class LLMConfig(object):
         self.deepseek_chat = _init_model(deepseek_provider, deepseek_chat)
 
         # GPT-5 models
-        # self.gpt_5 = _init_model(litellm_provider, gpt_5)
-        # self.gpt_5_nano = _init_model(litellm_provider, gpt_5_nano)
-        # self.gpt_5_mini = _init_model(litellm_provider, gpt_5_mini)
-        # self.gpt_5_chat = _init_model(litellm_provider, gpt_5_chat)
-        self.gpt_5_chat = _init_model(openai_provider, gpt_5_chat)
+        self.gpt_5 = _init_model(litellm_provider, gpt_5)
+        self.gpt_5_nano = _init_model(litellm_provider, gpt_5_nano)
+        self.gpt_5_mini = _init_model(litellm_provider, gpt_5_mini)
+        self.gpt_5_chat = _init_model(litellm_provider, gpt_5_chat)
 
         # tracing
         self.opik_tracer = OpikTracer()
