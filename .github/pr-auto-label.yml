@@ -1,0 +1,52 @@
+name: 'Auto Label by Title'
+
+on:
+  pull_request:
+    types: [ opened, edited ] # 注意：增加了 edited 类型，标题编辑时也会触发
+
+jobs:
+  label-by-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label PR based on title keywords
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title.toLowerCase();
+            const labelsToAdd = new Set(); // 使用 Set 避免重复添加
+
+            // 定义关键词与标签的映射
+            const keywordMap = {
+              'bug': 'bug',
+              'fix': 'bug',
+              'error': 'bug',
+              'feat': 'enhancement',
+              'feature': 'enhancement',
+              'improvement': 'enhancement',
+              'doc': 'documentation',
+              'readme': 'documentation',
+              'chore': 'chore',
+              'bump': 'dependencies',
+              'dependabot': 'dependencies',
+              'upgrade': 'dependencies',
+              'security': 'security'
+            };
+
+            // 检查标题是否包含关键词
+            for (const [keyword, label] of Object.entries(keywordMap)) {
+              if (title.includes(keyword)) {
+                labelsToAdd.add(label);
+              }
+            }
+
+            // 如果有匹配的标签，则添加它们
+            if (labelsToAdd.size > 0) {
+              const labelsArray = Array.from(labelsToAdd);
+              console.log(`Adding labels: ${labelsArray.join(', ')}`);
+              await github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: labelsArray
+              });
+            }
