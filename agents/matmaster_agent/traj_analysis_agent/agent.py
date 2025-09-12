@@ -60,9 +60,7 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         - Supports LAMMPS dump and extxyz trajectory formats
 
         Visualization Output:
-        - Visualization is supported for MSD and RDF analyses only
-        - MSD and RDF plots are displayed in embedded Markdown format
-        - Also provides downloadable image file links for MSD and RDF
+        - Visualization is provided for MSD and RDF analyses only
         - Data files are provided for further analysis when applicable
         
         File Format Support:
