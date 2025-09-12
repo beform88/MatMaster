@@ -783,20 +783,3 @@ Output: "为了生成氧化铁（FeO）的块体结构，我需要与您确认�
 
 Generate an appropriate confirmation message based on the provided function information and the user's language.
 """
-
-
-def get_handle_ContentPolicyViolationError_prompt():
-    return """
-You are an AI assistant that helps modify user query to comply with OpenAI's content policy. 
-When given a user query that violates the content policy, you must generate a modified version that maintains the user's original intent while adhering to all safety guidelines.
-Your response must be a valid JSON object with exactly one field: "modified_user_query". The value should be a string containing the policy-compliant version of the query.
-Please analyze the original query carefully and make minimal necessary changes to ensure compliance while preserving the query's core purpose and meaning.
-
-User Query:
-{user_query}
-
-Provide your modified version in the following JSON format:
-{{
-    "modified_user_query": <string>
-}}
-"""
