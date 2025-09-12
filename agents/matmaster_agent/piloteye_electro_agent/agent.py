@@ -47,7 +47,7 @@ piloteye_electro_tool = CalculationMCPToolset(
 
 # # Create agent
 # def init_unielf_agent(llm_config):
-#     selected_model = llm_config.gpt_5_chat
+#     selected_model = llm_config.gpt_4o
 #     unielf_agent = CalculationLlmAgent(
 #         name=UniELFAgentName,
 #         model=selected_model,
