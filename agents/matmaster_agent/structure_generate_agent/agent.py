@@ -27,8 +27,8 @@ from .constant import StructureGenerateServerUrl
 
 StructureGenerateBohriumExecutor = copy.deepcopy(BohriumExecutor)
 StructureGenerateBohriumStorge = copy.deepcopy(BohriumStorge)
-StructureGenerateBohriumExecutor["machine"]["remote_profile"]["image_address"] = "registry.dp.tech/dptech/dp/native/prod-788025/structure-generate-agent:small"
-StructureGenerateBohriumExecutor["machine"]["remote_profile"]["machine_type"] = "c8_m31_1 * NVIDIA T4"
+StructureGenerateBohriumExecutor['machine']['remote_profile']['image_address'] = 'registry.dp.tech/dptech/dp/native/prod-788025/structure-generate-agent:small'
+StructureGenerateBohriumExecutor['machine']['remote_profile']['machine_type'] = 'c8_m31_1 * NVIDIA T4'
 
 sse_params = SseServerParams(url=StructureGenerateServerUrl)
 
@@ -57,7 +57,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
                 'build_bulk_structure_by_wyckoff',
                 'make_supercell_structure',
                 'build_molecule_structure_from_g2database',
-                "build_molecule_structures_from_smiles",
+                'build_molecule_structures_from_smiles',
                 'add_cell_for_molecules',
                 'build_surface_slab',
                 'build_surface_adsorbate',

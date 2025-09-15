@@ -1,2 +1,1 @@
-MrDice_Agent_Name = "MrDice_agent"
-
+MrDice_Agent_Name = 'MrDice_agent'

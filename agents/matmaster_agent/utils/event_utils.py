@@ -32,7 +32,7 @@ def is_text(event: Event):
 def is_text_and_not_bohrium(event: Event):
     return (
             is_text(event) and
-            not event.content.parts[0].text.startswith("<bohrium-chat-msg>")
+            not event.content.parts[0].text.startswith('<bohrium-chat-msg>')
     )
 
 
@@ -149,9 +149,8 @@ def context_function_event(ctx: InvocationContext, author: str, function_call_na
 def context_multipart2function_event(ctx: InvocationContext, author: str, event: Event, function_call_name: str):
     for part in event.content.parts:
         if part.text:
-            for function_event in context_function_event(ctx, author, function_call_name, {"msg": part.text},
-                                                         ModelRole):
-                yield function_event
+            yield from context_function_event(ctx, author, function_call_name, {'msg': part.text},
+                                                         ModelRole)
         elif part.function_call:
             yield context_function_call_event(ctx, author, function_call_id=part.function_call.id,
                                               function_call_name=part.function_call.name, role=ModelRole,
@@ -165,7 +164,7 @@ def all_text_event(ctx: InvocationContext, author: str, text: str, role: str):
 
 
 async def send_error_event(err, ctx: InvocationContext, author):
-    ctx.session.state["error_occurred"] = True
+    ctx.session.state['error_occurred'] = True
     await update_session_state(ctx, author)
 
     # 判断是否是异常组
@@ -173,16 +172,16 @@ async def send_error_event(err, ctx: InvocationContext, author):
         error_details = [
             f"Exception Group caught with {len(err.exceptions)} exceptions:",
             f"Message: {str(err)}",
-            "\nIndividual exceptions:"
+            '\nIndividual exceptions:'
         ]
         exceptions: Optional[Iterable[BaseException]] = err.exceptions
     else:
         error_details = [
-            "Single Exception caught:",
+            'Single Exception caught:',
             f"Type: {type(err).__name__}",
             f"Message: {str(err)}",
-            "\nTraceback:",
-            "".join(traceback.format_tb(err.__traceback__))
+            '\nTraceback:',
+            ''.join(traceback.format_tb(err.__traceback__))
         ]
         exceptions = None  # 单一异常时不再循环子异常
 
@@ -195,9 +194,9 @@ async def send_error_event(err, ctx: InvocationContext, author):
             error_details.append(f"Traceback: {''.join(traceback.format_tb(exc.__traceback__))}")
 
     # 合并错误信息
-    detailed_error = "\n".join(error_details)
+    detailed_error = '\n'.join(error_details)
 
     # 发送系统错误事件
-    for event in context_function_event(ctx, author, "system_detail_error",
-                                        {"msg": detailed_error}, ModelRole):
+    for event in context_function_event(ctx, author, 'system_detail_error',
+                                        {'msg': detailed_error}, ModelRole):
         yield event

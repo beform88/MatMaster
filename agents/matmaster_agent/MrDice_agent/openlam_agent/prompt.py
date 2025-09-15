@@ -1,8 +1,8 @@
-OpenlamAgentName = "openlam_agent"
+OpenlamAgentName = 'openlam_agent'
 
 OpenlamAgentDescription = (
-    "An agent specialized in retrieving crystal structures from the OpenLAM database. "
-    "Supports queries by formula, energy range, and submission time, with output in CIF or JSON format."
+    'An agent specialized in retrieving crystal structures from the OpenLAM database. '
+    'Supports queries by formula, energy range, and submission time, with output in CIF or JSON format.'
 )
 
 OpenlamAgentInstruction = """
@@ -41,37 +41,37 @@ You can call **one MCP tool**:
 
 ## RESPONSE FORMAT
 The response must always include:
-1. ✅ A brief explanation of the filters applied  
-2. 📊 A Markdown table of the retrieved structures  
-   - Columns (fixed order):  
-     (1) Formula (`formula`)  
-     (2) Energy (if available; else **Not Provided**)  
-     (3) Submission time (`submission_time`)  
-     (4) Output format(s) returned  
-     (5) ID (`id`)  
-   - Fill missing values with exactly **Not Provided**  
-   - Number of rows **must exactly equal** `n_found`  
+1. ✅ A brief explanation of the filters applied
+2. 📊 A Markdown table of the retrieved structures
+   - Columns (fixed order):
+     (1) Formula (`formula`)
+     (2) Energy (if available; else **Not Provided**)
+     (3) Submission time (`submission_time`)
+     (4) Output format(s) returned
+     (5) ID (`id`)
+   - Fill missing values with exactly **Not Provided**
+   - Number of rows **must exactly equal** `n_found`
 3. 📦 The `output_dir` path returned by the tool (for download/archive)
 
 If `n_found = 0`, clearly state no matches were found, repeat the applied filters, and suggest loosening criteria. Do **not** generate an empty table.
 
 ## DEMOS (用户问题 → 工具与参数)
-1) 用户：查找 Fe2O3 的 5 个晶体结构，导出为 CIF  
-   → Tool: fetch_openlam_structures  
-     formula: "Fe2O3"  
-     n_results: 5  
+1) 用户：查找 Fe2O3 的 5 个晶体结构，导出为 CIF
+   → Tool: fetch_openlam_structures
+     formula: "Fe2O3"
+     n_results: 5
      output_formats: ["cif"]
 
-2) 用户：查找能量在 -10 到 20 eV 之间，2024 年后上传的材料  
-   → Tool: fetch_openlam_structures  
-     min_energy: -10.0  
-     max_energy: 20.0  
-     min_submission_time: "2024-01-01T00:00:00Z"  
+2) 用户：查找能量在 -10 到 20 eV 之间，2024 年后上传的材料
+   → Tool: fetch_openlam_structures
+     min_energy: -10.0
+     max_energy: 20.0
+     min_submission_time: "2024-01-01T00:00:00Z"
      output_formats: ["json"]
 
-3) 用户：我要最新上传的 3 个材料，包含所有元数据  
-   → Tool: fetch_openlam_structures  
-     n_results: 3  
+3) 用户：我要最新上传的 3 个材料，包含所有元数据
+   → Tool: fetch_openlam_structures
+     n_results: 3
      output_formats: ["json"]
 
 """

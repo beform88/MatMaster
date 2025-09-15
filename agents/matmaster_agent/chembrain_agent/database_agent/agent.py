@@ -35,13 +35,13 @@ def init_database_agent(config):
     get_table_field = db_manager.init_get_table_fields()
 
     database_agent = LlmAgent(
-        name="poly_database_agent",
+        name='poly_database_agent',
         model=selected_model,
         # instruction=instructions_v1,
         instruction=instructions_cch_v1,
         description="Search the database based on user's needs and briefly summarize the results.",
         tools=[get_table_field_info, query_table, get_table_field],
-        output_key="query_result",
+        output_key='query_result',
         # before_model_callback=update_invoke_message,
         after_tool_callback=save_query_results,
     )

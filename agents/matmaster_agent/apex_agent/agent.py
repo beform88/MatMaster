@@ -48,8 +48,8 @@ from .prompt import (
 sse_params = SseServerParams(url=ApexServerUrl)
 toolset = CalculationMCPToolset(
     connection_params=sse_params,
-    storage=ApexBohriumStorage,  
-    executor=ApexBohriumExecutor,  
+    storage=ApexBohriumStorage,
+    executor=ApexBohriumExecutor,
     async_mode=True,
     wait=False,
     logging_callback=matmodeler_logging_handler
@@ -59,7 +59,7 @@ toolset = CalculationMCPToolset(
 class ApexAgent(BaseAsyncJobAgent):
     """
     APEX材料性质计算智能体
-    
+
     支持功能：
     - 材料性质计算（空位、间隙、弹性、表面、EOS、声子、γ表面）
     - 异步Bohrium任务提交和状态监控
@@ -70,16 +70,16 @@ class ApexAgent(BaseAsyncJobAgent):
     - 自动图片渲染为Markdown格式
     - 异步任务处理（继承BaseAsyncJobAgent）
     """
-    
+
     def __init__(self, llm_config):
-        
+
         super().__init__(
             model=llm_config.gpt_5_chat,
             agent_name=ApexAgentName,
             agent_description=ApexAgentDescription,
-            agent_instruction=ApexAgentInstruction,  
+            agent_instruction=ApexAgentInstruction,
             mcp_tools=[toolset],
-            dflow_flag=False,  
+            dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME
         )
 

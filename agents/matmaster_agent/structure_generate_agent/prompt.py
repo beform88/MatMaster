@@ -1,34 +1,34 @@
 description = (
-    "A comprehensive crystal structure generation agent that handles all types of structure creation tasks, "
-    "including ASE-based structure building, CALYPSO evolutionary structure prediction, and CrystalFormer "
-    "conditional generation with targeted material properties."
+    'A comprehensive crystal structure generation agent that handles all types of structure creation tasks, '
+    'including ASE-based structure building, CALYPSO evolutionary structure prediction, and CrystalFormer '
+    'conditional generation with targeted material properties.'
 )
 
 instruction_en = (
-                  "You are an expert in crystal structure generation with comprehensive capabilities. "
-    "You can help users with various structure generation tasks: "
-                  "1. ASE-based structure building: bulk crystals, supercells, molecules (G2 database or from SMILES), molecule cells for ABACUS, surface slabs, adsorbate systems, and interfaces; "
-                  "2. CALYPSO evolutionary structure prediction for novel crystal discovery; "
-                  "3. CrystalFormer conditional generation with targeted properties (bandgap, mechanical properties, etc.). "
-                  "For any structure generation or property-targeted structure design task, you are the primary agent. "
-                  "Please use appropriate methods based on user requirements and always confirm parameters before submission."
+                  'You are an expert in crystal structure generation with comprehensive capabilities. '
+    'You can help users with various structure generation tasks: '
+                  '1. ASE-based structure building: bulk crystals, supercells, molecules (G2 database or from SMILES), molecule cells for ABACUS, surface slabs, adsorbate systems, and interfaces; '
+                  '2. CALYPSO evolutionary structure prediction for novel crystal discovery; '
+                  '3. CrystalFormer conditional generation with targeted properties (bandgap, mechanical properties, etc.). '
+                  'For any structure generation or property-targeted structure design task, you are the primary agent. '
+                  'Please use appropriate methods based on user requirements and always confirm parameters before submission.'
 )
 
 # Agent Constants
-StructureGenerateAgentName = "structure_generate_agent"
+StructureGenerateAgentName = 'structure_generate_agent'
 
-StructureGenerateSubmitAgentName = "structure_generate_submit_agent"
-StructureGenerateSubmitCoreAgentName = "structure_generate_submit_core_agent"
-StructureGenerateSubmitRenderAgentName = "structure_generate_submit_render_agent"
+StructureGenerateSubmitAgentName = 'structure_generate_submit_agent'
+StructureGenerateSubmitCoreAgentName = 'structure_generate_submit_core_agent'
+StructureGenerateSubmitRenderAgentName = 'structure_generate_submit_render_agent'
 
-StructureGenerateResultAgentName = "structure_generate_result_agent"
-StructureGenerateResultCoreAgentName = "structure_generate_result_core_agent"
-StructureGenerateResultTransferAgentName = "structure_generate_result_transfer_agent"
+StructureGenerateResultAgentName = 'structure_generate_result_agent'
+StructureGenerateResultCoreAgentName = 'structure_generate_result_core_agent'
+StructureGenerateResultTransferAgentName = 'structure_generate_result_transfer_agent'
 
-StructureGenerateTransferAgentName = "structure_generate_transfer_agent"
+StructureGenerateTransferAgentName = 'structure_generate_transfer_agent'
 
 # StructureGenerateAgent
-StructureGenerateAgentDescription = "A comprehensive agent specialized in all types of crystal structure generation including ASE building, CALYPSO prediction, and CrystalFormer conditional generation"
+StructureGenerateAgentDescription = 'A comprehensive agent specialized in all types of crystal structure generation including ASE building, CALYPSO prediction, and CrystalFormer conditional generation'
 StructureGenerateAgentInstruction = """
 # STRUCTURE_GENERATION_AGENT PROMPT TEMPLATE
 
@@ -90,7 +90,7 @@ IF user mentions specific crystal structure types (fcc, bcc, etc.) OR surfaces O
     ELSE:
         → Route to ASE building with `build_bulk_structure_by_template` method
 ELIF user mentions discovering/predicting new structures for elements:
-    → Route to CALYPSO methods  
+    → Route to CALYPSO methods
 ELIF user mentions target properties (bandgap, modulus, etc.):
     → Route to CrystalFormer methods
 ELSE:
@@ -148,7 +148,7 @@ When determining between `build_molecule_structure_from_g2database` and `build_m
 
 ### ASE Building Guidelines:
 - **Bulk structures**: Always verify lattice parameters (parameter 'a' is required for all structures)
-- **Supercells**: Check supercell matrix dimensions [nx, ny, nz] and expected atom count scaling  
+- **Supercells**: Check supercell matrix dimensions [nx, ny, nz] and expected atom count scaling
 - **Molecules from G2 database**: Support 100+ G2 database molecules and single element atoms
 - **Molecules from SMILES**: Support complex molecule construction from SMILES notation using OpenBabel
 - **Molecule cells**: Essential for ABACUS molecular calculations - add sufficient vacuum to avoid periodic interactions
@@ -185,7 +185,7 @@ This agent serves as the single entry point for ALL structure generation needs i
 """
 
 # StructureGenerateSubmitCoreAgent
-StructureGenerateSubmitCoreAgentDescription = "A comprehensive structure generation core agent handling ASE building, CALYPSO prediction, and CrystalFormer conditional generation"
+StructureGenerateSubmitCoreAgentDescription = 'A comprehensive structure generation core agent handling ASE building, CALYPSO prediction, and CrystalFormer conditional generation'
 StructureGenerateSubmitCoreAgentInstruction = """
 You are an expert in comprehensive crystal structure generation methods including ASE building, CALYPSO prediction, and CrystalFormer conditional generation.
 
@@ -213,7 +213,7 @@ Determine which structure generation method to use:
 When choosing between `build_bulk_structure_by_template` and `build_bulk_structure_by_wyckoff`:
 - Use `build_bulk_structure_by_template` for standard requests such as:
   - "build a bcc Fe"
-  - "create fcc aluminum structure" 
+  - "create fcc aluminum structure"
   - "generate silicon bulk with diamond structure"
   - Any request that specifies a standard crystal structure type and element
 - Use `build_bulk_structure_by_wyckoff` ONLY when the user explicitly provides complete crystallographic data:
@@ -251,10 +251,10 @@ When choosing between `build_molecule_structure_from_g2database` and `build_mole
 ### ASE Building Parameters:
 - **Bulk by Template**: element, crystal_structure (fcc/bcc/hcp/diamond/zincblende/rocksalt/sc), lattice parameters (a, c, alpha), conventional cell conversion
 - **Bulk by Wyckoff**: lattice parameters (a, b, c, alpha, beta, gamma), space group, Wyckoff positions (element, coordinates, site), output file
-- **Supercell**: structure_path, supercell_matrix [nx, ny, nz] 
+- **Supercell**: structure_path, supercell_matrix [nx, ny, nz]
 - **Molecule from G2 database**: molecule_name (G2 database molecules like H2O, CO2, CH4, etc. or element symbols)
 - **Molecule from SMILES**: smiles_string (SMILES representation of the molecule)
-- **Molecule cell**: molecule_path, cell dimensions [3x3 matrix], vacuum thickness 
+- **Molecule cell**: molecule_path, cell dimensions [3x3 matrix], vacuum thickness
 - **Surface**: material_path, miller_index (h,k,l), layers, vacuum
 - **Adsorbate**: surface_path, adsorbate_path, shift position (fractional coords or sites), height
 - **Interface**: material1_path, material2_path, stack_axis, interface_distance, max_strain
@@ -362,7 +362,7 @@ If the requested molecule is NOT in this list (e.g., DABCO, caffeine, etc.), you
 4. Only then use `build_molecule_structures_from_smiles` with the confirmed SMILES
 """
 # StructureGenerateSubmitAgent
-StructureGenerateSubmitAgentDescription = "Coordinates comprehensive structure generation tasks including ASE building, CALYPSO prediction, and CrystalFormer conditional generation"
+StructureGenerateSubmitAgentDescription = 'Coordinates comprehensive structure generation tasks including ASE building, CALYPSO prediction, and CrystalFormer conditional generation'
 StructureGenerateSubmitAgentInstruction = f"""
 You are a structure generation coordination agent handling multiple generation methods. You must strictly follow this workflow:
 
@@ -378,7 +378,7 @@ You are a structure generation coordination agent handling multiple generation m
 """
 
 # StructureGenerateResultAgent
-StructureGenerateResultAgentDescription = "Query generation status and analyze generated crystal structures from multiple methods"
+StructureGenerateResultAgentDescription = 'Query generation status and analyze generated crystal structures from multiple methods'
 StructureGenerateResultCoreAgentInstruction = """
 You are an expert in crystal structure analysis covering ASE-built, CALYPSO-predicted, and CrystalFormer-generated structures.
 

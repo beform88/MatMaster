@@ -1,40 +1,40 @@
-description = ("An agent specialized in computational research using Deep Potential")
+description = ('An agent specialized in computational research using Deep Potential')
 
 instruction_en = ("""
-   You are an intelligent assistant that can perform structure building and optimization, 
+   You are an intelligent assistant that can perform structure building and optimization,
    molecular dynamics, NEB calculation, phonon calculation and elastic calculations.
 """)
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
-TrajAnalysisAgentName = "traj_analysis_agent"
+TrajAnalysisAgentName = 'traj_analysis_agent'
 
 # Agent Constant
-DPAAgentName = "dpa_agent"
+DPAAgentName = 'dpa_agent'
 
-DPASubmitAgentName = "dpa_submit_agent"
-DPASubmitCoreAgentName = "dpa_submit_core_agent"
-DPASubmitRenderAgentName = "dpa_submit_render_agent"
+DPASubmitAgentName = 'dpa_submit_agent'
+DPASubmitCoreAgentName = 'dpa_submit_core_agent'
+DPASubmitRenderAgentName = 'dpa_submit_render_agent'
 
-DPAResultAgentName = "dpa_result_agent"
-DPAResultCoreAgentName = "dpa_result_core_agent"
-DPAResultTransferAgentName = "dpa_result_transfer_agent"
+DPAResultAgentName = 'dpa_result_agent'
+DPAResultCoreAgentName = 'dpa_result_core_agent'
+DPAResultTransferAgentName = 'dpa_result_transfer_agent'
 
-DPATransferAgentName = "dpa_transfer_agent"
+DPATransferAgentName = 'dpa_transfer_agent'
 
 # DPAAgent
-DPAAgentDescription = "An agent specialized in computational research using Deep Potential"
+DPAAgentDescription = 'An agent specialized in computational research using Deep Potential'
 DPAAgentInstruction = (
-    "You are an expert in materials science and computational chemistry. "
-    "Help users perform Deep Potential calculations including structure building, optimization, "
-    "molecular dynamics and property calculations. "
-    "Use default parameters if the users do not mention, but let users confirm them before submission. "
+    'You are an expert in materials science and computational chemistry. '
+    'Help users perform Deep Potential calculations including structure building, optimization, '
+    'molecular dynamics and property calculations. '
+    'Use default parameters if the users do not mention, but let users confirm them before submission. '
     "In multi-step workflows involving file outputs, always use the URI of the previous step's file "
-    "as the input for the next tool. Always verify the input parameters to users and provide "
-    "clear explanations of results."
+    'as the input for the next tool. Always verify the input parameters to users and provide '
+    'clear explanations of results.'
 )
 
 # DPASubmitCoreAgent
-DPASubmitCoreAgentDescription = "A specialized Deep Potential simulations Job Submit Agent"
+DPASubmitCoreAgentDescription = 'A specialized Deep Potential simulations Job Submit Agent'
 DPASubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform Deep Potential calculations, including structure optimization, molecular dynamics, and property calculations.
@@ -73,7 +73,7 @@ Step 4: Render parameters (if new) → Step 5: User Confirmation (MANDATORY for 
 """
 
 # DPASubmitAgent
-DPASubmitAgentDescription = "Coordinates DPA computational job submission and frontend task queue display"
+DPASubmitAgentDescription = 'Coordinates DPA computational job submission and frontend task queue display'
 DPASubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 
@@ -89,7 +89,7 @@ You are a task coordination agent. You must strictly follow this workflow:
 """
 
 # DPAResultAgent
-DPAResultAgentDescription = "query status and get result"
+DPAResultAgentDescription = 'query status and get result'
 DPAResultCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users obtain Deep Potential calculation results, including structure optimization, molecular dynamics, and property calculations.

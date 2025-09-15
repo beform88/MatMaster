@@ -26,7 +26,7 @@ class ChemBrainAgent(LlmAgent):
         unielf_agent = init_unielf_agent(llm_config)
         retrosyn_agent = init_retrosyn_agent(llm_config)
 
-        super().__init__(name="chembrain_agent",
+        super().__init__(name='chembrain_agent',
                          model=llm_config.gpt_5_chat,
                          description=description,
                          sub_agents=[
@@ -45,7 +45,7 @@ class ChemBrainAgent(LlmAgent):
 
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        prompt = ""
+        prompt = ''
         if ctx.user_content and ctx.user_content.parts:
             for part in ctx.user_content.parts:
                 if part.text:
@@ -58,7 +58,7 @@ class ChemBrainAgent(LlmAgent):
                         invocation_id=ctx.invocation_id,
                         author=self.name,
                         branch=ctx.branch,
-                        content=types.Content(parts=[types.Part(text=prompt)], role="system"))
+                        content=types.Content(parts=[types.Part(text=prompt)], role='system'))
 
         async for event in super()._run_async_impl(ctx):
             yield event

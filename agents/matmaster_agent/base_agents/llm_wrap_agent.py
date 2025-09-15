@@ -9,7 +9,7 @@ from agents.matmaster_agent.utils.event_utils import context_function_event, sen
 
 
 class LlmWrapAgent(LlmAgent):
-    supervisor_agent: Optional[str] = Field(None, description="Which one is the supervisor_agent")
+    supervisor_agent: Optional[str] = Field(None, description='Which one is the supervisor_agent')
 
     def __init__(self, supervisor_agent, **kwargs):
         super().__init__(supervisor_agent=supervisor_agent, **kwargs)
@@ -23,8 +23,8 @@ class LlmWrapAgent(LlmAgent):
                 yield event
 
             if self.supervisor_agent:
-                for function_event in context_function_event(ctx, self.name, "transfer_to_agent", None, ModelRole,
-                                                             {"agent_name": self.supervisor_agent}):
+                for function_event in context_function_event(ctx, self.name, 'transfer_to_agent', None, ModelRole,
+                                                             {'agent_name': self.supervisor_agent}):
                     yield function_event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):

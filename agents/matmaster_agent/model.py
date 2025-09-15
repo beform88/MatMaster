@@ -5,21 +5,21 @@ from pydantic import BaseModel, field_validator
 
 
 class JobStatus(str, Enum):
-    Running = "Running"
-    Succeeded = "Succeeded"
-    Failed = "Failed"
+    Running = 'Running'
+    Succeeded = 'Succeeded'
+    Failed = 'Failed'
 
 
 class JobResultType(str, Enum):
-    RegularFile = "RegularFile"
-    MatModelerFile = "MatModelerFile"
-    Value = "Value"
+    RegularFile = 'RegularFile'
+    MatModelerFile = 'MatModelerFile'
+    Value = 'Value'
 
 
 class JobResult(BaseModel):
     name: str
     data: Union[int, float, str]
-    url: Optional[str] = ""
+    url: Optional[str] = ''
     type: JobResultType
 
 
@@ -32,10 +32,10 @@ class BohrJobInfo(BaseModel):
     job_result: Optional[List[JobResult]] = None
     job_in_ctx: bool = False
 
-    @field_validator("job_detail_url")
+    @field_validator('job_detail_url')
     @classmethod
     def validate_job_detail_url(cls, v: str) -> str:
-        if ".dp.tech/jobs/detail" not in v:
+        if '.dp.tech/jobs/detail' not in v:
             raise ValueError(f"Job Detail Url Invalid")
         return v
 

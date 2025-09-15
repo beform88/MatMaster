@@ -30,14 +30,14 @@ async def agent_main() -> None:
     # Initialize session service and create new session
     session_service = DatabaseSessionService(db_url=DBUrl)
     session = await session_service.create_session(
-        app_name="matmaster_agent",
-        user_id="matmaster_agent_user",
+        app_name='matmaster_agent',
+        user_id='matmaster_agent_user',
     )
     logger.info(f"Current Session: {session.id}")
 
     # Set up the agent runner with root agent and session service
     runner = Runner(
-        app_name="matmaster_agent",
+        app_name='matmaster_agent',
         agent=root_agent,
         session_service=session_service
     )
@@ -67,11 +67,11 @@ async def agent_main() -> None:
     # user_input = "帮我用DPA优化这个结构：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/110663/12791/store/7ba41529-5af4-4e38-a6fb-c569cd769dd9/outputs/structure_paths/structure_bulk.cif"
     # user_input = "帮我检索TiO2"
     # user_input = "请你为我搭建一个氯化钠的结构"
-    user_input = "用openlam查找一个TiO2"
+    user_input = '用openlam查找一个TiO2'
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input
-    content = types.Content(role="user", parts=[types.Part(text=user_input)])
+    content = types.Content(role='user', parts=[types.Part(text=user_input)])
 
     # Main conversation loop
     while True:
@@ -94,25 +94,25 @@ async def agent_main() -> None:
                 for part in event.content.parts:
                     if part.text:
                         role = event.content.role
-                        if role == "user":
+                        if role == 'user':
                             print(f"🧑 用户：{part.text}")
-                        elif role == "model":
+                        elif role == 'model':
                             print(f"🤖 智能体：{part.text}")
 
         # Get next user input
-        user_input = input("🧑 用户：")
+        user_input = input('🧑 用户：')
 
         # Skip empty inputs
         if not user_input or not user_input.strip():
             continue
 
         # Check for exit commands
-        if user_input.lower() in ["exit", "quit", "q"]:
+        if user_input.lower() in ['exit', 'quit', 'q']:
             break
 
         # Prepare content for next iteration
         content = types.Content(
-            role="user",
+            role='user',
             parts=[types.Part(text=user_input)]
         )
 

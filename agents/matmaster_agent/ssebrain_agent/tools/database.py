@@ -13,8 +13,8 @@ class DatabaseManager:
 
     def __init__(self, db_name: str):
         self.db_name = db_name
-        self.table_url = "https://db-core.dp.tech/api/common_db/v1/table"
-        self.query_url = "https://db-core.dp.tech/api/common_db/v1/common_data/list"
+        self.table_url = 'https://db-core.dp.tech/api/common_db/v1/table'
+        self.query_url = 'https://db-core.dp.tech/api/common_db/v1/common_data/list'
         self.get_headers = {
             'X-User-Id': '14962',
             'X-Org-Id': '3962',
@@ -61,19 +61,19 @@ class DatabaseManager:
             Get the fields of a table
             Args:
                 table_name: the name of the table
-                Should determine which table to query based on the user's requirements  
-                
+                Should determine which table to query based on the user's requirements
+
             Returns:
                 A dictionary containing the fields of the table, {'fields': [field_name1, field_name2, ...]}
             """
             async with aiohttp.ClientSession() as session:
-                if self.db_name == "solid_state_electrolyte_db" or self.db_name == "polymer_db":
+                if self.db_name == 'solid_state_electrolyte_db' or self.db_name == 'polymer_db':
                     raw_table_name = self.field_info_table
                     filters = {
-                        "type": 1,
-                        "field": "tableAK",
-                        "operator": "eq",
-                        "value": table_name,
+                        'type': 1,
+                        'field': 'tableAK',
+                        'operator': 'eq',
+                        'value': table_name,
                     }
                     payload = json.dumps(
                         {
@@ -124,23 +124,23 @@ class DatabaseManager:
                 field_name: the name of the field
                 Should carefully consider which field to query based on the user's requirements. When querying molecules, pay particular attention to distinguishing between abbreviations and full names.
                 Name like PMDA, PPD is the abbreviation of the molecule, while 3-Chlorophthalic anhydride is the full name of the molecule.
-                
+
             Returns:
                 A dictionary containing the info of the field, {'field_info': {field_name: field_info}}
             """
             async with aiohttp.ClientSession() as session:
-                if self.db_name == "electrolyte_db" or self.db_name == "polymer_db":
-                    if self.db_name == "electrolyte_db":
+                if self.db_name == 'electrolyte_db' or self.db_name == 'polymer_db':
+                    if self.db_name == 'electrolyte_db':
                         raw_table_name = electrolyte.TABLE_FILED_INFO_NAME
-                    elif self.db_name == "polymer_db":
+                    elif self.db_name == 'polymer_db':
                         raw_table_name = polymer.TABLE_FILED_INFO_NAME
                     elif self.db_name == 'solid_state_electrolyte_db':
                         raw_table_name = solid_state_electrolyte.TABLE_FILED_INFO_NAME
                     filters = {
-                        "type": 1,
-                        "field": "tableAK",
-                        "operator": "eq",
-                        "value": table_name  # 注意：如果table_name是字符串，json.dumps会自动加引号
+                        'type': 1,
+                        'field': 'tableAK',
+                        'operator': 'eq',
+                        'value': table_name  # 注意：如果table_name是字符串，json.dumps会自动加引号
                     }
                     payload = json.dumps(
                         {
@@ -221,7 +221,7 @@ class DatabaseManager:
                 # First, parse the JSON string back into a Python dictionary
                 filters = json.loads(filters_json)
             except json.JSONDecodeError as e:
-                return {"error": f"Invalid JSON in filters_json parameter: {e}"}
+                return {'error': f"Invalid JSON in filters_json parameter: {e}"}
 
             if selected_fields is None:
                 selected_fields = self.table_schema.get(table_name, {}).get('primary_fields', None)
@@ -246,12 +246,12 @@ class DatabaseManager:
                 return {'error': 'No data found!', 'row_count': 0, 'papers': [], 'paper_count': 0}
             rows = []
             for item in result['data']['list']:
-                if table_name == "polym00":
+                if table_name == 'polym00':
                     converted_item = {to_snake_case(key): value for key, value in item.items()}
                     rows.append({key: value for key, value in converted_item.items() if key in selected_fields})
                 else:
                     rows.append({key: value for key, value in item.items() if key in selected_fields})
-            dois = list(set([item['doi'] for item in result['data']['list'] if 'doi' in item]))
+            dois = list({item['doi'] for item in result['data']['list'] if 'doi' in item})
             return {'result': rows, 'row_count': len(result['data']['list']), 'papers': dois, 'paper_count': len(dois)}
 
         return query_table

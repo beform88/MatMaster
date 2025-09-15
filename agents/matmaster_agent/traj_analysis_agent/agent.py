@@ -27,7 +27,7 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         instruction="""
         This agent specializes in analyzing molecular dynamics (MD) simulation trajectories,
         with the following key functionalities:
-        
+
         Solvation Structure Analysis:
         1. Analyze SSIP/CIP/AGG ratios for electrolytes
         2. Calculate coordination numbers of solvents
@@ -62,20 +62,20 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         Visualization Output:
         - Visualization is provided for MSD and RDF analyses only
         - Data files are provided for further analysis when applicable
-        
+
         File Format Support:
         - VASP: XDATCAR, vasprun.xml (requires INCAR for some analyses)
         - LAMMPS: dump files (requires input file for some analyses)
         - GROMACS: .trr, .xtc (requires topology file)
         - extxyz: extended xyz format
-        
+
         Atom Selection Syntax:
         Different trajectory formats use different atom selection syntaxes:
         - VASP/GROMACS: Use 'name', e.g., "name O" or ["name O","name H"]
         - LAMMPS: Use 'type', e.g., "type 1" or ["type 1","type 2"]
         - extxyz: Use 'type' with element symbols, e.g., "type Na" or ["type Na","type Cl"]
         - General MDAnalysis syntax also supported: 'index', 'resid', 'filter', etc.
-        
+
         Example Queries:
         - "分析LiTFSI溶液的溶剂化结构"
         - "计算这个轨迹文件的MSD，原子组为O和H"

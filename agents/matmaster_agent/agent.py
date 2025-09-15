@@ -29,7 +29,7 @@ from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectri
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
 from agents.matmaster_agent.utils.event_utils import send_error_event
 
-logging.getLogger("google_adk.google.adk.tools.base_authenticated_tool").setLevel(logging.ERROR)
+logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(logging.ERROR)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -91,8 +91,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 yield error_event
 
             error_handel_agent = LlmAgent(
-                name="error_handel_agent",
-                model=LiteLlm(model="litellm_proxy/azure/gpt-5-chat"),
+                name='error_handel_agent',
+                model=LiteLlm(model='litellm_proxy/azure/gpt-5-chat'),
             )
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):

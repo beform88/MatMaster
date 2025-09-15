@@ -12,7 +12,7 @@ import aiohttp
 from ..tools.io import upload_base64_to_oss
 
 
-async def extract_convert_and_upload(tgz_url: str, temp_dir: str = "./tmp") -> dict:
+async def extract_convert_and_upload(tgz_url: str, temp_dir: str = './tmp') -> dict:
     """
     使用当前目录下的临时文件夹处理文件
     :param tgz_url: 要下载的tgz文件URL
@@ -59,7 +59,7 @@ async def jpg_to_base64(jpg_path: Path) -> Tuple[Path, str]:
 async def extract_jpg_from_tgz_url(tgz_url: str, temp_path: Path) -> List[Path]:
     """使用指定临时目录处理文件"""
     async with aiohttp.ClientSession() as session:
-        tgz_path = temp_path / "downloaded.tgz"
+        tgz_path = temp_path / 'downloaded.tgz'
 
         await download_file(session, tgz_url, tgz_path)
         await extract_tarfile(tgz_path, temp_path)
@@ -92,6 +92,6 @@ async def find_jpg_files(directory: Path) -> List[Path]:
     loop = asyncio.get_running_loop()
 
     def _sync_find():
-        return list(directory.rglob("*.jpg")) + list(directory.rglob("*.JPG"))
+        return list(directory.rglob('*.jpg')) + list(directory.rglob('*.JPG'))
 
     return await loop.run_in_executor(None, _sync_find)
