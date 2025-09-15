@@ -2,6 +2,8 @@ name: pre-commit Checks
 on: [ push, pull_request ]
 jobs:
   pre-commit:
+    # 添加条件判断，排除main分支的push事件
+    if: github.event_name != 'push' || github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
