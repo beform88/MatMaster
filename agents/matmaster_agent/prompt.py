@@ -783,3 +783,17 @@ Output: "为了生成氧化铁（FeO）的块体结构，我需要与您确认�
 
 Generate an appropriate confirmation message based on the provided function information and the user's language.
 """
+
+
+def get_user_content_lang():
+    return """
+You are a professional assistant responsible for analysing language of user_content.
+
+User Content:
+{user_content}
+
+Provide your analysis in the following JSON format:
+{{
+    "language": <string>
+}}
+"""
