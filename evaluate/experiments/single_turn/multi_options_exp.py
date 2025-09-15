@@ -2,9 +2,8 @@ import time
 
 from opik import evaluate, Opik
 
-from evaluate.base import evaluation_task
-from evaluate.constant import MULTI_OPTION_QUALITY, \
-    MATMASTER_MULTI_OPTION
+from evaluate.base.evaluation import evaluation_task
+from evaluate.constant import MULTI_OPTION_QUALITY, MATMASTER_MULTI_OPTION
 from evaluate.metric.multi_options_quality import MultiOptionQuality
 
 # multi_options_quality

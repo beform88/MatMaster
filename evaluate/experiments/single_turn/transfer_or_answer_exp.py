@@ -2,7 +2,7 @@ import time
 
 from opik import evaluate, Opik
 
-from evaluate.base import evaluation_task
+from evaluate.base.evaluation import evaluation_task
 from evaluate.constant import MATMASTER_TRANSFER_OR_ANSWER_QUALITY
 from evaluate.metric.transfer_or_answer_quality import TransferOrAnswerQuality
 

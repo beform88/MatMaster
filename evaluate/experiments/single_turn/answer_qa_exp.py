@@ -4,7 +4,7 @@ from opik import Opik
 from opik import evaluate
 from opik.evaluation.metrics import AnswerRelevance
 
-from evaluate.base import evaluation_task
+from evaluate.base.evaluation import evaluation_task
 from evaluate.utils import load_dataset_json
 
 MATMASTER_ANSWER_QUALITY = 'MatMaster-Answer-Quality'
