@@ -44,7 +44,7 @@ async def matmaster_prepare_state(callback_context: CallbackContext) -> Optional
                                   response_format=UserContent)
     result: dict = json.loads(response.choices[0].message.content)
     logger.info(f"[matmaster_prepare_state] user_content = {result}")
-    language = str(result.get('language', "zh"))
+    language = str(result.get('language', 'zh'))
     callback_context.state['target_language'] = language
 
 
