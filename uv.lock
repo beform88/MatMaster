@@ -272,6 +272,24 @@ wheels = [
 ]
 
 [[package]]
+name = "bohrium-sdk"
+version = "0.14.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "httpx" },
+    { name = "pyhumps" },
+    { name = "requests" },
+    { name = "tqdm" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/84/f2/4effe54b697d7d372b90a8591c14e86f3bd75b2519f7150e070ba6d6e304/bohrium-sdk-0.14.0.tar.gz", hash = "sha256:2baf9a9293c30238ec1714152865d89a5977d6685fd6c6eee2df95c6635d522b", size = 15128 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/38/a0/a7e0b81ad8de36b9f9d2185d579b6f50558e8aa140a64007fdd4136373f4/bohrium_sdk-0.14.0-py3-none-any.whl", hash = "sha256:fbc7c71677b962934933ec69f7c7e8e45f04d1942c3b8afa6229a635e50f950a", size = 18925 },
+]
+
+[[package]]
 name = "boto3-stubs"
 version = "1.40.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1607,6 +1625,7 @@ dependencies = [
     { name = "aiofiles" },
     { name = "anyio" },
     { name = "bohr-agent-sdk" },
+    { name = "bohrium-sdk" },
     { name = "google-adk" },
     { name = "litellm" },
     { name = "opik" },
@@ -1621,6 +1640,7 @@ requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "anyio", specifier = ">=4.10.0" },
     { name = "bohr-agent-sdk", specifier = "==0.1.101" },
+    { name = "bohrium-sdk", specifier = ">=0.14.0" },
     { name = "google-adk", specifier = "==1.14.0" },
     { name = "litellm", specifier = ">=1.76.1" },
     { name = "opik", specifier = ">=1.8.33" },
