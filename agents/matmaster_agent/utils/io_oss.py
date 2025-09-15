@@ -41,7 +41,7 @@ async def _find_all_files(directory: Path) -> List[Path]:
     loop = asyncio.get_running_loop()
 
     def _sync_list():
-        return [p for p in directory.rglob("*") if p.is_file() and not p.suffix.lower() in {".tgz"}]
+        return [p for p in directory.rglob('*') if p.is_file() and not p.suffix.lower() in {'.tgz'}]
 
     return await loop.run_in_executor(None, _sync_list)
 
@@ -49,7 +49,7 @@ async def _find_all_files(directory: Path) -> List[Path]:
 async def extract_files_from_tgz_url(tgz_url: str, temp_path: Path) -> List[Path]:
     """使用指定临时目录处理文件"""
     async with aiohttp.ClientSession() as session:
-        tgz_path = temp_path / "downloaded.tgz"
+        tgz_path = temp_path / 'downloaded.tgz'
 
         await _download_file(session, tgz_url, tgz_path)
         await _extract_tarfile(tgz_path, temp_path)
@@ -70,8 +70,8 @@ async def upload_to_oss_wrapper(b64_data: str, oss_path: str, filename: str) -> 
     def _sync_upload_base64_to_oss(data: str, oss_path: str) -> str:
         try:
             auth = oss2.ProviderAuth(EnvironmentVariableCredentialsProvider())
-            endpoint = os.environ["OSS_ENDPOINT"]
-            bucket_name = os.environ["OSS_BUCKET_NAME"]
+            endpoint = os.environ['OSS_ENDPOINT']
+            bucket_name = os.environ['OSS_BUCKET_NAME']
             bucket = oss2.Bucket(auth, endpoint, bucket_name)
             bucket.put_object(oss_path, base64.b64decode(data))
             return f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}"
@@ -88,7 +88,7 @@ async def upload_to_oss_wrapper(b64_data: str, oss_path: str, filename: str) -> 
 
 
 # Main Func
-async def extract_convert_and_upload(tgz_url: str, temp_dir: str = "./tmp") -> dict:
+async def extract_convert_and_upload(tgz_url: str, temp_dir: str = './tmp') -> dict:
     """
     使用当前目录下的临时文件夹处理文件
     :param tgz_url: 要下载的tgz文件URL
@@ -125,8 +125,8 @@ async def update_tgz_dict(tool_result: dict):
         new_tool_result[k] = v
         if (
                 type(v) == str and
-                v.startswith("https") and
-                v.endswith("tgz")):
+                v.startswith('https') and
+                v.endswith('tgz')):
             tgz_flag = True
             new_tool_result.update(**await extract_convert_and_upload(v))
 

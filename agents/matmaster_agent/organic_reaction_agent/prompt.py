@@ -1,5 +1,5 @@
 description = (
-    "Organic Reaction Agent is a computational chemistry assistant that automatically identifies transition states in organic and organometallic reactions."
+    'Organic Reaction Agent is a computational chemistry assistant that automatically identifies transition states in organic and organometallic reactions.'
 )
 
 instruction_en = """
@@ -9,26 +9,26 @@ instruction_en = """
     - When the user directly provides Smiles formulas for reactants and products and a solvent model, you can directly call the `calculate_reaction_profile` tool to perform the calculation.
     - When the user does not provide Smiles formulas for reactants and products, you should inform the user that they need to provide these formulas and a solvent model before the calculation can proceed. Smiles formulas can be obtained by drawing molecular structures using software such as ChemDraw. You cannot invent Smiles formulas yourself.
     - Before the calculation begins, you should show the user the parameters you are going to enter and explain why you are doing so. Also, warn the user that the calculation may take some time.
-    - If a calculation error occurs, you should directly inform the user and provide error feedback, rather than trying to fix the error yourself. 
+    - If a calculation error occurs, you should directly inform the user and provide error feedback, rather than trying to fix the error yourself.
 """
 
 
 # Agent Constant
-AgentName = "organic_reaction_agent"
+AgentName = 'organic_reaction_agent'
 AgentDescription = description
 AgentInstruction = instruction_en
-SubmitAgentName = "organic_reaction_submit_agent"
-SubmitCoreAgentName = "organic_reaction_submit_core_agent"
-SubmitRenderAgentName = "organic_reaction_submit_render_agent"
+SubmitAgentName = 'organic_reaction_submit_agent'
+SubmitCoreAgentName = 'organic_reaction_submit_core_agent'
+SubmitRenderAgentName = 'organic_reaction_submit_render_agent'
 
-ResultAgentName = "organic_reaction_result_agent"
-ResultCoreAgentName = "organic_reaction_result_core_agent"
-ResultTransferAgentName = "organic_reaction_result_transfer_agent"
+ResultAgentName = 'organic_reaction_result_agent'
+ResultCoreAgentName = 'organic_reaction_result_core_agent'
+ResultTransferAgentName = 'organic_reaction_result_transfer_agent'
 
-TransferAgentName = "organic_reaction_transfer_agent"
+TransferAgentName = 'organic_reaction_transfer_agent'
 
 # SubmitCoreAgent
-SubmitCoreAgentDescription = "A Job Submit Agent"
+SubmitCoreAgentDescription = 'A Job Submit Agent'
 SubmitCoreAgentInstruction = """
     You are an expert in computational chemistry.
 
@@ -66,7 +66,7 @@ SubmitCoreAgentInstruction = """
 """
 
 # DPASubmitAgent
-SubmitAgentDescription = "job submission and frontend task queue display"
+SubmitAgentDescription = 'job submission and frontend task queue display'
 SubmitAgentInstruction = f"""
     You are a task coordination agent. You must strictly follow this workflow:
 
@@ -82,7 +82,7 @@ SubmitAgentInstruction = f"""
 """
 
 # ResultAgent
-ResultAgentDescription = "query status and get result"
+ResultAgentDescription = 'query status and get result'
 ResultCoreAgentInstruction = f"""
     You are an expert in computational chemistry.
 

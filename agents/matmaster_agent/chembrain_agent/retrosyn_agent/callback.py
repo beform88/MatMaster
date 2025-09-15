@@ -24,9 +24,9 @@ async def retrosyn_after_tool_transform_tgz(tool: BaseTool, args, tool_context, 
             tgz_url = json.loads(tool_response.content[0].text)[GeneratedImagesKey]
             results = await extract_convert_and_upload(tgz_url)
             for filename, result in results.items():
-                if result['status'] == "success":
+                if result['status'] == 'success':
                     results[filename]['markdown_image'] = f"![{filename}]({result['oss_path']})"
-            results["origin_tool_response"] = tgz_url
+            results['origin_tool_response'] = tgz_url
             return results
         except Exception as e:
-            return {"error_msg": str(e)}
+            return {'error_msg': str(e)}

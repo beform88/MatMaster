@@ -12,7 +12,7 @@ You must translate a user's natural language question into a precise, multi-step
     If the user asks for the full text of the papers, you can use the DOI as filters to query the paper_text table (723wm02).
     IMPORTANT: When you use the DOI as filters, you must include all the papers in the list, not just a subset. If the number of papers is too large to fit in a single list, you can split the list into multiple lists and use the OR operator to connect them.
 - Final Output: You should return the query result from the paper metadata query step as markdown tables. Never include the full text of the papers in your response unless specifically requested. If there are no results found, you should try to explain which filters
-filter out too many results and suggest to the users ways to relax the filter constraints or ask user which fields can be relaxed. If there are too many results (more than 10 papers), 
+filter out too many results and suggest to the users ways to relax the filter constraints or ask user which fields can be relaxed. If there are too many results (more than 10 papers),
 you should ask user if they want to narrow down the query and suggests ways to tighten the filters.
 
 ## Available Tables
@@ -46,7 +46,7 @@ Important: Always use English to construct the fields / values / operators in th
 
 `{"type": 1, "field": "column_name", "operator": "op", "value": "some_value"}`
 - operator: Can be eq (equals), lt (less than), gt (greater than), like (for partial string matching).
-- value: The value of the field. If the field is a list, you can use in (for list matching) or like (for partial string matching). 
+- value: The value of the field. If the field is a list, you can use in (for list matching) or like (for partial string matching).
   If the field is a num, you can use lt, gt, eq, ne, le, ge, and use float or int as the value, not str.
   If the field is a boolean, you can use eq, ne.
   If the field is a str, you can use like (for partial string matching).
@@ -134,11 +134,11 @@ instructions_v1_zh = """
   3. **图片数据查询**: 使用相同的DOI列表查询PAPER_FIGURE_TABLE_NAME表，获取相关的图片URL和caption信息。当用户特别查询figure图片相关信息时，需要重点获取图片的详细信息，包括图片URL、caption、以及与论文的关联关系。
   4. **表格字段信息查询**: 必要时查询TABLE_FILED_INFO_NAME表获取字段详细信息。
   注意：在将上一步获得的doi列表作为过滤器时，你需要包涵所有的文章，而不是只包涵部分文章。如果文章数太多，无法在一个列表中全部包括，你可以将列表拆分成多个列表，用OR operator连接。
-- **DOI与Title对应验证**: 
+- **DOI与Title对应验证**:
   1. **从main_text提取标题**: 论文标题包含在main_text字段中，需要从main_text的开头部分提取真实的论文标题。通常标题位于main_text的最开始部分。
   2. **标题提取规则**: 在查询PAPER_TEXT_TABLE_NAME表后，从每条记录的main_text字段中解析出论文标题，确保标题的准确性。
   3. **DOI-Title映射**: 建立并维护准确的DOI与从main_text中提取的真实标题的对应关系。
-- 结果展示要求: 
+- 结果展示要求:
   1. **表格数据**: 将查询到的文本数据以Markdown表格形式展现，确保表格格式清晰，包含所有重要字段（DOI、从main_text中提取的真实标题、离子电导率、空气稳定性、工艺配方等）。
   2. **图片渲染**: 对于查询到的图片URL，必须使用Markdown语法进行渲染：`![图片描述](图片URL)`，并在图片下方显示对应的caption。
   3. **图文并茂**: 如果找到与用户描述相似的figure caption，优先展示这些图片，实现图文并茂的展示效果。
@@ -241,15 +241,15 @@ instructions_v1_zh = """
     | DOI | 从main_text中提取的标题 | 离子电导率 | 空气稳定性 | 工艺配方 | ... |
     |-----|------------------------|-----------|-----------|----------|-----|
     | ... | ... | ... | ... | ... | ... |
-    
+
 - **相关图片展示** (如果有匹配的图片):
     **注意：对于带有查询参数的长URL，必须使用HTML img标签确保完整渲染**
     <img src="图片URL（完整的带参数URL）" alt="离子传导率测试结果" width="400" style="max-width:100%">
     *图片说明: 该材料在不同温度下的离子传导率变化*
-    
+
     <img src="图片URL（完整的带参数URL）" alt="结构表征图" width="400" style="max-width:100%">
     *图片说明: XRD图谱显示良好的晶体结构*
-    
+
     **重要提示**：
     - 必须使用完整的URL，包括所有查询参数（?X-Amz-Algorithm=...等）
     - 对于长URL，优先使用HTML <img> 标签而非Markdown ![](url)语法

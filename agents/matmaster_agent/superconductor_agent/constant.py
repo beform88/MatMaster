@@ -1,10 +1,8 @@
 from agents.matmaster_agent.constant import CURRENT_ENV
 
 
-SuperconductorAgentName = "superconductor_agent"
-if CURRENT_ENV in ["test", "uat"]:
-   SuperconductorServerUrl="http://root@mllo1368252.bohrium.tech:50002/sse"
+SuperconductorAgentName = 'superconductor_agent'
+if CURRENT_ENV in ['test', 'uat']:
+   SuperconductorServerUrl='http://root@mllo1368252.bohrium.tech:50002/sse'
 else:
-   SuperconductorServerUrl="https://superconductor-ambient-010-uuid1750845273.app-space.dplink.cc/sse?token=16ec40d0d371408288110099ecfc50d8"
-
-	
+   SuperconductorServerUrl='https://superconductor-ambient-010-uuid1750845273.app-space.dplink.cc/sse?token=16ec40d0d371408288110099ecfc50d8'

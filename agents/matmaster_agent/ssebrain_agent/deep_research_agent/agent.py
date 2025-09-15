@@ -102,7 +102,7 @@ class GroupPaperAgent(BaseAgent):
 
 
 def init_paper_group_agent():
-    return GroupPaperAgent(name="group_paper")
+    return GroupPaperAgent(name='group_paper')
 
 
 def init_deep_research_agent(llm_config):
@@ -110,8 +110,8 @@ def init_deep_research_agent(llm_config):
     report_agent = init_report_agent(llm_config)
 
     root_agent = SequentialAgent(
-        name="sse_deep_research_agent",
-        description="Summarize the content of single/multiple papers to generate a review or report.",
+        name='sse_deep_research_agent',
+        description='Summarize the content of single/multiple papers to generate a review or report.',
         sub_agents=[paper_group_agent, report_agent],
         before_agent_callback=paper_list_before_agent
     )

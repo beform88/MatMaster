@@ -170,13 +170,13 @@ class GoalTemplates:
 # 在您的代码中调用真实的agent API
 async def simulate_conversation(simulator, agent_api_endpoint):
     initial_question = simulator.get_initial_question()
-    
+
     # 调用真实agent API
     response = await call_agent_api(agent_api_endpoint, initial_question)
-    
+
     # 生成用户响应
     user_response, should_continue = simulator.generate_response(response)
-    
+
     # 继续对话...
 ```
 

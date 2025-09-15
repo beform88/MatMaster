@@ -1,13 +1,13 @@
 description = (
-    "Thermoelectric is a tool to calculate thermoelectric materials related properties with Deep Potential Models"
+    'Thermoelectric is a tool to calculate thermoelectric materials related properties with Deep Potential Models'
 )
 
 instruction_en = (
-                  "You are an expert in thermoelectric materials. "
-                  "Help users evaluate thermoelectric properties, including HSE functional "
-                  "bandgap, shear modulus, bulk modulus, n-type and p-type power factors, "
-                  "n-type and p-type carrier mobility, and Seebeck coefficient. "
-                  "Please use default settings if not specified, but always confirm with the user before submission."
+                  'You are an expert in thermoelectric materials. '
+                  'Help users evaluate thermoelectric properties, including HSE functional '
+                  'bandgap, shear modulus, bulk modulus, n-type and p-type power factors, '
+                  'n-type and p-type carrier mobility, and Seebeck coefficient. '
+                  'Please use default settings if not specified, but always confirm with the user before submission.'
 
     )
 
@@ -16,24 +16,24 @@ from agents.matmaster_agent.prompt import TransferAgentDescription
 TransferAgentDescription
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
-TrajAnalysisAgentName = "traj_analysis_agent"
+TrajAnalysisAgentName = 'traj_analysis_agent'
 
 
 # Agent Constant
-ThermoAgentName = "thermoelectric_agent"
+ThermoAgentName = 'thermoelectric_agent'
 
-ThermoSubmitAgentName = "thermoelectric_submit_agent"
-ThermoSubmitCoreAgentName = "thermoelectric_submit_core_agent"
-ThermoSubmitRenderAgentName = "thermoelectric_submit_render_agent"
+ThermoSubmitAgentName = 'thermoelectric_submit_agent'
+ThermoSubmitCoreAgentName = 'thermoelectric_submit_core_agent'
+ThermoSubmitRenderAgentName = 'thermoelectric_submit_render_agent'
 
-ThermoResultAgentName = "thermoelectric_result_agent"
-ThermoResultCoreAgentName = "thermoelectric_result_core_agent"
-ThermoResultTransferAgentName = "thermoelectric_result_transfer_agent"
+ThermoResultAgentName = 'thermoelectric_result_agent'
+ThermoResultCoreAgentName = 'thermoelectric_result_core_agent'
+ThermoResultTransferAgentName = 'thermoelectric_result_transfer_agent'
 
-ThermoTransferAgentName = "thermoelectric_transfer_agent"
+ThermoTransferAgentName = 'thermoelectric_transfer_agent'
 
 # ThermoAgent
-ThermoAgentDescription = "An agent specialized in computational research using Deep Potential"
+ThermoAgentDescription = 'An agent specialized in computational research using Deep Potential'
 ThermoAgentInstruction = """
 # Thermo_AGENT PROMPT TEMPLATE
 
@@ -126,7 +126,7 @@ You are a materials simulation analysis expert. Your responsibilities:
 """
 
 # ThermoSubmitCoreAgent
-ThermoSubmitCoreAgentDescription = "A specialized Deep Potential simulations Job Submit Agent"
+ThermoSubmitCoreAgentDescription = 'A specialized Deep Potential simulations Job Submit Agent'
 ThermoSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform Deep Potential calculations, including structure optimization, molecular dynamics, and property calculations.
@@ -165,7 +165,7 @@ Step 4: Render parameters (if new) → Step 5: User Confirmation (MANDATORY for 
 """
 
 # ThermoSubmitAgent
-ThermoSubmitAgentDescription = "Coordinates Thermo computational job submission and frontend task queue display"
+ThermoSubmitAgentDescription = 'Coordinates Thermo computational job submission and frontend task queue display'
 ThermoSubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 
@@ -181,7 +181,7 @@ You are a task coordination agent. You must strictly follow this workflow:
 """
 
 # ThermoResultAgent
-ThermoResultAgentDescription = "query status and get result"
+ThermoResultAgentDescription = 'query status and get result'
 ThermoResultCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users obtain Deep Potential calculation results, including structure optimization, molecular dynamics, and property calculations.

@@ -1,11 +1,11 @@
 description = (
-    "Superconductor is a tool to calculate critical temperature at ambient condition and high pressure"
+    'Superconductor is a tool to calculate critical temperature at ambient condition and high pressure'
 )
 
 instruction_en = (
-                  "You are an expert in superconductor. "
-                  "Help users evaluate critical temperature at ambient pressure or high pressure"
-                  "You could also screen potential superconductor with high critical temperature"
+                  'You are an expert in superconductor. '
+                  'Help users evaluate critical temperature at ambient pressure or high pressure'
+                  'You could also screen potential superconductor with high critical temperature'
 
     )
 
@@ -13,24 +13,24 @@ instruction_en = (
 from agents.matmaster_agent.prompt import TransferAgentDescription
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
-TrajAnalysisAgentName = "traj_analysis_agent"
+TrajAnalysisAgentName = 'traj_analysis_agent'
 
 
 # Agent Constant
-SuperconductorAgentName = "superconductor_agent"
+SuperconductorAgentName = 'superconductor_agent'
 
-SuperconductorSubmitAgentName = "superconductor_submit_agent"
-SuperconductorSubmitCoreAgentName = "superconductor_submit_core_agent"
-SuperconductorSubmitRenderAgentName = "superconductor_submit_render_agent"
+SuperconductorSubmitAgentName = 'superconductor_submit_agent'
+SuperconductorSubmitCoreAgentName = 'superconductor_submit_core_agent'
+SuperconductorSubmitRenderAgentName = 'superconductor_submit_render_agent'
 
-SuperconductorResultAgentName = "superconductor_result_agent"
-SuperconductorResultCoreAgentName = "superconductor_result_core_agent"
-SuperconductorResultTransferAgentName = "superconductor_result_transfer_agent"
+SuperconductorResultAgentName = 'superconductor_result_agent'
+SuperconductorResultCoreAgentName = 'superconductor_result_core_agent'
+SuperconductorResultTransferAgentName = 'superconductor_result_transfer_agent'
 
-SuperconductorTransferAgentName = "superconductor_transfer_agent"
+SuperconductorTransferAgentName = 'superconductor_transfer_agent'
 
 # SuperconductorAgent
-SuperconductorAgentDescription = "An agent specialized in computational research using Deep Potential"
+SuperconductorAgentDescription = 'An agent specialized in computational research using Deep Potential'
 SuperconductorAgentInstruction = """
 # Superconductor_AGENT PROMPT TEMPLATE
 
@@ -123,7 +123,7 @@ You are a materials simulation analysis expert. Your responsibilities:
 """
 
 # SuperconductorSubmitCoreAgent
-SuperconductorSubmitCoreAgentDescription = "A specialized Deep Potential simulations Job Submit Agent"
+SuperconductorSubmitCoreAgentDescription = 'A specialized Deep Potential simulations Job Submit Agent'
 SuperconductorSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform Deep Potential calculations, including structure optimization, molecular dynamics, and property calculations.
@@ -162,7 +162,7 @@ Step 4: Render parameters (if new) → Step 5: User Confirmation (MANDATORY for 
 """
 
 # SuperconductorSubmitAgent
-SuperconductorSubmitAgentDescription = "Coordinates Superconductor computational job submission and frontend task queue display"
+SuperconductorSubmitAgentDescription = 'Coordinates Superconductor computational job submission and frontend task queue display'
 SuperconductorSubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 
@@ -178,7 +178,7 @@ You are a task coordination agent. You must strictly follow this workflow:
 """
 
 # SuperconductorResultAgent
-SuperconductorResultAgentDescription = "query status and get result"
+SuperconductorResultAgentDescription = 'query status and get result'
 SuperconductorResultCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users obtain Deep Potential calculation results, including structure optimization, molecular dynamics, and property calculations.

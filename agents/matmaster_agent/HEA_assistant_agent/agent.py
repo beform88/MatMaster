@@ -15,8 +15,8 @@ sse_params = SseServerParams(url=HEA_assistant_agent_ServerUrl)
 
 toolset = CalculationMCPToolset(
     connection_params=sse_params,
-    async_mode=False,  
-    wait=True,         
+    async_mode=False,
+    wait=True,
 )
 
 class HEA_assistant_Agent(CalculationMCPLlmAgent):
@@ -26,9 +26,8 @@ class HEA_assistant_Agent(CalculationMCPLlmAgent):
             name=HEA_assistant_AgentName,
             description=HEA_assistant_AgentDescription,
             instruction=HEA_assistant_AgentInstruction,
-            tools=[toolset], 
+            tools=[toolset],
         )
 
 def init_HEA_assistant_agent(llm_config) -> BaseAgent:
     return HEA_assistant_Agent(llm_config)
-

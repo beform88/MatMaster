@@ -41,8 +41,8 @@ from .constant import ThermoelectricServerUrl
 
 ThermoelectricBohriumExecutor = copy.deepcopy(BohriumExecutor)
 ThermoelectricBohriumStorge = copy.deepcopy(BohriumStorge)
-ThermoelectricBohriumExecutor["machine"]["remote_profile"]["image_address"] = "registry.dp.tech/dptech/dp/native/prod-435364/dpa-thermo-superconductor:9"
-ThermoelectricBohriumExecutor["machine"]["remote_profile"]["machine_type"] = "c8_m31_1 * NVIDIA T4"
+ThermoelectricBohriumExecutor['machine']['remote_profile']['image_address'] = 'registry.dp.tech/dptech/dp/native/prod-435364/dpa-thermo-superconductor:9'
+ThermoelectricBohriumExecutor['machine']['remote_profile']['machine_type'] = 'c8_m31_1 * NVIDIA T4'
 
 sse_params = SseServerParams(url=ThermoelectricServerUrl)
 
@@ -71,4 +71,3 @@ class ThermoAgent(BaseAsyncJobAgent):
 
 def init_thermoelectric_agent(llm_config) -> BaseAgent:
     return ThermoAgent(llm_config)
-

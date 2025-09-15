@@ -26,7 +26,7 @@ class Worker(BaseAgent):
 
 class PlannerAndRunner(BaseAgent):
     """Distributes tasks and dynamically creates a ParallelAgent."""
-    POOL: ClassVar[List[str]] = ["w0", "w1", "w2"]
+    POOL: ClassVar[List[str]] = ['w0', 'w1', 'w2']
 
     async def _run_async_impl(self, ctx):
         run_id = secrets.token_hex(2)
@@ -38,7 +38,7 @@ class PlannerAndRunner(BaseAgent):
             author=self.name,
             content=types.Content(role=self.name,
                                   parts=[types.Part(text=f"Run {run_id} tasks {task_delta}")]),
-            actions=EventActions(state_delta={"current_run": run_id, **task_delta})
+            actions=EventActions(state_delta={'current_run': run_id, **task_delta})
         )
         parallel = ParallelAgent(
             name=f"block_{run_id}",
@@ -52,7 +52,7 @@ class Aggregator(BaseAgent):
     """Aggregates results from workers."""
 
     async def _run_async_impl(self, ctx):
-        run_id = ctx.session.state.get("current_run")
+        run_id = ctx.session.state.get('current_run')
         vals = [v for k, v in ctx.session.state.items()
                 if run_id and k.startswith(f"result:{run_id}:")]
         yield Event(
@@ -64,6 +64,6 @@ class Aggregator(BaseAgent):
 
 
 root_agent = SequentialAgent(
-    name="poly_root",
-    sub_agents=[PlannerAndRunner(name="planner"), Aggregator(name="collector")]
+    name='poly_root',
+    sub_agents=[PlannerAndRunner(name='planner'), Aggregator(name='collector')]
 )

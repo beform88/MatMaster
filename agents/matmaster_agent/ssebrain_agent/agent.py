@@ -20,7 +20,7 @@ class SSEBrainAgent(LlmAgent):
         database_agent = init_database_agent(llm_config)
         deep_research_agent = init_deep_research_agent(llm_config)
 
-        super().__init__(name="ssebrain_agent",
+        super().__init__(name='ssebrain_agent',
                          model=llm_config.gpt_5_chat,
                          description=description,
                          sub_agents=[
@@ -36,7 +36,7 @@ class SSEBrainAgent(LlmAgent):
 
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        prompt = ""
+        prompt = ''
         if ctx.user_content and ctx.user_content.parts:
             for part in ctx.user_content.parts:
                 if part.text:
@@ -49,7 +49,7 @@ class SSEBrainAgent(LlmAgent):
                         invocation_id=ctx.invocation_id,
                         author=self.name,
                         branch=ctx.branch,
-                        content=types.Content(parts=[types.Part(text=prompt)], role="system"))
+                        content=types.Content(parts=[types.Part(text=prompt)], role='system'))
 
         async for event in super()._run_async_impl(ctx):
             yield event
@@ -60,4 +60,3 @@ def init_ssebrain_agent(llm_config):
     # track_adk_agent_recursive(ssebrain_agent, llm_config.opik_tracer)
 
     return ssebrain_agent
-

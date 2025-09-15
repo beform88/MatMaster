@@ -56,7 +56,7 @@ def init_hea_calculator_agent(llm_config=None, use_deepseek=False) -> BaseAgent:
         deepseek_config = create_default_config()
         # 确保DeepSeek模型已初始化
         if hasattr(deepseek_config, 'deepseek_chat'):
-            print("使用DeepSeek模型配置")
+            print('使用DeepSeek模型配置')
             llm_config = deepseek_config
 
     return HEACalculatorAgent(llm_config)

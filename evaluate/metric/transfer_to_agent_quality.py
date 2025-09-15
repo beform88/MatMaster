@@ -13,7 +13,7 @@ class TransferToAgentQuality(base_metric.BaseMetric):
     def __init__(
             self,
             name: str = TRANSFER_TO_AGENT_QUALITY,
-            model: Optional[str] = "azure/gpt-4o",
+            model: Optional[str] = 'azure/gpt-4o',
             ignore_whitespace: bool = True,
             track: bool = True,
             project_name: Optional[str] = None,

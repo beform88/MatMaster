@@ -8,7 +8,7 @@ from agents.matmaster_agent.chembrain_agent.tools.io import save_llm_request
 
 def update_invoke_message(callback_context: CallbackContext, llm_request: LlmRequest) -> Optional[LlmResponse]:
     """save llm request to file"""
-    output_file = "llm_contents_report.json"
+    output_file = 'llm_contents_report.json'
     save_llm_request(llm_request, output_file)
 
 
