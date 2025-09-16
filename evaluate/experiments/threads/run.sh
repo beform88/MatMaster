@@ -1,16 +1,26 @@
 #!/bin/bash
-PYTHON=.venv/bin/python # your .venv
+
+SCRIPT_PATH=$(realpath "$BASH_SOURCE")
+MATMASTER_DIR=$(dirname $(dirname $(dirname $(dirname "$SCRIPT_PATH"))))
+THREADS_DIR=$MATMASTER_DIR/evaluate/experiments/threads
+
+if [ x"$1" == x ];then
+  echo "Please specify evaluation type...[$(ls -l $THREADS_DIR | grep '^d' | awk '{print $9}'| xargs)]"
+  exit 1
+fi
+
+PYTHON=$MATMASTER_DIR/.venv/bin/python # your .venv
 set -a
-source .env # your .env
+source $MATMASTER_DIR/.env # your .env
 set +a
 
-export PYTHONPATH=/your/matmaster/path/MatMaster:$PYTHONPATH
+export PYTHONPATH=$MATMASTER_DIR:$PYTHONPATH
 export MAX_JOBS=3
 
 TOTAL=$($PYTHON -c "
 import os
 import json
-with open('structure_generate.json') as f:
+with open('$THREADS_DIR/$1/$1.json') as f:
         dataset_json = json.load(f)
 print(len(dataset_json))
 ")
@@ -22,7 +32,7 @@ running_jobs=0
 for ((i=0; i<$TOTAL; i++)); do
     echo "🚀 提交任务: item $i"
     sleep 3
-    $PYTHON structure_generate_bash.py \
+    $PYTHON $THREADS_DIR/$1/$1_bash.py \
         --item_id $i > item_$i.log 2>&1 &
 
     ((running_jobs++))

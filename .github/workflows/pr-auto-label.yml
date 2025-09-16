@@ -37,7 +37,8 @@ jobs:
               'dependabot': 'dependencies',
               'upgrade': 'dependencies',
               'security': 'security',
-              'ci': 'ci'
+              'ci': 'ci',
+              'refactor': 'maintenance'
             };
 
             // 提取标题的第一个单词（冒号前的部分）
