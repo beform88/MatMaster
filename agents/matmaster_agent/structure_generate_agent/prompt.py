@@ -269,7 +269,6 @@ When choosing between `build_molecule_structure_from_g2database` and `build_mole
 - **target_type_list**: Target types ['equal', 'greater', 'less', 'minimize'] (must match length of model types)
 - **space_group**: Specific space group number (1-230)
 - **sample_num**: Number of samples to generate
-- **random_spacegroup_num**: Number of random space groups (default 0)
 - **mc_steps**: Monte Carlo optimization steps (default 500)
 
 **STEP 3: Parameter Validation and Confirmation**
