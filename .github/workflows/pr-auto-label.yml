@@ -33,7 +33,7 @@ jobs:
               'docs': 'documentation',
               'readme': 'documentation',
               'chore': 'chore',
-              'bump': 'dependencies',
+              'build': 'dependencies',
               'dependabot': 'dependencies',
               'upgrade': 'dependencies',
               'security': 'security',
