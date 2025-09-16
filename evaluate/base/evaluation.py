@@ -4,6 +4,7 @@ import logging
 import re
 import time
 import uuid
+from typing import Dict, Any, List
 
 from bohrium import Bohrium
 from dotenv import load_dotenv, find_dotenv
@@ -113,13 +114,6 @@ def multi_turn_evaluation_task(dataset_item):
         'context': []
     }
     return result
-
-
-import asyncio
-import json
-import re
-import time
-from typing import Dict, Any, List
 
 
 async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, save_mode: str = 'w') -> Dict[str, Any]:
