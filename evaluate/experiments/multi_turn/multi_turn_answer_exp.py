@@ -3,7 +3,7 @@ import time
 from opik import evaluate, Opik
 from opik.evaluation.metrics import AnswerRelevance
 
-from evaluate.base import multi_turn_evaluation_task
+from evaluate.base.evaluation import multi_turn_evaluation_task
 from evaluate.constant import MATMASTER_MULTI_TURN_ANSWER_QUALITY
 
 # multi_turn_answer_quality
