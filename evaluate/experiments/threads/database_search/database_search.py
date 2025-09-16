@@ -7,4 +7,4 @@ if __name__ == '__main__':
     print('🚀 人类模拟器启动')
     print('=' * 50)
 
-    asyncio.run(evaluation_threads_task("database_search.json", max_turn_count=5))
+    asyncio.run(evaluation_threads_task('database_search.json', max_turn_count=5))
