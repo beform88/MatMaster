@@ -37,11 +37,11 @@ class HumanSimulator:
     1. 模拟真实用户行为
     2. 管理对话目标
     3. 生成上下文相关的响应
-    4. 限制最多10轮对话
     """
 
-    def __init__(self, model: str = 'deepseek/deepseek-chat'):
+    def __init__(self, model: str = 'deepseek/deepseek-chat', max_turn_count=10):
         self.model = model
+        self.max_turn_count = max_turn_count
         self.conversation_history: List[Dict[str, Any]] = []
         self.current_state = ConversationState.INITIAL
         self.turn_count = 0
@@ -82,10 +82,9 @@ class HumanSimulator:
             'timestamp': time.time()
         })
 
-        # 检查是否达到最大轮次（限制为10轮）
-        if self.turn_count >= 10:
+        if self.turn_count >= self.max_turn_count:
             self.current_state = ConversationState.TIMEOUT
-            return '我们已经聊了10轮了，我想结束这个对话。', False
+            return f'我们已经聊了{self.max_turn_count}轮了，我想结束这个对话。', False
 
         # 生成用户响应
         user_response, should_continue = self._generate_user_response(agent_message)
@@ -121,6 +120,7 @@ class HumanSimulator:
             logger.info(f"用户响应生成 - 轮次: {self.turn_count}, 继续: {should_continue}")
 
             return user_response, should_continue
+
         except Exception as e:
             logger.error(f"生成用户响应失败: {e}")
             return '我理解了，请继续。', True
@@ -137,7 +137,7 @@ class HumanSimulator:
 - 成功标准: {', '.join(self.goal.success_criteria)}
 
 当前状态：
-- 对话轮次: {self.turn_count}/10
+- 对话轮次: {self.turn_count}/{self.max_turn_count}
 
 Agent最新回复：
 {agent_message}
@@ -145,7 +145,7 @@ Agent最新回复：
 请分析agent的回复是否满足任务需求，并生成合适的响应。
 
 重要限制：
-- 对话最多10轮，当前是第{self.turn_count}轮
+- 对话最多{self.max_turn_count}轮，当前是第{self.turn_count}轮
 - 除首轮对话外，其他轮次尽可能简短地回答agent的问题，回复内容紧扣初始问题，禁止发散
 - 如果agent在询问具体参数或设置，提供简洁明确的回答
 - 如果agent已经提供了初始任务所需的信息或完成了任务，请立刻结束对话

@@ -115,7 +115,7 @@ def multi_turn_evaluation_task(dataset_item):
     return result
 
 
-async def evaluation_threads_task(file_path):
+async def evaluation_threads_task(file_path, max_turn_count=10):
     """与ADK agent进行多轮对话测试"""
     print('=' * 80)
     print('🤖 与ADK Agent多轮对话测试')
@@ -140,7 +140,7 @@ async def evaluation_threads_task(file_path):
         )
 
         # 创建人类模拟器
-        simulator = HumanSimulator()
+        simulator = HumanSimulator(max_turn_count=max_turn_count)
 
         # 数据预处理
         scenario = {
