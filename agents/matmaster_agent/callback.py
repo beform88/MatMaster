@@ -62,27 +62,27 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
     ):
         running_job_ids = get_running_jobs_detail(jobs_dict)
         access_key = _get_ak(callback_context)
-        if callback_context.state['target_language'] in ['Chinese']:
+        if callback_context.state['target_language'] in ['Chinese', 'zh-CN', '简体中文', 'Chinese (Simplified)']:
             job_complete_intro = '检测到任务 <{job_id}> 已完成，我将立刻转移至对应的 Agent 去获取任务结果，请稍等...'
         else:
             job_complete_intro = ('Job <{job_id}> has been detected as completed. '
                                   'I will immediately transfer to the corresponding agent to retrieve the job results. Please wait...')
 
+        reset = False
         for origin_job_id, job_id, job_query_url, agent_name in running_job_ids:
             job_status = get_job_status(job_query_url, access_key=access_key)
             if job_status in ['Failed', 'Finished']:
+                if not reset:
+                    llm_response.content.parts = []
+                    reset = True
                 logger.info(f"[matmaster_check_job_status] job_id = {job_id}, job_status = {job_status}")
                 function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
                 callback_context.state['origin_job_id'] = origin_job_id
-                llm_response.content.parts.insert(0, Part(text=job_complete_intro.format(job_id=job_id),
-                                                          function_call=FunctionCall(id=function_call_id,
-                                                                                     name='transfer_to_agent',
-                                                                                     args={'agent_name': agent_name})
-                                                          )
-                                                  )
-                llm_response.content.parts.insert(1, Part(function_response=FunctionResponse(id=function_call_id,
-                                                                                             name='transfer_to_agent',
-                                                                                             response=None)))
+                llm_response.content.parts.append(Part(text=job_complete_intro.format(job_id=job_id)))
+                llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id,
+                                                                                  name='transfer_to_agent',
+                                                                                  args={'agent_name': agent_name})))
+
         return llm_response
 
 
