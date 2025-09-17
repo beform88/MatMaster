@@ -31,7 +31,7 @@ from agents.matmaster_agent.constant import (
     ModelRole,
     get_BohriumExecutor,
     get_BohriumStorage,
-    get_DFlowExecutor,
+    get_DFlowExecutor, OpenAPIJobAPI,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
@@ -318,10 +318,14 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             job_status = results['status']
                             if not ctx.session.state['dflow']:
                                 bohr_job_id = results['extra_info']['bohr_job_id']
+                                job_query_url = f'{OpenAPIJobAPI}/{bohr_job_id}'
                                 job_detail_url = results['extra_info']['job_link']
                                 frontend_result = BohrJobInfo(origin_job_id=origin_job_id, job_name=job_name,
-                                                              job_status=job_status, job_detail_url=job_detail_url,
-                                                              job_id=bohr_job_id).model_dump(mode='json')
+                                                              job_status=job_status, job_query_url=job_query_url,
+                                                              job_detail_url=job_detail_url,
+                                                              job_id=bohr_job_id,
+                                                              agent_name=ctx.agent.parent_agent.parent_agent.name).model_dump(
+                                    mode='json')
                             else:
                                 workflow_id = results['extra_info']['workflow_id']
                                 workflow_uid = results['extra_info']['workflow_uid']
@@ -631,9 +635,13 @@ class BaseAsyncJobAgent(LlmAgent):
             yield result_event
 
         if (
-                session_state[FRONTEND_STATE_KEY]['biz'].get('origin_id', None) is not None and
-                list(session_state['long_running_jobs'].keys()) and
-                session_state[FRONTEND_STATE_KEY]['biz']['origin_id'] in list(session_state['long_running_jobs'].keys())
+                session_state.get('origin_job_id', None) is not None or
+                (
+                        session_state[FRONTEND_STATE_KEY]['biz'].get('origin_id', None) is not None and
+                        list(session_state['long_running_jobs'].keys()) and
+                        session_state[FRONTEND_STATE_KEY]['biz']['origin_id'] in list(
+                    session_state['long_running_jobs'].keys())
+                )
         ):  # Only Query Job Result
             pass
         else:

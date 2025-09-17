@@ -68,6 +68,7 @@ elif CURRENT_ENV == 'prod':
     DFLOW_HOST = 'https://workflows.deepmodeling.com'
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
     BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
+OpenAPIJobAPI = f"{OPENAPI_HOST}/openapi/v1/job"
 
 DFlowExecutor = {
     'type': 'local',
