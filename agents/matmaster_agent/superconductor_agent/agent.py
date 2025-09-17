@@ -41,8 +41,8 @@ from .constant import SuperconductorServerUrl
 
 SuperconductorBohriumExecutor = copy.deepcopy(BohriumExecutor)
 SuperconductorBohriumStorge = copy.deepcopy(BohriumStorge)
-SuperconductorBohriumExecutor["machine"]["remote_profile"]["image_address"] = "registry.dp.tech/dptech/dp/native/prod-435364/dpa-thermo-superconductor:9"
-SuperconductorBohriumExecutor["machine"]["remote_profile"]["machine_type"] = "c8_m31_1 * NVIDIA T4"
+SuperconductorBohriumExecutor['machine']['remote_profile']['image_address'] = 'registry.dp.tech/dptech/dp/native/prod-435364/dpa-thermo-superconductor:9'
+SuperconductorBohriumExecutor['machine']['remote_profile']['machine_type'] = 'c8_m31_1 * NVIDIA T4'
 
 sse_params = SseServerParams(url=SuperconductorServerUrl)
 
@@ -71,4 +71,3 @@ class SuperconductorAgent(BaseAsyncJobAgent):
 
 def init_superconductor_agent(llm_config) -> BaseAgent:
     return SuperconductorAgent(llm_config)
-

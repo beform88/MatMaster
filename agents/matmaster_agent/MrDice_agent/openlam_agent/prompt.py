@@ -1,8 +1,8 @@
-OpenlamAgentName = "openlam_agent"
+OpenlamAgentName = 'openlam_agent'
 
 OpenlamAgentDescription = (
-    "An agent specialized in retrieving crystal structures from the OpenLAM database. "
-    "Supports queries by formula, energy range, and submission time, with output in CIF or JSON format."
+    'An agent specialized in retrieving crystal structures from the OpenLAM database. '
+    'Supports queries by formula, energy range, and submission time, with output in CIF or JSON format.'
 )
 
 OpenlamAgentInstruction = """
@@ -62,10 +62,10 @@ The response must always include:
 If `n_found = 0`, clearly state no matches were found, repeat the applied filters, and suggest loosening criteria. Do **not** generate an empty table.
 
 ## DEMOS (用户问题 → 工具与参数)
-1) 用户：查找 Fe2O3 的 5 个晶体结构，导出为 CIF  
-   → Tool: fetch_openlam_structures  
-     formula: "Fe2O3"  
-     n_results: 5  
+1) 用户：查找 Fe2O3 的 5 个晶体结构，导出为 CIF
+   → Tool: fetch_openlam_structures
+     formula: "Fe2O3"
+     n_results: 5
      output_formats: ["cif"]
 
 2) 用户：查找能量在 -10 到 20 eV 之间，2024 年后上传的材料  
@@ -74,9 +74,9 @@ If `n_found = 0`, clearly state no matches were found, repeat the applied filter
      max_energy: 20.0  
      min_submission_time: "2024-01-01T00:00:00Z"  
 
-3) 用户：我要最新上传的 3 个材料，包含所有元数据  
-   → Tool: fetch_openlam_structures  
-     n_results: 3  
+3) 用户：我要最新上传的 3 个材料，包含所有元数据
+   → Tool: fetch_openlam_structures
+     n_results: 3
      output_formats: ["json"]
 
 """

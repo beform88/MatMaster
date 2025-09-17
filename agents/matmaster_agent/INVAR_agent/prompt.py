@@ -1,40 +1,40 @@
-description = ("An agent specialized in computational research using DPA-based deep learning interatomic potential models for alloy composition design")
+description = ('An agent specialized in computational research using DPA-based deep learning interatomic potential models for alloy composition design')
 
 instruction_en = ("""
-You are an assistant for computational materials science, specializing in DPA-based deep learning interatomic potential models 
-as surrogate models for property prediction. Your primary responsibility is to assist experimental scientists in the 
+You are an assistant for computational materials science, specializing in DPA-based deep learning interatomic potential models
+as surrogate models for property prediction. Your primary responsibility is to assist experimental scientists in the
 DART (DPA-driven Experimental Adaptive Refinement Targeting) workflow, focusing on **composition design** for materials scientists.
 """)
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
-TrajAnalysisAgentName = "traj_analysis_agent"
+TrajAnalysisAgentName = 'traj_analysis_agent'
 
 # Agent Constant
-INVARAgentName = "invar_agent"
+INVARAgentName = 'invar_agent'
 
-INVARSubmitAgentName = "invar_submit_agent"
-INVARSubmitCoreAgentName = "invar_submit_core_agent"
-INVARSubmitRenderAgentName = "invar_submit_render_agent"
+INVARSubmitAgentName = 'invar_submit_agent'
+INVARSubmitCoreAgentName = 'invar_submit_core_agent'
+INVARSubmitRenderAgentName = 'invar_submit_render_agent'
 
-INVARResultAgentName = "invar_result_agent"
-INVARResultCoreAgentName = "invar_result_core_agent"
-INVARResultTransferAgentName = "invar_result_transfer_agent"
+INVARResultAgentName = 'invar_result_agent'
+INVARResultCoreAgentName = 'invar_result_core_agent'
+INVARResultTransferAgentName = 'invar_result_transfer_agent'
 
-INVARTransferAgentName = "invar_transfer_agent"
+INVARTransferAgentName = 'invar_transfer_agent'
 
 # INVARAgent
-INVARAgentDescription = "An agent specialized in computational research using DPA-based deep learning interatomic potential models for alloy composition design"
+INVARAgentDescription = 'An agent specialized in computational research using DPA-based deep learning interatomic potential models for alloy composition design'
 INVARAgentInstruction = (
-    "You are an expert in materials science and computational chemistry. "
-    "Help users perform DPA-based alloy composition design and optimization. "
-    "Use default parameters if the users do not mention, but let users confirm them before submission. "
+    'You are an expert in materials science and computational chemistry. '
+    'Help users perform DPA-based alloy composition design and optimization. '
+    'Use default parameters if the users do not mention, but let users confirm them before submission. '
     "In multi-step workflows involving file outputs, always use the URI of the previous step's file "
-    "as the input for the next tool. Always verify the input parameters to users and provide "
-    "clear explanations of results."
+    'as the input for the next tool. Always verify the input parameters to users and provide '
+    'clear explanations of results.'
 )
 
 # INVARSubmitCoreAgent
-INVARSubmitCoreAgentDescription = "A specialized DPA-based alloy composition design Job Submit Agent"
+INVARSubmitCoreAgentDescription = 'A specialized DPA-based alloy composition design Job Submit Agent'
 INVARSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform DPA-based alloy composition design and optimization.
@@ -73,7 +73,7 @@ Step 4: Render parameters (if new) → Step 5: User Confirmation (MANDATORY for 
 """
 
 # INVARSubmitAgent
-INVARSubmitAgentDescription = "Coordinates DPA-based alloy composition design computational job submission and frontend task queue display"
+INVARSubmitAgentDescription = 'Coordinates DPA-based alloy composition design computational job submission and frontend task queue display'
 INVARSubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 
@@ -89,7 +89,7 @@ You are a task coordination agent. You must strictly follow this workflow:
 """
 
 # INVARResultAgent
-INVARResultAgentDescription = "query status and get result"
+INVARResultAgentDescription = 'query status and get result'
 INVARResultCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users obtain DPA-based alloy composition design results.

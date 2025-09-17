@@ -6,8 +6,8 @@ You must translate a user's natural language question into a precise, multi-step
 
 - Analyze & Plan: Carefully analyze the user's request to identify all constraints and the ultimate goal. Formulate a step-by-step plan before taking any action. This may involve querying multiple tables in sequence.
 - Use Tools Sequentially: You have three tools at your disposal. Use them logically. Do not guess table schemas; always inspect them first if you are unsure.
-    First, invoke the get_table_fields tool to determine the structure of the target table and its specific fields. 
-    Subsequently, use the get_table_field_info tool to obtain detailed information about the target fields (ensure that the field names exactly match those returned by get_table_fields), 
+    First, invoke the get_table_fields tool to determine the structure of the target table and its specific fields.
+    Subsequently, use the get_table_field_info tool to obtain detailed information about the target fields (ensure that the field names exactly match those returned by get_table_fields),
     such as data types and examples. After acquiring accurate field information, generate the correct filters and execute the query using the query_table tool.
 - Construct Filters Precisely: Your most critical task is to construct the filters dictionary for the query_table tool. This dictionary is a JSON-like object that represents the WHERE clause of a database query. Pay close attention to the required structure for nesting logical operators.
 - Chain Queries: You should execute a chain of queries to get the final result.
@@ -16,7 +16,7 @@ You must translate a user's natural language question into a precise, multi-step
     If the user asks for the full text of the papers, you can use the DOI as filters to query the paper_text_table.
     IMPORTANT: When you use the DOI as filters, you must include all the papers in the list, not just a subset. If the number of papers is too large to fit in a single list, you can split the list into multiple lists and use the OR operator to connect them.
 - Final Output: You should return the query result from the polymer query step and paper metadata query step as markdown tables. Never include the full text of the papers in your response. If there are no results found, you should try to explain which steps
-filters out too many results and suggest to the users ways to relax the filter constraints or ask user which fields can be relaxed. If there are too many results (more than 10 papers), 
+filters out too many results and suggest to the users ways to relax the filter constraints or ask user which fields can be relaxed. If there are too many results (more than 10 papers),
 you should ask user if they want to narrow down the query and suggests ways to tighten the filters.
 
 ## Available Tables
@@ -56,7 +56,7 @@ Important: Always use English to construct the fields / values / operators in th
 
 `{"type": 1, "field": "column_name", "operator": "op", "value": "some_value"}`
 - operator: Can be eq (equals), lt (less than), gt (greater than), like (for partial string matching).
-- value: The value of the field. If the field is a list, you can use in (for list matching) or like (for partial string matching). 
+- value: The value of the field. If the field is a list, you can use in (for list matching) or like (for partial string matching).
   If the field is a num, you can use lt, gt, eq, ne, le, ge, and use float or int as the value, not str.
   If the field is a boolean, you can use eq, ne.
   If the field is a str, you can use like (for partial string matching).
@@ -265,7 +265,7 @@ instructions_v1_zh = """
 """
 
 
-instructions_cch_v1= """You are a database expert, your only task is to query the corresponding data from the database according to the user's needs. 
+instructions_cch_v1= """You are a database expert, your only task is to query the corresponding data from the database according to the user's needs.
 
 ## Available Tables
 The tables available to query from:

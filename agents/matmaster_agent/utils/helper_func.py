@@ -28,7 +28,7 @@ def update_llm_response(llm_response: LlmResponse, current_function_calls: List[
                         before_function_calls: List[dict]):
     new_indices = get_new_function_call_indices(current_function_calls, before_function_calls)
     if not len(new_indices):  # 空列表
-        llm_response.content.parts = [Part(text="All Function Calls Are Occurred Before, Continue")]
+        llm_response.content.parts = [Part(text='All Function Calls Are Occurred Before, Continue')]
     elif len(new_indices) == len(current_function_calls):
         pass
     else:
@@ -57,16 +57,16 @@ async def is_str_sequence(data) -> bool:
 
 
 async def is_matmodeler_file(filename: str) -> bool:
-    return (filename.endswith((".cif", ".poscar", ".contcar", ".vasp", ".xyz",
-                               ".mol", ".mol2", ".sdf", ".dump", ".lammpstrj")) or
-            filename.startswith("lammpstrj") or
-            "POSCAR" in filename or
-            "CONTCAR" in filename or
-            filename == "STRU")
+    return (filename.endswith(('.cif', '.poscar', '.contcar', '.vasp', '.xyz',
+                               '.mol', '.mol2', '.sdf', '.dump', '.lammpstrj')) or
+            filename.startswith('lammpstrj') or
+            'POSCAR' in filename or
+            'CONTCAR' in filename or
+            filename == 'STRU')
 
 
 async def is_image_file(filename: str) -> bool:
-    return (filename.endswith((".png", ".jpg", ".jpeg")))
+    return (filename.endswith(('.png', '.jpg', '.jpeg')))
 
 
 def flatten_dict(d, parent_key='', sep='_'):
@@ -140,38 +140,38 @@ async def parse_result(result: dict) -> List[dict]:
 
     for k, v in new_result.items():
         if type(v) in [int, float]:
-            parsed_result.append(JobResult(name=k, data=v, type=JobResultType.Value).model_dump(mode="json"))
+            parsed_result.append(JobResult(name=k, data=v, type=JobResultType.Value).model_dump(mode='json'))
         elif type(v) == str:
-            if not v.startswith("http"):
-                parsed_result.append(JobResult(name=k, data=v, type=JobResultType.Value).model_dump(mode="json"))
+            if not v.startswith('http'):
+                parsed_result.append(JobResult(name=k, data=v, type=JobResultType.Value).model_dump(mode='json'))
             else:
-                filename = v.split("/")[-1]
+                filename = v.split('/')[-1]
                 if await is_matmodeler_file(filename):
                     parsed_result.append(JobResult(name=k, data=filename,
-                                                   type=JobResultType.MatModelerFile, url=v).model_dump(mode="json"))
+                                                   type=JobResultType.MatModelerFile, url=v).model_dump(mode='json'))
                 else:
                     parsed_result.append(JobResult(name=k, data=filename,
-                                                   type=JobResultType.RegularFile, url=v).model_dump(mode="json"))
+                                                   type=JobResultType.RegularFile, url=v).model_dump(mode='json'))
                 if await is_image_file(filename):
                     # Extra Add Markdown Image
                     parsed_result.append(JobResult(name=f"markdown_image_{k}", data=f"![{filename}]({v})",
-                                                   type=JobResultType.Value).model_dump(mode="json"))
+                                                   type=JobResultType.Value).model_dump(mode='json'))
         elif await is_float_sequence(v):
             parsed_result.append(JobResult(name=k, data=f"{tuple([float(item) for item in v])}",
-                                           type=JobResultType.Value).model_dump(mode="json"))
+                                           type=JobResultType.Value).model_dump(mode='json'))
         elif await is_str_sequence(v):
             parsed_result.append(JobResult(name=k, data=f"{tuple([str(item) for item in v])}",
-                                           type=JobResultType.Value).model_dump(mode="json"))
+                                           type=JobResultType.Value).model_dump(mode='json'))
         else:
-            parsed_result.append({"status": "error", "msg": f"{k}({type(v)}) is not supported parse, v={v}"})
+            parsed_result.append({'status': 'error', 'msg': f"{k}({type(v)}) is not supported parse, v={v}"})
     return parsed_result
 
 
 def is_same_function_call(current_function_call: dict, expected_function_call: dict) -> bool:
     if (
-            current_function_call["function_name"] == expected_function_call["function_name"] and
-            json.dumps(current_function_call["function_args"], sort_keys=True) == json.dumps(
-        expected_function_call["function_args"], sort_keys=True)
+            current_function_call['function_name'] == expected_function_call['function_name'] and
+            json.dumps(current_function_call['function_args'], sort_keys=True) == json.dumps(
+        expected_function_call['function_args'], sort_keys=True)
     ):
         return True
 
@@ -188,23 +188,23 @@ def function_calls_to_str(function_calls: List[dict]) -> str:
         str: 格式化后的字符串，每行一个函数调用，格式为 `name(args)`。
     """
     if not function_calls:
-        return "[]"
+        return '[]'
 
     lines = []
     for call in function_calls:
         # 确保 args 是字典或可 JSON 序列化的对象
-        args_str = json.dumps(call["args"], indent=2) if call.get("args") else "{}"
+        args_str = json.dumps(call['args'], indent=2) if call.get('args') else '{}'
         line = f"{call['name']}({args_str})"
         lines.append(line)
 
-    return "\n".join(lines)
+    return '\n'.join(lines)
 
 
 def get_unique_function_call(function_calls: List[dict]):
     seen = set()
     unique = []
     for call in function_calls:
-        key = (call["name"], json.dumps(call["args"], sort_keys=True))
+        key = (call['name'], json.dumps(call['args'], sort_keys=True))
         if key not in seen:
             seen.add(key)
             unique.append(call)
@@ -226,12 +226,12 @@ def get_new_function_call_indices(current_function_calls: List[dict], before_fun
     # 提前计算 before_function_calls 的唯一标识集合，提高效率
     before_keys = set()
     for call in before_function_calls:
-        key = (call["name"], json.dumps(call["args"], sort_keys=True))
+        key = (call['name'], json.dumps(call['args'], sort_keys=True))
         before_keys.add(key)
 
     # 遍历 current_function_calls，检查是否在 before 集合中
     for idx, call in enumerate(current_function_calls):
-        current_key = (call["name"], json.dumps(call["args"], sort_keys=True))
+        current_key = (call['name'], json.dumps(call['args'], sort_keys=True))
         if current_key not in before_keys:
             new_indices.append(idx)
 

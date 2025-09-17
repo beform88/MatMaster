@@ -1,4 +1,4 @@
-MrDiceAgentName = "MrDice_agent"
+MrDiceAgentName = 'MrDice_agent'
 
 MrDiceAgentDescription = (
     "A meta-agent that orchestrates multiple crystal-structure retrieval sub-agents. "

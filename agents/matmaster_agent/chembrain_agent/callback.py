@@ -10,13 +10,13 @@ from ..constant import FRONTEND_STATE_KEY
 
 def combine_after_model_callbacks(*callbacks) -> Callable:
     """组合多个 after_model_callback 函数为一个回调链
-    
+
     与 before_model_callbacks 类似，但用于模型推理后的回调处理。
-    
+
     Args:
         *callbacks: 可变数量的回调函数，每个函数应有签名：
                    async def callback(CallbackContext, LlmResponse) -> Optional[LlmResponse]
-                   
+
     Returns:
         Callable: 组合后的回调函数，可直接用于 after_model_callback 参数
     """
@@ -40,14 +40,14 @@ def init_chembrain_before_agent(llm_config):
         callback_context.state[FRONTEND_STATE_KEY]['biz'] = callback_context.state[FRONTEND_STATE_KEY].get('biz', {})
 
         callback_context.state['target_language'] = 'zh'  # 默认语言
-        callback_context.state['current_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        callback_context.state['current_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         callback_context.state['db_name'] = 'polymer_db' # 使用默认数据库
         db_manager = DatabaseManager('polymer_db')
         await db_manager.async_init() # Call the async init method
         callback_context.state['available_tables'] = db_manager.table_schema
 
-        prompt = ""
-        callback_context.state['artifacts'] = callback_context.state.get("artifacts", [])
+        prompt = ''
+        callback_context.state['artifacts'] = callback_context.state.get('artifacts', [])
         if callback_context.user_content and callback_context.user_content.parts:
             for part in callback_context.user_content.parts:
                 if part.text:
@@ -55,18 +55,18 @@ def init_chembrain_before_agent(llm_config):
                 elif part.inline_data:
                     callback_context.state['artifacts'].append(
                         {
-                            "artifact_type": "inline_data",
-                            "name": part.inline_data.display_name,
-                            "mime_type": part.inline_data.mime_type,
-                            "data": part.inline_data.data,
+                            'artifact_type': 'inline_data',
+                            'name': part.inline_data.display_name,
+                            'mime_type': part.inline_data.mime_type,
+                            'data': part.inline_data.data,
                         })
                 elif part.file_data:
                     callback_context.state['artifacts'].append(
                         {
-                            "artifact_type": "file_data",
-                            "file_url": part.file_data.file_uri,
-                            "mime_type": part.file_data.mime_type,
-                            "name": part.file_data.display_name,
+                            'artifact_type': 'file_data',
+                            'file_url': part.file_data.file_uri,
+                            'mime_type': part.file_data.mime_type,
+                            'name': part.file_data.display_name,
                         }
                     )
 

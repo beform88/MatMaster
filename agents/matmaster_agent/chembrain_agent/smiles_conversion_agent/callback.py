@@ -10,9 +10,9 @@ from ...logger import logger
 
 async def smiles_conversion_before_tool(tool, args, tool_context: ToolContext):
     tool_info = {
-        "before": {
-            "tool_name": tool.name,
-            "tool_args": args
+        'before': {
+            'tool_name': tool.name,
+            'tool_args': args
         }
     }
     _update_tool_context(tool_context, tool_info)
@@ -23,7 +23,7 @@ async def smiles_conversion_before_tool(tool, args, tool_context: ToolContext):
 async def smiles_conversion_after_tool(tool, args, tool_context: ToolContext, tool_response: CallToolResult):
     """处理SMILES转图像工具的后处理，将base64图像上传至OSS并生成Markdown格式"""
     tool_info = {
-        "after": {
+        'after': {
             'tool_name': tool.name,
             'tool_args': args,
             'tool_response': tool_response.content[0].text if (tool_response and len(tool_response.content)) else None

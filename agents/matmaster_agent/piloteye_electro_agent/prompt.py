@@ -5,23 +5,23 @@ from agents.matmaster_agent.traj_analysis_agent.constant import (
 # TrajAnalysisAgentName = "traj_analysis_agent"
 # TransferAgentDescription
 # Agent Constant
-PiloteyeElectroAgentName = "piloteye_electro_agent"
+PiloteyeElectroAgentName = 'piloteye_electro_agent'
 
-PiloteyeElectroSubmitAgentName = "piloteye_submit_agent"
-PiloteyeElectroSubmitCoreAgentName = "piloteye_submit_core_agent"
-PiloteyeElectroSubmitRenderAgentName = "piloteye_submit_render_agent"
+PiloteyeElectroSubmitAgentName = 'piloteye_submit_agent'
+PiloteyeElectroSubmitCoreAgentName = 'piloteye_submit_core_agent'
+PiloteyeElectroSubmitRenderAgentName = 'piloteye_submit_render_agent'
 
-PiloteyeElectroResultAgentName = "piloteye_result_agent"
-PiloteyeElectroResultCoreAgentName = "piloteye_result_core_agent"
-PiloteyeElectroResultTransferAgentName = "piloteye_result_transfer_agent"
+PiloteyeElectroResultAgentName = 'piloteye_result_agent'
+PiloteyeElectroResultCoreAgentName = 'piloteye_result_core_agent'
+PiloteyeElectroResultTransferAgentName = 'piloteye_result_transfer_agent'
 
-PiloteyeElectroTransferAgentName = "piloteye_transfer_agent"
+PiloteyeElectroTransferAgentName = 'piloteye_transfer_agent'
 
 # PiloteyeElectroAgent
 PiloteyeElectroAgentDescription = (
-    "Piloteye™ Electrolyte Module provides multiple property calculation for "
-    "lithium-ion battery electrolytes via molecular dynamics (MD) simulation "
-    "and Density Functional Theory (DFT) calculation. "
+    'Piloteye™ Electrolyte Module provides multiple property calculation for '
+    'lithium-ion battery electrolytes via molecular dynamics (MD) simulation '
+    'and Density Functional Theory (DFT) calculation. '
 )
 PiloteyeElectroAgentInstruction = """
 # PILOTEYE_ELECTRO_AGENT PROMPT TEMPLATE
@@ -116,7 +116,7 @@ You are a materials simulation analysis expert. Your responsibilities:
 """
 
 # PiloteyeElectroSubmitCoreAgent
-PiloteyeElectroSubmitCoreAgentDescription = "A specialized Piloteye™ electrolyte simulations Job Submit Agent"
+PiloteyeElectroSubmitCoreAgentDescription = 'A specialized Piloteye™ electrolyte simulations Job Submit Agent'
 PiloteyeElectroSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform Piloteye™ electrolyte simulations, including molecular dynamics, (maybe DFT calculations), and property calculations.
@@ -156,7 +156,7 @@ Help users perform Piloteye™ electrolyte simulations, including molecular dyna
 """
 
 # PiloteyeElectroSubmitAgent
-PiloteyeElectroSubmitAgentDescription = "Coordinates Piloteye™ computational job submission and frontend task queue display"
+PiloteyeElectroSubmitAgentDescription = 'Coordinates Piloteye™ computational job submission and frontend task queue display'
 PiloteyeElectroSubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 
@@ -172,7 +172,7 @@ You are a task coordination agent. You must strictly follow this workflow:
 """
 
 # PiloteyeElectroResultAgent
-PiloteyeElectroResultAgentDescription = "Query status and retrieve results"
+PiloteyeElectroResultAgentDescription = 'Query status and retrieve results'
 PiloteyeElectroResultCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users obtain Piloteye™ electrolyte property calculation results, including molecular dynamics, (maybe DFT calculations), and property calculations.

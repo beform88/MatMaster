@@ -119,7 +119,7 @@ class CalculationLlmAgent(LlmAgent):
             error_details = [
                 f"Exception Group caught with {len(err.exceptions)} exceptions:",
                 f"Message: {str(err)}",
-                "\nIndividual exceptions:"
+                '\nIndividual exceptions:'
             ]
 
             # 添加每个子异常的详细信息
@@ -130,7 +130,7 @@ class CalculationLlmAgent(LlmAgent):
                 error_details.append(f"Traceback: {''.join(traceback.format_tb(exc.__traceback__))}")
 
             # 将所有信息合并为一个字符串
-            detailed_error = "\n".join(error_details)
+            detailed_error = '\n'.join(error_details)
 
             yield Event(
                 invocation_id=ctx.invocation_id,
@@ -138,7 +138,7 @@ class CalculationLlmAgent(LlmAgent):
                 branch=ctx.branch,
                 content=types.Content(
                     parts=[types.Part(text=detailed_error)],
-                    role="system"
+                    role='system'
                 )
             )
 
@@ -160,8 +160,8 @@ def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
             return {
-                "error": str(e),
-                "error_type": type(e).__name__,
+                'error': str(e),
+                'error_type': type(e).__name__,
             }
 
     return wrapper
@@ -183,30 +183,30 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
             error_msg = '{"msg": "Current tool does not have <storage>"}'
-            return CallToolResult(content=[TextContent(type="text", text=error_msg)], isError=True)
+            return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
 
         # 获取 access_key
         access_key = tool_context.state[FRONTEND_STATE_KEY]['biz'].get('ak', None)
         if access_key is None:
-            access_key = os.getenv("BOHRIUM_ACCESS_KEY", None)
+            access_key = os.getenv('BOHRIUM_ACCESS_KEY', None)
         if access_key is not None:
             tool.storage['plugin']['access_key'] = access_key
         else:
             error_msg = '{"msg": "AccessKey was not provided"}'
-            return CallToolResult(content=[TextContent(type="text", text=error_msg)], isError=True)
+            return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
 
         # 获取 project_id
         project_id = tool_context.state[FRONTEND_STATE_KEY]['biz'].get('projectId', None)
         if project_id is None:
-            project_id = os.getenv("BOHRIUM_PROJECT_ID", None)
+            project_id = os.getenv('BOHRIUM_PROJECT_ID', None)
         if project_id is not None:
             try:
                 tool.storage['plugin']['project_id'] = int(project_id)
             except ValueError:
                 error_msg = '{"msg": "ProjectId [%s] is invalid"}' % project_id
-                return CallToolResult(content=[TextContent(type="text", text=error_msg)], isError=True)
+                return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
         else:
             error_msg = '{"msg": "ProjectId was not provided. Please retry when select the project."}'
-            return CallToolResult(content=[TextContent(type="text", text=error_msg)], isError=True)
+            return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
 
     return wrapper

@@ -39,7 +39,7 @@ class HandleFileUploadLlmAgent(LlmAgent):
             - File data parts are referenced by their file_uri in the prompt
             - Inline data parts are currently ignored
         """
-        prompt = ""
+        prompt = ''
         if ctx.user_content and ctx.user_content.parts:
             for part in ctx.user_content.parts:
                 if part.text:
@@ -50,8 +50,8 @@ class HandleFileUploadLlmAgent(LlmAgent):
                     prompt += f", file_url = {part.file_data.file_uri}"
 
                     # 包装成function_call，来避免在历史记录中展示
-                    for event in context_function_event(ctx, self.name, "system_upload_file",
-                                                        {"prompt": prompt},
+                    for event in context_function_event(ctx, self.name, 'system_upload_file',
+                                                        {'prompt': prompt},
                                                         ModelRole):
                         yield event
 

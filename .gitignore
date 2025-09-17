@@ -2,6 +2,7 @@
 __pycache__/
 matmaster.egg-info/
 .vscode/
+.DS_Store
 
 build/**
 .env
@@ -19,3 +20,4 @@ llm_contents_report.json
 evalate_threads/evaluate.py
 evalate_threads/quick_test.py
 evalate_threads/test_adk_intergration.py
+evaluation_results.json

@@ -20,7 +20,7 @@ class MultiOptionQuality(base_metric.BaseMetric):
     def __init__(
             self,
             name: str = MULTI_OPTION_QUALITY,
-            model: Optional[str] = "azure/gpt-4o",
+            model: Optional[str] = 'azure/gpt-4o',
             ignore_whitespace: bool = True,
             track: bool = True,
             project_name: Optional[str] = None,
@@ -90,14 +90,14 @@ class MultiOptionQuality(base_metric.BaseMetric):
             )
 
             dict_content = extract_json_content_or_raise(model_output)
-            score = float(dict_content["score"])
+            score = float(dict_content['score'])
 
             if not (0.0 <= score <= 1.0):
                 raise ValueError(f"Score must be between 0.0 and 1.0, got {score}")
             return score_result.ScoreResult(
                 name=self.name,
                 value=score,
-                reason=str(dict_content["reason"]),
+                reason=str(dict_content['reason']),
             )
         except Exception as e:
             print(e)

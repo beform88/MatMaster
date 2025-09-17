@@ -35,7 +35,7 @@ def create_save_response(agent_name: str):
 
 def mock_construct_messages(paper_url):
     file_path = paper_url
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(file_path, encoding='utf-8') as file:
         raw_content = json.load(file)
     raw_paper_content = raw_content['text']
     paper_str = json.dumps(raw_paper_content, ensure_ascii=False, default=str)
@@ -44,7 +44,7 @@ def mock_construct_messages(paper_url):
 
 def mock_construct_picture_mapping(picture_url):
     file_path = picture_url
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(file_path, encoding='utf-8') as file:
         raw_content = json.load(file)
     picture_mapping_str = json.dumps(raw_content, ensure_ascii=False, default=str)
     return picture_mapping_str
@@ -52,7 +52,7 @@ def mock_construct_picture_mapping(picture_url):
 
 def mock_get_paper_content_and_picture(paper_url):
     dir_part = os.path.dirname(paper_url)
-    picture_url = os.path.join(dir_part, "figure_mappings.json")
+    picture_url = os.path.join(dir_part, 'figure_mappings.json')
     message = mock_construct_messages(paper_url)
     picture_mapping = mock_construct_picture_mapping(picture_url)
     return message, picture_mapping
@@ -84,14 +84,14 @@ def create_update_invoke_message_with_agent_name(agent_name: str):
         try:
             text = llm_request.contents[-1].parts[0].text
             function_response = llm_request.contents[-1].parts[0].function_response
-            if text == "For context:" and function_response is None:
-                contents.append(types.Content(role="user", parts=[types.Part(text=f"raw paper content:{message}")]))
+            if text == 'For context:' and function_response is None:
+                contents.append(types.Content(role='user', parts=[types.Part(text=f"raw paper content:{message}")]))
                 if picture_mapping is not None:
                     contents.append(
-                        types.Content(role="user", parts=[types.Part(text=f"picture_mapping:{picture_mapping}")]))
+                        types.Content(role='user', parts=[types.Part(text=f"picture_mapping:{picture_mapping}")]))
                 llm_request.contents = llm_request.contents + contents
 
-            output_file = "llm_contents_reader.json"
+            output_file = 'llm_contents_reader.json'
             save_llm_request(llm_request, output_file)
         except:
             print(llm_request.contents[-1].role, llm_request.contents[-1].parts[0])

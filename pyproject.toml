@@ -12,8 +12,10 @@ dependencies = [
     "pymysql>=1.1.1",
     "anyio>=4.10.0",
     "pytest-asyncio>=1.1.0",
-    "litellm>=1.75.8",
-    "google-adk==1.12.0",
+    "litellm>=1.76.1",
+    "google-adk[a2a]==1.14.1",
+    "pre-commit>=4.3.0",
+    "bohrium-sdk>=0.14.0",
 ]
 
 [tool.setuptools]

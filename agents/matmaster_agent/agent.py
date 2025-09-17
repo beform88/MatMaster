@@ -14,8 +14,8 @@ from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
 from agents.matmaster_agent.MrDice_agent.agent import init_MrDice_agent
 from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
-from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_check_transfer, \
-    matmaster_handle_ContentPolicyViolationError
+from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_check_transfer, matmaster_set_lang, \
+    matmaster_check_job_status
 from agents.matmaster_agent.chembrain_agent.agent import init_chembrain_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
@@ -30,7 +30,7 @@ from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectri
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
 from agents.matmaster_agent.utils.event_utils import send_error_event
 
-logging.getLogger("google_adk.google.adk.tools.base_authenticated_tool").setLevel(logging.ERROR)
+logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(logging.ERROR)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -77,9 +77,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
             description=AgentDescription,
-            before_agent_callback=matmaster_prepare_state,
-            before_model_callback=matmaster_handle_ContentPolicyViolationError,
-            after_model_callback=matmaster_check_transfer,
+            before_agent_callback=[matmaster_prepare_state, matmaster_set_lang],
+            after_model_callback=[matmaster_check_job_status, matmaster_check_transfer],
         )
 
     @override
@@ -93,8 +92,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 yield error_event
 
             error_handel_agent = LlmAgent(
-                name="error_handel_agent",
-                model=LiteLlm(model="litellm_proxy/azure/gpt-5-chat"),
+                name='error_handel_agent',
+                model=LiteLlm(model='litellm_proxy/azure/gpt-5-chat'),
             )
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
