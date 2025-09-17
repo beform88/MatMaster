@@ -38,6 +38,8 @@ async def matmaster_prepare_state(callback_context: CallbackContext) -> Optional
     callback_context.state['invocation_id_with_tool_call'] = callback_context.state.get('invocation_id_with_tool_call',
                                                                                         None)
 
+
+async def matmaster_set_lang(callback_context: CallbackContext) -> Optional[types.Content]:
     user_content = callback_context.user_content.parts[0].text
     prompt = get_user_content_lang().format(user_content=user_content)
     response = litellm.completion(model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}],
