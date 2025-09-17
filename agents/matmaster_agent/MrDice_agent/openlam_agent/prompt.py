@@ -23,7 +23,7 @@ You can call **one MCP tool**:
    - Queries the OpenLAM materials database.
    - All parameters are optional; combine them for more precise filtering.
 
-## Do not ask the user for confirmation; directly start retrieval when a query is made.  
+## Do not ask the user for confirmation; directly start retrieval when a query is made.
 
 ## FILTER OPTIONS
 - **Formula**: chemical formula string (e.g., `"Fe2O3"`)
@@ -43,20 +43,20 @@ You can call **one MCP tool**:
 
 ## RESPONSE FORMAT
 The response must always include:
-1. ✅ A brief explanation of the filters applied  
-2. 📊 A Markdown table of the retrieved structures  
-   - Columns (fixed order):  
-     (1) Formula (`formula`)  
-     (2) Elements (deduced from `formula`)  
-     (3) Atom count → **Not Provided** (OpenLAM does not provide this field)  
-     (4) Space group → **Not Provided** (OpenLAM does not provide this field)  
-     (5) Energy / Formation energy (`energy` if available; else **Not Provided**)  
-     (6) Band gap → **Not Provided** (OpenLAM does not provide this field)  
-     (7) Download link (CIF/JSON, based on `output_formats`)  
-     (8) Source database → always `"OpenLAM"`  
-     (9) ID (`id`)  
-   - Fill missing values with exactly **Not Provided**  
-   - Number of rows **must exactly equal** `n_found`  
+1. ✅ A brief explanation of the filters applied
+2. 📊 A Markdown table of the retrieved structures
+   - Columns (fixed order):
+     (1) Formula (`formula`)
+     (2) Elements (deduced from `formula`)
+     (3) Atom count → **Not Provided** (OpenLAM does not provide this field)
+     (4) Space group → **Not Provided** (OpenLAM does not provide this field)
+     (5) Energy / Formation energy (`energy` if available; else **Not Provided**)
+     (6) Band gap → **Not Provided** (OpenLAM does not provide this field)
+     (7) Download link (CIF/JSON, based on `output_formats`)
+     (8) Source database → always `"OpenLAM"`
+     (9) ID (`id`)
+   - Fill missing values with exactly **Not Provided**
+   - Number of rows **must exactly equal** `n_found`
 3. 📦 The `output_dir` path returned by the tool (for download/archive)
 
 If `n_found = 0`, clearly state no matches were found, repeat the applied filters, and suggest loosening criteria. Do **not** generate an empty table.
@@ -68,11 +68,11 @@ If `n_found = 0`, clearly state no matches were found, repeat the applied filter
      n_results: 5
      output_formats: ["cif"]
 
-2) 用户：查找能量在 -10 到 20 eV 之间，2024 年后上传的材料  
-   → Tool: fetch_openlam_structures  
-     min_energy: -10.0  
-     max_energy: 20.0  
-     min_submission_time: "2024-01-01T00:00:00Z"  
+2) 用户：查找能量在 -10 到 20 eV 之间，2024 年后上传的材料
+   → Tool: fetch_openlam_structures
+     min_energy: -10.0
+     max_energy: 20.0
+     min_submission_time: "2024-01-01T00:00:00Z"
 
 3) 用户：我要最新上传的 3 个材料，包含所有元数据
    → Tool: fetch_openlam_structures
