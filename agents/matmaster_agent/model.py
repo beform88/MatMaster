@@ -26,11 +26,13 @@ class JobResult(BaseModel):
 class BohrJobInfo(BaseModel):
     origin_job_id: str
     job_id: int
+    job_query_url: str
     job_detail_url: str
     job_status: JobStatus
     job_name: str
     job_result: Optional[List[JobResult]] = None
     job_in_ctx: bool = False
+    agent_name: str
 
     @field_validator('job_detail_url')
     @classmethod

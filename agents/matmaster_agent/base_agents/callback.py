@@ -118,7 +118,7 @@ async def default_before_tool_callback(tool, args, tool_context):
 
 
 @check_None_wrapper
-def _get_ak(ctx: Union[InvocationContext, ToolContext]):
+def _get_ak(ctx: Union[InvocationContext, ToolContext, CallbackContext]):
     session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv('BOHRIUM_ACCESS_KEY')
 
