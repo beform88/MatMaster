@@ -31,7 +31,7 @@ class Openlam_Agent(CalculationMCPLlmAgent):
             description=OpenlamAgentDescription,
             instruction=OpenlamAgentInstruction,
             tools=[mcp_tools],
-            render_tool_response=False,
+            render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,
         )
 

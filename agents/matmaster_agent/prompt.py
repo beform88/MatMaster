@@ -414,29 +414,34 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
 
 10. **{MrDice_Agent_Name}** - **Crystal structure meta-database search**
     - Purpose: Retrieve crystal structure data by coordinating multiple sub-agents:
-      * `optimade_agent` for OPTIMADE-compliant providers
-      * `openlam_agent` for OpenLAM database
-    - By default, queries **both sub-agents simultaneously** and merges results
+     * `bohrium_public_agent` → for Bohrium Public database (formula, elements, space group, atom counts, band gap, formation energy)
+     * `optimade_agent` → for OPTIMADE-compliant providers (broad, logic filters, space-group, band-gap queries)
+     * `openlam_agent` → for OpenLAM internal database (formula, energy window, submission time)
+    - By default, queries **all sub-agents ** and merges results
     - Capabilities:
-      - Formula-based, energy-based, time-based queries (OpenLAM)
+      - Space group, atom count, band gap, formation energy queries (Bohrium Public)
       - Element/space-group/band-gap/logic-based queries (OPTIMADE)
-      - Unified Markdown table with merged results (deduplicated by formula+ID)
+      - Formula-based, energy-based, time-based queries (OpenLAM)
+      - Unified Markdown table with merged results
     - Example Queries:
       - "找 Fe2O3 的晶体结构"
       - "查找能量在 -10 到 20 eV 之间的材料"
       - "找到含铝的、能带在 1.0–2.0 eV 之间的材料"
-
-   ## ⚠️ Mandatory Table Display Rule:
-      ** The Markdown table must always be displayed exactly as returned by the `optimade_agent`, with **all entries included in full**. No omission, truncation, summarization, filtering, or ellipses are allowed.
-      ** 你必须展示完整的optimade agent返回的表格！禁止只展示部分optimade_agent返回的表格或遗漏表格及任何信息！
 
    ## RESPONSE FORMAT
    The response must always have three parts in order:
    1) A brief explanation of the applied filters and providers.
    2) A 📈 Markdown table listing all retrieved results.
    3) A 📦 download link for an archive (.tgz).
-   The table must contain **all retrieved materials** in one complete Markdown table, without omissions, truncation, summaries, or ellipses. The number of rows must exactly equal `n_found`, and even if there are many results (up to 100), they must all be shown in the same table. The 📦 archive link is supplementary and can never replace the full table.
-   表格中必须包含**所有检索到的材料**，必须完整列在一个 Markdown 表格中，绝对不能省略、缩写、总结或用“...”只展示部分，你必须展示全部检索到的材料在表格中！即使结果数量很多（最多 100 条），也必须全部列出。📦 压缩包链接只能作为补充，绝不能替代表格。
+
+   ### Table Rules
+   - The table must contain **all retrieved materials** in one complete Markdown table, without omissions, truncation, summaries, or ellipses.
+   - The number of rows must exactly equal `n_found`, and even if there are many results, they must all be shown in the same table.
+   - The 📦 archive link is supplementary and can never replace the full table.
+   - 表格中必须包含**所有检索到的材料**，必须完整列在一个 Markdown 表格中，绝对不能省略、缩写、总结或用“...”只展示部分，你必须展示全部检索到的材料在表格中！即使结果数量很多，也必须全部列出。📦 压缩包链接只能作为补充，绝不能替代表格。
+   ### Adjustment Rules
+   - If the user requests modifications to the table after retrieval (e.g., adding lattice constants, density, symmetry operations, or removing certain fields), this request must be passed to **MrDice**.
+   - **MrDice** will then instruct the relevant sub-agents to supplement or adjust the table using their already-returned results.
 
 11. **{ORGANIC_REACTION_AGENT_NAME}** - **Organic reaction specialist**
     - Purpose: Find transition states and calculate reaction profiles
