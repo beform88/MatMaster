@@ -7,6 +7,22 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "a2a-sdk"
+version = "0.3.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-api-core" },
+    { name = "httpx" },
+    { name = "httpx-sse" },
+    { name = "protobuf" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/cf/0d/12ebef081b096ca5fafd1ec8cc589739abba07b46ae7899c7420e599f2a6/a2a_sdk-0.3.5.tar.gz", hash = "sha256:48cf37dedeb63cf0a072512221a12ed4b3950df695c9d65eadb839a99392c3e5", size = 222064 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4c/96/c33802d929b0f884cb6e509195d69914632536256d273bd7127e900d79ea/a2a_sdk-0.3.5-py3-none-any.whl", hash = "sha256:fd85b1e4e7be18a89b5d723e4013171510150a235275876f98de9e1ba869457e", size = 136911 },
+]
+
+[[package]]
 name = "absolufy-imports"
 version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -673,7 +689,7 @@ wheels = [
 
 [[package]]
 name = "google-adk"
-version = "1.14.0"
+version = "1.14.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "absolufy-imports" },
@@ -709,9 +725,14 @@ dependencies = [
     { name = "watchdog" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/00/3a/f9544f84484b09db2f08f5c6b47cf81eaec7c66fe0912e6e495385a065ad/google_adk-1.14.0.tar.gz", hash = "sha256:22f34b49092f257516793c9b4fd07915d9c4636e893a6e8c8f63f30b8a3dd72f", size = 1653251 }
+sdist = { url = "https://files.pythonhosted.org/packages/35/fe/0efba60d22bfcd7ab18f48d23771f0701664fd93be247eddc42592b9b68f/google_adk-1.14.1.tar.gz", hash = "sha256:06caab4599286123eceb9348e4accb6c3c1476b8d9b2b13f078a975c8ace966f", size = 1681879 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/65/0d78970cc2bbf684e999b2ca2b6539b95c6deb28165e0d22b459c1595dd1/google_adk-1.14.0-py3-none-any.whl", hash = "sha256:7c1b389d9e3c58754138c692573caaa95d7119f0567977f252a80c6f58e23102", size = 1879456 },
+    { url = "https://files.pythonhosted.org/packages/31/74/0b68fab470f13e80fd135bcf890c13bb1154804c1eaaff60dd1f5995027c/google_adk-1.14.1-py3-none-any.whl", hash = "sha256:acb31ed41d3b05b0d3a65cce76f6ef1289385f49a72164a07dae56190b648d50", size = 1922802 },
+]
+
+[package.optional-dependencies]
+a2a = [
+    { name = "a2a-sdk" },
 ]
 
 [[package]]
@@ -1626,7 +1647,7 @@ dependencies = [
     { name = "anyio" },
     { name = "bohr-agent-sdk" },
     { name = "bohrium-sdk" },
-    { name = "google-adk" },
+    { name = "google-adk", extra = ["a2a"] },
     { name = "litellm" },
     { name = "opik" },
     { name = "oss2" },
@@ -1641,7 +1662,7 @@ requires-dist = [
     { name = "anyio", specifier = ">=4.10.0" },
     { name = "bohr-agent-sdk", specifier = "==0.1.101" },
     { name = "bohrium-sdk", specifier = ">=0.14.0" },
-    { name = "google-adk", specifier = "==1.14.0" },
+    { name = "google-adk", extras = ["a2a"], specifier = "==1.14.1" },
     { name = "litellm", specifier = ">=1.76.1" },
     { name = "opik", specifier = ">=1.8.33" },
     { name = "oss2", specifier = ">=2.18.0" },
