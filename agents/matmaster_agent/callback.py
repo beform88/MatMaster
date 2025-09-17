@@ -6,7 +6,7 @@ from typing import Optional
 
 import litellm
 from google.adk.agents.callback_context import CallbackContext
-from google.adk.models import LlmResponse, LlmRequest
+from google.adk.models import LlmResponse
 from google.genai import types
 from google.genai.types import FunctionCall, Part, FunctionResponse
 
@@ -53,7 +53,8 @@ async def matmaster_set_lang(callback_context: CallbackContext) -> Optional[type
     callback_context.state['target_language'] = language
 
 
-async def matmaster_check_job_status(callback_context: CallbackContext, llm_response: LlmRequest) -> Optional[
+# after_model_callback
+async def matmaster_check_job_status(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[
     LlmResponse]:
     if (
             (jobs_dict := callback_context.state['long_running_jobs']) and
@@ -76,15 +77,15 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
                 llm_response.content.parts.insert(0, Part(text=job_complete_intro.format(job_id=job_id),
                                                           function_call=FunctionCall(id=function_call_id,
                                                                                      name='transfer_to_agent',
-                                                                                     args={'agent_name': agent_name}),
-                                                          function_response=FunctionResponse(id=function_call_id,
-                                                                                             name='transfer_to_agent',
-                                                                                             response=None)
+                                                                                     args={'agent_name': agent_name})
                                                           )
                                                   )
+                llm_response.content.parts.insert(1, Part(function_response=FunctionResponse(id=function_call_id,
+                                                                                             name='transfer_to_agent',
+                                                                                             response=None)))
+        return llm_response
 
 
-# after_model_callback
 async def matmaster_check_transfer(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[
     LlmResponse]:
     # 检查响应是否有效
