@@ -635,7 +635,7 @@ class BaseAsyncJobAgent(LlmAgent):
             yield result_event
 
         if (
-                session_state.get("origin_job_id", None) is not None or
+                session_state.get('origin_job_id', None) is not None or
                 (
                         session_state[FRONTEND_STATE_KEY]['biz'].get('origin_id', None) is not None and
                         list(session_state['long_running_jobs'].keys()) and
