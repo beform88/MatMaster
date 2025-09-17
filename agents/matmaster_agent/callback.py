@@ -8,7 +8,7 @@ import litellm
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models import LlmResponse
 from google.genai import types
-from google.genai.types import FunctionCall, Part, FunctionResponse
+from google.genai.types import FunctionCall, Part
 
 from agents.matmaster_agent.base_agents.callback import _get_ak
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY
@@ -40,6 +40,7 @@ async def matmaster_prepare_state(callback_context: CallbackContext) -> Optional
     callback_context.state['sync_tools'] = callback_context.state.get('sync_tools', None)
     callback_context.state['invocation_id_with_tool_call'] = callback_context.state.get('invocation_id_with_tool_call',
                                                                                         None)
+    callback_context.state['special_llm_response'] = False
 
 
 async def matmaster_set_lang(callback_context: CallbackContext) -> Optional[types.Content]:
@@ -72,7 +73,11 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
         for origin_job_id, job_id, job_query_url, agent_name in running_job_ids:
             job_status = get_job_status(job_query_url, access_key=access_key)
             if job_status in ['Failed', 'Finished']:
+                if llm_response.partial:  # 原来消息的流式版本置空 None
+                    llm_response.content = None
+                    break
                 if not reset:
+                    callback_context.state['special_llm_response'] = True  # 标记开始处理原来消息的非流式版本
                     llm_response.content.parts = []
                     reset = True
                 logger.info(f"[matmaster_check_job_status] job_id = {job_id}, job_status = {job_status}")
