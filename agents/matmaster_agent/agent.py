@@ -18,6 +18,7 @@ from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_c
     matmaster_check_job_status
 from agents.matmaster_agent.chembrain_agent.agent import init_chembrain_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.document_parser_agent.agent import init_document_parser_agent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.organic_reaction_agent.agent import init_organic_reaction_agent
 from agents.matmaster_agent.perovskite_agent.agent import init_perovskite_agent
@@ -53,6 +54,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         ssebrain_agent = init_ssebrain_agent(llm_config)
         chembrain_agent = init_chembrain_agent(llm_config)
         perovskite_agent = init_perovskite_agent(llm_config)
+        document_parser_agent = init_document_parser_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -74,6 +76,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 ssebrain_agent,
                 chembrain_agent,
                 perovskite_agent,
+                document_parser_agent,
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,

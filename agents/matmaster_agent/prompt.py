@@ -12,6 +12,7 @@ from agents.matmaster_agent.structure_generate_agent.constant import StructureGe
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
+from agents.matmaster_agent.document_parser_agent.constant import DocumentParserAgentName
 
 GlobalInstruction = """
 ---
@@ -482,6 +483,24 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
       - Geometry optimization, molecular dynamics
       - Property calculations: band structure, phonon spectrum, elastic properties, DOS/PDOS, Bader charge
       - Result collection from ABACUS job directories
+
+15. **{DocumentParserAgentName}** - **Materials science document parser**
+    - Purpose: Extract materials science data from scientific documents
+    - Capabilities:
+      - Parse chemical compositions, crystal structures, and physical properties from documents
+      - Support multiple document formats (PDF, DOCX, TXT, XLSX)
+      - Extract synthesis methods and experimental conditions
+      - Identify relationships between materials and their characteristics
+      - Convert document data into structured formats
+    - Supported Formats:
+      Note that the files can be OSS links (URI).
+      - Scientific papers (PDF)
+      - Research reports (PDF, DOCX)
+      - Data sheets (PDF, XLSX)
+      - Text files (TXT)
+    - Example Queries:
+      - "这个文献里面计算的材料用的是什么结构？"
+      - "分析附件中的实验报告，提取所有提到的材料及其性能"
 
 ## CRITICAL RULES TO PREVENT HALLUCINATION
 0. Strictly follow the rules below UNLESS the USERS explicitly instruct you to break them.
