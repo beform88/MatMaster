@@ -64,7 +64,7 @@ async def agent_main() -> None:
     # user_input = "高熵合金AlCoCr0.5FeNi2的可能结构是什么"
     # user_input = "调用 thermoelectric_agent 帮我生成10个具有Sn和Te元素的热电结构"
     # user_input = "plot perovstite 2021 to 2025"
-    user_input = "帮我创建一个 FCC Bulk Cu 的结构"
+    user_input = '帮我创建一个 FCC Bulk Cu 的结构'
     # user_input = "帮我用DPA优化这个结构：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/110663/12791/store/7ba41529-5af4-4e38-a6fb-c569cd769dd9/outputs/structure_paths/structure_bulk.cif"
     # user_input = "帮我检索TiO2"
     # user_input = "请你为我搭建一个氯化钠的结构"
