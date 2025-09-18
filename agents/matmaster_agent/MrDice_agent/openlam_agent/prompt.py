@@ -18,7 +18,7 @@ You can call **one MCP tool**:
        min_submission_time: str | None = None,  # ISO 8601 UTC, e.g. '2024-01-01T00:00:00Z'
        max_submission_time: str | None = None,
        n_results: int = 10,
-       output_formats: list['cif'|'json'] = ['json']
+       output_formats: list['cif'|'json'] = ['cif']
    )
    - Queries the OpenLAM materials database.
    - All parameters are optional; combine them for more precise filtering.
@@ -38,8 +38,8 @@ You can call **one MCP tool**:
 - If the user specifies a **formula** → set `formula`
 - If the user specifies an **energy range** → set `min_energy` / `max_energy`
 - If the user specifies a **time filter** → set `min_submission_time` / `max_submission_time`
-- If the user requests **all metadata** → use `output_formats=['json']`
 - If the user requests **downloadable structure files** → use `output_formats=['cif']`
+- If the user requests **all metadata** → use `output_formats=['json']`
 
 ## RESPONSE FORMAT
 The response must always include:
@@ -78,5 +78,4 @@ If `n_found = 0`, clearly state no matches were found, repeat the applied filter
    → Tool: fetch_openlam_structures
      n_results: 3
      output_formats: ["json"]
-
 """
