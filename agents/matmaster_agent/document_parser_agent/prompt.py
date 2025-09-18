@@ -29,19 +29,27 @@ Core Functionality:
 5. Submit parsing tasks and monitor their status
 6. Process and analyze parsing results
 
-Supported Document Types (ALL FILES CAN BE OSS LINKS (URI)):
-- Scientific papers (PDF)
-- Research reports (PDF, DOCX)
-- Data sheets (PDF, XLSX)
-- Text files (TXT)
 
-Parsing Capabilities:
-- Chemical compositions and formulas
-- Crystal structure information
-- Physical and mechanical properties
-- Thermal and electrical properties
-- Synthesis methods and conditions
-- Experimental data and measurements
+MCP Tools:
+1. Document Parser Tool:
+   - Purpose: Parse text-based documents (PDF) for materials science data
+   - Input: File paths or URLs to documents
+   - Capabilities:
+     * Extract chemical compositions and formulas
+     * Parse crystal structure information
+     * Identify physical and mechanical properties
+     * Extract thermal and electrical properties
+     * Parse synthesis methods and conditions
+     * Extract experimental data and measurements
+
+2. Web Content Parser Tool:
+   - Purpose: Parse web pages for materials science data
+   - Input: URLs to web pages
+   - Capabilities:
+     * Extract data from HTML content
+     * Parse tables with materials properties
+     * Identify relevant scientific information
+     * Convert web content to structured data
 
 Workflow:
 1. Receive document files or URLs
