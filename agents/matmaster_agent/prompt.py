@@ -668,48 +668,35 @@ def gen_result_agent_description():
 
 def gen_params_check_completed_agent_instruction():
     return """
-Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested in that message.
-Analyze the messages from `user` and `model` listed below (only listed Latest 5 messages):
+Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation has been confirmed in the `context messages`.
+Analyze the `context_messages` from [User] and [Model] listed below (only listed Latest 5 messages):
 
+Context Messages (Including User and Model Conversation. The most recent conversation is at the bottom):
+------------------
 {context_messages}
+------------------
 
 Your output MUST be a valid JSON object with the following structure:
 {{
     "flag": <boolean>,
-    "reason": <string>,  // *Present reason if flag is False, else return empty string*
-    "analyzed_message": <string>  // *Quote the specific message snippet that was analyzed to make this determination.*
+    "reason": <string>, //  *A concise explanation of the reasoning behind the judgment, covering both positive and negative evidence found in the context messages. Return empty string only if there is absolutely no relevant content to analyze.*
+    "analyzed_message": List[<string>]  // *Quote the key messages that were analyzed to make this determination.*
 }}
 
 Return `flag: true` ONLY IF ALL of the following conditions are met:
-1.  The message explicitly and finally lists all parameters that need user confirmation (e.g., element, structure type, dimensions).
-2.  The message's intent is to conclude the parameter collection phase and advance the conversation to the next step (typically, awaiting a "yes" or "no" response from the user to proceed with an action).
-3.  The message does not indicate that the parameter discussion is still ongoing (e.g., lacks phrases like "also need," "next, please provide," "what is the...").
+1.  The context messages explicitly and finally list all parameters that user confirmed (e.g., element, structure type, dimensions).
+2.  The context messages's intent is to conclude the parameter collection phase and advance the conversation to the next step.
+3.  The context messages does not indicate that the parameter discussion is still ongoing (e.g., lacks phrases like "also need," "next, please provide," "what is the...").
 
 Return `flag: false` in ANY of these cases:
-1.  The message does not mention any specific parameters to confirm.
-2.  The message is asking for or soliciting new parameter information (e.g., "What element would you like?", "Please provide the lattice constant.").
-3.  The message states or implies that parameter collection is not yet finished and further questions will follow.
+1.  The context messages don't mention any specific parameters to confirm.
+2.  The context messages are asking for or soliciting new parameter information (e.g., "What element would you like?", "Please provide the lattice constant.").
+3.  The context messages state or imply that parameter collection is not yet finished and further questions will follow.
 4.  There are currently no parameters awaiting user confirmation.
-   *   For any of these cases, the "reason" field must be populated with a concise explanation based on the violated condition(s).*
 
 **语言要求 (Language Requirement):** 在输出JSON时，请观察对话上下文使用的主要语言。如果上下文主要是中文，那么`reason`字段必须用中文书写。如果上下文主要是英文或其他语言，则使用相应的语言。请确保语言选择与对话上下文保持一致。
 
-**Critical Guidance:** The act of clearly listing parameters and explicitly asking for confirmation (e.g., "Please confirm the following parameters:...") is considered the completion of the parameter presentation task. Therefore, return `true` for the message where that request is made, NOT after the user has confirmed. Look for the most recent message where parameters are presented for confirmation, even if it's not the very last message.
-
-**Examples:**
-- Message: "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"
-  - **Analysis:** Parameters are explicitly listed (Cu, FCC), and a confirmation is requested to proceed. Collection is concluded.
-  - **Output:** {{"flag": true, "reason": "", "analyzed_message": "Please confirm the following parameters to build the FCC copper crystal: Element: Copper (Cu), Structure: FCC, using default lattice parameters. Please confirm if this is correct?"}}
-
-- Message: "To build the crystal, what element should I use?"
-  - **Analysis:** This is a request for a new parameter, not a request for confirmation of existing ones. (Violates Condition 2 for 'true' / Matches Condition 2 for 'false')
-  - **Output (英文上下文):** {{"flag": false, "reason": "Message is soliciting new parameter information ('what element') rather than requesting confirmation.", "analyzed_message": "To build the crystal, what element should I use?"}}
-  - **Output (中文上下文):** {{"flag": false, "reason": "消息正在征求新的参数信息（'使用什么元素'），而不是请求确认。", "analyzed_message": "To build the crystal, what element should I use?"}}
-
-- Message: "Element is set to Copper. Now, what is the desired lattice constant?"
-  - **Analysis:** One parameter is noted, but the conversation is actively moving to collect the next parameter. Collection is not concluded. (Violates Condition 1 and 3 for 'true' / Matches Condition 3 for 'false')
-  - **Output (英文上下文):** {{"flag": false, "reason": "Parameter collection is not finished; the message is asking for the next parameter ('lattice constant').", "analyzed_message": "Element is set to Copper. Now, what is the desired lattice constant?"}}
-  - **Output (中文上下文):** {{"flag": false, "reason": "参数收集未完成；消息正在询问下一个参数（'晶格常数'）。", "analyzed_message": "Element is set to Copper. Now, what is the desired lattice constant?"}}
+**Critical Guidance:** The act of clearly listing parameters and explicitly confirmed is considered the completion of the parameter presentation task. Therefore, return `true` for the message where that request is made, NOT after the user has confirmed.
 
 Based on the rules above, output a JSON object.
 """

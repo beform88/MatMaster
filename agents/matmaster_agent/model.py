@@ -91,6 +91,12 @@ class TargetAgentEnum(str, Enum):
     TrajAnalysisAgent = TrajAnalysisAgentName
 
 
+class ParamsCheckComplete(BaseModel):
+    flag: bool
+    reason: str
+    analyzed_messages: List[str]
+
+
 class TransferCheck(BaseModel):
     is_transfer: bool
     target_agent: TargetAgentEnum

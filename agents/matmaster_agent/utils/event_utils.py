@@ -144,7 +144,7 @@ def context_function_response_event(ctx: InvocationContext, author: str, functio
 
 def context_function_event(ctx: InvocationContext, author: str, function_call_name: str, response: Optional[dict],
                            role: str, args: Optional[dict] = None):
-    function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
+    function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
     yield context_function_call_event(ctx, author, function_call_id, function_call_name, role, args)
     yield context_function_response_event(ctx, author, function_call_id, function_call_name, response, role)
 
