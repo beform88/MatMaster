@@ -389,7 +389,7 @@ async def default_after_tool_callback(tool, args, tool_context, tool_response):
     return
 
 
-def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
+def tgz_oss_to_oss_list(func: AfterToolCallback, enable_tgz_unpack: bool) -> AfterToolCallback:
     """Decorator that processes tool responses containing tgz files from OSS.
 
     This decorator performs the following operations:
@@ -433,6 +433,10 @@ def tgz_oss_to_oss_list(func: AfterToolCallback) -> AfterToolCallback:
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
         if (after_tool_result := await func(tool, args, tool_context, tool_response)) is not None:
             return after_tool_result
+
+        # 不自动解压，直接返回
+        if not enable_tgz_unpack:
+            return
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):

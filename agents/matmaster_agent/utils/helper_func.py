@@ -5,11 +5,14 @@ import logging
 import os
 from typing import List, Union
 
+import jsonpickle
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.adk.models import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai.types import Part
+from mcp.types import CallToolResult
+from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.model import JobResult, JobResultType
 
@@ -103,6 +106,20 @@ def flatten_dict(d, parent_key='', sep='_'):
         else:
             items.append((new_key, v))
     return dict(items)
+
+
+def load_tool_response(event: Event):
+    tool_response = event.content.parts[0].function_response.response
+    if tool_response.get('result', None) is not None and isinstance(tool_response['result'], CallToolResult):
+        raw_result = event.content.parts[0].function_response.response['result'].content[0].text
+        try:
+            dict_result = jsonpickle.loads(raw_result)
+        except ScannerError as err:
+            raise type(err)(f"[jsonpickle ScannerError] raw_result = `{raw_result}`")
+    else:
+        dict_result = tool_response
+
+    return dict_result
 
 
 async def parse_result(result: dict) -> List[dict]:
