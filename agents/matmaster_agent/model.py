@@ -11,6 +11,7 @@ from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.chembrain_agent.constant import CHEMBRAIN_AGENT_NAME
+from agents.matmaster_agent.document_parser_agent.constant import DocumentParserAgentName
 from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
 from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
 from agents.matmaster_agent.piloteye_electro_agent.constant import PILOTEYE_ELECTRO_AGENT_NAME
@@ -74,6 +75,7 @@ class TargetAgentEnum(str, Enum):
     ABACUSAgent = ABACUS_AGENT_NAME
     APEXAgent = ApexAgentName
     ChemBrainAgent = CHEMBRAIN_AGENT_NAME
+    DocumentParserAgent = DocumentParserAgentName
     DPACalculatorAgent = DPACalulator_AGENT_NAME
     HEAAssistantAgent = HEA_assistant_AgentName
     HEACalculatorAgent = HEACALCULATOR_AGENT_NAME
