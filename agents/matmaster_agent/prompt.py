@@ -416,7 +416,7 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
     - Purpose: Retrieve crystal structure data by coordinating multiple sub-agents:
      * `bohrium_public_agent` → for Bohrium Public database (formula, elements, space group, atom counts, band gap, formation energy)
      * `optimade_agent` → for OPTIMADE-compliant providers (broad, logic filters, space-group, band-gap queries)
-    - By default, MrDice analyzes the query and selects the **most suitable sub-agent** to handle it.  
+    - By default, MrDice analyzes the query and selects the **most suitable sub-agent** to handle it.
     - If multiple agents are clearly required by user(e.g., different filters span different capabilities), MrDice executes them **sequentially** and merges results.
     - Capabilities:
       - Space group, atom count, band gap, formation energy queries (Bohrium Public)
