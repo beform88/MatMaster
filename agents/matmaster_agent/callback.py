@@ -25,6 +25,7 @@ async def matmaster_prepare_state(callback_context: CallbackContext) -> Optional
     callback_context.state['current_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     callback_context.state['error_occurred'] = False
     callback_context.state['origin_job_id'] = None
+    callback_context.state['special_llm_response'] = False
 
     callback_context.state[FRONTEND_STATE_KEY] = callback_context.state.get(FRONTEND_STATE_KEY, {})
     callback_context.state[FRONTEND_STATE_KEY]['biz'] = callback_context.state[FRONTEND_STATE_KEY].get('biz', {})
@@ -40,7 +41,8 @@ async def matmaster_prepare_state(callback_context: CallbackContext) -> Optional
     callback_context.state['sync_tools'] = callback_context.state.get('sync_tools', None)
     callback_context.state['invocation_id_with_tool_call'] = callback_context.state.get('invocation_id_with_tool_call',
                                                                                         None)
-    callback_context.state['special_llm_response'] = False
+    callback_context.state['last_llm_response_partial'] = callback_context.state.get('last_llm_response_partial', None)
+    callback_context.state['new_query_job_status'] = callback_context.state.get('new_query_job_status', {})
 
 
 async def matmaster_set_lang(callback_context: CallbackContext) -> Optional[types.Content]:
@@ -57,12 +59,20 @@ async def matmaster_set_lang(callback_context: CallbackContext) -> Optional[type
 # after_model_callback
 async def matmaster_check_job_status(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[
     LlmResponse]:
+    """
+    场景梳理如下：
+    - 上一条为None，当前为True：说明是第一条消息
+    - 上一条为True，当前为True：说明同一条消息流式输出中
+    - 上一条为True，当前为False：说明流式消息输出即将结束
+    - 上一条为False，当前为True：说明新的一条消息开始了
+    """
+
     if (
             (jobs_dict := callback_context.state['long_running_jobs']) and
             has_job_running(jobs_dict)
-    ):
-        running_job_ids = get_running_jobs_detail(jobs_dict)
-        access_key = _get_ak(callback_context)
+    ):  # 确认当前有在运行中的任务
+        running_job_ids = get_running_jobs_detail(jobs_dict)  # 从 state 里面拿
+        access_key = _get_ak(callback_context)  # 从 state 或环境变量里面拿
         if callback_context.state['target_language'] in ['Chinese', 'zh-CN', '简体中文', 'Chinese (Simplified)']:
             job_complete_intro = '检测到任务 <{job_id}> 已完成，我将立刻转移至对应的 Agent 去获取任务结果。'
         else:
@@ -71,7 +81,15 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
 
         reset = False
         for origin_job_id, job_id, job_query_url, agent_name in running_job_ids:
-            job_status = get_job_status(job_query_url, access_key=access_key)
+            if not callback_context.state['last_llm_response_partial']:
+                logger.info(f"[matmaster_check_job_status] new LlmResponse, prepare call API")
+                job_status = await get_job_status(job_query_url, access_key=access_key)  # 查询任务的最新状态
+                callback_context.state['new_query_job_status']['origin_job_id'] = job_status
+            else:
+                job_status = callback_context.state['new_query_job_status']['origin_job_id']  # 从 state 里取
+            logger.info(f"[matmaster_check_job_status] last_llm_response_partial = "
+                        f"{callback_context.state['last_llm_response_partial']}, "
+                        f"job_id = {job_id}, job_status = {job_status}")
             if job_status in ['Failed', 'Finished']:
                 if llm_response.partial:  # 原来消息的流式版本置空 None
                     llm_response.content = None
@@ -80,15 +98,17 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
                     callback_context.state['special_llm_response'] = True  # 标记开始处理原来消息的非流式版本
                     llm_response.content.parts = []
                     reset = True
-                logger.info(f"[matmaster_check_job_status] job_id = {job_id}, job_status = {job_status}")
                 function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
                 callback_context.state['origin_job_id'] = origin_job_id
                 llm_response.content.parts.append(Part(text=job_complete_intro.format(job_id=job_id)))
                 llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id,
                                                                                   name='transfer_to_agent',
                                                                                   args={'agent_name': agent_name})))
-
+        callback_context.state['last_llm_response_partial'] = llm_response.partial
         return llm_response
+
+    callback_context.state['last_llm_response_partial'] = llm_response.partial
+    return None
 
 
 async def matmaster_check_transfer(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[

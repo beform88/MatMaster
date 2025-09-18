@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 
 from agents.matmaster_agent.model import JobStatus, BohrJobInfo
 
@@ -19,9 +19,11 @@ def mapping_status(status):
     }.get(status, 'Unknown')
 
 
-def get_job_status(job_query_url, access_key):
-    response = requests.request('GET', job_query_url, headers={'accessKey': access_key})
-    return mapping_status(response.json()['data']['status'])
+async def get_job_status(job_query_url, access_key):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(job_query_url, headers={'accessKey': access_key}) as response:
+            data = await response.json()
+            return mapping_status(data['data']['status'])
 
 
 def has_job_running(jobs_dict: BohrJobInfo) -> bool:
