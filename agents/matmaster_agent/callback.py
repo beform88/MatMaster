@@ -131,13 +131,15 @@ async def matmaster_check_transfer(callback_context: CallbackContext, llm_respon
     result: dict = json.loads(response.choices[0].message.content)
     is_transfer = bool(result.get('is_transfer', False))
     target_agent = str(result.get('target_agent', ''))
-
+    reason = str(result.get('reason', ''))
+    logger.info(f"[matmaster_check_transfer] target_agent = {target_agent}, is_transfer = {is_transfer}"
+                f"response_text = {llm_response.content.parts[0].text}, reason = {reason}")
     if (
             is_transfer and
             not has_function_call(llm_response)
     ):
-        logger.warning(f"[matmaster_check_transfer] target_agent = {target_agent}")
-        function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
+        logger.warning(f"[matmaster_check_transfer] add `transfer_to_agent`")
+        function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
         llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id, name='transfer_to_agent',
                                                                           args={'agent_name': target_agent})))
 
