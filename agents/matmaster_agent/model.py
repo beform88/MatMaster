@@ -92,6 +92,7 @@ class TargetAgentEnum(str, Enum):
 class TransferCheck(BaseModel):
     is_transfer: bool
     target_agent: TargetAgentEnum
+    reason: str
 
 
 class UserContent(BaseModel):
