@@ -5,17 +5,17 @@ Document Parser Agent Prompts and Constants
 # MCP Server URL is in constant.py
 
 # Agent Names
-DocumentParserAgentName = "document_parser_agent"
-DocumentParserSubmitAgentName = "document_parser_submit_agent"
-DocumentParserSubmitCoreAgentName = "document_parser_submit_core_agent"
-DocumentParserSubmitRenderAgentName = "document_parser_submit_render_agent"
-DocumentParserResultAgentName = "document_parser_result_agent"
-DocumentParserResultCoreAgentName = "document_parser_result_core_agent"
-DocumentParserResultTransferAgentName = "document_parser_result_transfer_agent"
-DocumentParserTransferAgentName = "document_parser_transfer_agent"
+DocumentParserAgentName = 'document_parser_agent'
+DocumentParserSubmitAgentName = 'document_parser_submit_agent'
+DocumentParserSubmitCoreAgentName = 'document_parser_submit_core_agent'
+DocumentParserSubmitRenderAgentName = 'document_parser_submit_render_agent'
+DocumentParserResultAgentName = 'document_parser_result_agent'
+DocumentParserResultCoreAgentName = 'document_parser_result_core_agent'
+DocumentParserResultTransferAgentName = 'document_parser_result_transfer_agent'
+DocumentParserTransferAgentName = 'document_parser_transfer_agent'
 
 # Agent Descriptions
-DocumentParserAgentDescription = "Document parser agent for extracting materials science data from documents"
+DocumentParserAgentDescription = 'Document parser agent for extracting materials science data from documents'
 
 # Agent Instructions
 DocumentParserAgentInstruction = """
