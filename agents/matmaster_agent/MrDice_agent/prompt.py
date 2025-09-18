@@ -92,6 +92,7 @@ To retrieve such materials:
   - Always wait until every planned sub-agent has either returned results or been marked as failed.
 - After all sub-agents in the plan are completed, merge their outputs into a unified response.
 - If any sub-agent fails, mark it as failed (`n_found=0`), clearly report the failure, and continue with the others.
+- 📑 **Multiple retrieval requests**: If the user's query contains more than one distinct retrieval request, execute them in the order given by the user, and only return once all requests are fully completed.
 
 ## RESPONSE FORMAT
 The response must always include:
@@ -105,7 +106,7 @@ The response must always include:
      (5) Energy / Formation energy (if available; else **Not Provided**)
      (6) Band gap (if available; else **Not Provided**)
      (7) Download link (CIF/JSON)
-     (8) Source database (`OPTIMADE` provider name, `OpenLAM`, or `BohriumPublic`)
+     (8) Source database (`BohriumPublic`,`OPTIMADE` provider name, or `OpenLAM`)
      (9) ID
    - Fill missing values with exactly **Not Provided**.
    - Number of rows must equal the total `n_found`.
