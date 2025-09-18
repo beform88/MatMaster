@@ -45,7 +45,8 @@ from agents.matmaster_agent.utils.event_utils import is_function_call, is_functi
     context_function_event, all_text_event, context_text_event, frontend_text_event, is_text_and_not_bohrium, \
     get_function_call_indexes, context_multipart2function_event
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
-from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state
+from agents.matmaster_agent.utils.helper_func import update_session_state, parse_result, get_session_state, \
+    load_tool_response
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
@@ -68,13 +69,15 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
     loading: bool = Field(False, description='Whether the agent display loading state', exclude=True)
     render_tool_response: bool = Field(False, description='Whether render tool response in frontend', exclude=True)
     supervisor_agent: Optional[str] = Field(None, description='Which one is the supervisor_agent')
+    enable_tgz_unpack: bool = Field(True, description='Whether unpack tgz files for tool_results')
 
     def __init__(self, model, name, instruction='', description='', sub_agents=None,
                  global_instruction='', tools=None, output_key=None,
                  before_agent_callback=None, before_model_callback=None,
                  before_tool_callback=default_before_tool_callback, after_tool_callback=default_after_tool_callback,
                  after_model_callback=default_after_model_callback, after_agent_callback=None, loading=False,
-                 render_tool_response=False, disallow_transfer_to_parent=False, supervisor_agent=None):
+                 render_tool_response=False, disallow_transfer_to_parent=False, supervisor_agent=None,
+                 enable_tgz_unpack=True):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
         Args:
@@ -117,7 +120,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
             )
         )
         after_tool_callback = check_before_tool_callback_effect(
-            catch_after_tool_callback_error(tgz_oss_to_oss_list(after_tool_callback)))
+            catch_after_tool_callback_error(tgz_oss_to_oss_list(after_tool_callback, enable_tgz_unpack)))
 
         super().__init__(
             model=model,
@@ -135,12 +138,14 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
             after_model_callback=after_model_callback,
             after_agent_callback=after_agent_callback,
             disallow_transfer_to_parent=disallow_transfer_to_parent,
-            supervisor_agent=supervisor_agent
+            supervisor_agent=supervisor_agent,
+            enable_tgz_unpack=enable_tgz_unpack
         )
 
         self.loading = loading
         self.render_tool_response = render_tool_response
         self.supervisor_agent = supervisor_agent
+        self.enable_tgz_unpack = enable_tgz_unpack
 
     # Execution Order: user_question -> chembrain_llm -> event -> user_agree_transfer -> retrosyn_llm (param) -> event
     #                  -> user_agree_param -> retrosyn_llm (function_call) -> event -> tool_call
@@ -170,17 +175,11 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
                     # Parse Tool Response
                     if not isinstance(self, SubmitCoreCalculationMCPLlmAgent):
-                        tool_response = event.content.parts[0].function_response.response
-                        if tool_response.get('result', None) is not None and isinstance(tool_response['result'],
-                                                                                        CallToolResult):
-                            raw_result = event.content.parts[0].function_response.response['result'].content[0].text
-                            try:
-                                dict_result = jsonpickle.loads(raw_result)
-                            except ScannerError as err:
-                                yield event
-                                raise type(err)(f"jsonpickle Error, raw_result = `{raw_result}`")
-                        else:
-                            dict_result = tool_response
+                        try:
+                            dict_result = load_tool_response(event)
+                        except BaseException:
+                            yield event
+                            raise
 
                         job_result = await parse_result(dict_result)
                         job_result_comp_data = get_frontend_job_result_data(job_result)
@@ -247,6 +246,9 @@ class ParamsCheckInfoAgent(LlmAgent):
 
 
 class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
+    def __init__(self, enable_tgz_unpack, **kwargs):
+        super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
+
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         logger.info(f"[{self.name}] state: {ctx.session.state}")
@@ -270,17 +272,15 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         event.content.parts[0].function_response.name in ctx.session.state['sync_tools']
                 ):
                     try:
-                        raw_result = event.content.parts[0].function_response.response['result'].content[0].text
-                    except KeyError as err:
+                        dict_result = load_tool_response(event)
+                    except BaseException:
                         yield event
-                        raise type(err)(f"[KeyError] "
-                                        f"function_response = `{event.content.parts[0].function_response.response}`")
-                    try:
-                        dict_result = jsonpickle.loads(raw_result)
-                    except ScannerError as err:
-                        yield event
-                        raise type(err)(f"[jsonpickle ScannerError] raw_result = `{raw_result}`")
-                    tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+                        raise
+
+                    if self.enable_tgz_unpack:
+                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+                    else:
+                        new_tool_result = dict_result
                     parsed_result = await parse_result(new_tool_result)
                     job_result_comp_data = get_frontend_job_result_data(parsed_result)
 
@@ -414,9 +414,8 @@ class SubmitValidatorAgent(LlmAgent):
 
 
 class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
-
-    def __init__(self, **kwargs):
-        super().__init__(description=ResultCoreAgentDescription, **kwargs)
+    def __init__(self, enable_tgz_unpack, **kwargs):
+        super().__init__(description=ResultCoreAgentDescription, enable_tgz_unpack=enable_tgz_unpack, **kwargs)
 
     @override
     async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -464,8 +463,10 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         dict_result = jsonpickle.loads(raw_result)
                         logger.info(f"[ResultCalculationMCPLlmAgent] dict_result = {dict_result}")
 
-                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
-
+                        if self.enable_tgz_unpack:
+                            tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+                        else:
+                            new_tool_result = dict_result
                         ctx.session.state['long_running_jobs'][origin_job_id]['job_result'] = await parse_result(
                             new_tool_result)
                         job_result_comp_data = get_frontend_job_result_data(
@@ -532,6 +533,7 @@ class BaseAsyncJobAgent(LlmAgent):
     dflow_flag: bool = Field(False, description='Whether the agent is dflow related', exclude=True)
     supervisor_agent: str
     sync_tools: Optional[list] = Field(None, description='These tools will sync run on the server')
+    enable_tgz_unpack: bool = Field(True, description='Whether unpack tgz files for tool_results')
 
     def __init__(
             self,
@@ -542,7 +544,8 @@ class BaseAsyncJobAgent(LlmAgent):
             mcp_tools: list,
             dflow_flag: bool,
             supervisor_agent: str,
-            sync_tools: Optional[list] = None
+            sync_tools: Optional[list] = None,
+            enable_tgz_unpack: bool = True
     ):
         agent_prefix = agent_name.replace('_agent', '')
 
@@ -553,7 +556,8 @@ class BaseAsyncJobAgent(LlmAgent):
             description=gen_submit_core_agent_description(agent_prefix),
             instruction=gen_submit_core_agent_instruction(agent_prefix),
             tools=mcp_tools,
-            disallow_transfer_to_parent=True
+            disallow_transfer_to_parent=True,
+            enable_tgz_unpack=enable_tgz_unpack
         )
 
         # 创建提交渲染代理
@@ -579,7 +583,8 @@ class BaseAsyncJobAgent(LlmAgent):
             model=model,
             name=f"{agent_prefix}_result_core_agent",
             tools=mcp_tools,
-            instruction=gen_result_core_agent_instruction(agent_prefix)
+            instruction=gen_result_core_agent_instruction(agent_prefix),
+            enable_tgz_unpack=enable_tgz_unpack
         )
 
         # 创建结果序列代理
@@ -621,7 +626,8 @@ class BaseAsyncJobAgent(LlmAgent):
             dflow_flag=dflow_flag,
             sub_agents=[submit_agent, result_agent, params_check_completed_agent, params_check_info_agent],
             supervisor_agent=supervisor_agent,
-            sync_tools=sync_tools
+            sync_tools=sync_tools,
+            enable_tgz_unpack=enable_tgz_unpack
         )
 
     @override
