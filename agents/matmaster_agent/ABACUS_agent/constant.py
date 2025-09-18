@@ -13,12 +13,8 @@ ABACUS_CALCULATOR_BOHRIUM_EXECUTOR['machine']['remote_profile']['image_address']
 ABACUS_CALCULATOR_BOHRIUM_STORAGE = copy.deepcopy(BohriumStorge)
 
 EXECUTOR_MAP = {
-    'generate_bulk_structure': LOCAL_EXECUTOR,
-    'generate_molecule_structure': LOCAL_EXECUTOR,
     'abacus_prepare': LOCAL_EXECUTOR,
     'abacus_modify_input': LOCAL_EXECUTOR,
     'abacus_modify_stru': LOCAL_EXECUTOR,
     'abacus_collect_data': LOCAL_EXECUTOR,
-    'abacus_prepare_inputs_from_relax_results': LOCAL_EXECUTOR,
-    'generate_bulk_structure_from_wyckoff_position': LOCAL_EXECUTOR,
 }

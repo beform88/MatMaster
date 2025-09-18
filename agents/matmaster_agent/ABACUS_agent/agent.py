@@ -71,10 +71,12 @@ class ABACUSCalculatorAgent(BaseAsyncJobAgent):
             agent_description=ABACUS_AGENT_DESCRIPTION,
             agent_instruction=ABACUS_AGENT_INSTRUCTION,
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME
+            supervisor_agent=MATMASTER_AGENT_NAME,
+            sync_tools=['abacus_prepare',
+                        'abacus_modify_input',
+                        'abacus_modify_stru',
+                        'abacus_collect_data']
         )
 
-def init_abacus_calculation_agent(llm_config):
+def init_abacus_calculation_agent(llm_config) -> BaseAgent:
     return ABACUSCalculatorAgent(llm_config)
-
-init_abacus_calculation_agent(MatMasterLlmConfig)
