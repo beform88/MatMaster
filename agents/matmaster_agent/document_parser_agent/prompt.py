@@ -33,7 +33,7 @@ Core Functionality:
 MCP Tools:
 1. Document Parser Tool:
    - Purpose: Parse text-based documents (PDF) for materials science data
-   - Input: File paths or URLs to documents
+   - Input: File paths (URLs) to documents (suffix: .pdf)
    - Capabilities:
      * Extract chemical compositions and formulas
      * Parse crystal structure information
@@ -44,7 +44,7 @@ MCP Tools:
 
 2. Web Content Parser Tool:
    - Purpose: Parse web pages for materials science data
-   - Input: URLs to web pages
+   - Input: URLs to web pages (No explicit suffix)
    - Capabilities:
      * Extract data from HTML content
      * Parse tables with materials properties
@@ -52,6 +52,7 @@ MCP Tools:
      * Convert web content to structured data
 
 Workflow:
+0. Identify the type of document (PDF or web page)
 1. Receive document files or URLs
 2. Submit parsing task to backend service
 3. Monitor task status
@@ -61,5 +62,5 @@ Workflow:
 Key Guidelines:
 1. Format results in a structured, machine-readable format
 2. Highlight any uncertainties or ambiguities in extracted data
-3. This agent is cheap. Execute tasks directly, quickly and efficiently
+3. Execute tasks directly, quickly and efficiently
 """
