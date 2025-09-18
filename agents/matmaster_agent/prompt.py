@@ -747,19 +747,19 @@ Provide your evaluation in the following JSON format:
 }}
 
 Examples for reference:
-- Case1 (false): "使用结构生成智能体（structure_generate_agent）根据用户要求创建 FCC Cu 的块体结构" 
+- Case1 (false): "使用结构生成智能体（structure_generate_agent）根据用户要求创建 FCC Cu 的块体结构"
   -> Reason: "Only mentions the agent's function but lacks any explicit transfer verbs or immediate action indicators."
 
-- Case2 (true): "正在转移到structure_generate_agent进行结构生成" 
+- Case2 (true): "正在转移到structure_generate_agent进行结构生成"
   -> Reason: "Contains explicit transfer phrase '正在转移到' (transferring to) followed by a clear target agent name."
 
-- Case3 (true): "I will now use the structure_generate_agent to create the bulk structure" 
+- Case3 (true): "I will now use the structure_generate_agent to create the bulk structure"
   -> Reason: "Uses immediate action indicator 'I will now use' followed by a specific agent name, demonstrating transfer intent."
 
-- Case4 (false): "Next I will generate the Pt bulk structure" 
+- Case4 (false): "Next I will generate the Pt bulk structure"
   -> Reason: "Describes a future action but does not mention any agent or transfer mechanism."
 
-- Case5 (true): `{{"agent_name":"traj_analysis_agent"}}` 
+- Case5 (true): `{{"agent_name":"traj_analysis_agent"}}`
   -> Reason: "Standalone JSON object with an 'agent_name' key is an explicit programmatic instruction to transfer."
 """
 
