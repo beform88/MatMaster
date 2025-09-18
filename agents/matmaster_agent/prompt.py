@@ -715,10 +715,8 @@ SubmitRenderAgentDescription = 'Sends specific messages to the frontend for rend
 ResultCoreAgentDescription = 'Provides real-time task status updates and result forwarding to UI'
 TransferAgentDescription = 'Transfer to proper agent to answer user query'
 
-
 # LLM-Helper Prompt
-def get_transfer_check_prompt():
-    return """
+MatMasterCheckTransferPrompt = """
 You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent').
 Analyze the provided RESPONSE TEXT to determine if it explicitly indicates a transfer action.
 

@@ -71,7 +71,13 @@ class DFlowJobInfo(BaseModel):
     job_in_ctx: bool = False
 
 
-class TargetAgentEnum(str, Enum):
+class ParamsCheckComplete(BaseModel):
+    flag: bool
+    reason: str
+    analyzed_messages: List[str]
+
+
+class MatMasterTargetAgentEnum(str, Enum):
     ABACUSAgent = ABACUS_AGENT_NAME
     APEXAgent = ApexAgentName
     ChemBrainAgent = CHEMBRAIN_AGENT_NAME
@@ -89,18 +95,6 @@ class TargetAgentEnum(str, Enum):
     SuperConductorAgent = SuperconductorAgentName
     ThermoElectricAgent = ThermoelectricAgentName
     TrajAnalysisAgent = TrajAnalysisAgentName
-
-
-class ParamsCheckComplete(BaseModel):
-    flag: bool
-    reason: str
-    analyzed_messages: List[str]
-
-
-class TransferCheck(BaseModel):
-    is_transfer: bool
-    target_agent: TargetAgentEnum
-    reason: str
 
 
 class UserContent(BaseModel):
