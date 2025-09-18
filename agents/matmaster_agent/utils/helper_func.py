@@ -1,6 +1,8 @@
 import copy
+import inspect
 import json
 import logging
+import os
 from typing import List, Union
 
 from google.adk.agents.invocation_context import InvocationContext
@@ -19,9 +21,14 @@ def get_session_state(ctx: Union[InvocationContext, ToolContext]):
 
 
 async def update_session_state(ctx: InvocationContext, author: str):
+    stack = inspect.stack()
+    frame = stack[1]  # stack[1] 表示调用当前函数的上一层调用
+    filename = os.path.basename(frame.filename)
+    lineno = frame.lineno
     actions_with_update = EventActions(state_delta=ctx.session.state)
-    system_event = Event(invocation_id=ctx.invocation_id, author=author, actions=actions_with_update)
-    await ctx.session_service.append_event(ctx.session, system_event)
+    system_event = Event(invocation_id=ctx.invocation_id, author=f"{filename}:{lineno}",
+                         actions=actions_with_update)
+    await ctx.session_service.append_event(ctx.session, system_event)  # 会引入一个空消息
 
 
 def update_llm_response(llm_response: LlmResponse, current_function_calls: List[dict],
