@@ -3,6 +3,23 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel, field_validator
 
+from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
+from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
+from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
+from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
+from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
+from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
+from agents.matmaster_agent.apex_agent.constant import ApexAgentName
+from agents.matmaster_agent.chembrain_agent.constant import CHEMBRAIN_AGENT_NAME
+from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
+from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
+from agents.matmaster_agent.piloteye_electro_agent.constant import PILOTEYE_ELECTRO_AGENT_NAME
+from agents.matmaster_agent.ssebrain_agent.constant import SSEBRAIN_AGENT_NAME
+from agents.matmaster_agent.structure_generate_agent.constant import StructureGenerateAgentName
+from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
+from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
+from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
+
 
 class JobStatus(str, Enum):
     Running = 'Running'
@@ -53,9 +70,28 @@ class DFlowJobInfo(BaseModel):
     job_in_ctx: bool = False
 
 
+class TargetAgentEnum(str, Enum):
+    ABACUSAgent = ABACUS_AGENT_NAME
+    APEXAgent = ApexAgentName
+    ChemBrainAgent = CHEMBRAIN_AGENT_NAME
+    DPACalculatorAgent = DPACalulator_AGENT_NAME
+    HEAAssistantAgent = HEA_assistant_AgentName
+    HEACalculatorAgent = HEACALCULATOR_AGENT_NAME
+    INVARAgent = INVAR_AGENT_NAME
+    MrDiceAgent = MrDice_Agent_Name
+    OrganicReactionAgent = ORGANIC_REACTION_AGENT_NAME
+    PerovskiteAgent = PerovskiteAgentName
+    PiloteyeElectroAgent = PILOTEYE_ELECTRO_AGENT_NAME
+    SSEBrainAgent = SSEBRAIN_AGENT_NAME
+    StructureGenerateAgent = StructureGenerateAgentName
+    SuperConductorAgent = SuperconductorAgentName
+    ThermoElectricAgent = ThermoelectricAgentName
+    TrajAnalysisAgent = TrajAnalysisAgentName
+
+
 class TransferCheck(BaseModel):
     is_transfer: bool
-    target_agent: str
+    target_agent: TargetAgentEnum
 
 
 class UserContent(BaseModel):

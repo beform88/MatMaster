@@ -90,9 +90,8 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 # 对于 [matmaster_check_job_status] 生成的消息， 手动拼一个流式消息
                 if ctx.session.state['special_llm_response']:
                     yield frontend_text_event(ctx, self.name, event.content.parts[0].text, ModelRole)
-
-                ctx.session.state['special_llm_response'] = False
-                await update_session_state(ctx, self.name)
+                    ctx.session.state['special_llm_response'] = False
+                    await update_session_state(ctx, self.name)
                 yield event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
