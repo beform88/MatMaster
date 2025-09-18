@@ -653,8 +653,10 @@ def gen_result_agent_description():
 
 def gen_params_check_completed_agent_instruction():
     return """
-Analyze the most recent message where the 'author' field ends with '_agent' and which contains parameter information. This message may not be the immediate preceding one.
 Your task is to determine if the parameters requiring user confirmation have been fully presented and a confirmation is being requested in that message.
+Analyze the messages from `user` and `model` listed below (only listed Latest 5 messages):
+
+{context_messages}
 
 Your output MUST be a valid JSON object with the following structure:
 {{
