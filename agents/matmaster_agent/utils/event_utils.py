@@ -150,7 +150,7 @@ def context_multipart2function_event(ctx: InvocationContext, author: str, event:
     for part in event.content.parts:
         if part.text:
             yield from context_function_event(ctx, author, function_call_name, {'msg': part.text},
-                                                         ModelRole)
+                                              ModelRole)
         elif part.function_call:
             yield context_function_call_event(ctx, author, function_call_id=part.function_call.id,
                                               function_call_name=part.function_call.name, role=ModelRole,
@@ -161,6 +161,18 @@ def context_multipart2function_event(ctx: InvocationContext, author: str, event:
 def all_text_event(ctx: InvocationContext, author: str, text: str, role: str):
     yield frontend_text_event(ctx, author, text, role)
     yield context_text_event(ctx, author, text, role)
+
+
+def cherry_pick_events(ctx: InvocationContext):
+    events = ctx.session.events
+    cherry_pick_parts = []
+    for event in events:
+        if event.content:
+            for part in event.content.parts:
+                if part.text:
+                    cherry_pick_parts.append((event.content.role, part.text))
+
+    return cherry_pick_parts
 
 
 async def send_error_event(err, ctx: InvocationContext, author):
