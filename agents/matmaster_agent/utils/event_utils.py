@@ -1,3 +1,4 @@
+import logging
 import traceback
 import uuid
 from typing import Iterable
@@ -9,6 +10,8 @@ from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.constant import ModelRole
 from agents.matmaster_agent.utils.helper_func import update_session_state
+
+logger = logging.getLogger(__name__)
 
 
 # event check funcs
@@ -152,6 +155,7 @@ def context_multipart2function_event(ctx: InvocationContext, author: str, event:
             yield from context_function_event(ctx, author, function_call_name, {'msg': part.text},
                                               ModelRole)
         elif part.function_call:
+            logger.warning(f"[context_multipart2function_event] function_name = {part.function_call.name}")
             yield context_function_call_event(ctx, author, function_call_id=part.function_call.id,
                                               function_call_name=part.function_call.name, role=ModelRole,
                                               args=part.function_call.args)
