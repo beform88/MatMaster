@@ -64,10 +64,10 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
         running_job_ids = get_running_jobs_detail(jobs_dict)
         access_key = _get_ak(callback_context)
         if callback_context.state['target_language'] in ['Chinese', 'zh-CN', '简体中文', 'Chinese (Simplified)']:
-            job_complete_intro = '检测到任务 <{job_id}> 已完成，我将立刻转移至对应的 Agent 去获取任务结果，请稍等...'
+            job_complete_intro = '检测到任务 <{job_id}> 已完成，我将立刻转移至对应的 Agent 去获取任务结果。'
         else:
             job_complete_intro = ('Job <{job_id}> has been detected as completed. '
-                                  'I will immediately transfer to the corresponding agent to retrieve the job results. Please wait...')
+                                  'I will immediately transfer to the corresponding agent to retrieve the job results.')
 
         reset = False
         for origin_job_id, job_id, job_query_url, agent_name in running_job_ids:
@@ -116,7 +116,7 @@ async def matmaster_check_transfer(callback_context: CallbackContext, llm_respon
             is_transfer and
             not has_function_call(llm_response)
     ):
-        logger.warning(f"Detected Agent Transfer Hallucination, add `transfer_to_agent`")
+        logger.warning(f"[matmaster_check_transfer] target_agent = {target_agent}")
         function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
         llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id, name='transfer_to_agent',
                                                                           args={'agent_name': target_agent})))
