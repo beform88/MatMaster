@@ -9,7 +9,8 @@ else:
 ABACUS_AGENT_NAME = 'ABACUS_calculation_agent'
 ABACUS_CALCULATOR_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 ABACUS_CALCULATOR_BOHRIUM_EXECUTOR['machine']['remote_profile']['image_address'] = \
-    'registry.dp.tech/dptech/dp/native/prod-22618/abacusagenttools:v0.2-pre-20250822'
+    "registry.dp.tech/dptech/dp/native/prod-22618/abacusagenttools:v0.2"
+ABACUS_CALCULATOR_BOHRIUM_EXECUTOR['machine']['remote_profile']['machine_type'] = 'c16_m32_cpu'
 ABACUS_CALCULATOR_BOHRIUM_STORAGE = copy.deepcopy(BohriumStorge)
 
 EXECUTOR_MAP = {
