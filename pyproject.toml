@@ -16,6 +16,7 @@ dependencies = [
     "google-adk[a2a]==1.14.1",
     "pre-commit>=4.3.0",
     "bohrium-sdk>=0.14.0",
+    "toolsy>=0.1.2",
 ]
 
 [tool.setuptools]

@@ -1,4 +1,8 @@
-JobCompleteCard = """
+from toolsy.i8n import I18N
+
+
+def get_job_complete_card(i18n: I18N, job_id):
+    return f"""
 <div style="
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 12px;
@@ -15,23 +19,24 @@ JobCompleteCard = """
             backdrop-filter: blur(10px);
             font-size: 12px;
             font-weight: bold;
-        ">🚀 任务状态</div>
+        ">🚀 {i18n.t("JobStatus")}</div>
         <div style="
             background: rgba(255, 255, 255, 0.1);
             padding: 4px 10px;
             border-radius: 6px;
             font-family: monospace;
-        ">ID: {job_id}</div>
+            font-size: 12px;
+        ">{i18n.t("Job")}ID：{job_id}</div>
     </div>
     <div style="
         font-size: 16px;
         font-weight: 500;
         margin-top: 8px;
-    ">已完成 · 正在转移至 Agent</div>
+    ">✅ {i18n.t("JobCompleted")}</div>
     <div style="
-        font-size: 12px;
+        font-size: 14px;
         opacity: 0.9;
-        margin-top: 4px;
-    ">结果获取中...</div>
+        margin-top: 6px;
+    ">{i18n.t("ResultRetrieving")}...</div>
 </div>
 """
