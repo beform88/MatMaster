@@ -1,3 +1,4 @@
+import inspect
 import json
 import logging
 import uuid
@@ -12,10 +13,11 @@ from google.genai.types import FunctionCall, Part
 
 from agents.matmaster_agent.base_agents.callback import _get_ak
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY
-from agents.matmaster_agent.model import TransferCheck, UserContent
-from agents.matmaster_agent.prompt import get_transfer_check_prompt, get_user_content_lang
+from agents.matmaster_agent.locales import i18n
+from agents.matmaster_agent.model import UserContent
+from agents.matmaster_agent.prompt import get_user_content_lang
+from agents.matmaster_agent.style import get_job_complete_card
 from agents.matmaster_agent.utils.job_utils import get_job_status, has_job_running, get_running_jobs_detail
-from agents.matmaster_agent.utils.llm_response_utils import has_function_call
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +53,7 @@ async def matmaster_set_lang(callback_context: CallbackContext) -> Optional[type
     response = litellm.completion(model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}],
                                   response_format=UserContent)
     result: dict = json.loads(response.choices[0].message.content)
-    logger.info(f"[matmaster_prepare_state] user_content = {result}")
+    logger.info(f"[{inspect.currentframe().f_code.co_name}] result = {result}")
     language = str(result.get('language', 'zh'))
     callback_context.state['target_language'] = language
 
@@ -74,10 +76,9 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
         running_job_ids = get_running_jobs_detail(jobs_dict)  # 从 state 里面拿
         access_key = _get_ak(callback_context)  # 从 state 或环境变量里面拿
         if callback_context.state['target_language'] in ['Chinese', 'zh-CN', '简体中文', 'Chinese (Simplified)']:
-            job_complete_intro = '检测到任务 <{job_id}> 已完成，我将立刻转移至对应的 Agent 去获取任务结果。'
+            i18n.language = 'zh'
         else:
-            job_complete_intro = ('Job <{job_id}> has been detected as completed. '
-                                  'I will immediately transfer to the corresponding agent to retrieve the job results.')
+            i18n.language = 'en'
 
         reset = False
         for origin_job_id, job_id, job_query_url, agent_name in running_job_ids:
@@ -100,7 +101,7 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
                     reset = True
                 function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
                 callback_context.state['origin_job_id'] = origin_job_id
-                llm_response.content.parts.append(Part(text=job_complete_intro.format(job_id=job_id)))
+                llm_response.content.parts.append(Part(text=get_job_complete_card(i18n=i18n, job_id=job_id)))
                 llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id,
                                                                                   name='transfer_to_agent',
                                                                                   args={'agent_name': agent_name})))
@@ -108,41 +109,4 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
         return llm_response
 
     callback_context.state['last_llm_response_partial'] = llm_response.partial
-    return None
-
-
-async def matmaster_check_transfer(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[
-    LlmResponse]:
-    # 检查响应是否有效
-    if not (
-            llm_response and
-            not llm_response.partial and
-            llm_response.content and
-            llm_response.content.parts and
-            len(llm_response.content.parts) and
-            llm_response.content.parts[0].text
-    ):
-        return None
-
-    prompt = get_transfer_check_prompt().format(response_text=llm_response.content.parts[0].text)
-    response = litellm.completion(model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}],
-                                  response_format=TransferCheck)
-
-    result: dict = json.loads(response.choices[0].message.content)
-    is_transfer = bool(result.get('is_transfer', False))
-    target_agent = str(result.get('target_agent', ''))
-    reason = str(result.get('reason', ''))
-    logger.info(f"[matmaster_check_transfer] target_agent = {target_agent}, is_transfer = {is_transfer}"
-                f"response_text = {llm_response.content.parts[0].text}, reason = {reason}")
-    if (
-            is_transfer and
-            not has_function_call(llm_response)
-    ):
-        logger.warning(f"[matmaster_check_transfer] add `transfer_to_agent`")
-        function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
-        llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id, name='transfer_to_agent',
-                                                                          args={'agent_name': target_agent})))
-
-        return llm_response
-
     return None

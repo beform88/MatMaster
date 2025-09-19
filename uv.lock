@@ -1654,6 +1654,7 @@ dependencies = [
     { name = "pre-commit" },
     { name = "pymysql" },
     { name = "pytest-asyncio" },
+    { name = "toolsy" },
 ]
 
 [package.metadata]
@@ -1664,11 +1665,12 @@ requires-dist = [
     { name = "bohrium-sdk", specifier = ">=0.14.0" },
     { name = "google-adk", extras = ["a2a"], specifier = "==1.14.1" },
     { name = "litellm", specifier = ">=1.76.1" },
-    { name = "opik", specifier = ">=1.8.33" },
+    { name = "opik", specifier = ">=1.8.49" },
     { name = "oss2", specifier = ">=2.18.0" },
     { name = "pre-commit", specifier = ">=4.3.0" },
     { name = "pymysql", specifier = ">=1.1.1" },
     { name = "pytest-asyncio", specifier = ">=1.1.0" },
+    { name = "toolsy", specifier = ">=0.1.2" },
 ]
 
 [[package]]
@@ -1979,7 +1981,7 @@ wheels = [
 
 [[package]]
 name = "opik"
-version = "1.8.42"
+version = "1.8.50"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "boto3-stubs", extra = ["bedrock-runtime"] },
@@ -1998,9 +2000,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "uuid6" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/61/b7/796de731cb2922c0763f6e2d4fcf1b11c2c307d34c39e0f48122357f365d/opik-1.8.42.tar.gz", hash = "sha256:df32fa369b88c76b8b967ae0a1039c8ba9482ff89a0a4db11e8313531ffcf332", size = 367566 }
+sdist = { url = "https://files.pythonhosted.org/packages/88/c8/0b50eb3edd7a7bd34265282a47b55fb1c402ddbcc69cee132672971859fd/opik-1.8.50.tar.gz", hash = "sha256:6815e67047fd769973743d8b256edf2e3dae922f2b0dd5903ebaffae3d9a078d", size = 378231 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/f3/2636c43d2849bfc902797724f6b1014fca936d4db147d9cc2efc5ab20b4b/opik-1.8.42-py3-none-any.whl", hash = "sha256:325978cce6fd2bc101cb78db5ddecd5c076da9e067afdfa29422dfb45a582018", size = 686335 },
+    { url = "https://files.pythonhosted.org/packages/0a/a6/a8e9d0d987900308228043a459ed7000289f6ac8eb4c526d16e7ab626de2/opik-1.8.50-py3-none-any.whl", hash = "sha256:4d365df4e02dd24d69594ba1568beed097bc1f0016be6f090e4ed8431857bbc6", size = 704059 },
 ]
 
 [[package]]
@@ -3037,6 +3039,14 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/0a/42348c995c67e2e6e5c89ffb9cfd68507cbaeb84ff39c49ee6e0a6dd0fd2/tokenizers-0.21.4-cp39-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:c212aa4e45ec0bb5274b16b6f31dd3f1c41944025c2358faaa5782c754e84c24", size = 9461980 },
     { url = "https://files.pythonhosted.org/packages/3d/d3/dacccd834404cd71b5c334882f3ba40331ad2120e69ded32cf5fda9a7436/tokenizers-0.21.4-cp39-abi3-win32.whl", hash = "sha256:6c42a930bc5f4c47f4ea775c91de47d27910881902b0f20e4990ebe045a415d0", size = 2329871 },
     { url = "https://files.pythonhosted.org/packages/41/f2/fd673d979185f5dcbac4be7d09461cbb99751554ffb6718d0013af8604cb/tokenizers-0.21.4-cp39-abi3-win_amd64.whl", hash = "sha256:475d807a5c3eb72c59ad9b5fcdb254f6e17f53dfcbb9903233b0dfa9c943b597", size = 2507568 },
+]
+
+[[package]]
+name = "toolsy"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/20/22f09aff546c26ecf3c2b635a20f6589bf6dd7191a2dfff9138bc4af5542/toolsy-0.1.2-py3-none-any.whl", hash = "sha256:d2b96f36444eb55de79280e3f654ae6771d0e7e4e37d7a3a7930720b049ed674", size = 29412 },
 ]
 
 [[package]]

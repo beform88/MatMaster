@@ -710,10 +710,8 @@ SubmitRenderAgentDescription = 'Sends specific messages to the frontend for rend
 ResultCoreAgentDescription = 'Provides real-time task status updates and result forwarding to UI'
 TransferAgentDescription = 'Transfer to proper agent to answer user query'
 
-
 # LLM-Helper Prompt
-def get_transfer_check_prompt():
-    return """
+MatMasterCheckTransferPrompt = """
 You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent').
 Analyze the provided RESPONSE TEXT to determine if it explicitly indicates a transfer action.
 
@@ -801,13 +799,30 @@ Generate an appropriate confirmation message based on the provided function info
 
 def get_user_content_lang():
     return """
-You are a professional assistant responsible for analysing language of user_content.
+You are a professional linguistic analyst. Your task is to identify the primary language used in the user content provided.
 
 User Content:
 {user_content}
 
-Provide your analysis in the following JSON format:
+Analyze the text and determine the most likely language from the following predefined options:
+- English
+- Chinese
+- Spanish
+- French
+- German
+- Japanese
+- Korean
+- Russian
+- Arabic
+- Portuguese
+- Italian
+- Dutch
+- Other
+
+If the language does not clearly match any of the above options or is a mix of multiple languages, classify it as "Other".
+
+Provide your analysis in the following strict JSON format:
 {{
-    "language": <string>
+    "language": "<string>"
 }}
 """
