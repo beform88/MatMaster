@@ -1,3 +1,4 @@
+import inspect
 import json
 import logging
 import uuid
@@ -50,7 +51,7 @@ async def matmaster_set_lang(callback_context: CallbackContext) -> Optional[type
     response = litellm.completion(model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}],
                                   response_format=UserContent)
     result: dict = json.loads(response.choices[0].message.content)
-    logger.info(f"[matmaster_prepare_state] user_content = {result}")
+    logger.info(f"[{inspect.currentframe().f_code.co_name}] result = {result}")
     language = str(result.get('language', 'zh'))
     callback_context.state['target_language'] = language
 

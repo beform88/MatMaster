@@ -804,13 +804,30 @@ Generate an appropriate confirmation message based on the provided function info
 
 def get_user_content_lang():
     return """
-You are a professional assistant responsible for analysing language of user_content.
+You are a professional linguistic analyst. Your task is to identify the primary language used in the user content provided.
 
 User Content:
 {user_content}
 
-Provide your analysis in the following JSON format:
+Analyze the text and determine the most likely language from the following predefined options:
+- English
+- Chinese
+- Spanish
+- French
+- German
+- Japanese
+- Korean
+- Russian
+- Arabic
+- Portuguese
+- Italian
+- Dutch
+- Other
+
+If the language does not clearly match any of the above options or is a mix of multiple languages, classify it as "Other".
+
+Provide your analysis in the following strict JSON format:
 {{
-    "language": <string>
+    "language": "<string>"
 }}
 """
