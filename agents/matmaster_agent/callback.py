@@ -76,9 +76,9 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
         running_job_ids = get_running_jobs_detail(jobs_dict)  # 从 state 里面拿
         access_key = _get_ak(callback_context)  # 从 state 或环境变量里面拿
         if callback_context.state['target_language'] in ['Chinese', 'zh-CN', '简体中文', 'Chinese (Simplified)']:
-            i18n.language = "zh"
+            i18n.language = 'zh'
         else:
-            i18n.language = "en"
+            i18n.language = 'en'
 
         reset = False
         for origin_job_id, job_id, job_query_url, agent_name in running_job_ids:
