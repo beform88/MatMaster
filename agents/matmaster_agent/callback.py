@@ -14,6 +14,7 @@ from agents.matmaster_agent.base_agents.callback import _get_ak
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
+from agents.matmaster_agent.style import JobCompleteCard
 from agents.matmaster_agent.utils.job_utils import get_job_status, has_job_running, get_running_jobs_detail
 
 logger = logging.getLogger(__name__)
@@ -99,7 +100,7 @@ async def matmaster_check_job_status(callback_context: CallbackContext, llm_resp
                     reset = True
                 function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
                 callback_context.state['origin_job_id'] = origin_job_id
-                llm_response.content.parts.append(Part(text=job_complete_intro.format(job_id=job_id)))
+                llm_response.content.parts.append(Part(text=JobCompleteCard.format(job_id=job_id)))
                 llm_response.content.parts.append(Part(function_call=FunctionCall(id=function_call_id,
                                                                                   name='transfer_to_agent',
                                                                                   args={'agent_name': agent_name})))
