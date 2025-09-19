@@ -1664,7 +1664,7 @@ requires-dist = [
     { name = "bohrium-sdk", specifier = ">=0.14.0" },
     { name = "google-adk", extras = ["a2a"], specifier = "==1.14.1" },
     { name = "litellm", specifier = ">=1.76.1" },
-    { name = "opik", specifier = ">=1.8.33" },
+    { name = "opik", specifier = ">=1.8.49" },
     { name = "oss2", specifier = ">=2.18.0" },
     { name = "pre-commit", specifier = ">=4.3.0" },
     { name = "pymysql", specifier = ">=1.1.1" },
@@ -1979,7 +1979,7 @@ wheels = [
 
 [[package]]
 name = "opik"
-version = "1.8.42"
+version = "1.8.50"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "boto3-stubs", extra = ["bedrock-runtime"] },
@@ -1998,9 +1998,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "uuid6" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/61/b7/796de731cb2922c0763f6e2d4fcf1b11c2c307d34c39e0f48122357f365d/opik-1.8.42.tar.gz", hash = "sha256:df32fa369b88c76b8b967ae0a1039c8ba9482ff89a0a4db11e8313531ffcf332", size = 367566 }
+sdist = { url = "https://files.pythonhosted.org/packages/88/c8/0b50eb3edd7a7bd34265282a47b55fb1c402ddbcc69cee132672971859fd/opik-1.8.50.tar.gz", hash = "sha256:6815e67047fd769973743d8b256edf2e3dae922f2b0dd5903ebaffae3d9a078d", size = 378231 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/f3/2636c43d2849bfc902797724f6b1014fca936d4db147d9cc2efc5ab20b4b/opik-1.8.42-py3-none-any.whl", hash = "sha256:325978cce6fd2bc101cb78db5ddecd5c076da9e067afdfa29422dfb45a582018", size = 686335 },
+    { url = "https://files.pythonhosted.org/packages/0a/a6/a8e9d0d987900308228043a459ed7000289f6ac8eb4c526d16e7ab626de2/opik-1.8.50-py3-none-any.whl", hash = "sha256:4d365df4e02dd24d69594ba1568beed097bc1f0016be6f090e4ed8431857bbc6", size = 704059 },
 ]
 
 [[package]]
