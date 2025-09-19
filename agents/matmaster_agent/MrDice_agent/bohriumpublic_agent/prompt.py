@@ -95,6 +95,11 @@ If `n_found = 0`, clearly state that no matches were found, repeat the applied f
      spacegroup_number: 14
      atom_count_range: ["50","100"]
 
+4) 用户：检索 FeNi 合金的结构
+   → Tool: fetch_bohrium_crystals
+     elements: ["Fe","Ni"]   # 合金只含有Fe和Ni元素，不能含有其他元素
+     match_mode: 1      # 合金需要精确匹配
+
 5) 用户：找所有化学式中包含 SiO3 的材料
    → Tool: fetch_bohrium_crystals
      formula: "SiO3"
