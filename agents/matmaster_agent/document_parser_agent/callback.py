@@ -36,7 +36,7 @@ def validate_document_url(callback_context: CallbackContext, llm_response: LlmRe
             if 'url' in args:
                 corrected_args = args.copy()
                 url = args['url']
-                
+
                 # Validate and correct the tool call based on URL
                 corrected_call = _correct_tool_call(function_call.name, url)
                 if corrected_call != function_call.name:
@@ -48,13 +48,13 @@ def validate_document_url(callback_context: CallbackContext, llm_response: LlmRe
                     modified_parts.append(types.Part(function_call=new_function_call))
                     has_modifications = True
                     continue
-                    
+
             elif 'urls' in args:
                 corrected_args = args.copy()
                 urls = args['urls']
                 if isinstance(urls, list) and urls:
                     # For multiple URLs, check if correction is needed
-                    url = urls[0] if urls else ""
+                    url = urls[0] if urls else ''
                     corrected_call = _correct_tool_call(function_call.name, url)
                     if corrected_call != function_call.name:
                         new_function_call = types.FunctionCall(
@@ -85,11 +85,11 @@ def validate_document_url(callback_context: CallbackContext, llm_response: LlmRe
 def _correct_tool_call(current_tool: str, url: str) -> str:
     """
     Determine the correct tool based on URL characteristics.
-    
+
     Args:
         current_tool: Current tool name
         url: URL to analyze
-        
+
     Returns:
         Corrected tool name
     """
@@ -98,19 +98,19 @@ def _correct_tool_call(current_tool: str, url: str) -> str:
 
     # Parse URL to check its characteristics
     parsed_url = urlparse(url)
-    
+
     # Check if it's clearly a web URL (no file extension or html-based)
     if parsed_url.scheme in ['http', 'https']:
         path = parsed_url.path.lower()
-        
+
         # If it has a PDF extension, it should use document parser
         if path.endswith('.pdf'):
             return 'extract_material_data_from_pdf'
-        
+
         # If it doesn't have a file extension or has HTML-related patterns, use web parser
         if '.' not in path or path.endswith(('.html', '.htm', '.asp', '.aspx', '.jsp', '.php')):
             return 'extract_material_data_from_webpage'
-            
+
         # For URLs without clear extensions, check if it looks like a web page
         # (this is a heuristic, could be refined)
         if any(keyword in url.lower() for keyword in ['www', 'http', 'web', 'site']):
