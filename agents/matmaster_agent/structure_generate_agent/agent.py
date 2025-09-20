@@ -53,7 +53,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             sync_tools=[
-                # 'build_bulk_structure_by_template',
+                'build_bulk_structure_by_template',
                 'build_bulk_structure_by_wyckoff',
                 'make_supercell_structure',
                 'build_molecule_structure_from_g2database',

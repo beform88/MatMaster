@@ -18,6 +18,8 @@ jobs:
       - name: Label PR based on title keywords
         uses: actions/github-script@v8
         with:
+          # 使用具有写入权限的token
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const title = context.payload.pull_request.title.toLowerCase();
             const labelsToAdd = new Set(); // 使用 Set 避免重复添加
