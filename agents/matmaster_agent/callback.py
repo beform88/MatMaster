@@ -149,9 +149,9 @@ async def matmaster_check_job_status(
                     llm_response.content = None
                     break
                 if not reset:
-                    callback_context.state[
-                        'special_llm_response'
-                    ] = True  # 标记开始处理原来消息的非流式版本
+                    callback_context.state['special_llm_response'] = (
+                        True  # 标记开始处理原来消息的非流式版本
+                    )
                     llm_response.content.parts = []
                     reset = True
                 function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"

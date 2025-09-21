@@ -144,7 +144,9 @@ class CalculationLlmAgent(LlmAgent):
                     and event.content.parts
                     and event.content.parts[0].function_response
                 ):
-                    logger.info(f"{event.content.parts[0].function_response.name} 调用结束")
+                    logger.info(
+                        f"{event.content.parts[0].function_response.name} 调用结束"
+                    )
                     yield Event(
                         author=self.name,
                         actions=EventActions(
