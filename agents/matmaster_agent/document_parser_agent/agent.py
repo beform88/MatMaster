@@ -49,9 +49,7 @@ class DocumentParserAgent(CalculationMCPLlmAgent):
             instruction=DocumentParserAgentInstruction,
             tools=[toolset],
             supervisor_agent=MATMASTER_AGENT_NAME,
-            after_model_callback=validate_document_url,
-            before_tool_callback=document_parser_before_tool,
-            after_tool_callback=document_parser_after_tool
+            after_model_callback=validate_document_url
         )
 
 def init_document_parser_agent(llm_config) -> BaseAgent:
