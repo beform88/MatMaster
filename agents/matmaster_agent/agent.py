@@ -1,44 +1,64 @@
 import logging
-from typing import override, AsyncGenerator
+from typing import AsyncGenerator, override
 
-from google.adk.agents import LlmAgent, InvocationContext
+from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from google.adk.models.lite_llm import LiteLlm
 from opik.integrations.adk import track_adk_agent_recursive
 
 from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
-from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
-from agents.matmaster_agent.HEACalculator_agent.agent import init_hea_calculator_agent
-from agents.matmaster_agent.HEA_assistant_agent.agent import init_HEA_assistant_agent
-from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
-from agents.matmaster_agent.MrDice_agent.agent import init_MrDice_agent
 from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
-from agents.matmaster_agent.callback import matmaster_prepare_state, matmaster_set_lang, matmaster_check_job_status
+from agents.matmaster_agent.callback import (
+    matmaster_check_job_status,
+    matmaster_prepare_state,
+    matmaster_set_lang,
+)
 from agents.matmaster_agent.chembrain_agent.agent import init_chembrain_agent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
-from agents.matmaster_agent.document_parser_agent.agent import init_document_parser_agent
+from agents.matmaster_agent.document_parser_agent.agent import (
+    init_document_parser_agent,
+)
+from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
+from agents.matmaster_agent.HEA_assistant_agent.agent import init_HEA_assistant_agent
+from agents.matmaster_agent.HEACalculator_agent.agent import init_hea_calculator_agent
+from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.model import MatMasterTargetAgentEnum
-from agents.matmaster_agent.organic_reaction_agent.agent import init_organic_reaction_agent
+from agents.matmaster_agent.MrDice_agent.agent import init_MrDice_agent
+from agents.matmaster_agent.organic_reaction_agent.agent import (
+    init_organic_reaction_agent,
+)
 from agents.matmaster_agent.perovskite_agent.agent import init_perovskite_agent
-from agents.matmaster_agent.piloteye_electro_agent.agent import init_piloteye_electro_agent
-from agents.matmaster_agent.prompt import AgentDescription, AgentInstruction, GlobalInstruction, \
-    MatMasterCheckTransferPrompt
+from agents.matmaster_agent.piloteye_electro_agent.agent import (
+    init_piloteye_electro_agent,
+)
+from agents.matmaster_agent.prompt import (
+    AgentDescription,
+    AgentInstruction,
+    GlobalInstruction,
+    MatMasterCheckTransferPrompt,
+)
 from agents.matmaster_agent.public.callback import check_transfer
 from agents.matmaster_agent.ssebrain_agent.agent import init_ssebrain_agent
-from agents.matmaster_agent.structure_generate_agent.agent import init_structure_generate_agent
+from agents.matmaster_agent.structure_generate_agent.agent import (
+    init_structure_generate_agent,
+)
 from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
-from agents.matmaster_agent.utils.event_utils import send_error_event, frontend_text_event
+from agents.matmaster_agent.utils.event_utils import (
+    frontend_text_event,
+    send_error_event,
+)
 from agents.matmaster_agent.utils.helper_func import update_session_state
 
-logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(logging.ERROR)
+logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
+    logging.ERROR
+)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
-
     def __init__(self, llm_config):
         piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
         traj_analysis_agent = init_traj_analysis_agent(llm_config)
@@ -84,18 +104,27 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             instruction=AgentInstruction,
             description=AgentDescription,
             before_agent_callback=[matmaster_prepare_state, matmaster_set_lang],
-            after_model_callback=[matmaster_check_job_status,
-                                  check_transfer(prompt=MatMasterCheckTransferPrompt,
-                                                 target_agent_enum=MatMasterTargetAgentEnum)])
+            after_model_callback=[
+                matmaster_check_job_status,
+                check_transfer(
+                    prompt=MatMasterCheckTransferPrompt,
+                    target_agent_enum=MatMasterTargetAgentEnum,
+                ),
+            ],
+        )
 
     @override
-    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
         try:
             # Delegate to parent implementation for the actual processing
             async for event in super()._run_async_impl(ctx):
                 # 对于 [matmaster_check_job_status] 生成的消息， 手动拼一个流式消息
                 if ctx.session.state['special_llm_response']:
-                    yield frontend_text_event(ctx, self.name, event.content.parts[0].text, ModelRole)
+                    yield frontend_text_event(
+                        ctx, self.name, event.content.parts[0].text, ModelRole
+                    )
                     ctx.session.state['special_llm_response'] = False
                     await update_session_state(ctx, self.name)
                 yield event

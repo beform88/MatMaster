@@ -1,7 +1,8 @@
+import os
+
 from dotenv import load_dotenv
 from google.adk.models.lite_llm import LiteLlm
 from opik.integrations.adk import OpikTracer
-import os
 
 load_dotenv()
 
@@ -13,7 +14,10 @@ MODEL_MAPPING = {
     ('openai', 'gemini-2.5-pro-preview-05-06'): 'openai/gemini-2.5-pro-preview-05-06',
     ('openai', 'deepseek-r1'): 'openai/deepseek-r1',
     ('openai', 'claude-sonnet-4-20250514'): 'openai/claude-sonnet-4-20250514',
-    ('openai', 'gemini-2.5-flash-preview-05-20'): 'openai/gemini-2.5-flash-preview-05-20',
+    (
+        'openai',
+        'gemini-2.5-flash-preview-05-20',
+    ): 'openai/gemini-2.5-flash-preview-05-20',
     ('openai', 'qwen-plus'): 'openai/qwen-plus',
     ('openai', 'gpt-5'): 'openai/gpt-5',
     ('openai', 'gpt-5-nano'): 'openai/gpt-5-nano',
@@ -37,7 +41,7 @@ MODEL_MAPPING = {
     ('volcengine', 'deepseek-R1-0528'): 'volcengine/ep-20250612143101-qf6n8',
     ('volcengine', 'deepseek-Seed-1.6'): 'volcengine/ep-20250627140204-clmmm',
     ('volcengine', 'Doubao-Seed-1.6-flash'): 'volcengine/ep-20250627141116-z2fv4',
-    ('volcengine', 'Doubao-Seed-1.6-thinking'): 'volcengine/ep-20250627141021-h4wch'
+    ('volcengine', 'Doubao-Seed-1.6-thinking'): 'volcengine/ep-20250627141021-h4wch',
 }
 
 # DEFAULT_MODEL = "azure/gpt-4o-mini"
@@ -57,11 +61,9 @@ class LLMConfig:
         if self._initialized:
             return
 
-        openai_provider = 'openai'
         azure_provider = 'azure'
         litellm_provider = 'litellm_proxy'
         deepseek_provider = 'deepseek'
-        volcengine_provider = 'volcengine'
 
         gpt_4o = 'gpt-4o'
         gpt_4o_mini = 'gpt-4o-mini'
@@ -77,7 +79,9 @@ class LLMConfig:
 
         # Helper to init any provider model
         def _init_model(provider_key: str, model_name: str):
-            return LiteLlm(model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL))
+            return LiteLlm(
+                model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL)
+            )
 
         self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
         self.gpt_4o = _init_model(azure_provider, gpt_4o)

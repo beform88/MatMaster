@@ -1,16 +1,17 @@
+from dotenv import load_dotenv
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.job_agent import CalculationMCPLlmAgent
-from agents.matmaster_agent.constant import (
-    LOCAL_EXECUTOR,
-    BohriumStorge, MATMASTER_AGENT_NAME,
+from agents.matmaster_agent.constant import LOCAL_EXECUTOR, BohriumStorge
+from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
+from agents.matmaster_agent.MrDice_agent.optimade_agent.constant import OPTIMADE_URL
+from agents.matmaster_agent.MrDice_agent.optimade_agent.prompt import (
+    OptimadeAgentDescription,
+    OptimadeAgentInstruction,
+    OptimadeAgentName,
 )
-from agents.matmaster_agent.MrDice_agent.optimade_agent.constant import *
-from agents.matmaster_agent.MrDice_agent.optimade_agent.prompt import *
-from agents.matmaster_agent.MrDice_agent.constant import *
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -18,7 +19,7 @@ load_dotenv()
 mcp_tools = CalculationMCPToolset(
     connection_params=SseServerParams(url=OPTIMADE_URL),
     storage=BohriumStorge,
-    executor=LOCAL_EXECUTOR
+    executor=LOCAL_EXECUTOR,
 )
 
 

@@ -7,14 +7,15 @@ from google.adk.agents.callback_context import CallbackContext
 from google.adk.models import LlmRequest, LlmResponse
 from google.genai import types
 
-from .prompt import instructions_v2_en
 from ...tools.database import DatabaseManager
 from ...tools.io import save_llm_request
+from .prompt import instructions_v2_en
 
 
 def create_save_response(agent_name: str):
-    def save_response(callback_context: CallbackContext, llm_response: LlmResponse) -> None:
-
+    def save_response(
+        callback_context: CallbackContext, llm_response: LlmResponse
+    ) -> None:
         paper_list = callback_context.state['paper_list']
         # 使用传入的 agent_name 参数
         paper_url = paper_list[agent_name]
@@ -60,10 +61,8 @@ def mock_get_paper_content_and_picture(paper_url):
 
 def create_update_invoke_message_with_agent_name(agent_name: str):
     async def update_invoke_message_with_agent_name(
-            callback_context: CallbackContext,
-            llm_request: LlmRequest
+        callback_context: CallbackContext, llm_request: LlmRequest
     ) -> Optional[LlmResponse]:
-
         paper_list = callback_context.state['paper_list']
         # 使用传入的 agent_name 参数
         paper_url = paper_list[agent_name]
@@ -73,7 +72,7 @@ def create_update_invoke_message_with_agent_name(agent_name: str):
 
         # query paper content and picture from database
         db_manager = DatabaseManager(callback_context.state['db_name'])
-        await db_manager.async_init() # Initialize DatabaseManager asynchronously
+        await db_manager.async_init()  # Initialize DatabaseManager asynchronously
         fetch_paper_content = db_manager.init_fetch_paper_content()
         print(f"Fetching paper content from database... : {paper_url}")
         paper_content = await fetch_paper_content(paper_url)
@@ -85,15 +84,26 @@ def create_update_invoke_message_with_agent_name(agent_name: str):
             text = llm_request.contents[-1].parts[0].text
             function_response = llm_request.contents[-1].parts[0].function_response
             if text == 'For context:' and function_response is None:
-                contents.append(types.Content(role='user', parts=[types.Part(text=f"raw paper content:{message}")]))
+                contents.append(
+                    types.Content(
+                        role='user',
+                        parts=[types.Part(text=f"raw paper content:{message}")],
+                    )
+                )
                 if picture_mapping is not None:
                     contents.append(
-                        types.Content(role='user', parts=[types.Part(text=f"picture_mapping:{picture_mapping}")]))
+                        types.Content(
+                            role='user',
+                            parts=[
+                                types.Part(text=f"picture_mapping:{picture_mapping}")
+                            ],
+                        )
+                    )
                 llm_request.contents = llm_request.contents + contents
 
             output_file = 'llm_contents_reader.json'
             save_llm_request(llm_request, output_file)
-        except:
+        except BaseException:
             print(llm_request.contents[-1].role, llm_request.contents[-1].parts[0])
         return None  # 原函数没有返回值，保持一致
 
@@ -114,10 +124,11 @@ def init_paper_agent(config, name, run_id):
         tools=[],
         output_key=f"{name}_finding",
         before_model_callback=create_update_invoke_message_with_agent_name(name),
-        after_model_callback=create_save_response(name)
+        after_model_callback=create_save_response(name),
     )
 
     return paper_agent
+
 
 # # Example usage
 # llm_config = create_default_config()

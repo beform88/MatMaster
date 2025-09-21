@@ -4,19 +4,27 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, field_validator
 
 from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
-from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
-from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
-from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
-from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
-from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.chembrain_agent.constant import CHEMBRAIN_AGENT_NAME
-from agents.matmaster_agent.document_parser_agent.constant import DocumentParserAgentName
-from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
+from agents.matmaster_agent.document_parser_agent.constant import (
+    DocumentParserAgentName,
+)
+from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
+from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
+from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
+from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
+from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
+from agents.matmaster_agent.organic_reaction_agent.constant import (
+    ORGANIC_REACTION_AGENT_NAME,
+)
 from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
-from agents.matmaster_agent.piloteye_electro_agent.constant import PILOTEYE_ELECTRO_AGENT_NAME
+from agents.matmaster_agent.piloteye_electro_agent.constant import (
+    PILOTEYE_ELECTRO_AGENT_NAME,
+)
 from agents.matmaster_agent.ssebrain_agent.constant import SSEBRAIN_AGENT_NAME
-from agents.matmaster_agent.structure_generate_agent.constant import StructureGenerateAgentName
+from agents.matmaster_agent.structure_generate_agent.constant import (
+    StructureGenerateAgentName,
+)
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
@@ -56,7 +64,7 @@ class BohrJobInfo(BaseModel):
     @classmethod
     def validate_job_detail_url(cls, v: str) -> str:
         if '.dp.tech/jobs/detail' not in v:
-            raise ValueError(f"Job Detail Url Invalid")
+            raise ValueError('Job Detail Url Invalid')
         return v
 
 

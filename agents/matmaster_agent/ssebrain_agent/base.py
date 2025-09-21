@@ -2,19 +2,26 @@ import logging
 import os
 import traceback
 from functools import wraps
-from typing import override, AsyncGenerator, Union
+from typing import AsyncGenerator, Union, override
 
 from dp.agent.adapter.adk import CalculationMCPTool
 from google.adk.agents import LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.agents.llm_agent import BeforeToolCallback
 from google.adk.events import Event, EventActions
-from google.adk.tools import ToolContext, BaseTool
+from google.adk.tools import BaseTool, ToolContext
 from google.genai import types
 from mcp.types import CallToolResult, TextContent
 
-from agents.matmaster_agent.ssebrain_agent.constant import Transfer2Agent, LOADING_STATE_KEY, LOADING_START, LOADING_TITLE, \
-    LOADING_DESC, LOADING_END
+from agents.matmaster_agent.ssebrain_agent.constant import (
+    LOADING_DESC,
+    LOADING_END,
+    LOADING_START,
+    LOADING_STATE_KEY,
+    LOADING_TITLE,
+    Transfer2Agent,
+)
+
 from ..constant import FRONTEND_STATE_KEY, TMP_FRONTEND_STATE_KEY
 
 logger = logging.getLogger(__name__)
@@ -38,11 +45,23 @@ class CalculationLlmAgent(LlmAgent):
         Inherits all attributes from LlmAgent.
     """
 
-    def __init__(self, model, name, instruction, description='', sub_agents=None,
-                 global_instruction='', tools=None, output_key=None,
-                 before_agent_callback=None, before_model_callback=None,
-                 before_tool_callback=default_before_tool_callback, after_tool_callback=None,
-                 after_model_callback=None, after_agent_callback=None):
+    def __init__(
+        self,
+        model,
+        name,
+        instruction,
+        description='',
+        sub_agents=None,
+        global_instruction='',
+        tools=None,
+        output_key=None,
+        before_agent_callback=None,
+        before_model_callback=None,
+        before_tool_callback=default_before_tool_callback,
+        after_tool_callback=None,
+        after_model_callback=None,
+        after_agent_callback=None,
+    ):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
         Args:
@@ -71,7 +90,9 @@ class CalculationLlmAgent(LlmAgent):
         """
 
         # Todo: support List[before_tool_callback]
-        before_tool_callback = catch_tool_call_error(get_ak_projectId(before_tool_callback))
+        before_tool_callback = catch_tool_call_error(
+            get_ak_projectId(before_tool_callback)
+        )
 
         super().__init__(
             model=model,
@@ -87,31 +108,50 @@ class CalculationLlmAgent(LlmAgent):
             before_tool_callback=before_tool_callback,
             after_tool_callback=after_tool_callback,
             after_model_callback=after_model_callback,
-            after_agent_callback=after_agent_callback
+            after_agent_callback=after_agent_callback,
         )
 
     @override
-    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
         try:
             async for event in super()._run_async_impl(ctx):
-                if (event.content and
-                        event.content.parts and
-                        event.content.parts[0].function_call):
-                    loading_title_msg = f"正在调用 {event.content.parts[0].function_call.name}..."
-                    loading_desc_msg = f"结果生成中，请稍等片刻..."
+                if (
+                    event.content
+                    and event.content.parts
+                    and event.content.parts[0].function_call
+                ):
+                    loading_title_msg = (
+                        f"正在调用 {event.content.parts[0].function_call.name}..."
+                    )
+                    loading_desc_msg = '结果生成中，请稍等片刻...'
                     logger.info(loading_title_msg)
                     yield Event(
                         author=self.name,
-                        actions=EventActions(state_delta={TMP_FRONTEND_STATE_KEY: {LOADING_STATE_KEY: LOADING_START,
-                                                                                   LOADING_TITLE: loading_title_msg,
-                                                                                   LOADING_DESC: loading_desc_msg}}))
-                elif (event.content and
-                      event.content.parts and
-                      event.content.parts[0].function_response):
+                        actions=EventActions(
+                            state_delta={
+                                TMP_FRONTEND_STATE_KEY: {
+                                    LOADING_STATE_KEY: LOADING_START,
+                                    LOADING_TITLE: loading_title_msg,
+                                    LOADING_DESC: loading_desc_msg,
+                                }
+                            }
+                        ),
+                    )
+                elif (
+                    event.content
+                    and event.content.parts
+                    and event.content.parts[0].function_response
+                ):
                     logger.info(f"{event.content.parts[0].function_response.name} 调用结束")
                     yield Event(
                         author=self.name,
-                        actions=EventActions(state_delta={TMP_FRONTEND_STATE_KEY: {LOADING_STATE_KEY: LOADING_END}})
+                        actions=EventActions(
+                            state_delta={
+                                TMP_FRONTEND_STATE_KEY: {LOADING_STATE_KEY: LOADING_END}
+                            }
+                        ),
                     )
                 yield event
         except BaseExceptionGroup as err:
@@ -119,7 +159,7 @@ class CalculationLlmAgent(LlmAgent):
             error_details = [
                 f"Exception Group caught with {len(err.exceptions)} exceptions:",
                 f"Message: {str(err)}",
-                '\nIndividual exceptions:'
+                '\nIndividual exceptions:',
             ]
 
             # 添加每个子异常的详细信息
@@ -127,7 +167,9 @@ class CalculationLlmAgent(LlmAgent):
                 error_details.append(f"\nException #{i}:")
                 error_details.append(f"Type: {type(exc).__name__}")
                 error_details.append(f"Message: {str(exc)}")
-                error_details.append(f"Traceback: {''.join(traceback.format_tb(exc.__traceback__))}")
+                error_details.append(
+                    f"Traceback: {''.join(traceback.format_tb(exc.__traceback__))}"
+                )
 
             # 将所有信息合并为一个字符串
             detailed_error = '\n'.join(error_details)
@@ -137,12 +179,11 @@ class CalculationLlmAgent(LlmAgent):
                 author=self.name,
                 branch=ctx.branch,
                 content=types.Content(
-                    parts=[types.Part(text=detailed_error)],
-                    role='system'
-                )
+                    parts=[types.Part(text=detailed_error)], role='system'
+                ),
             )
 
-            async  for error_event in ctx.agent.parent_agent.run_async(ctx):
+            async for error_event in ctx.agent.parent_agent.run_async(ctx):
                 yield error_event
 
 
@@ -169,7 +210,9 @@ def catch_tool_call_error(func: BeforeToolCallback) -> BeforeToolCallback:
 
 def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Union[dict, None, CallToolResult]:
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Union[dict, None, CallToolResult]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
@@ -183,7 +226,9 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
             error_msg = '{"msg": "Current tool does not have <storage>"}'
-            return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
+            return CallToolResult(
+                content=[TextContent(type='text', text=error_msg)], isError=True
+            )
 
         # 获取 access_key
         access_key = tool_context.state[FRONTEND_STATE_KEY]['biz'].get('ak', None)
@@ -193,10 +238,14 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
             tool.storage['plugin']['access_key'] = access_key
         else:
             error_msg = '{"msg": "AccessKey was not provided"}'
-            return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
+            return CallToolResult(
+                content=[TextContent(type='text', text=error_msg)], isError=True
+            )
 
         # 获取 project_id
-        project_id = tool_context.state[FRONTEND_STATE_KEY]['biz'].get('projectId', None)
+        project_id = tool_context.state[FRONTEND_STATE_KEY]['biz'].get(
+            'projectId', None
+        )
         if project_id is None:
             project_id = os.getenv('BOHRIUM_PROJECT_ID', None)
         if project_id is not None:
@@ -204,9 +253,13 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
                 tool.storage['plugin']['project_id'] = int(project_id)
             except ValueError:
                 error_msg = '{"msg": "ProjectId [%s] is invalid"}' % project_id
-                return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
+                return CallToolResult(
+                    content=[TextContent(type='text', text=error_msg)], isError=True
+                )
         else:
             error_msg = '{"msg": "ProjectId was not provided. Please retry when select the project."}'
-            return CallToolResult(content=[TextContent(type='text', text=error_msg)], isError=True)
+            return CallToolResult(
+                content=[TextContent(type='text', text=error_msg)], isError=True
+            )
 
     return wrapper

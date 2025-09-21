@@ -1,17 +1,19 @@
-from typing import override, AsyncGenerator
+from typing import AsyncGenerator, override
 
 from google.adk.agents import LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
 from google.genai import types
-from opik.integrations.adk import track_adk_agent_recursive
 
-from .callback import init_ssebrain_before_agent, ssebrain_before_model, ssebrain_after_model, \
-    enforce_single_tool_call
+from .callback import (
+    enforce_single_tool_call,
+    init_ssebrain_before_agent,
+    ssebrain_after_model,
+    ssebrain_before_model,
+)
 from .database_agent.agent import init_database_agent
 from .deep_research_agent.agent import init_deep_research_agent
-from .prompt import *
-from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+from .prompt import description, global_instruction, instruction_en
 
 
 class SSEBrainAgent(LlmAgent):
@@ -20,22 +22,26 @@ class SSEBrainAgent(LlmAgent):
         database_agent = init_database_agent(llm_config)
         deep_research_agent = init_deep_research_agent(llm_config)
 
-        super().__init__(name='ssebrain_agent',
-                         model=llm_config.gpt_5_chat,
-                         description=description,
-                         sub_agents=[
-                             database_agent,
-                             deep_research_agent,
-                         ],
-                         disallow_transfer_to_peers=True,
-                         global_instruction=global_instruction,
-                         instruction=instruction_en,
-                         before_agent_callback=prepare_state_before_agent,
-                         before_model_callback=[ssebrain_before_model],
-                         after_model_callback=[enforce_single_tool_call, ssebrain_after_model])
+        super().__init__(
+            name='ssebrain_agent',
+            model=llm_config.gpt_5_chat,
+            description=description,
+            sub_agents=[
+                database_agent,
+                deep_research_agent,
+            ],
+            disallow_transfer_to_peers=True,
+            global_instruction=global_instruction,
+            instruction=instruction_en,
+            before_agent_callback=prepare_state_before_agent,
+            before_model_callback=[ssebrain_before_model],
+            after_model_callback=[enforce_single_tool_call, ssebrain_after_model],
+        )
 
     @override
-    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
         prompt = ''
         if ctx.user_content and ctx.user_content.parts:
             for part in ctx.user_content.parts:
@@ -49,7 +55,10 @@ class SSEBrainAgent(LlmAgent):
                         invocation_id=ctx.invocation_id,
                         author=self.name,
                         branch=ctx.branch,
-                        content=types.Content(parts=[types.Part(text=prompt)], role='system'))
+                        content=types.Content(
+                            parts=[types.Part(text=prompt)], role='system'
+                        ),
+                    )
 
         async for event in super()._run_async_impl(ctx):
             yield event

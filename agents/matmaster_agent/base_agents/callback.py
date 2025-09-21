@@ -19,69 +19,107 @@ from mcp.types import CallToolResult
 from agents.matmaster_agent.constant import (
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
+    LOCAL_EXECUTOR,
     OPENAPI_HOST,
-    Transfer2Agent, LOCAL_EXECUTOR,
+    Transfer2Agent,
 )
 from agents.matmaster_agent.prompt import get_params_check_info_prompt
-from agents.matmaster_agent.utils.auth import ak_to_username, ak_to_ticket
-from agents.matmaster_agent.utils.helper_func import is_json, check_None_wrapper, \
-    get_unique_function_call, update_llm_response, function_calls_to_str, get_session_state
+from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
+from agents.matmaster_agent.utils.helper_func import (
+    check_None_wrapper,
+    function_calls_to_str,
+    get_session_state,
+    get_unique_function_call,
+    is_json,
+    update_llm_response,
+)
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
 
 
 # after_model_callback
-async def default_after_model_callback(callback_context: CallbackContext,
-                                       llm_response: LlmResponse) -> Optional[LlmResponse]:
+async def default_after_model_callback(
+    callback_context: CallbackContext, llm_response: LlmResponse
+) -> Optional[LlmResponse]:
     # 检查响应是否有效
-    if not (llm_response and llm_response.content and llm_response.content.parts and len(llm_response.content.parts)):
+    if not (
+        llm_response
+        and llm_response.content
+        and llm_response.content.parts
+        and len(llm_response.content.parts)
+    ):
         return None
 
     # 获取所有函数调用
-    current_function_calls = [{'name': part.function_call.name, 'args': part.function_call.args} for part in
-                              llm_response.content.parts if part.function_call]
+    current_function_calls = [
+        {'name': part.function_call.name, 'args': part.function_call.args}
+        for part in llm_response.content.parts
+        if part.function_call
+    ]
 
     # 如果没有函数调用，直接返回
     if not current_function_calls:
         return None
 
     if (
-            callback_context.state.get('invocation_id_with_tool_call', None) is None or
-            callback_context.invocation_id != list(callback_context.state['invocation_id_with_tool_call'].keys())[0]
+        callback_context.state.get('invocation_id_with_tool_call', None) is None
+        or callback_context.invocation_id
+        != list(callback_context.state['invocation_id_with_tool_call'].keys())[0]
     ):  # 首次调用 function_call 或新一轮对话
         if len(current_function_calls) == 1:
-            logger.info(f"Single Function Call In New Turn")
-            logger.info(f"current_function_calls = {function_calls_to_str(current_function_calls)}")
+            logger.info('Single Function Call In New Turn')
+            logger.info(
+                f"current_function_calls = {function_calls_to_str(current_function_calls)}"
+            )
 
             callback_context.state['invocation_id_with_tool_call'] = {
                 callback_context.invocation_id: current_function_calls
             }
         else:
-            logger.warning(f"Multi Function Calls In One Turn")
-            logger.info(f"current_function_calls = {function_calls_to_str(current_function_calls)}")
+            logger.warning('Multi Function Calls In One Turn')
+            logger.info(
+                f"current_function_calls = {function_calls_to_str(current_function_calls)}"
+            )
 
             callback_context.state['invocation_id_with_tool_call'] = {
-                callback_context.invocation_id: get_unique_function_call(current_function_calls)
+                callback_context.invocation_id: get_unique_function_call(
+                    current_function_calls
+                )
             }
             return update_llm_response(llm_response, current_function_calls, [])
     else:  # 同一轮对话又出现了 Function Call
-        logger.warning(f"Same InvocationId with Function Calls")
-        before_function_calls = callback_context.state['invocation_id_with_tool_call'][callback_context.invocation_id]
-        logger.info(f"before_function_calls = {function_calls_to_str(before_function_calls)},"
-                    f"current_function_calls = {function_calls_to_str(current_function_calls)}")
+        logger.warning('Same InvocationId with Function Calls')
+        before_function_calls = callback_context.state['invocation_id_with_tool_call'][
+            callback_context.invocation_id
+        ]
+        logger.info(
+            f"before_function_calls = {function_calls_to_str(before_function_calls)},"
+            f"current_function_calls = {function_calls_to_str(current_function_calls)}"
+        )
 
         callback_context.state['invocation_id_with_tool_call'] = {
-            callback_context.invocation_id: get_unique_function_call(before_function_calls + current_function_calls)
+            callback_context.invocation_id: get_unique_function_call(
+                before_function_calls + current_function_calls
+            )
         }
-        return update_llm_response(llm_response, current_function_calls, before_function_calls)
+        return update_llm_response(
+            llm_response, current_function_calls, before_function_calls
+        )
 
     return None
 
 
-async def remove_function_call(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
+async def remove_function_call(
+    callback_context: CallbackContext, llm_response: LlmResponse
+) -> Optional[LlmResponse]:
     # 检查响应是否有效
-    if not (llm_response and llm_response.content and llm_response.content.parts and len(llm_response.content.parts)):
+    if not (
+        llm_response
+        and llm_response.content
+        and llm_response.content.parts
+        and len(llm_response.content.parts)
+    ):
         return None
 
     origin_parts = copy.deepcopy(llm_response.content.parts)
@@ -92,11 +130,18 @@ async def remove_function_call(callback_context: CallbackContext, llm_response: 
             function_name = part.function_call.name
             function_args = part.function_call.args
 
-            logger.info(f"FunctionCall will be removed, name = {function_name}, args = {function_args}")
+            logger.info(
+                f"FunctionCall will be removed, name = {function_name}, args = {function_args}"
+            )
 
-            prompt = get_params_check_info_prompt().format(target_language=callback_context.state['target_language'],
-                                                           function_name=function_name, function_args=function_args)
-            response = litellm.completion(model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}])
+            prompt = get_params_check_info_prompt().format(
+                target_language=callback_context.state['target_language'],
+                function_name=function_name,
+                function_args=function_args,
+            )
+            response = litellm.completion(
+                model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}]
+            )
             llm_generated_text += response.choices[0].message.content
 
             part.function_call = None
@@ -120,19 +165,25 @@ async def default_before_tool_callback(tool, args, tool_context):
 @check_None_wrapper
 def _get_ak(ctx: Union[InvocationContext, ToolContext, CallbackContext]):
     session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv('BOHRIUM_ACCESS_KEY')
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv(
+        'BOHRIUM_ACCESS_KEY'
+    )
 
 
 @check_None_wrapper
 def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
     session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv('BOHRIUM_PROJECT_ID')
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv(
+        'BOHRIUM_PROJECT_ID'
+    )
 
 
 @check_None_wrapper
 def _get_machineType(ctx: Union[InvocationContext, ToolContext]):
     session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('machineType') or os.getenv('MACHINE_TYPE', 'c32_m64_cpu')
+    return session_state[FRONTEND_STATE_KEY]['biz'].get('machineType') or os.getenv(
+        'MACHINE_TYPE', 'c32_m64_cpu'
+    )
 
 
 def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
@@ -140,7 +191,9 @@ def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
     if executor is not None:
         if executor['type'] == 'dispatcher':  # BohriumExecutor
             executor['machine']['remote_profile']['access_key'] = access_key
-        elif executor['type'] == 'local' and executor.get('dflow', False):  # DFlowExecutor
+        elif executor['type'] == 'local' and executor.get(
+            'dflow', False
+        ):  # DFlowExecutor
             executor['env']['BOHRIUM_ACCESS_KEY'] = access_key
     if storage is not None:  # BohriumStorage
         storage['plugin']['access_key'] = access_key
@@ -156,7 +209,9 @@ def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, stor
             executor['resources'] = executor.get('resources', {})
             executor['resources']['envs'] = executor['resources'].get('envs', {})
             executor['resources']['envs']['BOHRIUM_PROJECT_ID'] = int(project_id)
-        elif executor['type'] == 'local' and executor.get('dflow', False):  # DFlowExecutor
+        elif executor['type'] == 'local' and executor.get(
+            'dflow', False
+        ):  # DFlowExecutor
             executor['env']['BOHRIUM_PROJECT_ID'] = str(project_id)
     if storage is not None:  # BohriumStorage
         storage['plugin']['project_id'] = int(project_id)
@@ -172,9 +227,10 @@ def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
                 # Redundant set for resources/envs keys
                 executor['resources'] = executor.get('resources', {})
                 executor['resources']['envs'] = executor['resources'].get('envs', {})
-                executor['resources']['envs']['BOHRIUM_USERNAME'] = \
-                    str(username)
-            elif executor['type'] == 'local' and executor.get('dflow', False):  # DFlowExecutor
+                executor['resources']['envs']['BOHRIUM_USERNAME'] = str(username)
+            elif executor['type'] == 'local' and executor.get(
+                'dflow', False
+            ):  # DFlowExecutor
                 executor['env']['BOHRIUM_USERNAME'] = str(username)
         return username, executor
     else:
@@ -191,7 +247,9 @@ def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
                 executor['resources'] = executor.get('resources', {})
                 executor['resources']['envs'] = executor['resources'].get('envs', {})
                 executor['resources']['envs']['BOHRIUM_TICKET'] = str(ticket)
-            elif executor['type'] == 'local' and executor.get('dflow', False):  # DFlowExecutor
+            elif executor['type'] == 'local' and executor.get(
+                'dflow', False
+            ):  # DFlowExecutor
                 executor['env']['BOHRIUM_TICKET'] = str(ticket)
         return ticket, executor
     else:
@@ -205,7 +263,9 @@ def _inject_current_env(executor):
             executor['resources'] = executor.get('resources', {})
             executor['resources']['envs'] = executor['resources'].get('envs', {})
             executor['resources']['envs']['CURRENT_ENV'] = str(CURRENT_ENV)
-        elif executor['type'] == 'local' and executor.get('dflow', False):  # DFlowExecutor
+        elif executor['type'] == 'local' and executor.get(
+            'dflow', False
+        ):  # DFlowExecutor
             executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
     return executor
 
@@ -213,13 +273,17 @@ def _inject_current_env(executor):
 def _inject_machine_type(ctx: Union[InvocationContext, ToolContext], executor):
     machine_type = _get_machineType(ctx)
     session_state = get_session_state(ctx)
-    logger.info(f"biz = {session_state[FRONTEND_STATE_KEY]['biz']}; "
-                f"machineType = {machine_type}")
+    logger.info(
+        f"biz = {session_state[FRONTEND_STATE_KEY]['biz']}; "
+        f"machineType = {machine_type}"
+    )
     if executor is not None:
         if executor['type'] == 'dispatcher':  # BohriumExecutor
             current_machine_type = executor['machine']['remote_profile']['machine_type']
             if not current_machine_type:
-                executor['machine']['remote_profile']['machine_type'] = str(machine_type)
+                executor['machine']['remote_profile']['machine_type'] = str(
+                    machine_type
+                )
     logger.info(f"After inject_machine_type, executor = {executor}")
 
     return executor
@@ -227,7 +291,9 @@ def _inject_machine_type(ctx: Union[InvocationContext, ToolContext], executor):
 
 def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
@@ -240,14 +306,20 @@ def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
-            raise TypeError('Not CalculationMCPTool type, current tool does not have <storage>')
+            raise TypeError(
+                'Not CalculationMCPTool type, current tool does not have <storage>'
+            )
 
         # 获取 access_key
-        access_key, tool.executor, tool.storage = _inject_ak(tool_context, tool.executor, tool.storage)
+        access_key, tool.executor, tool.storage = _inject_ak(
+            tool_context, tool.executor, tool.storage
+        )
 
         # 获取 project_id
         try:
-            project_id, tool.executor, tool.storage = _inject_projectId(tool_context, tool.executor, tool.storage)
+            project_id, tool.executor, tool.storage = _inject_projectId(
+                tool_context, tool.executor, tool.storage
+            )
         except ValueError as e:
             raise ValueError('ProjectId is invalid') from e
 
@@ -259,7 +331,9 @@ def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
 
 def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
         # 先执行前面的回调链
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
@@ -275,7 +349,9 @@ def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
 
 def inject_current_env(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
         # 先执行前面的回调链
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
@@ -288,7 +364,9 @@ def inject_current_env(func: BeforeToolCallback) -> BeforeToolCallback:
 
 def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
@@ -297,31 +375,46 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
-            raise TypeError("Not CalculationMCPTool type, current tool can't create job!")
+            raise TypeError(
+                "Not CalculationMCPTool type, current tool can't create job!"
+            )
 
         if tool.executor is not None:
             job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
             user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
-            payload = {'projectId': int(tool_context.state['project_id']), 'name': 'check_job_create'}
+            payload = {
+                'projectId': int(tool_context.state['project_id']),
+                'name': 'check_job_create',
+            }
             params = {'accessKey': tool_context.state['ak']}
 
-            logger.info(f"[check_job_create] project_id = {tool_context.state['project_id']}, "
-                        f"ak = {tool_context.state['ak']}")
+            logger.info(
+                f"[check_job_create] project_id = {tool_context.state['project_id']}, "
+                f"ak = {tool_context.state['ak']}"
+            )
 
             async with aiohttp.ClientSession() as session:
-                async with session.get(user_project_list_url, params=params) as response:
+                async with session.get(
+                    user_project_list_url, params=params
+                ) as response:
                     res = json.loads(await response.text())
                     logger.info(f"[check_job_create] res = {res}")
-                    project_name = [item['project_name'] for item in res['data']['items'] if
-                                    item['project_id'] == int(tool_context.state['project_id'])][0]
+                    project_name = [
+                        item['project_name']
+                        for item in res['data']['items']
+                        if item['project_id'] == int(tool_context.state['project_id'])
+                    ][0]
 
             async with aiohttp.ClientSession() as session:
-                async with session.post(job_create_url, json=payload, params=params) as response:
+                async with session.post(
+                    job_create_url, json=payload, params=params
+                ) as response:
                     res = json.loads(await response.text())
                     if res['code'] != 0:
                         if res['code'] == 2000:
                             res['error'][
-                                'msg'] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
+                                'msg'
+                            ] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
                         return res
 
     return wrapper
@@ -329,7 +422,9 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
 
 def inject_machineType(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
@@ -342,7 +437,9 @@ def inject_machineType(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
-            raise TypeError('Not CalculationMCPTool type, current tool does not have <storage>')
+            raise TypeError(
+                'Not CalculationMCPTool type, current tool does not have <storage>'
+            )
 
         _inject_machine_type(tool_context, tool.executor)
 
@@ -352,7 +449,9 @@ def inject_machineType(func: BeforeToolCallback) -> BeforeToolCallback:
 # 总应该在最后
 def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
@@ -378,7 +477,7 @@ def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCall
                 'status': 'error',
                 'error': str(e),
                 'error_type': type(e).__name__,
-                'traceback': traceback.format_exc()
+                'traceback': traceback.format_exc(),
             }
 
     return wrapper
@@ -389,7 +488,9 @@ async def default_after_tool_callback(tool, args, tool_context, tool_response):
     return
 
 
-def tgz_oss_to_oss_list(func: AfterToolCallback, enable_tgz_unpack: bool) -> AfterToolCallback:
+def tgz_oss_to_oss_list(
+    func: AfterToolCallback, enable_tgz_unpack: bool
+) -> AfterToolCallback:
     """Decorator that processes tool responses containing tgz files from OSS.
 
     This decorator performs the following operations:
@@ -426,12 +527,18 @@ def tgz_oss_to_oss_list(func: AfterToolCallback, enable_tgz_unpack: bool) -> Aft
     """
 
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext,
-                      tool_response: Union[dict, CallToolResult]) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool,
+        args: dict,
+        tool_context: ToolContext,
+        tool_response: Union[dict, CallToolResult],
+    ) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 before_tool_callback；
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (after_tool_result := await func(tool, args, tool_context, tool_response)) is not None:
+        if (
+            after_tool_result := await func(tool, args, tool_context, tool_response)
+        ) is not None:
             return after_tool_result
 
         # 不自动解压，直接返回
@@ -443,10 +550,12 @@ def tgz_oss_to_oss_list(func: AfterToolCallback, enable_tgz_unpack: bool) -> Aft
             raise TypeError('Not CalculationMCPTool type')
 
         # 检查是否为有效的 json 字典
-        if not (tool_response and
-                tool_response.content and
-                tool_response.content[0].text and
-                is_json(tool_response.content[0].text)):
+        if not (
+            tool_response
+            and tool_response.content
+            and tool_response.content[0].text
+            and is_json(tool_response.content[0].text)
+        ):
             return None
 
         tool_result = json.loads(tool_response.content[0].text)
@@ -459,8 +568,12 @@ def tgz_oss_to_oss_list(func: AfterToolCallback, enable_tgz_unpack: bool) -> Aft
 
 def catch_after_tool_callback_error(func: AfterToolCallback) -> AfterToolCallback:
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext,
-                      tool_response: Union[dict, CallToolResult]) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool,
+        args: dict,
+        tool_context: ToolContext,
+        tool_response: Union[dict, CallToolResult],
+    ) -> Optional[dict]:
         # 两步操作：
         # 1. 调用被装饰的 after_tool_callback；
         # 2. 如果调用的 after_tool_callback 有返回值，以这个为准
@@ -469,14 +582,16 @@ def catch_after_tool_callback_error(func: AfterToolCallback) -> AfterToolCallbac
             if tool.name == Transfer2Agent:
                 return None
 
-            if (after_tool_result := await func(tool, args, tool_context, tool_response)) is not None:
+            if (
+                after_tool_result := await func(tool, args, tool_context, tool_response)
+            ) is not None:
                 return after_tool_result
         except Exception as e:
             return {
                 'status': 'error',
                 'error': str(e),
                 'error_type': type(e).__name__,
-                'traceback': traceback.format_exc()
+                'traceback': traceback.format_exc(),
             }
 
     return wrapper
@@ -508,8 +623,12 @@ def check_before_tool_callback_effect(func: AfterToolCallback) -> AfterToolCallb
     """
 
     @wraps(func)
-    async def wrapper(tool: BaseTool, args: dict, tool_context: ToolContext,
-                      tool_response: Union[dict, CallToolResult]) -> Optional[dict]:
+    async def wrapper(
+        tool: BaseTool,
+        args: dict,
+        tool_context: ToolContext,
+        tool_response: Union[dict, CallToolResult],
+    ) -> Optional[dict]:
         # if `before_tool_callback` return dict
         if type(tool_response) is dict:
             return

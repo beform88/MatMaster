@@ -23,12 +23,10 @@ BohriumStorge = {
         'type': 'bohrium',
         'access_key': '',
         'project_id': -1,
-        'app_key': 'agent'
-    }
+        'app_key': 'agent',
+    },
 }
-LOCAL_EXECUTOR = {
-    'type': 'local'
-}
+LOCAL_EXECUTOR = {'type': 'local'}
 
 BohriumExecutor = {
     'type': 'dispatcher',
@@ -41,12 +39,10 @@ BohriumExecutor = {
             'app_key': 'agent',
             'image_address': 'registry.dp.tech/dptech/dp/native/prod-19853/dpa-mcp:0.0.0',
             'platform': 'ali',
-            'machine_type': ''
-        }
+            'machine_type': '',
+        },
     },
-    'resources': {
-        'envs': {}
-    }
+    'resources': {'envs': {}},
 }
 
 OPENAPI_HOST = ''
@@ -80,8 +76,8 @@ DFlowExecutor = {
         'DFLOW_S3_STORAGE_CLIENT': 'dflow.plugins.bohrium.TiefblueClient',
         'BOHRIUM_ACCESS_KEY': '',
         'BOHRIUM_PROJECT_ID': '',
-        'BOHRIUM_APP_KEY': 'agent'
-    }
+        'BOHRIUM_APP_KEY': 'agent',
+    },
 }
 
 

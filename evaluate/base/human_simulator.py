@@ -3,9 +3,9 @@ import logging
 import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Dict, Any, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
 from litellm import completion
 
 logger = logging.getLogger(__name__)
@@ -15,6 +15,7 @@ load_dotenv(find_dotenv())
 
 class ConversationState(Enum):
     """对话状态枚举"""
+
     INITIAL = 'initial'
     IN_PROGRESS = 'in_progress'
     SATISFIED = 'satisfied'
@@ -24,6 +25,7 @@ class ConversationState(Enum):
 @dataclass
 class ConversationGoal:
     """对话目标定义"""
+
     initial_question: str
     expected_outcomes: List[str]
     success_criteria: List[str]
@@ -76,11 +78,9 @@ class HumanSimulator:
             raise ValueError('未设置对话目标')
 
         self.turn_count += 1
-        self.conversation_history.append({
-            'turn': self.turn_count,
-            'agent': agent_message,
-            'timestamp': time.time()
-        })
+        self.conversation_history.append(
+            {'turn': self.turn_count, 'agent': agent_message, 'timestamp': time.time()}
+        )
 
         if self.turn_count >= self.max_turn_count:
             self.current_state = ConversationState.TIMEOUT
@@ -93,11 +93,9 @@ class HumanSimulator:
         if not should_continue:
             self.current_state = ConversationState.SATISFIED
 
-        self.conversation_history.append({
-            'turn': self.turn_count,
-            'user': user_response,
-            'timestamp': time.time()
-        })
+        self.conversation_history.append(
+            {'turn': self.turn_count, 'user': user_response, 'timestamp': time.time()}
+        )
 
         return user_response, should_continue
 
@@ -110,7 +108,7 @@ class HumanSimulator:
             response = completion(
                 model=self.model,
                 messages=[{'role': 'user', 'content': prompt}],
-                temperature=0.7
+                temperature=0.7,
             )
 
             result = json.loads(response.choices[0].message.content)
@@ -160,7 +158,9 @@ Agent最新回复：
 
 """
 
-    def get_bohr_results(self, agent_message: str, job_id: List[str]) -> Tuple[str, bool]:
+    def get_bohr_results(
+        self, agent_message: str, job_id: List[str]
+    ) -> Tuple[str, bool]:
         """
         基于agent的回复生成模拟用户的响应
 
@@ -175,11 +175,9 @@ Agent最新回复：
             raise ValueError('未设置对话目标')
 
         self.turn_count += 1
-        self.conversation_history.append({
-            'turn': self.turn_count,
-            'agent': agent_message,
-            'timestamp': time.time()
-        })
+        self.conversation_history.append(
+            {'turn': self.turn_count, 'agent': agent_message, 'timestamp': time.time()}
+        )
 
         # 生成用户响应
         user_response = f'查看id为{job_id}的任务结果'
@@ -189,11 +187,9 @@ Agent最新回复：
         if not should_continue:
             self.current_state = ConversationState.SATISFIED
 
-        self.conversation_history.append({
-            'turn': self.turn_count,
-            'user': user_response,
-            'timestamp': time.time()
-        })
+        self.conversation_history.append(
+            {'turn': self.turn_count, 'user': user_response, 'timestamp': time.time()}
+        )
 
         return user_response, should_continue
 
@@ -203,8 +199,10 @@ Agent最新回复：
             'goal': self.goal.initial_question if self.goal else None,
             'total_turns': self.turn_count,
             'final_state': self.current_state.value,
-            'duration_minutes': ((time.time() - self.start_time) / 60) if self.start_time else 0,
-            'conversation_history': self.conversation_history
+            'duration_minutes': ((time.time() - self.start_time) / 60)
+            if self.start_time
+            else 0,
+            'conversation_history': self.conversation_history,
         }
 
     def get_last_user_response(self) -> str:

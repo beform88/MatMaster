@@ -15,7 +15,9 @@ DocumentParserResultTransferAgentName = 'document_parser_result_transfer_agent'
 DocumentParserTransferAgentName = 'document_parser_transfer_agent'
 
 # Agent Descriptions
-DocumentParserAgentDescription = 'Document parser agent for extracting materials science data from documents'
+DocumentParserAgentDescription = (
+    'Document parser agent for extracting materials science data from documents'
+)
 
 # Agent Instructions
 DocumentParserAgentInstruction = """

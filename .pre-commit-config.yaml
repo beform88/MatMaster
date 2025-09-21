@@ -56,7 +56,7 @@ repos:
       - id: requirements-txt-fixer
       - id: sort-simple-yaml
       - id: trailing-whitespace
-        
+
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.20.0
     hooks:
@@ -66,7 +66,7 @@ repos:
     rev: 23.9.1
     hooks:
       - id: black
-        args: [ --line-length=88 ]
+        args: [ --skip-string-normalization, --line-length=88 ]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
@@ -88,3 +88,4 @@ repos:
     hooks:
       - id: flake8
         additional_dependencies: [ flake8-bugbear ]
+        args: [ '--extend-ignore=E501,B036,E203', --max-line-length=88 ]

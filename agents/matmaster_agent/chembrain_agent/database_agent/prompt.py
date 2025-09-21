@@ -265,7 +265,7 @@ instructions_v1_zh = """
 """
 
 
-instructions_cch_v1= """You are a database expert, your only task is to query the corresponding data from the database according to the user's needs.
+instructions_cch_v1 = """You are a database expert, your only task is to query the corresponding data from the database according to the user's needs.
 
 ## Available Tables
 The tables available to query from:

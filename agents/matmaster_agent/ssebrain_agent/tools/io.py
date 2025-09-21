@@ -3,6 +3,7 @@ import base64
 import json
 import logging
 import os
+
 import oss2
 from oss2.credentials import EnvironmentVariableCredentialsProvider
 

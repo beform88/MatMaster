@@ -1,4 +1,4 @@
-from pydantic import create_model, BaseModel
+from pydantic import BaseModel, create_model
 
 
 def create_transfer_check_model(agent_type):
@@ -8,5 +8,5 @@ def create_transfer_check_model(agent_type):
         is_transfer=(bool, ...),
         target_agent=(agent_type, ...),
         reason=(str, ...),
-        __base__=BaseModel
+        __base__=BaseModel,
     )

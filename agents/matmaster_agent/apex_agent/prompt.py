@@ -556,10 +556,10 @@ Apex_properties_default_params = {
             'vol_abs': '是否使用绝对体积 (默认: true)',
             'eos_relax_pos': '是否弛豫原子位置 (默认: false)',
             'eos_relax_shape': '是否弛豫晶胞形状 (默认: false)',
-            'eos_relax_vol': '是否弛豫晶胞体积 (默认: false)'
+            'eos_relax_vol': '是否弛豫晶胞体积 (默认: false)',
         },
         'outputs': ['体积-能量曲线', '平衡体积', '体模量', '状态方程拟合参数'],
-        'calculation_time': '中等 (取决于体积点数)'
+        'calculation_time': '中等 (取决于体积点数)',
     },
     'elastic': {
         'description': '弹性性质计算 - 计算弹性常数矩阵，获得杨氏模量、剪切模量等',
@@ -568,10 +568,10 @@ Apex_properties_default_params = {
             'shear_deform': '剪切应变幅度 (默认: 0.01)',
             'elastic_relax_pos': '是否弛豫原子位置 (默认: true)',
             'elastic_relax_shape': '是否弛豫晶胞形状 (默认: false)',
-            'elastic_relax_vol': '是否弛豫晶胞体积 (默认: false)'
+            'elastic_relax_vol': '是否弛豫晶胞体积 (默认: false)',
         },
         'outputs': ['弹性常数矩阵', '杨氏模量', '剪切模量', '泊松比', '体模量'],
-        'calculation_time': '较长 (需要多次应变计算)'
+        'calculation_time': '较长 (需要多次应变计算)',
     },
     'surface': {
         'description': '表面形成能计算 - 计算不同晶面的表面形成能',
@@ -582,10 +582,10 @@ Apex_properties_default_params = {
             'pert_xz': '表面扰动参数 (默认: 0.01)',
             'surface_relax_pos': '是否弛豫原子位置 (默认: false)',
             'surface_relax_shape': '是否弛豫晶胞形状 (默认: false)',
-            'surface_relax_vol': '是否弛豫晶胞体积 (默认: false)'
+            'surface_relax_vol': '是否弛豫晶胞体积 (默认: false)',
         },
         'outputs': ['各晶面的表面形成能', '表面结构结果'],
-        'calculation_time': '中等 (取决于表面数量)'
+        'calculation_time': '中等 (取决于表面数量)',
     },
     'vacancy': {
         'description': '空位形成能计算 - 计算点缺陷的形成能',
@@ -593,10 +593,10 @@ Apex_properties_default_params = {
             'vacancy_supercell_size': '超胞大小 [x, y, z] (默认: [2, 2, 2])',
             'vacancy_relax_pos': '是否弛豫原子位置 (默认: true)',
             'vacancy_relax_shape': '是否弛豫晶胞形状 (默认: false)',
-            'vacancy_relax_vol': '是否弛豫晶胞体积 (默认: false)'
+            'vacancy_relax_vol': '是否弛豫晶胞体积 (默认: false)',
         },
         'outputs': ['空位形成能', '缺陷结构结果'],
-        'calculation_time': '中等'
+        'calculation_time': '中等',
     },
     'interstitial': {
         'description': '间隙原子形成能计算 - 计算间隙原子的形成能',
@@ -606,19 +606,19 @@ Apex_properties_default_params = {
             'special_list': '特殊位置列表 (默认: [fcc])',
             'interstitial_relax_pos': '是否弛豫原子位置 (默认: true)',
             'interstitial_relax_shape': '是否弛豫晶胞形状 (默认: true)',
-            'interstitial_relax_vol': '是否弛豫晶胞体积 (默认: true)'
+            'interstitial_relax_vol': '是否弛豫晶胞体积 (默认: true)',
         },
         'outputs': ['间隙原子形成能', '缺陷结构结果'],
-        'calculation_time': '中等'
+        'calculation_time': '中等',
     },
     'phonon': {
         'description': '声子谱计算 - 计算声子色散关系和态密度',
         'main_parameters': {
             'phonon_supercell_size': '超胞大小 [x, y, z] (默认: [2, 2, 2])',
-            'specify_phonopy_settings': '是否指定phonopy设置 (默认: false)'
+            'specify_phonopy_settings': '是否指定phonopy设置 (默认: false)',
         },
         'outputs': ['声子色散关系', '声子态密度', '热学性质'],
-        'calculation_time': '较长 (需要超胞计算)'
+        'calculation_time': '较长 (需要超胞计算)',
     },
     'gamma': {
         'description': 'γ表面计算 - 计算广义层错能',
@@ -630,9 +630,9 @@ Apex_properties_default_params = {
             'slip_direction': '滑移方向 [x, y, z] (默认: [-1, 1, 0])',
             'add_fix_x': '固定x方向 (默认: true)',
             'add_fix_y': '固定y方向 (默认: true)',
-            'add_fix_z': '固定z方向 (默认: false)'
+            'add_fix_z': '固定z方向 (默认: false)',
         },
         'outputs': ['γ表面能量图', '层错能'],
-        'calculation_time': '较长 (需要多步计算)'
-    }
+        'calculation_time': '较长 (需要多步计算)',
+    },
 }

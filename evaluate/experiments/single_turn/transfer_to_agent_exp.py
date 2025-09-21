@@ -1,9 +1,9 @@
 import time
 
-from opik import evaluate, Opik
+from opik import Opik, evaluate
 
 from evaluate.base.evaluation import evaluation_task
-from evaluate.constant import TRANSFER_TO_AGENT_QUALITY, MATMASTER_SUBAGENT
+from evaluate.constant import MATMASTER_SUBAGENT, TRANSFER_TO_AGENT_QUALITY
 from evaluate.metric.transfer_to_agent_quality import TransferToAgentQuality
 
 # transfer_to_agent_quality

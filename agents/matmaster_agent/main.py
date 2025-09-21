@@ -10,8 +10,6 @@ from rich import print
 from agents.matmaster_agent.agent import root_agent
 from agents.matmaster_agent.constant import DBUrl
 from agents.matmaster_agent.logger import logger
-import litellm
-
 
 # litellm._turn_on_debug()
 
@@ -38,9 +36,7 @@ async def agent_main() -> None:
 
     # Set up the agent runner with root agent and session service
     runner = Runner(
-        app_name='matmaster_agent',
-        agent=root_agent,
-        session_service=session_service
+        app_name='matmaster_agent', agent=root_agent, session_service=session_service
     )
 
     # Initial user prompt for material modeling
@@ -82,9 +78,7 @@ async def agent_main() -> None:
             user_id=session.user_id,
             session_id=session.id,
             new_message=content,
-            run_config=RunConfig(
-                streaming_mode=StreamingMode.SSE
-            )
+            run_config=RunConfig(streaming_mode=StreamingMode.SSE),
         )
 
         # Process and display agent responses
@@ -113,10 +107,7 @@ async def agent_main() -> None:
             break
 
         # Prepare content for next iteration
-        content = types.Content(
-            role='user',
-            parts=[types.Part(text=user_input)]
-        )
+        content = types.Content(role='user', parts=[types.Part(text=user_input)])
 
     # Clean up resources
     await runner.close()

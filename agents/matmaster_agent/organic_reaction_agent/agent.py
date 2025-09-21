@@ -1,53 +1,20 @@
-import os
-from google.adk.agents import LlmAgent
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
-from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-
 from dp.agent.adapter.adk import CalculationMCPToolset
+from google.adk.agents import LlmAgent
+from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
+from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.organic_reaction_agent.constant import (
+    ORGANIC_REACTION_AGENT_NAME,
     ORGANIC_REACTION_BOHRIUM_EXECUTOR,
     ORGANIC_REACTION_BOHRIUM_STORAGE,
     ORGANIC_REACTION_SERVER_URL,
-    ORGANIC_REACTION_AGENT_NAME,
 )
 from agents.matmaster_agent.organic_reaction_agent.prompt import (
     description,
     instruction_en,
 )
-
-from agents.matmaster_agent.base_agents.job_agent import (
-    CalculationMCPLlmAgent,
-    BaseAsyncJobAgent,
-    ResultCalculationMCPLlmAgent,
-    SubmitCoreCalculationMCPLlmAgent,
-)
-from agents.matmaster_agent.constant import (
-    MATMASTER_AGENT_NAME
-)
-
-from agents.matmaster_agent.organic_reaction_agent.prompt import (
-    AgentDescription,
-    AgentInstruction,
-    ResultAgentDescription,
-    ResultAgentName,
-    ResultCoreAgentInstruction,
-    ResultCoreAgentName,
-    ResultTransferAgentInstruction,
-    ResultTransferAgentName,
-    SubmitAgentDescription,
-    SubmitAgentName,
-    SubmitCoreAgentDescription,
-    SubmitCoreAgentInstruction,
-    SubmitCoreAgentName,
-    SubmitRenderAgentName,
-    TransferAgentInstruction,
-    TransferAgentName,
-)
-
-from agents.matmaster_agent.logger import matmodeler_logging_handler
-
 
 autoTS = CalculationMCPToolset(
     connection_params=SseServerParams(url=ORGANIC_REACTION_SERVER_URL),
@@ -70,8 +37,9 @@ class OragnicReactionAgent(BaseAsyncJobAgent):
             agent_instruction=instruction_en,
             mcp_tools=tools,
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME
+            supervisor_agent=MATMASTER_AGENT_NAME,
         )
+
 
 def init_organic_reaction_agent(llm_config) -> LlmAgent:
     return OragnicReactionAgent(llm_config)

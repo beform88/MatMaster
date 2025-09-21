@@ -1,16 +1,12 @@
-description = (
-    'Superconductor is a tool to calculate critical temperature at ambient condition and high pressure'
-)
+description = 'Superconductor is a tool to calculate critical temperature at ambient condition and high pressure'
 
 instruction_en = (
-                  'You are an expert in superconductor. '
-                  'Help users evaluate critical temperature at ambient pressure or high pressure'
-                  'You could also screen potential superconductor with high critical temperature'
-
-    )
+    'You are an expert in superconductor. '
+    'Help users evaluate critical temperature at ambient pressure or high pressure'
+    'You could also screen potential superconductor with high critical temperature'
+)
 
 # from superconductor
-from agents.matmaster_agent.prompt import TransferAgentDescription
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 TrajAnalysisAgentName = 'traj_analysis_agent'
@@ -30,7 +26,9 @@ SuperconductorResultTransferAgentName = 'superconductor_result_transfer_agent'
 SuperconductorTransferAgentName = 'superconductor_transfer_agent'
 
 # SuperconductorAgent
-SuperconductorAgentDescription = 'An agent specialized in computational research using Deep Potential'
+SuperconductorAgentDescription = (
+    'An agent specialized in computational research using Deep Potential'
+)
 SuperconductorAgentInstruction = """
 # Superconductor_AGENT PROMPT TEMPLATE
 
@@ -123,7 +121,9 @@ You are a materials simulation analysis expert. Your responsibilities:
 """
 
 # SuperconductorSubmitCoreAgent
-SuperconductorSubmitCoreAgentDescription = 'A specialized Deep Potential simulations Job Submit Agent'
+SuperconductorSubmitCoreAgentDescription = (
+    'A specialized Deep Potential simulations Job Submit Agent'
+)
 SuperconductorSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform Deep Potential calculations, including structure optimization, molecular dynamics, and property calculations.

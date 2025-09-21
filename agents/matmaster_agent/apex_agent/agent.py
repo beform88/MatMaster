@@ -1,48 +1,18 @@
-import copy
-import json
-from typing import Any, Dict
-
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
-from google.adk.tools.tool_context import ToolContext
-from mcp.types import CallToolResult
 
-from agents.matmaster_agent.base_agents.job_agent import (
-    BaseAsyncJobAgent,
-    CalculationMCPLlmAgent,
-    ResultCalculationMCPLlmAgent,
-    SubmitCoreCalculationMCPLlmAgent,
-)
+from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.logger import matmodeler_logging_handler
-from agents.matmaster_agent.utils.helper_func import is_json
 
 from .constant import (
-    ApexServerUrl,
+    ApexAgentName,
     ApexBohriumExecutor,
     ApexBohriumStorage,
-    ApexAgentName,
+    ApexServerUrl,
 )
-from .prompt import (
-    ApexAgentDescription,
-    ApexAgentInstruction,
-    ApexSubmitAgentName,
-    ApexSubmitAgentDescription,
-    ApexSubmitCoreAgentName,
-    ApexSubmitCoreAgentInstruction,
-    ApexSubmitRenderAgentName,
-    ApexResultAgentName,
-    ApexResultAgentDescription,
-    ApexResultCoreAgentName,
-    ApexResultCoreAgentInstruction,
-    ApexResultTransferAgentName,
-    ApexTransferAgentName,
-    ApexTransferAgentInstruction,
-    ApexPropertiesAgentInstruction,
-)
-
+from .prompt import ApexAgentDescription, ApexAgentInstruction
 
 # 配置SSE参数
 sse_params = SseServerParams(url=ApexServerUrl)
@@ -52,7 +22,7 @@ toolset = CalculationMCPToolset(
     executor=ApexBohriumExecutor,
     async_mode=True,
     wait=False,
-    logging_callback=matmodeler_logging_handler
+    logging_callback=matmodeler_logging_handler,
 )
 
 
@@ -72,7 +42,6 @@ class ApexAgent(BaseAsyncJobAgent):
     """
 
     def __init__(self, llm_config):
-
         super().__init__(
             model=llm_config.gpt_5_chat,
             agent_name=ApexAgentName,
@@ -80,8 +49,9 @@ class ApexAgent(BaseAsyncJobAgent):
             agent_instruction=ApexAgentInstruction,
             mcp_tools=[toolset],
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME
+            supervisor_agent=MATMASTER_AGENT_NAME,
         )
+
 
 def init_apex_agent(llm_config) -> BaseAgent:
     """初始化APEX材料性质计算智能体"""

@@ -10,10 +10,8 @@ from agents.matmaster_agent.traj_analysis_agent.constant import (
 )
 
 toolset = CalculationMCPToolset(
-    connection_params=SseServerParams(
-        url=TrajAnalysisMCPServerUrl
-    ),
-    storage=BohriumStorge
+    connection_params=SseServerParams(url=TrajAnalysisMCPServerUrl),
+    storage=BohriumStorge,
 )
 
 
@@ -22,8 +20,8 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         model=llm_config.gpt_5_chat,
         name=TrajAnalysisAgentName,
         description='An agent designed to perform trajectory analysis, including calculations like '
-                    'Solvation Structure Analysis, Mean Squared Displacement (MSD), Radial Distribution Function (RDF), '
-                    'Bond Length Analysis, and Reaction Network Analysis, with visualization support for MSD and RDF.',
+        'Solvation Structure Analysis, Mean Squared Displacement (MSD), Radial Distribution Function (RDF), '
+        'Bond Length Analysis, and Reaction Network Analysis, with visualization support for MSD and RDF.',
         instruction="""
         This agent specializes in analyzing molecular dynamics (MD) simulation trajectories,
         with the following key functionalities:
@@ -83,5 +81,5 @@ def init_traj_analysis_agent(llm_config) -> BaseAgent:
         - "分析两个原子之间的键长随时间的变化"
         - "对这个分子动力学轨迹进行反应网络分析"
         """,
-        tools=[toolset]
+        tools=[toolset],
     )
