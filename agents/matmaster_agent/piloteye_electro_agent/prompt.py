@@ -1,6 +1,4 @@
-from agents.matmaster_agent.traj_analysis_agent.constant import (
-    TrajAnalysisAgentName,
-)
+from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 
 # TrajAnalysisAgentName = "traj_analysis_agent"
 # TransferAgentDescription
@@ -116,7 +114,9 @@ You are a materials simulation analysis expert. Your responsibilities:
 """
 
 # PiloteyeElectroSubmitCoreAgent
-PiloteyeElectroSubmitCoreAgentDescription = 'A specialized Piloteye™ electrolyte simulations Job Submit Agent'
+PiloteyeElectroSubmitCoreAgentDescription = (
+    'A specialized Piloteye™ electrolyte simulations Job Submit Agent'
+)
 PiloteyeElectroSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform Piloteye™ electrolyte simulations, including molecular dynamics, (maybe DFT calculations), and property calculations.
@@ -156,7 +156,9 @@ Help users perform Piloteye™ electrolyte simulations, including molecular dyna
 """
 
 # PiloteyeElectroSubmitAgent
-PiloteyeElectroSubmitAgentDescription = 'Coordinates Piloteye™ computational job submission and frontend task queue display'
+PiloteyeElectroSubmitAgentDescription = (
+    'Coordinates Piloteye™ computational job submission and frontend task queue display'
+)
 PiloteyeElectroSubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 

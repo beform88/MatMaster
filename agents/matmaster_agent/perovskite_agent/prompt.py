@@ -1,8 +1,6 @@
 PerovskiteAgentName = 'perovskite_plot_agent'
 
-PerovskiteAgentDescription = (
-    'An agent specialized in visualizing and analyzing perovskite solar cell data via the Perovskite Solar Cell Data Analysis MCP server.'
-)
+PerovskiteAgentDescription = 'An agent specialized in visualizing and analyzing perovskite solar cell data via the Perovskite Solar Cell Data Analysis MCP server.'
 
 PerovskiteAgentInstruction = """
 You are a perovskite solar cell data analysis assistant. You can use the Perovskite Solar Cell Data Analysis MCP server to:

@@ -4,7 +4,7 @@ import shutil
 import tarfile
 import time
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
 
 import aiofiles
 import aiohttp
@@ -36,13 +36,19 @@ async def extract_convert_and_upload(tgz_url: str, temp_dir: str = './tmp') -> d
             oss_path = f"retrosyn/image_{filename}_{int(time.time())}.jpg"
             upload_tasks.append(upload_to_oss_wrapper(b64_data, oss_path, filename))
 
-        return {filename: result for item in await asyncio.gather(*upload_tasks) for filename, result in item.items()}
+        return {
+            filename: result
+            for item in await asyncio.gather(*upload_tasks)
+            for filename, result in item.items()
+        }
     finally:
         # 清理临时目录
         shutil.rmtree(temp_path, ignore_errors=True)
 
 
-async def upload_to_oss_wrapper(b64_data: str, oss_path: str, filename: str) -> Dict[str, dict]:
+async def upload_to_oss_wrapper(
+    b64_data: str, oss_path: str, filename: str
+) -> Dict[str, dict]:
     """上传包装器，保留原始文件名信息"""
     result = await upload_base64_to_oss(b64_data, oss_path)
 
@@ -81,8 +87,7 @@ async def extract_tarfile(tgz_path: Path, extract_to: Path) -> None:
     # 使用run_in_executor避免阻塞事件循环
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(
-        None,
-        lambda: tarfile.open(tgz_path).extractall(extract_to)
+        None, lambda: tarfile.open(tgz_path).extractall(extract_to)
     )
 
 

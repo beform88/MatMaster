@@ -20,7 +20,9 @@ class HandleFileUploadLlmAgent(LlmAgent):
     """
 
     @override
-    async def _run_async_impl(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
         """Asynchronously process the invocation context with file upload support.
 
         Processes the user content parts, extracting text and file references to construct
@@ -50,9 +52,13 @@ class HandleFileUploadLlmAgent(LlmAgent):
                     prompt += f", file_url = {part.file_data.file_uri}"
 
                     # 包装成function_call，来避免在历史记录中展示
-                    for event in context_function_event(ctx, self.name, 'system_upload_file',
-                                                        {'prompt': prompt},
-                                                        ModelRole):
+                    for event in context_function_event(
+                        ctx,
+                        self.name,
+                        'system_upload_file',
+                        {'prompt': prompt},
+                        ModelRole,
+                    ):
                         yield event
 
         # Delegate to parent implementation for the actual processing

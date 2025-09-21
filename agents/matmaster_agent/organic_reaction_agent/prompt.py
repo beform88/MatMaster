@@ -1,6 +1,4 @@
-description = (
-    'Organic Reaction Agent is a computational chemistry assistant that automatically identifies transition states in organic and organometallic reactions.'
-)
+description = 'Organic Reaction Agent is a computational chemistry assistant that automatically identifies transition states in organic and organometallic reactions.'
 
 instruction_en = """
     Your sole responsibility is to call the `calculate_reaction_profile` tool to calculate the reaction path based on the user's description.

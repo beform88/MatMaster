@@ -1,5 +1,6 @@
-TrajAnalysisAgentName = 'traj_analysis_agent'
 from agents.matmaster_agent.constant import CURRENT_ENV
+
+TrajAnalysisAgentName = 'traj_analysis_agent'
 
 if CURRENT_ENV in ['test', 'uat']:
     TrajAnalysisMCPServerUrl = 'http://pfmx1355864.bohrium.tech:50004/sse'

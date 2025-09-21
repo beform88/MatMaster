@@ -1,15 +1,14 @@
-import re
 from typing import Optional
 from urllib.parse import urlparse
 
 from google.adk.agents.callback_context import CallbackContext
-from google.adk.models import LlmRequest, LlmResponse
-from google.adk.tools import ToolContext
+from google.adk.models import LlmResponse
 from google.genai import types
-from mcp.types import CallToolResult
 
 
-def validate_document_url(callback_context: CallbackContext, llm_response: LlmResponse) -> Optional[LlmResponse]:
+def validate_document_url(
+    callback_context: CallbackContext, llm_response: LlmResponse
+) -> Optional[LlmResponse]:
     """
     after_model_callback to validate and correct document URLs before tool execution.
     Ensures PDF URLs are routed to document parser and web URLs to web parser.
@@ -30,7 +29,11 @@ def validate_document_url(callback_context: CallbackContext, llm_response: LlmRe
 
     for part in function_call_parts:
         function_call = part.function_call
-        if function_call.name in ['extract_material_data_from_pdf', 'extract_material_data_from_webpage'] and function_call.args:
+        if (
+            function_call.name
+            in ['extract_material_data_from_pdf', 'extract_material_data_from_webpage']
+            and function_call.args
+        ):
             # Check if arguments contain URL(s)
             args = function_call.args
             if 'url' in args:
@@ -42,8 +45,7 @@ def validate_document_url(callback_context: CallbackContext, llm_response: LlmRe
                 if corrected_call != function_call.name:
                     # Create a new function call with corrected tool name
                     new_function_call = types.FunctionCall(
-                        name=corrected_call,
-                        args=corrected_args
+                        name=corrected_call, args=corrected_args
                     )
                     modified_parts.append(types.Part(function_call=new_function_call))
                     has_modifications = True
@@ -58,10 +60,11 @@ def validate_document_url(callback_context: CallbackContext, llm_response: LlmRe
                     corrected_call = _correct_tool_call(function_call.name, url)
                     if corrected_call != function_call.name:
                         new_function_call = types.FunctionCall(
-                            name=corrected_call,
-                            args=corrected_args
+                            name=corrected_call, args=corrected_args
                         )
-                        modified_parts.append(types.Part(function_call=new_function_call))
+                        modified_parts.append(
+                            types.Part(function_call=new_function_call)
+                        )
                         has_modifications = True
                         continue
 
@@ -71,8 +74,7 @@ def validate_document_url(callback_context: CallbackContext, llm_response: LlmRe
     # Return modified response if changes were made
     if has_modifications:
         new_content = types.Content(
-            parts=modified_parts,
-            role=llm_response.content.role
+            parts=modified_parts, role=llm_response.content.role
         )
         modified_response = LlmResponse(
             content=new_content,
@@ -108,7 +110,9 @@ def _correct_tool_call(current_tool: str, url: str) -> str:
             return 'extract_material_data_from_pdf'
 
         # If it doesn't have a file extension or has HTML-related patterns, use web parser
-        if '.' not in path or path.endswith(('.html', '.htm', '.asp', '.aspx', '.jsp', '.php')):
+        if '.' not in path or path.endswith(
+            ('.html', '.htm', '.asp', '.aspx', '.jsp', '.php')
+        ):
             return 'extract_material_data_from_webpage'
 
         # For URLs without clear extensions, check if it looks like a web page

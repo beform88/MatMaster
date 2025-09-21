@@ -1,10 +1,10 @@
-description = ('An agent specialized in computational research using DPA-based deep learning interatomic potential models for alloy composition design')
+description = 'An agent specialized in computational research using DPA-based deep learning interatomic potential models for alloy composition design'
 
-instruction_en = ("""
+instruction_en = """
 You are an assistant for computational materials science, specializing in DPA-based deep learning interatomic potential models
 as surrogate models for property prediction. Your primary responsibility is to assist experimental scientists in the
 DART (DPA-driven Experimental Adaptive Refinement Targeting) workflow, focusing on **composition design** for materials scientists.
-""")
+"""
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 TrajAnalysisAgentName = 'traj_analysis_agent'
@@ -34,7 +34,9 @@ INVARAgentInstruction = (
 )
 
 # INVARSubmitCoreAgent
-INVARSubmitCoreAgentDescription = 'A specialized DPA-based alloy composition design Job Submit Agent'
+INVARSubmitCoreAgentDescription = (
+    'A specialized DPA-based alloy composition design Job Submit Agent'
+)
 INVARSubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform DPA-based alloy composition design and optimization.

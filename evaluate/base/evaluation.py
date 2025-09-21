@@ -4,10 +4,10 @@ import logging
 import re
 import time
 import uuid
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 from bohrium import Bohrium
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
 from google.adk import Runner
 from google.adk.agents import RunConfig
 from google.adk.agents.run_config import StreamingMode
@@ -27,12 +27,16 @@ load_dotenv(find_dotenv())
 
 def evaluation_task(dataset_item):
     session_service = InMemorySessionService()
-    runner = Runner(agent=root_agent, app_name=MATMASTER_AGENT_NAME, session_service=session_service)
-    session = asyncio.run(session_service.create_session(
-        app_name=MATMASTER_AGENT_NAME,
-        user_id='evaluator',
-        session_id=uuid.uuid4().hex
-    ))
+    runner = Runner(
+        agent=root_agent, app_name=MATMASTER_AGENT_NAME, session_service=session_service
+    )
+    session = asyncio.run(
+        session_service.create_session(
+            app_name=MATMASTER_AGENT_NAME,
+            user_id='evaluator',
+            session_id=uuid.uuid4().hex,
+        )
+    )
 
     expected_function_call = {}
     if dataset_item['input'].get('contents', None):
@@ -44,19 +48,21 @@ def evaluation_task(dataset_item):
         if part.get('function_call'):
             expected_function_call = {
                 'function_name': part['function_call']['name'],
-                'function_args': part['function_call']['args']
+                'function_args': part['function_call']['args'],
             }
 
     content = types.Content(role='user', parts=[types.Part(text=user_query)])
 
     events = []
     function_call = {}
-    for event in runner.run(user_id=session.user_id, session_id=session.id, new_message=content):
+    for event in runner.run(
+        user_id=session.user_id, session_id=session.id, new_message=content
+    ):
         events.append(event)
         if is_function_call(event):
             function_call = {
                 'function_name': event.content.parts[0].function_call.name,
-                'function_args': event.content.parts[0].function_call.args
+                'function_args': event.content.parts[0].function_call.args,
             }
             break
 
@@ -66,19 +72,23 @@ def evaluation_task(dataset_item):
         'output': output,
         'function_call': function_call,
         'expected_function_call': expected_function_call,
-        'context': []
+        'context': [],
     }
     return result
 
 
 def multi_turn_evaluation_task(dataset_item):
     session_service = InMemorySessionService()
-    runner = Runner(agent=root_agent, app_name=MATMASTER_AGENT_NAME, session_service=session_service)
-    session = asyncio.run(session_service.create_session(
-        app_name=MATMASTER_AGENT_NAME,
-        user_id='evaluator',
-        session_id=uuid.uuid4().hex
-    ))
+    runner = Runner(
+        agent=root_agent, app_name=MATMASTER_AGENT_NAME, session_service=session_service
+    )
+    session = asyncio.run(
+        session_service.create_session(
+            app_name=MATMASTER_AGENT_NAME,
+            user_id='evaluator',
+            session_id=uuid.uuid4().hex,
+        )
+    )
 
     expected_function_call = {}
     turn_index = 2
@@ -94,15 +104,21 @@ def multi_turn_evaluation_task(dataset_item):
         user_query = dataset_item['input']['parts'][0]['text']
         if dataset_item['expected_output']['content']['parts'][0].get('function_call'):
             expected_function_call = {
-                'function_name': dataset_item['expected_output']['content']['parts'][0]['function_call']['name'],
-                'function_args': dataset_item['expected_output']['content']['parts'][0]['function_call']['args']
+                'function_name': dataset_item['expected_output']['content']['parts'][0][
+                    'function_call'
+                ]['name'],
+                'function_args': dataset_item['expected_output']['content']['parts'][0][
+                    'function_call'
+                ]['args'],
             }
 
     content = types.Content(role='user', parts=[types.Part(text=user_query)])
 
     events = []
     function_call = {}
-    for event in runner.run(user_id=session.user_id, session_id=session.id, new_message=content):
+    for event in runner.run(
+        user_id=session.user_id, session_id=session.id, new_message=content
+    ):
         events.append(event)
 
     output = events[-1].content.parts[0].text
@@ -111,12 +127,14 @@ def multi_turn_evaluation_task(dataset_item):
         'output': output,
         'function_call': function_call,
         'expected_function_call': expected_function_call,
-        'context': []
+        'context': [],
     }
     return result
 
 
-async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, save_mode: str = 'w') -> Dict[str, Any]:
+async def _run_conversation(
+    dataset_item: Dict[str, Any], max_turn_count: int, save_mode: str = 'w'
+) -> Dict[str, Any]:
     """
     执行一次对话测试，并返回结果
     :param dataset_item: 单条测试数据
@@ -132,9 +150,7 @@ async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, s
     logger.info(f"Test Session: {session.id}")
 
     runner = Runner(
-        app_name='matmaster_agent',
-        agent=root_agent,
-        session_service=session_service
+        app_name='matmaster_agent', agent=root_agent, session_service=session_service
     )
 
     simulator = HumanSimulator(max_turn_count=max_turn_count)
@@ -145,8 +161,8 @@ async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, s
         'goal': ConversationGoal(
             initial_question=dataset_item['initial_question'],
             expected_outcomes=dataset_item['expected_outcomes'],
-            success_criteria=dataset_item['success_criteria']
-        )
+            success_criteria=dataset_item['success_criteria'],
+        ),
     }
     print(f"\n{'=' * 20} 测试场景: {scenario['name']} {'=' * 20}")
 
@@ -174,7 +190,9 @@ async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, s
         print(f"\n🔄 第 {turn_count} 轮对话:")
 
         # 获取用户输入
-        user_input = initial_question if turn_count == 1 else simulator.get_last_user_response()
+        user_input = (
+            initial_question if turn_count == 1 else simulator.get_last_user_response()
+        )
         print(f"🧑 模拟用户: {user_input}")
 
         # 调用 agent
@@ -186,7 +204,7 @@ async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, s
                 user_id=session.user_id,
                 session_id=session.id,
                 new_message=content,
-                run_config=RunConfig(streaming_mode=StreamingMode.SSE)
+                run_config=RunConfig(streaming_mode=StreamingMode.SSE),
             )
 
             async for event in events:
@@ -208,7 +226,9 @@ async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, s
         print(f"🤖 ADK Agent: {agent_response}")
 
         # 提取 job_id
-        job_jsons = re.findall(r'<bohrium-chat-msg>(.*?)</bohrium-chat-msg>', agent_response)
+        job_jsons = re.findall(
+            r'<bohrium-chat-msg>(.*?)</bohrium-chat-msg>', agent_response
+        )
         job_ids: List[str] = []
         for job_json in job_jsons:
             try:
@@ -235,7 +255,9 @@ async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, s
                 if all_finished:
                     break
 
-            user_response, should_continue = simulator.get_bohr_results(agent_response, job_ids)
+            user_response, should_continue = simulator.get_bohr_results(
+                agent_response, job_ids
+            )
         else:
             user_response, should_continue = simulator.generate_response(agent_response)
 
@@ -248,13 +270,15 @@ async def _run_conversation(dataset_item: Dict[str, Any], max_turn_count: int, s
 
     # 对话总结
     summary = simulator.get_conversation_summary()
-    eval_results.update({
-        'total_turns': summary['total_turns'],
-        'final_state': summary['final_state'],
-        'duration_minutes': summary['duration_minutes'],
-    })
+    eval_results.update(
+        {
+            'total_turns': summary['total_turns'],
+            'final_state': summary['final_state'],
+            'duration_minutes': summary['duration_minutes'],
+        }
+    )
 
-    print(f"\n📊 对话摘要:")
+    print('\n📊 对话摘要:')
     print(f"   - 总轮次: {summary['total_turns']}")
     print(f"   - 最终状态: {summary['final_state']}")
     print(f"   - 耗时: {summary['duration_minutes']:.1f} 分钟")
@@ -282,7 +306,9 @@ async def evaluation_threads_task(file_path: str, max_turn_count: int = 10):
     results = []
     for i, dataset_item in enumerate(dataset_json):
         time.sleep(10)  # 避免请求过于频繁
-        result = await _run_conversation(dataset_item, max_turn_count, save_mode='w' if i == 0 else 'a')
+        result = await _run_conversation(
+            dataset_item, max_turn_count, save_mode='w' if i == 0 else 'a'
+        )
         results.append(result)
 
     print('\n' + '=' * 80)
@@ -291,7 +317,9 @@ async def evaluation_threads_task(file_path: str, max_turn_count: int = 10):
     return results
 
 
-async def evaluation_threads_single_task(file_path: str, item_id: int, max_turn_count: int = 10):
+async def evaluation_threads_single_task(
+    file_path: str, item_id: int, max_turn_count: int = 10
+):
     """测试单个数据"""
     print('=' * 80)
     print('🤖 与ADK Agent多轮对话测试')

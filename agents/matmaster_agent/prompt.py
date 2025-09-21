@@ -1,18 +1,26 @@
 from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
-from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
-from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
-from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
-from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
+from agents.matmaster_agent.document_parser_agent.constant import (
+    DocumentParserAgentName,
+)
+from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
+from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
+from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
+from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
-from agents.matmaster_agent.organic_reaction_agent.constant import ORGANIC_REACTION_AGENT_NAME
+from agents.matmaster_agent.organic_reaction_agent.constant import (
+    ORGANIC_REACTION_AGENT_NAME,
+)
 from agents.matmaster_agent.perovskite_agent.constant import PerovskiteAgentName
-from agents.matmaster_agent.piloteye_electro_agent.constant import PILOTEYE_ELECTRO_AGENT_NAME
-from agents.matmaster_agent.structure_generate_agent.constant import StructureGenerateAgentName
+from agents.matmaster_agent.piloteye_electro_agent.constant import (
+    PILOTEYE_ELECTRO_AGENT_NAME,
+)
+from agents.matmaster_agent.structure_generate_agent.constant import (
+    StructureGenerateAgentName,
+)
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
-from agents.matmaster_agent.document_parser_agent.constant import DocumentParserAgentName
 
 GlobalInstruction = """
 ---
@@ -21,7 +29,9 @@ Language: When think and answer, always use this language ({target_language}).
 ---
 """
 
-AgentDescription = 'An agent specialized in material science, particularly in computational research.'
+AgentDescription = (
+    'An agent specialized in material science, particularly in computational research.'
+)
 
 AgentInstruction = f"""
 You are a material expert agent. Your purpose is to collaborate with a human user to solve complex material problems.
@@ -708,7 +718,9 @@ For OUTPUT files, do not ask users to provide URLs - these will be automatically
 
 SubmitRenderAgentDescription = 'Sends specific messages to the frontend for rendering dedicated task list components'
 
-ResultCoreAgentDescription = 'Provides real-time task status updates and result forwarding to UI'
+ResultCoreAgentDescription = (
+    'Provides real-time task status updates and result forwarding to UI'
+)
 TransferAgentDescription = 'Transfer to proper agent to answer user query'
 
 # LLM-Helper Prompt

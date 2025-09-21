@@ -8,9 +8,9 @@ SOLID_ELECTROLYTE_DB_TABLES = {
         {
             'table_name': PAPER_METADATA_TABLE_NAME,
             'description': 'Solid state electrolyte metadata table: Contains information about solid-state battery-related materials, '
-                           'covering basic details such as unique identifiers, system types, electrolyte status, literature identifiers, ionic conductivity, air stability, synthesis recipes, etc... '
-                           'Among them, the field values of Li_Na_system, solid_state_electrolyte, and doping are yes or no. '
-                           'DOI must be included in the selected_fields for each query.',
+            'covering basic details such as unique identifiers, system types, electrolyte status, literature identifiers, ionic conductivity, air stability, synthesis recipes, etc... '
+            'Among them, the field values of Li_Na_system, solid_state_electrolyte, and doping are yes or no. '
+            'DOI must be included in the selected_fields for each query.',
         },
         {
             'table_name': PAPER_TEXT_TABLE_NAME,
@@ -19,7 +19,7 @@ SOLID_ELECTROLYTE_DB_TABLES = {
         {
             'table_name': PAPER_FIGURE_TABLE_NAME,
             'description': 'Paper figure table: Contains paper-related image URLs and captions, linked to other tables via DOI. '
-                           'Image URLs can be used for Markdown rendering to display image content.',
+            'Image URLs can be used for Markdown rendering to display image content.',
         },
         {
             'table_name': TABLE_FILED_INFO_NAME,

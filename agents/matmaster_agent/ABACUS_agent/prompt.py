@@ -85,8 +85,9 @@ Most tool function will return the calculated property directly, and **NO ANY MO
 """
 
 
-
-ABACUS_SUBMIT_CORE_AGENT_DESCRIPTION = """A specialized ABACUS calculation job submit agent"""
+ABACUS_SUBMIT_CORE_AGENT_DESCRIPTION = (
+    """A specialized ABACUS calculation job submit agent"""
+)
 ABACUS_SUBMIT_CORE_AGENT_INSTRUCTION = """
 You are an expert in materials science and chemistry.
 Help users prtfrom ABACUS calculation, including structure optimization, molecular dynamics, and various property calculations.
@@ -140,7 +141,9 @@ You are a task coordination agent. You must strictly follow this workflow:
 """
 
 
-ABACUS_RESULT_TRANSFER_AGENT_INSTRUCTION = """A specialized ABACUS calculation result transfer agent"""
+ABACUS_RESULT_TRANSFER_AGENT_INSTRUCTION = (
+    """A specialized ABACUS calculation result transfer agent"""
+)
 
 ABACUS_RESULT_AGENT_DESCRIPTION = """Query status and get result"""
 ABACUS_RESULT_CORE_AGENT_INSTRUCTION = """

@@ -1,5 +1,6 @@
-import asyncio
 import argparse
+import asyncio
+
 from evaluate.base.evaluation import evaluation_threads_single_task
 
 if __name__ == '__main__':
@@ -11,4 +12,10 @@ if __name__ == '__main__':
     parser.add_argument('--item_id', type=int, default=0, help='样本索引')
     args = parser.parse_args()
 
-    asyncio.run(evaluation_threads_single_task('database_search.json', item_id=args.item_id, max_turn_count=args.max_turn_count))
+    asyncio.run(
+        evaluation_threads_single_task(
+            'database_search.json',
+            item_id=args.item_id,
+            max_turn_count=args.max_turn_count,
+        )
+    )

@@ -1,7 +1,6 @@
 import time
 
-from opik import Opik
-from opik import evaluate
+from opik import Opik, evaluate
 from opik.evaluation.metrics import AnswerRelevance
 
 from evaluate.base.evaluation import evaluation_task
@@ -21,5 +20,9 @@ evaluate(
     experiment_name=MATMASTER_ANSWER_QUALITY + time.strftime('_%Y%m%d_%H%M%S'),
     dataset=dataset,
     task=evaluation_task,
-    scoring_metrics=[AnswerRelevance(name=MATMASTER_ANSWER_QUALITY, model='azure/gpt-4o', require_context=False)],
+    scoring_metrics=[
+        AnswerRelevance(
+            name=MATMASTER_ANSWER_QUALITY, model='azure/gpt-4o', require_context=False
+        )
+    ],
 )

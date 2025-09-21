@@ -1,9 +1,10 @@
 import json
 import re
+from typing import List, Optional
+
 import aiohttp
-from typing import Dict, Optional, List
+
 from . import db_constants as solid_state_electrolyte
-from pprint import pprint
 
 
 class DatabaseManager:
@@ -22,14 +23,14 @@ class DatabaseManager:
         self.query_headers = {
             'X-User-Id': '14962',
             'X-Org-Id': '3962',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         }
 
-        if self.db_name == 'polymer_db':
-            tables = polymer.POLYMER_DB_TABLES
-        elif self.db_name == 'electrolyte_db':
-            tables = electrolyte.ELECTROLYTE_DB_TABLES
-        elif self.db_name == 'solid_state_electrolyte_db':
+        # if self.db_name == 'polymer_db':
+        #     tables = polymer.POLYMER_DB_TABLES
+        # elif self.db_name == 'electrolyte_db':
+        #     tables = electrolyte.ELECTROLYTE_DB_TABLES
+        if self.db_name == 'solid_state_electrolyte_db':
             tables = solid_state_electrolyte.SOLID_ELECTROLYTE_DB_TABLES
         else:
             raise ValueError(f'Database name {self.db_name} not supported!')
@@ -41,7 +42,7 @@ class DatabaseManager:
 
         # get the table fields
         self.table_schema = {}
-        self._tables_to_init = tables['tables'] # Store tables for async init
+        self._tables_to_init = tables['tables']  # Store tables for async init
 
     async def async_init(self):
         get_table_fields = self.init_get_table_fields()
@@ -49,7 +50,9 @@ class DatabaseManager:
             table_name = table.get('table_name', '')
             table_fields = await get_table_fields(table_name)
             if 'error' in table_fields:
-                table_fields = {'fields': [],}
+                table_fields = {
+                    'fields': [],
+                }
             table.update(table_fields)
             if not table.get('primary_fields', None):
                 table['primary_fields'] = table['fields']
@@ -67,7 +70,10 @@ class DatabaseManager:
                 A dictionary containing the fields of the table, {'fields': [field_name1, field_name2, ...]}
             """
             async with aiohttp.ClientSession() as session:
-                if self.db_name == 'solid_state_electrolyte_db' or self.db_name == 'polymer_db':
+                if (
+                    self.db_name == 'solid_state_electrolyte_db'
+                    or self.db_name == 'polymer_db'
+                ):
                     raw_table_name = self.field_info_table
                     filters = {
                         'type': 1,
@@ -84,7 +90,9 @@ class DatabaseManager:
                             'pageSize': 500,
                         }
                     )
-                    async with session.post(self.query_url, headers=self.query_headers, data=payload) as response:
+                    async with session.post(
+                        self.query_url, headers=self.query_headers, data=payload
+                    ) as response:
                         result = await response.json()
                     fields = []
                     primary_fields = []
@@ -96,10 +104,10 @@ class DatabaseManager:
                             primary_fields.append(item['field'])
                     return {'fields': fields, 'primary_fields': primary_fields}
 
-                params = {
-                    'tableAk': table_name
-                }
-                async with session.get(self.table_url, headers=self.get_headers, params=params) as response:
+                params = {'tableAk': table_name}
+                async with session.get(
+                    self.table_url, headers=self.get_headers, params=params
+                ) as response:
                     res = await response.json()
                 if res['code'] != 0:
                     return {'error': await response.text()}
@@ -109,6 +117,7 @@ class DatabaseManager:
                 for field in res['data']['fields']:
                     fields.add(field['name'])
                 return {'fields': list(fields)}
+
         return get_table_fields
 
     def init_get_table_field_info(self):
@@ -130,17 +139,17 @@ class DatabaseManager:
             """
             async with aiohttp.ClientSession() as session:
                 if self.db_name == 'electrolyte_db' or self.db_name == 'polymer_db':
-                    if self.db_name == 'electrolyte_db':
-                        raw_table_name = electrolyte.TABLE_FILED_INFO_NAME
-                    elif self.db_name == 'polymer_db':
-                        raw_table_name = polymer.TABLE_FILED_INFO_NAME
-                    elif self.db_name == 'solid_state_electrolyte_db':
+                    # if self.db_name == 'electrolyte_db':
+                    #     raw_table_name = electrolyte.TABLE_FILED_INFO_NAME
+                    # elif self.db_name == 'polymer_db':
+                    #     raw_table_name = polymer.TABLE_FILED_INFO_NAME
+                    if self.db_name == 'solid_state_electrolyte_db':
                         raw_table_name = solid_state_electrolyte.TABLE_FILED_INFO_NAME
                     filters = {
                         'type': 1,
                         'field': 'tableAK',
                         'operator': 'eq',
-                        'value': table_name  # 注意：如果table_name是字符串，json.dumps会自动加引号
+                        'value': table_name,  # 注意：如果table_name是字符串，json.dumps会自动加引号
                     }
                     payload = json.dumps(
                         {
@@ -151,17 +160,22 @@ class DatabaseManager:
                             'pageSize': 500,
                         }
                     )
-                    async with session.post(self.query_url, headers=self.query_headers, data=payload) as response:
+                    async with session.post(
+                        self.query_url, headers=self.query_headers, data=payload
+                    ) as response:
                         result = await response.json()
                     fields_info = {}
                     for item in result['data']['list']:
-                        fields_info[item['field']] = {'field': item['field'], 'type': item['type'], 'description': item['description'],
-                                    'example': item.get('example', None), 'note': item.get('note', None)}
+                        fields_info[item['field']] = {
+                            'field': item['field'],
+                            'type': item['type'],
+                            'description': item['description'],
+                            'example': item.get('example', None),
+                            'note': item.get('note', None),
+                        }
                     return {'field_info': fields_info.get(field_name, {})}
 
-                params = {
-                    'tableAk': table_name
-                }
+                params = {'tableAk': table_name}
                 async with session.get(url, headers=headers, params=params) as response:
                     res = await response.json()
 
@@ -173,7 +187,9 @@ class DatabaseManager:
                 for field in res['data']['fields']:
                     fields_info[field['name']] = field
                 if field_name not in fields_info:
-                    return {'error': f'Field {field_name} not found in table {table_name}'}
+                    return {
+                        'error': f'Field {field_name} not found in table {table_name}'
+                    }
                 return {'field_info': fields_info.get(field_name, {})}
 
         return get_table_field_info
@@ -183,8 +199,13 @@ class DatabaseManager:
         url = self.query_url
         headers = self.query_headers
 
-        async def query_table(table_name: str, filters_json: str, selected_fields: Optional[List[str]] = None,
-                        page: Optional[int] = 1, page_size: Optional[int] = 50):
+        async def query_table(
+            table_name: str,
+            filters_json: str,
+            selected_fields: Optional[List[str]] = None,
+            page: Optional[int] = 1,
+            page_size: Optional[int] = 50,
+        ):
             """
             Query the table
             Args:
@@ -224,7 +245,9 @@ class DatabaseManager:
                 return {'error': f"Invalid JSON in filters_json parameter: {e}"}
 
             if selected_fields is None:
-                selected_fields = self.table_schema.get(table_name, {}).get('primary_fields', None)
+                selected_fields = self.table_schema.get(table_name, {}).get(
+                    'primary_fields', None
+                )
             payload = json.dumps(
                 {
                     'userId': 14962,
@@ -240,19 +263,50 @@ class DatabaseManager:
                     result = await response.json()
             if result['code'] != 0:
                 # print(result)
-                return {'error': await response.text(), 'row_count': 0, 'papers': [], 'paper_count': 0}
+                return {
+                    'error': await response.text(),
+                    'row_count': 0,
+                    'papers': [],
+                    'paper_count': 0,
+                }
             if result['data']['list'] is None or len(result['data']['list']) == 0:
                 # print(result)
-                return {'error': 'No data found!', 'row_count': 0, 'papers': [], 'paper_count': 0}
+                return {
+                    'error': 'No data found!',
+                    'row_count': 0,
+                    'papers': [],
+                    'paper_count': 0,
+                }
             rows = []
             for item in result['data']['list']:
                 if table_name == 'polym00':
-                    converted_item = {to_snake_case(key): value for key, value in item.items()}
-                    rows.append({key: value for key, value in converted_item.items() if key in selected_fields})
+                    converted_item = {
+                        to_snake_case(key): value for key, value in item.items()
+                    }
+                    rows.append(
+                        {
+                            key: value
+                            for key, value in converted_item.items()
+                            if key in selected_fields
+                        }
+                    )
                 else:
-                    rows.append({key: value for key, value in item.items() if key in selected_fields})
-            dois = list({item['doi'] for item in result['data']['list'] if 'doi' in item})
-            return {'result': rows, 'row_count': len(result['data']['list']), 'papers': dois, 'paper_count': len(dois)}
+                    rows.append(
+                        {
+                            key: value
+                            for key, value in item.items()
+                            if key in selected_fields
+                        }
+                    )
+            dois = list(
+                {item['doi'] for item in result['data']['list'] if 'doi' in item}
+            )
+            return {
+                'result': rows,
+                'row_count': len(result['data']['list']),
+                'papers': dois,
+                'paper_count': len(dois),
+            }
 
         return query_table
 
@@ -269,8 +323,12 @@ class DatabaseManager:
             if text_table_name is None:
                 return '', None
             fields = tables.get(text_table_name, {}).get('primary_fields', None)
-            filters_json = json.dumps({'type': 1, 'field': 'doi', 'operator': 'in', 'value': [paper_doi]})
-            result = await query_table(text_table_name, filters_json, fields, page=1, page_size=50)
+            filters_json = json.dumps(
+                {'type': 1, 'field': 'doi', 'operator': 'in', 'value': [paper_doi]}
+            )
+            result = await query_table(
+                text_table_name, filters_json, fields, page=1, page_size=50
+            )
             full_text = None
             if result.get('result', None) and len(result['result']) > 0:
                 full_text = result['result'][0].get('main_txt')
@@ -281,8 +339,12 @@ class DatabaseManager:
             if figure_table_name is None:
                 return {'main_txt': full_text, 'figures': None}
             fields = tables.get(figure_table_name, {}).get('primary_fields', None)
-            filters_json = json.dumps({'type': 1, 'field': 'doi', 'operator': 'in', 'value': [paper_doi]})
-            result = await query_table(figure_table_name, filters_json, fields, page=1, page_size=50)
+            filters_json = json.dumps(
+                {'type': 1, 'field': 'doi', 'operator': 'in', 'value': [paper_doi]}
+            )
+            result = await query_table(
+                figure_table_name, filters_json, fields, page=1, page_size=50
+            )
             figures = None
             if result.get('result', None) and len(result['result']) > 0:
                 figures = result['result']

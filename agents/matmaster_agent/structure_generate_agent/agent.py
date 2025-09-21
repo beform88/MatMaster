@@ -4,18 +4,12 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.job_agent import (
-    BaseAsyncJobAgent,
-    ResultCalculationMCPLlmAgent,
-    SubmitCoreCalculationMCPLlmAgent,
-)
-
+from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     BohriumExecutor,
     BohriumStorge,
 )
-
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.structure_generate_agent.prompt import (
     StructureGenerateAgentDescription,
@@ -27,8 +21,12 @@ from .constant import StructureGenerateServerUrl
 
 StructureGenerateBohriumExecutor = copy.deepcopy(BohriumExecutor)
 StructureGenerateBohriumStorge = copy.deepcopy(BohriumStorge)
-StructureGenerateBohriumExecutor['machine']['remote_profile']['image_address'] = 'registry.dp.tech/dptech/dp/native/prod-788025/structure-generate-agent:small'
-StructureGenerateBohriumExecutor['machine']['remote_profile']['machine_type'] = 'c8_m31_1 * NVIDIA T4'
+StructureGenerateBohriumExecutor['machine']['remote_profile'][
+    'image_address'
+] = 'registry.dp.tech/dptech/dp/native/prod-788025/structure-generate-agent:small'
+StructureGenerateBohriumExecutor['machine']['remote_profile'][
+    'machine_type'
+] = 'c8_m31_1 * NVIDIA T4'
 
 sse_params = SseServerParams(url=StructureGenerateServerUrl)
 
@@ -38,7 +36,7 @@ toolset = CalculationMCPToolset(
     executor=StructureGenerateBohriumExecutor,
     async_mode=True,
     wait=False,
-    logging_callback=matmodeler_logging_handler
+    logging_callback=matmodeler_logging_handler,
 )
 
 
@@ -61,9 +59,10 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
                 'add_cell_for_molecules',
                 'build_surface_slab',
                 'build_surface_adsorbate',
-                'build_surface_interface'
-            ]
+                'build_surface_interface',
+            ],
         )
+
 
 def init_structure_generate_agent(llm_config) -> BaseAgent:
     return StructureGenerateAgent(llm_config)

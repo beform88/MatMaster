@@ -1,8 +1,10 @@
-from typing import Optional, Any, Union, List
+from typing import Any, List, Optional, Union
 
 from dotenv import load_dotenv
 from opik.evaluation.metrics import base_metric, score_result
-from opik.evaluation.metrics.llm_judges.parsing_helpers import extract_json_content_or_raise
+from opik.evaluation.metrics.llm_judges.parsing_helpers import (
+    extract_json_content_or_raise,
+)
 from opik.evaluation.models import base_model, models_factory
 from pydantic import BaseModel
 
@@ -18,12 +20,12 @@ class MultiOptionResponseFormat(BaseModel):
 
 class MultiOptionQuality(base_metric.BaseMetric):
     def __init__(
-            self,
-            name: str = MULTI_OPTION_QUALITY,
-            model: Optional[str] = 'azure/gpt-4o',
-            ignore_whitespace: bool = True,
-            track: bool = True,
-            project_name: Optional[str] = None,
+        self,
+        name: str = MULTI_OPTION_QUALITY,
+        model: Optional[str] = 'azure/gpt-4o',
+        ignore_whitespace: bool = True,
+        track: bool = True,
+        project_name: Optional[str] = None,
     ):
         self.model = model
         self.ignore_whitespace = ignore_whitespace
@@ -31,18 +33,14 @@ class MultiOptionQuality(base_metric.BaseMetric):
         self._init_model(model)
 
     def _init_model(
-            self, model: Optional[Union[str, base_model.OpikBaseModel]]
+        self, model: Optional[Union[str, base_model.OpikBaseModel]]
     ) -> None:
         if isinstance(model, base_model.OpikBaseModel):
             self._model = model
         else:
             self._model = models_factory.get(model_name=model)
 
-    def generate_query(
-            self,
-            input: str,
-            output: str
-    ) -> str:
+    def generate_query(self, input: str, output: str) -> str:
         output_template = """
         You are an expert judge tasked with evaluating whether an AI-generated response provides clear and relevant options to the user. Analyze the provided INPUT and OUTPUT to determine if the OUTPUT contains multiple actionable choices for the user.
 
@@ -73,18 +71,15 @@ class MultiOptionQuality(base_metric.BaseMetric):
         return output_template.format(input=input, output=output)
 
     def score(
-            self,
-            input: str,
-            output: str,
-            function_call: dict,
-            expected_function_call: dict,
-            **kwargs: Any,
+        self,
+        input: str,
+        output: str,
+        function_call: dict,
+        expected_function_call: dict,
+        **kwargs: Any,
     ) -> score_result.ScoreResult:
         try:
-            llm_query = self.generate_query(
-                input=input,
-                output=output
-            )
+            llm_query = self.generate_query(input=input, output=output)
             model_output = self._model.generate_string(
                 input=llm_query, response_format=MultiOptionResponseFormat
             )
@@ -102,7 +97,5 @@ class MultiOptionQuality(base_metric.BaseMetric):
         except Exception as e:
             print(e)
             return score_result.ScoreResult(
-                name=self.name,
-                value=0,
-                reason=f"Scoring error: {str(e)}"
+                name=self.name, value=0, reason=f"Scoring error: {str(e)}"
             )

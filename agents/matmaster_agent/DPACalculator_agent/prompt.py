@@ -1,9 +1,9 @@
-description = ('An agent specialized in computational research using Deep Potential')
+description = 'An agent specialized in computational research using Deep Potential'
 
-instruction_en = ("""
+instruction_en = """
    You are an intelligent assistant that can perform structure building and optimization,
    molecular dynamics, NEB calculation, phonon calculation and elastic calculations.
-""")
+"""
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 TrajAnalysisAgentName = 'traj_analysis_agent'
@@ -22,7 +22,9 @@ DPAResultTransferAgentName = 'dpa_result_transfer_agent'
 DPATransferAgentName = 'dpa_transfer_agent'
 
 # DPAAgent
-DPAAgentDescription = 'An agent specialized in computational research using Deep Potential'
+DPAAgentDescription = (
+    'An agent specialized in computational research using Deep Potential'
+)
 DPAAgentInstruction = (
     'You are an expert in materials science and computational chemistry. '
     'Help users perform Deep Potential calculations including structure building, optimization, '
@@ -34,7 +36,9 @@ DPAAgentInstruction = (
 )
 
 # DPASubmitCoreAgent
-DPASubmitCoreAgentDescription = 'A specialized Deep Potential simulations Job Submit Agent'
+DPASubmitCoreAgentDescription = (
+    'A specialized Deep Potential simulations Job Submit Agent'
+)
 DPASubmitCoreAgentInstruction = """
 You are an expert in materials science and computational chemistry.
 Help users perform Deep Potential calculations, including structure optimization, molecular dynamics, and property calculations.
@@ -73,7 +77,9 @@ Step 4: Render parameters (if new) → Step 5: User Confirmation (MANDATORY for 
 """
 
 # DPASubmitAgent
-DPASubmitAgentDescription = 'Coordinates DPA computational job submission and frontend task queue display'
+DPASubmitAgentDescription = (
+    'Coordinates DPA computational job submission and frontend task queue display'
+)
 DPASubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 

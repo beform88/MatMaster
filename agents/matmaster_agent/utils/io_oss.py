@@ -31,8 +31,7 @@ async def _extract_tarfile(tgz_path: Path, extract_to: Path) -> None:
     # 使用run_in_executor避免阻塞事件循环
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(
-        None,
-        lambda: tarfile.open(tgz_path).extractall(extract_to)
+        None, lambda: tarfile.open(tgz_path).extractall(extract_to)
     )
 
 
@@ -41,7 +40,11 @@ async def _find_all_files(directory: Path) -> List[Path]:
     loop = asyncio.get_running_loop()
 
     def _sync_list():
-        return [p for p in directory.rglob('*') if p.is_file() and not p.suffix.lower() in {'.tgz'}]
+        return [
+            p
+            for p in directory.rglob('*')
+            if p.is_file() and not p.suffix.lower() in {'.tgz'}
+        ]
 
     return await loop.run_in_executor(None, _sync_list)
 
@@ -66,7 +69,9 @@ async def file_to_base64(file_path: Path) -> Tuple[Path, str]:
 
 
 # Step3: Upload to OSS
-async def upload_to_oss_wrapper(b64_data: str, oss_path: str, filename: str) -> Dict[str, dict]:
+async def upload_to_oss_wrapper(
+    b64_data: str, oss_path: str, filename: str
+) -> Dict[str, dict]:
     def _sync_upload_base64_to_oss(data: str, oss_path: str) -> str:
         try:
             auth = oss2.ProviderAuth(EnvironmentVariableCredentialsProvider())
@@ -112,7 +117,11 @@ async def extract_convert_and_upload(tgz_url: str, temp_dir: str = './tmp') -> d
             oss_path = f"agent/{int(time.time())}_{filename}"
             upload_tasks.append(upload_to_oss_wrapper(b64_data, oss_path, filename))
 
-        return {filename: result for item in await asyncio.gather(*upload_tasks) for filename, result in item.items()}
+        return {
+            filename: result
+            for item in await asyncio.gather(*upload_tasks)
+            for filename, result in item.items()
+        }
     finally:
         # 清理临时目录
         shutil.rmtree(temp_path, ignore_errors=True)
@@ -123,10 +132,7 @@ async def update_tgz_dict(tool_result: dict):
     tgz_flag = False
     for k, v in tool_result.items():
         new_tool_result[k] = v
-        if (
-                type(v) == str and
-                v.startswith('https') and
-                v.endswith('tgz')):
+        if isinstance(v, str) and v.startswith('https') and v.endswith('tgz'):
             tgz_flag = True
             new_tool_result.update(**await extract_convert_and_upload(v))
 

@@ -1,16 +1,15 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
 from google.adk.agents import LlmAgent
 from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.tool_context import ToolContext
 
-from .prompt import *
-from ...llm_config import MatMasterLlmConfig
 from ..tools.database import DatabaseManager
+from .prompt import instructions_v1_zh
 
 
 def save_query_results(
-        tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext, tool_response: Any
+    tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext, tool_response: Any
 ) -> None:
     """Callback to modify state parameters for search tools"""
     tool_info = {}

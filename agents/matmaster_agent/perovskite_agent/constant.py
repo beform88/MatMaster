@@ -1,4 +1,3 @@
-import os
 from agents.matmaster_agent.constant import CURRENT_ENV
 
 # Agent Name
