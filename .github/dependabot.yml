@@ -1,9 +1,19 @@
 version: 2
 updates:
+  # 原有的 GitHub Actions 配置
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
       interval: weekly
     open-pull-requests-limit: 99
     labels:
-      - 'pr: dependencies'
+      - 'dependencies'
+
+  # 新增 pre-commit 配置
+  - package-ecosystem: pre-commit
+    directory: '/'
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 20  # 建议设置合理的限制，避免一次性太多 PR
+    labels:
+      - 'dependencies'
