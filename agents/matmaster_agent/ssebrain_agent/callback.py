@@ -54,7 +54,9 @@ def init_ssebrain_before_agent(llm_config):
         callback_context.state['current_time'] = datetime.now().strftime(
             '%Y-%m-%d %H:%M:%S'
         )
-        callback_context.state['db_name'] = 'solid_state_electrolyte_db'  # 使用默认数据库
+        callback_context.state['db_name'] = (
+            'solid_state_electrolyte_db'  # 使用默认数据库
+        )
         db_manager = DatabaseManager('solid_state_electrolyte_db')
         await db_manager.async_init()  # Call the async init method
         callback_context.state['available_tables'] = db_manager.table_schema

@@ -34,7 +34,9 @@ async def update_session_state(ctx: InvocationContext, author: str):
         author=f"{filename}:{lineno}",
         actions=actions_with_update,
     )
-    await ctx.session_service.append_event(ctx.session, system_event)  # 会引入一个空消息
+    await ctx.session_service.append_event(
+        ctx.session, system_event
+    )  # 会引入一个空消息
 
 
 def update_llm_response(
@@ -339,7 +341,9 @@ def get_new_function_call_indices(
 
 def check_None_wrapper(func):
     def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)  # 注意这里应该是 *args, **kwargs 而不是 args, kwargs
+        result = func(
+            *args, **kwargs
+        )  # 注意这里应该是 *args, **kwargs 而不是 args, kwargs
         if result is None:
             raise ValueError(
                 f"'{func.__name__.replace('_get_', '')}' was not found, please provide it!"

@@ -26,9 +26,11 @@ async def smiles_conversion_after_tool(
         'after': {
             'tool_name': tool.name,
             'tool_args': args,
-            'tool_response': tool_response.content[0].text
-            if (tool_response and len(tool_response.content))
-            else None,
+            'tool_response': (
+                tool_response.content[0].text
+                if (tool_response and len(tool_response.content))
+                else None
+            ),
         }
     }
 

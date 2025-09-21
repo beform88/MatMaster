@@ -115,7 +115,9 @@ class HumanSimulator:
             user_response = result.get('response', '我理解了。')
             should_continue = result.get('continue', True)
 
-            logger.info(f"用户响应生成 - 轮次: {self.turn_count}, 继续: {should_continue}")
+            logger.info(
+                f"用户响应生成 - 轮次: {self.turn_count}, 继续: {should_continue}"
+            )
 
             return user_response, should_continue
 
@@ -199,9 +201,9 @@ Agent最新回复：
             'goal': self.goal.initial_question if self.goal else None,
             'total_turns': self.turn_count,
             'final_state': self.current_state.value,
-            'duration_minutes': ((time.time() - self.start_time) / 60)
-            if self.start_time
-            else 0,
+            'duration_minutes': (
+                ((time.time() - self.start_time) / 60) if self.start_time else 0
+            ),
             'conversation_history': self.conversation_history,
         }
 

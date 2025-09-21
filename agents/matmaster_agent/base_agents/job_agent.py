@@ -870,9 +870,9 @@ class BaseAsyncJobAgent(LlmAgent):
 
             if not params_check_completed:
                 # Call ParamsCheckInfoAgent to generate params needing check
-                async for params_check_info_event in self.params_check_info_agent.run_async(
-                    ctx
-                ):
+                async for (
+                    params_check_info_event
+                ) in self.params_check_info_agent.run_async(ctx):
                     yield params_check_info_event
             else:
                 async for submit_event in self.submit_agent.run_async(ctx):
