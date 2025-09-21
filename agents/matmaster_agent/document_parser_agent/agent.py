@@ -5,6 +5,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from agents.matmaster_agent.base_agents.job_agent import CalculationMCPLlmAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, BohriumStorge
 
+from .callback import validate_document_url
 from .constant import DocumentParserAgentName, DocumentParserServerUrl
 from .prompt import DocumentParserAgentDescription, DocumentParserAgentInstruction
 
@@ -21,6 +22,7 @@ class DocumentParserAgent(CalculationMCPLlmAgent):
             instruction=DocumentParserAgentInstruction,
             tools=[toolset],
             supervisor_agent=MATMASTER_AGENT_NAME,
+            after_model_callback=validate_document_url,
         )
 
 
