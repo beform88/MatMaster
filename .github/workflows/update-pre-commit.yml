@@ -5,10 +5,6 @@ on:
     - cron: '0 0 * * 0'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   update-pre-commit:
     runs-on: ubuntu-latest
@@ -16,8 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,17 +21,31 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
-      - name: Update pre-commit hooks
-        run: pre-commit autoupdate
+      - name: Update pre-commit hooks and create PR
+        run: |
+          # 更新 hooks
+          pre-commit autoupdate
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: "chore: update pre-commit hooks"
-          title: "chore: update pre-commit hooks"
-          body: |
-            Automated update of pre-commit hooks via pre-commit autoupdate.
-          branch: "update/pre-commit-hooks"
-          base: main
-          labels: "dependencies"
-          delete-branch: true
+          # 检查是否有变化
+          if git diff --exit-code .pre-commit-config.yaml; then
+            echo "No updates available"
+            exit 0
+          fi
+
+          # 配置 git
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # 提交更改
+          git add .pre-commit-config.yaml
+          git commit -m "chore: update pre-commit hooks"
+          git push origin HEAD:update-pre-commit-hooks
+
+          # 使用 GitHub CLI 创建 PR（需要先设置 GH_TOKEN）
+          echo "Please create PR manually or setup GitHub CLI with token"
+
+      - name: Output instructions
+        if: failure()
+        run: |
+          echo "Changes were made but PR creation failed."
+          echo "Please manually create a PR from the update-pre-commit-hooks branch"
