@@ -5,18 +5,19 @@ on:
     - cron: '0 0 * * 0'  # 每周日 UTC 时间 00:00
   workflow_dispatch:      # 允许手动触发
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-pre-commit:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # 获取所有历史记录和分支
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,7 +30,18 @@ jobs:
       - name: Update pre-commit hooks
         run: pre-commit autoupdate
 
-      - name: Create Pull Request if changes
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --exit-code .pre-commit-config.yaml; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+            git diff .pre-commit-config.yaml
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: "chore: update pre-commit hooks"
@@ -37,8 +49,10 @@ jobs:
           body: |
             Automated update of pre-commit hooks via pre-commit autoupdate.
 
-            **Changes:**
-            - Updated hook versions in .pre-commit-config.yaml
-          branch: "update/pre-commit-hooks"
+            **Changes made:**
+            - Updated versions in .pre-commit-config.yaml
+          branch: "update/pre-commit-hooks-$(date +%s)"
+          base: main  # 根据你的默认分支修改，可能是 main 或 master
           labels: "dependencies"
           delete-branch: true
+          token: ${{ secrets.GITHUB_TOKEN }}
