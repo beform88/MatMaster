@@ -2,18 +2,43 @@ name: Update pre-commit hooks
 
 on:
   schedule:
-    - cron: '0 0 * * 0'
-  workflow_dispatch:
+    - cron: '0 0 * * 0'  # 每周日 UTC 时间 00:00
+  workflow_dispatch:      # 允许手动触发
 
 jobs:
-  update:
+  update-pre-commit:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+    permissions:
+      contents: write
+      pull-requests: write
 
-      - name: Update pre-commit hooks
-        uses: creyD/pre-commit-update@v1.2.0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          label: 'dependencies'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Update pre-commit hooks
+        run: pre-commit autoupdate
+
+      - name: Create Pull Request if changes
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "chore: update pre-commit hooks"
+          title: "chore: update pre-commit hooks"
+          body: |
+            Automated update of pre-commit hooks via pre-commit autoupdate.
+
+            **Changes:**
+            - Updated hook versions in .pre-commit-config.yaml
+          branch: "update/pre-commit-hooks"
+          labels: "dependencies"
+          delete-branch: true
