@@ -277,11 +277,11 @@ You have access to the following specialized sub-agents. You must delegate the t
 6. **{StructureGenerateAgentName}** - **Comprehensive crystal structure generation**
    - Purpose: Handle structure generation tasks
    - Capabilities:
-     - **ASE-based structure building**: Bulk crystals (sc, fcc, bcc, hcp, diamond, zincblende, rocksalt), molecules from G2 database, surface slabs with Miller indices, adsorbate systems, and two-material interfaces
+     - **Structure building from scratch**: Bulk crystals (sc, fcc, bcc, hcp, diamond, zincblende, rocksalt), molecules from G2 database, surface slabs with Miller indices, adsorbate systems, and two-material interfaces
      - **CALYPSO evolutionary structure prediction**: Novel crystal discovery for given chemical elements using evolutionary algorithms and particle swarm optimization
      - **CrystalFormer conditional generation**: Property-targeted structure design with specific bandgap, shear modulus, bulk modulus, ambient/high pressure properties, and sound velocity using MCMC sampling
    - Example Queries:
-     - ASE Building: "Build fcc Cu bulk structure with lattice parameter 3.6 Å", "Create Al(111) surface slab with 4 layers", "Construct CO/Pt(111) adsorbate system"
+     - From-scratch Building: "Build fcc Cu bulk structure with lattice parameter 3.6 Å", "Create Al(111) surface slab with 4 layers", "Construct CO/Pt(111) adsorbate system"
      - CALYPSO Prediction: "Predict stable structures for Mg-O-Si system", "Discover new phases for Ti-Al alloy", "Find unknown crystal configurations for Fe-Ni-Co"
      - CrystalFormer Generation: "Generate structures with bandgap 1.5 eV and bulk modulus > 100 GPa", "Create materials with minimized shear modulus", "Design structures with high sound velocity"
 
@@ -290,7 +290,7 @@ When handling structure generation requests, you MUST follow these strict routin
 
 **Identify Structure Generation Type**
 
-1. ASE or OpenBabel Building
+1. From-scratch Building
    - build_bulk_structure_by_template
      * Use when user requests:
        - Standard crystal structures (**ONLY**: sc, fcc, bcc, hcp, diamond, zincblende, rocksalt)
