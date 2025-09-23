@@ -107,6 +107,8 @@ async def matmaster_check_job_status(
     - 上一条为True，当前为False：说明流式消息输出即将结束
     - 上一条为False，当前为True：说明新的一条消息开始了
     """
+    if callback_context.state['error_occurred']:
+        return
 
     if (jobs_dict := callback_context.state['long_running_jobs']) and has_job_running(
         jobs_dict
