@@ -730,8 +730,9 @@ Guidelines:
 1. **Transfer Intent**: The RESPONSE TEXT must explicitly indicate an immediate transfer action to a specific agent, not just mention or describe the agent's function.
 2. **Target Clarity**: The target agent must be clearly identified by name (e.g., "xxx agent" or another explicitly named agent). This includes identification via a JSON object like `{{"agent_name": "xxx_agent"}}`.
 3. **Action Directness**: Look for explicit transfer verbs like "transfer", "connect", "hand over", "redirect", or clear transitional phrases like "I will now use", "Switching to", "Activating" that indicate the conversation is being passed to another agent. The presence of a standalone JSON object specifying an agent name is also considered an explicit transfer instruction.
-4. **Language Consideration**: Evaluate both English and Chinese transfer indications equally.
-5. **Key Indicators**:
+4. **User Confirmation Check**: If the response ends with a question or statement that requires user confirmation (e.g., "Should I proceed?", "Do you want to use this file or modify parameters?", "Shall I transfer and proceed with default values?"), then the transfer is not immediate and `is_transfer` should be false. The LLM is pausing for user input before taking action.
+5. **Language Consideration**: Evaluate both English and Chinese transfer indications equally.
+6. **Key Indicators**:
    - ✅ Explicit transfer statements: "I will transfer you to", "Let me connect you with", "Redirecting to", "Handing over to", "正在转移", "切换到"
    - ✅ Immediate action indicators: "Now using", "Switching to", "Activating the", "I will now use the", "正在使用"
    - ✅ **Explicit JSON transfer object:** A JSON object like `{{"agent_name": "target_agent"}}` is a direct and explicit instruction to transfer.
@@ -739,6 +740,7 @@ Guidelines:
    - ❌ Descriptions of what an agent could do without transfer intent
    - ❌ Suggestions or recommendations without explicit transfer instruction
    - ❌ Future tense plans without immediate action
+   - ❌ **Requests for user confirmation before proceeding/transferring.**
 
 RESPONSE TEXT (previous LLM's response to evaluate):
 {response_text}
@@ -765,6 +767,12 @@ Examples for reference:
 
 - Case5 (true): `{{"agent_name":"traj_analysis_agent"}}`
   -> Reason: "Standalone JSON object with an 'agent_name' key is an explicit programmatic instruction to transfer."
+
+- Case6 (false): "I can hand you over to the structure_generate_agent. Should I proceed?"
+  -> Reason: "Although a transfer action ('hand you over to') and a target agent are mentioned, the phrase ends with a request for user confirmation ('Should I proceed?'), indicating the transfer is conditional and not immediate."
+
+- Case7 (false): "正在切换到structure_generate_agent。您是希望直接继续，还是需要修改参数？"
+  -> Reason: "Uses a transfer phrase '正在切换到' (switching to) but follows it with a question asking for user confirmation, pausing the immediate transfer action."
 """
 
 
