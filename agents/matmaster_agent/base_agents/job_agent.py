@@ -20,9 +20,7 @@ from agents.matmaster_agent.base_agents.callback import (
     default_after_model_callback,
     default_after_tool_callback,
     default_before_tool_callback,
-    inject_ak_projectId,
     inject_current_env,
-    inject_machineType,
     inject_username_ticket,
     remove_function_call,
     tgz_oss_to_oss_list,
@@ -37,6 +35,8 @@ from agents.matmaster_agent.constant import (
     LOADING_START,
     LOADING_STATE_KEY,
     LOADING_TITLE,
+    MATMASTER_ACCESS_KEY,
+    MATMASTER_PROJECT_ID,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
     OpenAPIJobAPI,
@@ -160,14 +160,8 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
         # Todo: support List[before_tool_callback]
         before_tool_callback = catch_before_tool_callback_error(
-            inject_machineType(
-                check_job_create(
-                    inject_current_env(
-                        inject_username_ticket(
-                            inject_ak_projectId(before_tool_callback)
-                        )
-                    )
-                )
+            check_job_create(
+                inject_current_env(inject_username_ticket(before_tool_callback))
             )
         )
         after_tool_callback = check_before_tool_callback_effect(
@@ -554,11 +548,15 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
         try:
             await self.tools[0].get_tools()
             if not ctx.session.state['dflow']:
-                access_key, Executor, BohriumStorge = _inject_ak(
-                    ctx, get_BohriumExecutor(), get_BohriumStorage()
+                access_key, Executor, BohriumStorge = (
+                    MATMASTER_ACCESS_KEY,
+                    get_BohriumExecutor(),
+                    get_BohriumStorage(),
                 )
-                project_id, Executor, BohriumStorge = _inject_projectId(
-                    ctx, Executor, BohriumStorge
+                project_id, Executor, BohriumStorge = (
+                    MATMASTER_PROJECT_ID,
+                    Executor,
+                    BohriumStorge,
                 )
             else:
                 access_key, Executor, BohriumStorge = _inject_ak(
@@ -849,6 +847,9 @@ class BaseAsyncJobAgent(LlmAgent):
             )
             params_check_completed_json: dict = json.loads(
                 response.choices[0].message.content
+            )
+            logger.info(
+                f"[BaseAsyncJobAgent] params_check_completed_json = {params_check_completed_json}"
             )
             params_check_completed = params_check_completed_json['flag']
             params_check_reason = params_check_completed_json['reason']

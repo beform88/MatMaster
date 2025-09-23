@@ -20,6 +20,8 @@ from agents.matmaster_agent.constant import (
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
     LOCAL_EXECUTOR,
+    MATMASTER_ACCESS_KEY,
+    MATMASTER_PROJECT_ID,
     OPENAPI_HOST,
     Transfer2Agent,
 )
@@ -178,14 +180,6 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
     )
 
 
-@check_None_wrapper
-def _get_machineType(ctx: Union[InvocationContext, ToolContext]):
-    session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('machineType') or os.getenv(
-        'MACHINE_TYPE', 'c32_m64_cpu'
-    )
-
-
 def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
     access_key = _get_ak(ctx)
     if executor is not None:
@@ -219,8 +213,7 @@ def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, stor
 
 
 def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
-    access_key = _get_ak(ctx)
-    username = ak_to_username(access_key=access_key)
+    username = ak_to_username(access_key=MATMASTER_ACCESS_KEY)
     if username:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
@@ -238,8 +231,7 @@ def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
 
 
 def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
-    access_key = _get_ak(ctx)
-    ticket = ak_to_ticket(access_key=access_key)
+    ticket = ak_to_ticket(access_key=MATMASTER_ACCESS_KEY)
     if ticket:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
@@ -268,65 +260,6 @@ def _inject_current_env(executor):
         ):  # DFlowExecutor
             executor['env']['CURRENT_ENV'] = str(CURRENT_ENV)
     return executor
-
-
-def _inject_machine_type(ctx: Union[InvocationContext, ToolContext], executor):
-    machine_type = _get_machineType(ctx)
-    session_state = get_session_state(ctx)
-    logger.info(
-        f"biz = {session_state[FRONTEND_STATE_KEY]['biz']}; "
-        f"machineType = {machine_type}"
-    )
-    if executor is not None:
-        if executor['type'] == 'dispatcher':  # BohriumExecutor
-            current_machine_type = executor['machine']['remote_profile']['machine_type']
-            if not current_machine_type:
-                executor['machine']['remote_profile']['machine_type'] = str(
-                    machine_type
-                )
-    logger.info(f"After inject_machine_type, executor = {executor}")
-
-    return executor
-
-
-def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
-    @wraps(func)
-    async def wrapper(
-        tool: BaseTool, args: dict, tool_context: ToolContext
-    ) -> Optional[dict]:
-        # 两步操作：
-        # 1. 调用被装饰的 before_tool_callback；
-        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
-        # 如果 tool 为 Transfer2Agent，不做 ak 和 project_id 设置/校验
-        if tool.name == Transfer2Agent:
-            return None
-
-        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
-        if not isinstance(tool, CalculationMCPTool):
-            raise TypeError(
-                'Not CalculationMCPTool type, current tool does not have <storage>'
-            )
-
-        # 获取 access_key
-        access_key, tool.executor, tool.storage = _inject_ak(
-            tool_context, tool.executor, tool.storage
-        )
-
-        # 获取 project_id
-        try:
-            project_id, tool.executor, tool.storage = _inject_projectId(
-                tool_context, tool.executor, tool.storage
-            )
-        except ValueError as e:
-            raise ValueError('ProjectId is invalid') from e
-
-        tool_context.state['ak'] = access_key
-        tool_context.state['project_id'] = project_id
-
-    return wrapper
 
 
 def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
@@ -383,14 +316,14 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
             user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
             payload = {
-                'projectId': int(tool_context.state['project_id']),
+                'projectId': MATMASTER_PROJECT_ID,
                 'name': 'check_job_create',
             }
-            params = {'accessKey': tool_context.state['ak']}
+            params = {'accessKey': MATMASTER_ACCESS_KEY}
 
             logger.info(
-                f"[check_job_create] project_id = {tool_context.state['project_id']}, "
-                f"ak = {tool_context.state['ak']}"
+                f"[check_job_create] project_id = {MATMASTER_PROJECT_ID}, "
+                f"ak = {MATMASTER_ACCESS_KEY}"
             )
 
             async with aiohttp.ClientSession() as session:
@@ -402,7 +335,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
                     project_name = [
                         item['project_name']
                         for item in res['data']['items']
-                        if item['project_id'] == int(tool_context.state['project_id'])
+                        if item['project_id'] == MATMASTER_PROJECT_ID
                     ][0]
 
             async with aiohttp.ClientSession() as session:
@@ -416,32 +349,6 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
                                 'msg'
                             ] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
                         return res
-
-    return wrapper
-
-
-def inject_machineType(func: BeforeToolCallback) -> BeforeToolCallback:
-    @wraps(func)
-    async def wrapper(
-        tool: BaseTool, args: dict, tool_context: ToolContext
-    ) -> Optional[dict]:
-        # 两步操作：
-        # 1. 调用被装饰的 before_tool_callback；
-        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
-        # 如果 tool 为 Transfer2Agent，不做 ak 和 project_id 设置/校验
-        if tool.name == Transfer2Agent:
-            return None
-
-        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
-        if not isinstance(tool, CalculationMCPTool):
-            raise TypeError(
-                'Not CalculationMCPTool type, current tool does not have <storage>'
-            )
-
-        _inject_machine_type(tool_context, tool.executor)
 
     return wrapper
 

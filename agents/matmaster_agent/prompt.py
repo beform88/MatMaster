@@ -684,7 +684,7 @@ Your output MUST be a valid JSON object with the following structure:
 {{
     "flag": <boolean>,
     "reason": <string>, //  *A concise explanation of the reasoning behind the judgment, covering both positive and negative evidence found in the context messages. Return empty string only if there is absolutely no relevant content to analyze.*
-    "analyzed_message": List[<string>]  // *Quote the key messages that were analyzed to make this determination.*
+    "analyzed_messages": List[<string>]  // *Quote the key messages that were analyzed to make this determination.*
 }}
 
 Return `flag: true` ONLY IF ALL of the following conditions are met:

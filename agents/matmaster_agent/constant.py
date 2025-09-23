@@ -16,35 +16,6 @@ ModelRole = 'model'
 # DB
 DBUrl = os.getenv('SESSION_API_URL')
 
-# Bohrium Constant
-BohriumStorge = {
-    'type': 'https',
-    'plugin': {
-        'type': 'bohrium',
-        'access_key': '',
-        'project_id': -1,
-        'app_key': 'agent',
-    },
-}
-LOCAL_EXECUTOR = {'type': 'local'}
-
-BohriumExecutor = {
-    'type': 'dispatcher',
-    'machine': {
-        'batch_type': 'OpenAPI',
-        'context_type': 'OpenAPI',
-        'remote_profile': {
-            'access_key': '',
-            'project_id': -1,
-            'app_key': 'agent',
-            'image_address': 'registry.dp.tech/dptech/dp/native/prod-19853/dpa-mcp:0.0.0',
-            'platform': 'ali',
-            'machine_type': '',
-        },
-    },
-    'resources': {'envs': {}},
-}
-
 OPENAPI_HOST = ''
 DFLOW_HOST = ''
 DFLOW_K8S_API_SERVER = ''
@@ -64,7 +35,40 @@ elif CURRENT_ENV == 'prod':
     DFLOW_HOST = 'https://workflows.deepmodeling.com'
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
     BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
+
 OpenAPIJobAPI = f"{OPENAPI_HOST}/openapi/v1/job"
+
+MATMASTER_ACCESS_KEY = str(os.getenv('MATMASTER_ACCESS_KEY'))
+MATMASTER_PROJECT_ID = int(os.getenv('MATMASTER_PROJECT_ID'))
+
+# Bohrium Constant
+BohriumStorge = {
+    'type': 'https',
+    'plugin': {
+        'type': 'bohrium',
+        'access_key': MATMASTER_ACCESS_KEY,
+        'project_id': MATMASTER_PROJECT_ID,
+        'app_key': 'agent',
+    },
+}
+LOCAL_EXECUTOR = {'type': 'local'}
+
+BohriumExecutor = {
+    'type': 'dispatcher',
+    'machine': {
+        'batch_type': 'OpenAPI',
+        'context_type': 'OpenAPI',
+        'remote_profile': {
+            'access_key': MATMASTER_ACCESS_KEY,
+            'project_id': MATMASTER_PROJECT_ID,
+            'app_key': 'agent',
+            'image_address': '',
+            'platform': 'ali',
+            'machine_type': 'c2_m8_cpu',
+        },
+    },
+    'resources': {'envs': {'BOHRIUM_PROJECT_ID': MATMASTER_PROJECT_ID}},
+}
 
 DFlowExecutor = {
     'type': 'local',
@@ -74,8 +78,8 @@ DFlowExecutor = {
         'DFLOW_K8S_API_SERVER': DFLOW_K8S_API_SERVER,
         'DFLOW_S3_REPO_KEY': 'oss-bohrium',
         'DFLOW_S3_STORAGE_CLIENT': 'dflow.plugins.bohrium.TiefblueClient',
-        'BOHRIUM_ACCESS_KEY': '',
-        'BOHRIUM_PROJECT_ID': '',
+        'BOHRIUM_ACCESS_KEY': MATMASTER_ACCESS_KEY,
+        'BOHRIUM_PROJECT_ID': str(MATMASTER_PROJECT_ID),
         'BOHRIUM_APP_KEY': 'agent',
     },
 }
