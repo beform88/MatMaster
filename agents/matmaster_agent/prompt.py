@@ -491,14 +491,12 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
       - Result collection from ABACUS job directories
 
 15. **{DocumentParserAgentName}** - **Materials science document parser**
-    - Purpose: Extract materials science data from scientific documents and web pages
+    - Purpose: Extract materials science data from scientific documents
     - Capabilities:
       - Parse chemical compositions, crystal structures, and physical properties from documents
       - Convert document data into structured formats
-      - Parse web pages for materials science data
     - Supported Formats:
-      PDF-format documents or web pages.
-      Note that ALL files are link forms. You should distinguish between web pages and document links by their URL patterns or file extensions.
+      PDF-format documents.
     - Example Queries:
       - "这个文献里面计算的材料用的是什么结构？"
       - "分析附件中的实验报告，提取所有提到的材料及其性能"
