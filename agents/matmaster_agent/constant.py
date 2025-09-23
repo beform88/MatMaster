@@ -36,7 +36,7 @@ elif CURRENT_ENV == 'prod':
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
     BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
 
-OpenAPIJobAPI = f"{OPENAPI_HOST}/openapi/v1/job"
+OpenAPIJobAPI = f"{OPENAPI_HOST}/openapi/v1/sandbox/job"
 
 MATERIALS_ACCESS_KEY = str(os.getenv('MATERIALS_ACCESS_KEY'))
 MATERIALS_PROJECT_ID = int(os.getenv('MATERIALS_PROJECT_ID'))

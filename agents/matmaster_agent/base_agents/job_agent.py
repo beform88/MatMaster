@@ -404,6 +404,9 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         ):
                             raw_result = part.function_response.response['result']
                             results = json.loads(raw_result.content[0].text)
+                            logger.info(
+                                f"[SubmitCoreCalculationMCPLlmAgent] results = {results}"
+                            )
                             origin_job_id = results['job_id']
                             job_name = part.function_response.name
                             job_status = results['status']
