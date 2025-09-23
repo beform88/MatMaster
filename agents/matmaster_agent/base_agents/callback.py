@@ -20,8 +20,8 @@ from agents.matmaster_agent.constant import (
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
     LOCAL_EXECUTOR,
-    MATMASTER_ACCESS_KEY,
-    MATMASTER_PROJECT_ID,
+    MATERIALS_ACCESS_KEY,
+    MATERIALS_PROJECT_ID,
     OPENAPI_HOST,
     Transfer2Agent,
 )
@@ -213,7 +213,7 @@ def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, stor
 
 
 def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
-    username = ak_to_username(access_key=MATMASTER_ACCESS_KEY)
+    username = ak_to_username(access_key=MATERIALS_ACCESS_KEY)
     if username:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
@@ -231,7 +231,7 @@ def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
 
 
 def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
-    ticket = ak_to_ticket(access_key=MATMASTER_ACCESS_KEY)
+    ticket = ak_to_ticket(access_key=MATERIALS_ACCESS_KEY)
     if ticket:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
@@ -316,14 +316,14 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
             user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
             payload = {
-                'projectId': MATMASTER_PROJECT_ID,
+                'projectId': MATERIALS_PROJECT_ID,
                 'name': 'check_job_create',
             }
-            params = {'accessKey': MATMASTER_ACCESS_KEY}
+            params = {'accessKey': MATERIALS_ACCESS_KEY}
 
             logger.info(
-                f"[check_job_create] project_id = {MATMASTER_PROJECT_ID}, "
-                f"ak = {MATMASTER_ACCESS_KEY}"
+                f"[check_job_create] project_id = {MATERIALS_PROJECT_ID}, "
+                f"ak = {MATERIALS_ACCESS_KEY}"
             )
 
             async with aiohttp.ClientSession() as session:
@@ -335,7 +335,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
                     project_name = [
                         item['project_name']
                         for item in res['data']['items']
-                        if item['project_id'] == MATMASTER_PROJECT_ID
+                        if item['project_id'] == MATERIALS_PROJECT_ID
                     ][0]
 
             async with aiohttp.ClientSession() as session:

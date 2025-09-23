@@ -35,8 +35,8 @@ from agents.matmaster_agent.constant import (
     LOADING_START,
     LOADING_STATE_KEY,
     LOADING_TITLE,
-    MATMASTER_ACCESS_KEY,
-    MATMASTER_PROJECT_ID,
+    MATERIALS_ACCESS_KEY,
+    MATERIALS_PROJECT_ID,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
     OpenAPIJobAPI,
@@ -549,12 +549,12 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
             await self.tools[0].get_tools()
             if not ctx.session.state['dflow']:
                 access_key, Executor, BohriumStorge = (
-                    MATMASTER_ACCESS_KEY,
+                    MATERIALS_ACCESS_KEY,
                     get_BohriumExecutor(),
                     get_BohriumStorage(),
                 )
                 project_id, Executor, BohriumStorge = (
-                    MATMASTER_PROJECT_ID,
+                    MATERIALS_PROJECT_ID,
                     Executor,
                     BohriumStorge,
                 )
