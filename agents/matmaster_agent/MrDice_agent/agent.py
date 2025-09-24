@@ -5,6 +5,9 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,
 )
+from agents.matmaster_agent.MrDice_agent.mofdb_agent.agent import (
+    init_mofdb_database_agent,
+)
 from agents.matmaster_agent.MrDice_agent.openlam_agent.agent import (
     init_openlam_database_agent,
 )
@@ -23,6 +26,7 @@ class MrDice_Agent(LlmWrapAgent):
         optimade_agent = init_optimade_database_agent(llm_config)
         openlam_agent = init_openlam_database_agent(llm_config)
         bohriumpublic_agent = init_bohriumpublic_database_agent(llm_config)
+        mofdb_agent = init_mofdb_database_agent(llm_config)
         super().__init__(
             model=llm_config.gpt_5_chat,
             name=MrDiceAgentName,
@@ -32,6 +36,7 @@ class MrDice_Agent(LlmWrapAgent):
                 optimade_agent,
                 openlam_agent,
                 bohriumpublic_agent,
+                mofdb_agent,
             ],
             supervisor_agent=MATMASTER_AGENT_NAME,
         )
