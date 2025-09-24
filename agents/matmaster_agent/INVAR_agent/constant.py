@@ -14,5 +14,5 @@ INVAR_BOHRIUM_EXECUTOR['machine']['remote_profile'][
 ] = 'registry.dp.tech/dptech/dpa-calculator:ddbc2642'
 INVAR_BOHRIUM_EXECUTOR['machine']['remote_profile'][
     'machine_type'
-] = '1 * NVIDIA V100_32g'
+] = 'c16_m64_1 * NVIDIA 4090'
 INVAR_BOHRIUM_STORAGE = copy.deepcopy(BohriumStorge)
