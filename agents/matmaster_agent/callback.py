@@ -11,8 +11,7 @@ from google.adk.models import LlmResponse
 from google.genai import types
 from google.genai.types import FunctionCall, Part
 
-from agents.matmaster_agent.base_agents.callback import _get_ak
-from agents.matmaster_agent.constant import FRONTEND_STATE_KEY
+from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATERIALS_ACCESS_KEY
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
@@ -114,7 +113,6 @@ async def matmaster_check_job_status(
         jobs_dict
     ):  # 确认当前有在运行中的任务
         running_job_ids = get_running_jobs_detail(jobs_dict)  # 从 state 里面拿
-        access_key = _get_ak(callback_context)  # 从 state 或环境变量里面拿
         if callback_context.state['target_language'] in [
             'Chinese',
             'zh-CN',
@@ -132,7 +130,7 @@ async def matmaster_check_job_status(
                     '[matmaster_check_job_status] new LlmResponse, prepare call API'
                 )
                 job_status = await get_job_status(
-                    job_query_url, access_key=access_key
+                    job_query_url, access_key=MATERIALS_ACCESS_KEY
                 )  # 查询任务的最新状态
                 callback_context.state['new_query_job_status'][
                     'origin_job_id'

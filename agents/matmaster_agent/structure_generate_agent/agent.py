@@ -26,7 +26,7 @@ StructureGenerateBohriumExecutor['machine']['remote_profile'][
 ] = 'registry.dp.tech/dptech/dp/native/prod-788025/structure-generate-agent:small'
 StructureGenerateBohriumExecutor['machine']['remote_profile'][
     'machine_type'
-] = 'c8_m31_1 * NVIDIA T4'
+] = 'c8_m32_1 * NVIDIA 4090'
 
 sse_params = SseServerParams(url=StructureGenerateServerUrl)
 
