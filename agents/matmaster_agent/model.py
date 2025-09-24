@@ -59,6 +59,7 @@ class BohrJobInfo(BaseModel):
     job_result: Optional[List[JobResult]] = None
     job_in_ctx: bool = False
     agent_name: str
+    resource_type: Optional[str] = 'sandbox'
 
     @field_validator('job_detail_url')
     @classmethod
