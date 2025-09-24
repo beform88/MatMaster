@@ -5,14 +5,14 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,
 )
+from agents.matmaster_agent.MrDice_agent.mofdb_agent.agent import (
+    init_mofdb_database_agent,
+)
 from agents.matmaster_agent.MrDice_agent.openlam_agent.agent import (
     init_openlam_database_agent,
 )
 from agents.matmaster_agent.MrDice_agent.optimade_agent.agent import (
     init_optimade_database_agent,
-)
-from agents.matmaster_agent.MrDice_agent.mofdb_agent.agent import (
-    init_mofdb_database_agent,
 )
 from agents.matmaster_agent.MrDice_agent.prompt import (
     MrDiceAgentDescription,
