@@ -426,14 +426,18 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
 
 10. **{MrDice_Agent_Name}** - **Crystal structure meta-database search**
     - Purpose: Retrieve crystal structure data by coordinating multiple sub-agents:
-     * `bohrium_public_agent` → for Bohrium Public database (formula, elements, space group, atom counts, band gap, formation energy)
-     * `optimade_agent` → for OPTIMADE-compliant providers (broad, logic filters, space-group, band-gap queries)
+      * `bohrium_public_agent` → Bohrium Public database (includes Materials Project / MP; supports formula, elements, space group, atom counts, band gap, formation energy)
+      * `optimade_agent` → OPTIMADE-compliant providers (broad coverage, complex logic filters, space-group, band-gap queries)
+      * `openlam_agent` → OpenLAM internal database (formula, energy range, submission time filters)
+      * `mofdb_agent` → MOFdb (Metal-Organic Frameworks; queries by MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area)
     - By default, MrDice analyzes the query and selects the **most suitable sub-agent** to handle it.
-    - If multiple agents are clearly required by user(e.g., different filters span different capabilities), MrDice executes them **sequentially** and merges results.
+    - If multiple sub-agents of MrDice are clearly required by user(e.g., different filters span different capabilities), MrDice executes them **sequentially** and merges results.
+    - MrDice's Execution *does not require user confirmation* — once a valid query is identified, MrDice immediately dispatches the appropriate sub-agent(s) and runs.
     - Capabilities:
       - Space group, atom count, band gap, formation energy queries (Bohrium Public)
       - Element/space-group/band-gap/logic-based queries (OPTIMADE)
       - Formula-based, energy-based, time-based queries (OpenLAM)
+      - MOF queries by id/key/name, database source, or pore/surface metrics (MOFdb)
       - Unified Markdown table with merged results
 
    ## RESPONSE FORMAT
