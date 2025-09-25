@@ -7,6 +7,7 @@ import tarfile
 import time
 from pathlib import Path
 from typing import Dict, List, Tuple
+from urllib.parse import quote
 
 import aiofiles
 import aiohttp
@@ -79,7 +80,9 @@ async def upload_to_oss_wrapper(
             bucket_name = os.environ['OSS_BUCKET_NAME']
             bucket = oss2.Bucket(auth, endpoint, bucket_name)
             bucket.put_object(oss_path, base64.b64decode(data))
-            return f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}"
+            # Properly encode the OSS path for URL safety
+            encoded_oss_path = quote(oss_path, safe='')
+            return f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{encoded_oss_path}"
         except Exception as e:
             return str(e)
 

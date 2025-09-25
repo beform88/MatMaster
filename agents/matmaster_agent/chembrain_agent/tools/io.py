@@ -3,6 +3,7 @@ import base64
 import json
 import logging
 import os
+from urllib.parse import quote
 
 import oss2
 from oss2.credentials import EnvironmentVariableCredentialsProvider
@@ -46,9 +47,11 @@ def _sync_upload_base64_to_oss(data: str, oss_path: str) -> dict:
         bucket = oss2.Bucket(auth, endpoint, bucket_name)
 
         bucket.put_object(oss_path, base64.b64decode(data))
+        # Properly encode the OSS path for URL safety
+        encoded_oss_path = quote(oss_path, safe='')
         return {
             'status': 'success',
-            'oss_path': f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}",
+            'oss_path': f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{encoded_oss_path}",
         }
     except Exception as e:
         logger.exception(
