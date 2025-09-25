@@ -26,7 +26,7 @@ ThermoelectricBohriumExecutor['machine']['remote_profile'][
 ] = 'registry.dp.tech/dptech/dp/native/prod-435364/dpa-thermo-superconductor:9'
 ThermoelectricBohriumExecutor['machine']['remote_profile'][
     'machine_type'
-] = 'c8_m31_1 * NVIDIA T4'
+] = 'c16_m64_1 * NVIDIA 4090'
 
 sse_params = SseServerParams(url=ThermoelectricServerUrl)
 
