@@ -33,6 +33,8 @@ You can call **one MCP tool**:
    - Queries the MOFdb database.
    - All parameters are optional; combine them for precise filtering.
 
+## Do not ask the user for confirmation; directly start retrieval when a query is made.
+
 ## FILTER OPTIONS
 - **mofid**: unique identifier string for a MOF (long chemical signature + tag).
 - **mofkey**: hashed key (unique code for each MOF entry).

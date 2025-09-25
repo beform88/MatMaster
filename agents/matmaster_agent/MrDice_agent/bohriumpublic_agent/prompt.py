@@ -37,7 +37,7 @@ You can call **one MCP tool**:
 - **Space group**: use the space group number (e.g., `14` for P2₁/c)
 - **Atom count range**: filter by number of atoms in the unit cell, e.g. `["10","100"]`
 - **Predicted formation energy**: range filter in eV, e.g. `["-2","0"]`
-- **Band gap**: range filter in eV, e.g. `["0","3"]`
+- **Band gap**: eV range [lo, hi] (omitted bound defaults to 0/100), e.g. ["0","3"], ["1","100"].
 - **Result limit**: maximum number of results (`n_results`)
 - **Output formats**:
   - `"cif"` → crystallographic structure files
