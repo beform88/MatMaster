@@ -62,6 +62,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
                 'build_surface_slab',
                 'build_surface_adsorbate',
                 'build_surface_interface',
+                'get_structure_info',
             ],
         )
 
