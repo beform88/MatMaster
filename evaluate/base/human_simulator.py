@@ -41,7 +41,7 @@ class HumanSimulator:
     3. 生成上下文相关的响应
     """
 
-    def __init__(self, model: str = 'deepseek/deepseek-chat', max_turn_count=10):
+    def __init__(self, model: str = 'azure/gpt-5-chat', max_turn_count=10):
         self.model = model
         self.max_turn_count = max_turn_count
         self.conversation_history: List[Dict[str, Any]] = []
@@ -91,6 +91,7 @@ class HumanSimulator:
 
         # 更新对话状态
         if not should_continue:
+
             self.current_state = ConversationState.SATISFIED
 
         self.conversation_history.append(
@@ -108,7 +109,7 @@ class HumanSimulator:
             response = completion(
                 model=self.model,
                 messages=[{'role': 'user', 'content': prompt}],
-                temperature=0.7,
+                temperature=1.0,
             )
 
             result = json.loads(response.choices[0].message.content)
@@ -129,35 +130,45 @@ class HumanSimulator:
         """构建生成用户响应的提示词"""
 
         return f"""
-你是一个模拟用户，正在与一个材料计算AI agent进行多轮对话。请基于以下信息生成合适的响应：
+你是一个模拟人类用户，正在与一个材料计算AI agent进行多轮对话。你的唯一目标是测试agent能否完成你给出的任务。请基于以下信息生成合适的响应：
 
-对话目标：
-- 初始问题: {self.goal.initial_question}
+## 任务目标：
+- 目标任务: {self.goal.initial_question}
 - 期望结果: {', '.join(self.goal.expected_outcomes)}
 - 成功标准: {', '.join(self.goal.success_criteria)}
 
-当前状态：
+## 当前状态：
 - 对话轮次: {self.turn_count}/{self.max_turn_count}
 
-Agent最新回复：
+- Agent最新回复：
 {agent_message}
 
-请分析agent的回复是否满足 初始问题 需求。如果回复大致符合初始任务要求，请结束对话。如果不符合，请分析不符合的点在哪儿，并生成简洁的用户回复，继续引导agent完成任务。
+## 对话规则：
 
-重要限制：
-- 对话最多{self.max_turn_count}轮，当前是第{self.turn_count}轮；
-- 尽可能简短地回答agent的问题，回复内容紧扣初始问题，禁止发散，避免执行轮数超出限制；
-- 如果agent在询问具体参数或设置，提供简洁明确的回答；
-- 如果agent明确指出当前任务无法完成，请礼貌地结束对话；
-- 如果agent已经提供了初始任务所需的信息或完成了任务，请立刻结束对话；
-- agent仅能以文本形式回复，禁止要求agent提供可视化结果；
-
-请以如下JSON格式回复：
+- 输出格式
+请严格按照以下JSON格式回复：
 {{
-    "response": "你的回复内容",
-    "continue": true/false  // 是否继续对话
+  "response": "你的回复内容",
+  "continue": true/false // 是否继续对话
 }}
 
+- 任务完成的判定原则
+   1.如果 agent 只是给出 计划、思路、步骤、方法说明，你要认为 任务尚未完成，并要求 agent 继续。
+   2.只有当 agent 给出 符合任务要求的最终输出（例如具体数值、结果表格、结论说明等），你才认为任务完成。
+   3.任何时候都不要把“计划/步骤”误判为“结果”
+   4.如果 agent 明确表示当前任务无法完成，你要礼貌地结束对话。
+
+- 行为规范
+    1.只围绕最初任务进行，不扩展。回答要尽可能简洁明了，避免冗长。
+    2.如果结果不完整/模糊，要求继续。
+    3.如果结果完整且满足任务目标，结束对话（"continue": false）
+    4.严禁提供虚构的信息，不能假装上传文件或代码。
+    5.如果 agent 在询问具体参数或设置，提供简洁明确的回答。
+    6.agent只能以文本形式回复，要求agent返回的结果也必须是文本形式，不能是图片、文件，但可以是文件URL。
+    7.不要提出超出agent能力范围的要求，agent没有将结果整理成csv等格式的能力，也没有运行python代码的能力。
+    8.你是模拟用户，没有检索网页或获取API权限的能力，禁止向agent提供URL或是API-key等信息。
+
+现在请给出合理的回答
 """
 
     def get_bohr_results(
