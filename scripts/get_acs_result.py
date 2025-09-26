@@ -5,8 +5,13 @@ import sys
 
 import requests
 from dotenv import find_dotenv, load_dotenv
+from toolsy.logger import init_colored_logger
+
+from scripts.constant import FILE_TOKEN_API, JOB_DETAIL_API
 
 load_dotenv(find_dotenv())
+
+logger = init_colored_logger(__name__)
 
 
 def download_file(url, output_path):
@@ -26,7 +31,15 @@ def download_file(url, output_path):
                     progress = (downloaded_size / total_size) * 100
                     print(f"\rDownload progress: {progress:.1f}%", end='', flush=True)
 
-    print()  # 换行
+
+def check_url_status(url):
+    """检查URL的HTTP状态码"""
+    try:
+        response = requests.head(url, timeout=10)  # 使用HEAD方法，只获取头部信息
+        return response.status_code
+    except requests.exceptions.RequestException as e:
+        print(f"Warning: Failed to check URL status: {e}")
+        return None
 
 
 def main():
@@ -41,53 +54,72 @@ def main():
 
     args = parser.parse_args()
 
-    api_url = f"https://openapi.test.dp.tech/openapi/v1/sandbox/job/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
-
     # 删除已存在的输出文件
     if os.path.exists(args.output):
         os.remove(args.output)
 
     # 调用API获取job信息
-    print(f"Fetching job information for ID: {args.job_id}")
+    logger.info(f"Fetching job information for ID: {args.job_id}")
 
     try:
-        response = requests.get(api_url)
+        response = requests.get(
+            f"{JOB_DETAIL_API}/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
+        )
         response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException as e:
-        print(f"Error: Failed to fetch data from API: {e}")
+        logger.error(f"Error: Failed to fetch data from API: {e}")
         sys.exit(1)
     except json.JSONDecodeError as e:
-        print(f"Error: Failed to parse JSON response: {e}")
+        logger.error(f"Error: Failed to parse JSON response: {e}")
         sys.exit(1)
 
-    print(f"\n{json.dumps(data, indent=2, ensure_ascii=False)}\n")
+    logger.info(f"\n{json.dumps(data, indent=2, ensure_ascii=False)}")
 
     # 解析JSON获取resultUrl
     if data.get('code') == 0:
         result_url = data.get('data', {}).get('resultUrl', '')
+    elif data.get('code') == 6020:
+        logger.error(f"API returned error code: {data.get('code')}")
+        sys.exit(-1)
     else:
         result_url = ''
-        print(f"API returned error code: {data.get('code')}")
+        logger.error(f"API returned error code: {data.get('code')}")
 
     # 获取log文件的token（可选操作）
-    token_url = 'https://openapi.test.dp.tech/openapi/v1/sandbox/job/file/token?accessKey=7c4d4edd67284c2e9c62d8b9350baaa4'
     token_data = {'filePath': 'log', 'jobId': args.job_id}
 
     try:
-        token_response = requests.post(token_url, json=token_data)
+        token_response = requests.post(
+            f"{FILE_TOKEN_API}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}",
+            json=token_data,
+        )
         token_response.raise_for_status()
         token_data = token_response.json()
     except requests.exceptions.RequestException:
         pass  # 忽略token获取错误，因为这不是主要功能
 
-    print(f"\n{json.dumps(token_data, indent=2)}\n")
+    logger.info(f"\n{json.dumps(token_data, indent=2)}")
 
     log_token = token_data.get('data', {}).get('token', '')
     log_path = token_data.get('data', {}).get('path', '')
     log_host = token_data.get('data', {}).get('host', '')
 
-    print(f"\nlog_path: {log_host}/api/download/{log_path}?token={log_token}\n")
+    # 构建log文件URL并检查状态
+    if log_host and log_path and log_token:
+        log_url = f"{log_host}/api/download/{log_path}?token={log_token}"
+
+        # 检查log URL的状态
+        status_code = check_url_status(log_url)
+        if status_code:
+            if status_code == 400:
+                logger.error('Warning: Log URL returned 400 Bad Request')
+            elif status_code == 200:
+                logger.info(f"\nlog_url: {log_url}")
+            else:
+                logger.error(f"Log URL returned status code: {status_code}")
+    else:
+        print('\nIncomplete log information - cannot construct log URL')
 
     # 下载结果文件
     if result_url and result_url != 'null':
@@ -108,7 +140,7 @@ def main():
             print(f"Error: Download failed: {e}")
             sys.exit(1)
     else:
-        print('No resultUrl found or resultUrl is empty')
+        logger.error('No resultUrl found or resultUrl is empty')
         sys.exit(1)
 
 
