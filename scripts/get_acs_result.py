@@ -61,7 +61,7 @@ def main():
         print(f"Error: Failed to parse JSON response: {e}")
         sys.exit(1)
 
-    print(f"\n{json.dumps(data, indent=2)}\n")
+    print(f"\n{json.dumps(data, indent=2, ensure_ascii=False)}\n")
 
     # 解析JSON获取resultUrl
     if data.get('code') == 0:
