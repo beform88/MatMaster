@@ -4,6 +4,9 @@ import os
 import sys
 
 import requests
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv())
 
 
 def download_file(url, output_path):
@@ -38,9 +41,7 @@ def main():
 
     args = parser.parse_args()
 
-    # 设置常量
-    access_key = '7c4d4edd67284c2e9c62d8b9350baaa4'
-    api_url = f"https://openapi.test.dp.tech/openapi/v1/sandbox/job/{args.job_id}?accessKey={access_key}"
+    api_url = f"https://openapi.test.dp.tech/openapi/v1/sandbox/job/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
 
     # 删除已存在的输出文件
     if os.path.exists(args.output):
