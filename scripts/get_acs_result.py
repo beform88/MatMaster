@@ -46,20 +46,41 @@ def get_duration(create_time, update_time):
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
-def download_file(response, output_path):
-    total_size = int(response.headers.get('content-length', 0))
-    downloaded_size = 0
+def check_status_and_download_file(response, file_download_path):
+    def download_file(response, output_path):
+        total_size = int(response.headers.get('content-length', 0))
+        downloaded_size = 0
 
-    with open(output_path, 'wb') as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            if chunk:
-                f.write(chunk)
-                downloaded_size += len(chunk)
-                if total_size > 0:
-                    progress = (downloaded_size / total_size) * 100
-                    print(f"\rDownload progress: {progress:.1f}%", end='', flush=True)
+        with open(output_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+                    downloaded_size += len(chunk)
+                    if total_size > 0:
+                        progress = (downloaded_size / total_size) * 100
+                        print(
+                            f"\rDownload progress: {progress:.1f}%", end='', flush=True
+                        )
 
-    print()
+        print()
+
+    status_code = response.status_code
+    if status_code == 400:
+        logger.error(f'`{file_download_path}` url returned 400 Bad Request')
+    elif status_code == 200:
+        download_file(response, file_download_path)
+        if (
+            os.path.exists(file_download_path)
+            and os.path.getsize(file_download_path) > 0
+        ):
+            file_size = os.path.getsize(file_download_path)
+            logger.info(
+                f"Download completed successfully! File size: {file_size} bytes"
+            )
+        else:
+            logger.error("Error: Download failed - file is empty or doesn't exist")
+    else:
+        logger.error(f'`{file_download_path}` url returned status code: {status_code}')
 
 
 def main():
@@ -132,18 +153,8 @@ def main():
     # 构建log文件URL并检查状态
     if log_host and log_path and log_token:
         log_url = f"{log_host}/api/download/{log_path}?token={log_token}"
-
         log_response = requests.get(log_url, timeout=10)
-        status_code = log_response.status_code
-
-        if status_code:
-            if status_code == 400:
-                logger.error('Warning: Log URL returned 400 Bad Request')
-            elif status_code == 200:
-                download_file(log_response, 'log')
-                logger.info('Download `log` completed successfully')
-            else:
-                logger.error(f"Log URL returned status code: {status_code}")
+        check_status_and_download_file(log_response, 'log')
     else:
         print('\nIncomplete log information - cannot construct log URL')
 
@@ -152,28 +163,10 @@ def main():
 
     # 下载结果文件
     if result_url and result_url != 'null':
-        logger.info(f"Job Result Downloading to: {args.output}")
-
-        try:
-            result_response = requests.get(result_url, stream=True)
-            result_response.raise_for_status()
-            download_file(result_response, args.output)
-
-            if os.path.exists(args.output) and os.path.getsize(args.output) > 0:
-                file_size = os.path.getsize(args.output)
-                logger.info(
-                    f"Download completed successfully! File size: {file_size} bytes"
-                )
-            else:
-                print("Error: Download failed - file is empty or doesn't exist")
-                sys.exit(1)
-
-        except requests.exceptions.RequestException as e:
-            print(f"Error: Download failed: {e}")
-            sys.exit(1)
+        result_response = requests.get(result_url, stream=True)
+        check_status_and_download_file(result_response, args.output)
     else:
         logger.error('No resultUrl found or resultUrl is empty')
-        sys.exit(1)
 
 
 if __name__ == '__main__':
