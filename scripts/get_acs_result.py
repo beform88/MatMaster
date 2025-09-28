@@ -83,6 +83,29 @@ def check_status_and_download_file(response, file_download_path):
         logger.error(f'`{file_download_path}` url returned status code: {status_code}')
 
 
+def get_token_and_download_file(file_path, job_id):
+    # 获取log文件的token
+    request_body = {'filePath': file_path, 'jobId': job_id}
+    response = requests.post(
+        f"{FILE_TOKEN_API}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}",
+        json=request_body,
+    )
+    response.raise_for_status()
+    response_data_json: dict = response.json().get('data', {})
+
+    response_file_token = response_data_json.get('token', '')
+    response_file_path = response_data_json.get('path', '')
+    response_file_host = response_data_json.get('host', '')
+
+    # 构建log文件URL并检查状态
+    if response_file_host and response_file_path and response_file_token:
+        file_url = f"{response_file_host}/api/download/{response_file_path}?token={response_file_token}"
+        file_response = requests.get(file_url, timeout=10)
+        check_status_and_download_file(file_response, file_path)
+    else:
+        logger.error(f'Incomplete {file_path} information - cannot construct file URL')
+
+
 def main():
     parser = argparse.ArgumentParser(description='Download job results from API')
     parser.add_argument('job_id', help='Job ID to fetch results for')
@@ -134,40 +157,22 @@ def main():
         result_url = ''
         logger.error(f"API returned error code: {job_info.get('code')}")
 
-    # 获取log文件的token
-    token_data = {'filePath': 'log', 'jobId': args.job_id}
-
-    try:
-        token_response = requests.post(
-            f"{FILE_TOKEN_API}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}",
-            json=token_data,
-        )
-        token_response.raise_for_status()
-        token_data = token_response.json()
-    except requests.exceptions.RequestException:
-        pass  # 忽略token获取错误，因为这不是主要功能
-
-    log_token = token_data.get('data', {}).get('token', '')
-    log_path = token_data.get('data', {}).get('path', '')
-    log_host = token_data.get('data', {}).get('host', '')
-
-    # 构建log文件URL并检查状态
-    if log_host and log_path and log_token:
-        log_url = f"{log_host}/api/download/{log_path}?token={log_token}"
-        log_response = requests.get(log_url, timeout=10)
-        check_status_and_download_file(log_response, 'log')
-    else:
-        print('\nIncomplete log information - cannot construct log URL')
+    # download log
+    get_token_and_download_file('log', args.job_id)
 
     if job_status in ['Running']:
         return
-    elif job_status == 'Finished' and args.download_output:
-        # 下载结果文件
-        if result_url and result_url != 'null':
-            result_response = requests.get(result_url, stream=True)
-            check_status_and_download_file(result_response, args.output)
-        else:
-            logger.error('No resultUrl found or resultUrl is empty')
+    elif job_status == 'Finished':
+        # download result.txt
+        get_token_and_download_file('results.txt', args.job_id)
+
+        if args.download_output:
+            # 下载结果文件
+            if result_url and result_url != 'null':
+                result_response = requests.get(result_url, stream=True)
+                check_status_and_download_file(result_response, args.output)
+            else:
+                logger.error('No resultUrl found or resultUrl is empty')
 
 
 if __name__ == '__main__':
