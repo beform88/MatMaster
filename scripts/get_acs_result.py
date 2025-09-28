@@ -3,6 +3,7 @@ import json
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 
 import jsonpickle
 import requests
@@ -70,16 +71,15 @@ def check_status_and_download_file(response, file_download_path):
         logger.error(f'`{file_download_path}` url returned 400 Bad Request')
     elif status_code == 200:
         download_file(response, file_download_path)
-        if (
-            os.path.exists(file_download_path)
-            and os.path.getsize(file_download_path) > 0
-        ):
+        if Path(file_download_path).exists():
             file_size = os.path.getsize(file_download_path)
             logger.info(
                 f"Download `{file_download_path}` completed successfully! File size: {file_size} bytes"
             )
         else:
-            logger.error("Error: Download failed - file is empty or doesn't exist")
+            logger.error(
+                f"Error: Download `{file_download_path}` failed - file doesn't exist"
+            )
     else:
         logger.error(f'`{file_download_path}` url returned status code: {status_code}')
 
