@@ -75,7 +75,7 @@ def check_status_and_download_file(response, file_download_path):
         ):
             file_size = os.path.getsize(file_download_path)
             logger.info(
-                f"Download completed successfully! File size: {file_size} bytes"
+                f"Download `{file_download_path}` completed successfully! File size: {file_size} bytes"
             )
         else:
             logger.error("Error: Download failed - file is empty or doesn't exist")
@@ -92,6 +92,7 @@ def main():
         default='output.zip',
         help='Output file path (default: output.zip)',
     )
+    parser.add_argument('-d', '--download_output', action='store_true')
 
     args = parser.parse_args()
 
@@ -158,15 +159,15 @@ def main():
     else:
         print('\nIncomplete log information - cannot construct log URL')
 
-    if job_status in ['Running', 'Finished']:
+    if job_status in ['Running']:
         return
-
-    # 下载结果文件
-    if result_url and result_url != 'null':
-        result_response = requests.get(result_url, stream=True)
-        check_status_and_download_file(result_response, args.output)
-    else:
-        logger.error('No resultUrl found or resultUrl is empty')
+    elif job_status == 'Finished' and args.download_output:
+        # 下载结果文件
+        if result_url and result_url != 'null':
+            result_response = requests.get(result_url, stream=True)
+            check_status_and_download_file(result_response, args.output)
+        else:
+            logger.error('No resultUrl found or resultUrl is empty')
 
 
 if __name__ == '__main__':
