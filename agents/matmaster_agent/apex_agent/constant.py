@@ -18,7 +18,7 @@ if CURRENT_ENV in ['test', 'uat']:
     # test
     ApexBohriumExecutor['machine']['remote_profile'][
         'image_address'
-    ] = 'registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test-acs:0.0.4'
+    ] = 'registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test-acs:0.0.5'
 else:
     # prod
     ApexBohriumExecutor['machine']['remote_profile'][
