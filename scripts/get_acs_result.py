@@ -4,6 +4,7 @@ import os
 import sys
 from datetime import datetime
 
+import jsonpickle
 import requests
 from dotenv import find_dotenv, load_dotenv
 from toolsy.logger import init_colored_logger
@@ -164,7 +165,11 @@ def main():
         return
     elif job_status == 'Finished':
         # download result.txt
-        get_token_and_download_file('results.txt', args.job_id)
+        results_txt = 'results.txt'
+        get_token_and_download_file(results_txt, args.job_id)
+        with open(results_txt) as f:
+            logger.info(jsonpickle.loads(f.read()))
+        os.remove(results_txt)
 
         if args.download_output:
             # 下载结果文件
