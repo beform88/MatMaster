@@ -142,12 +142,6 @@ def main():
 
     logger.debug(f"\n{json.dumps(job_info, indent=2, ensure_ascii=False)}")
 
-    create_time = job_info['data']['createTime']
-    update_time = job_info['data']['updateTime']
-    duration = get_duration(create_time, update_time)
-    job_status = mapping_status(job_info['data']['status'])
-    job_name = job_info['data']['jobName']
-    logger.info(f"{job_name}[{job_status}] -- {duration}")
     # 解析JSON获取resultUrl
     if job_info.get('code') == 0:
         result_url = job_info.get('data', {}).get('resultUrl', '')
@@ -157,6 +151,13 @@ def main():
     else:
         result_url = ''
         logger.error(f"API returned error code: {job_info.get('code')}")
+
+    create_time = job_info['data']['createTime']
+    update_time = job_info['data']['updateTime']
+    duration = get_duration(create_time, update_time)
+    job_status = mapping_status(job_info['data']['status'])
+    job_name = job_info['data']['jobName']
+    logger.info(f"{job_name}[{job_status}] -- {duration}")
 
     # download log
     get_token_and_download_file('log', args.job_id)
