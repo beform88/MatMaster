@@ -23,6 +23,7 @@ from agents.matmaster_agent.base_agents.callback import (
     inject_current_env,
     inject_username_ticket,
     remove_function_call,
+    remove_job_link,
     tgz_oss_to_oss_list,
 )
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
@@ -39,7 +40,6 @@ from agents.matmaster_agent.constant import (
     MATERIALS_PROJECT_ID,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
-    OpenAPIJobAPI,
     get_BohriumExecutor,
     get_BohriumStorage,
     get_DFlowExecutor,
@@ -166,7 +166,9 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         )
         after_tool_callback = check_before_tool_callback_effect(
             catch_after_tool_callback_error(
-                tgz_oss_to_oss_list(after_tool_callback, enable_tgz_unpack)
+                remove_job_link(
+                    tgz_oss_to_oss_list(after_tool_callback, enable_tgz_unpack)
+                )
             )
         )
 
@@ -412,14 +414,10 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             job_status = results['status']
                             if not ctx.session.state['dflow']:
                                 bohr_job_id = results['extra_info']['bohr_job_id']
-                                job_query_url = f'{OpenAPIJobAPI}/{bohr_job_id}'
-                                job_detail_url = results['extra_info']['job_link']
                                 frontend_result = BohrJobInfo(
                                     origin_job_id=origin_job_id,
                                     job_name=job_name,
                                     job_status=job_status,
-                                    job_query_url=job_query_url,
-                                    job_detail_url=job_detail_url,
                                     job_id=bohr_job_id,
                                     agent_name=ctx.agent.parent_agent.parent_agent.name,
                                 ).model_dump(mode='json')

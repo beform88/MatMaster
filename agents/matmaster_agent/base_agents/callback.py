@@ -14,7 +14,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.agents.llm_agent import AfterToolCallback, BeforeToolCallback
 from google.adk.models import LlmResponse
 from google.adk.tools import BaseTool, ToolContext
-from mcp.types import CallToolResult
+from mcp.types import CallToolResult, TextContent
 
 from agents.matmaster_agent.constant import (
     CURRENT_ENV,
@@ -32,10 +32,10 @@ from agents.matmaster_agent.utils.helper_func import (
     function_calls_to_str,
     get_session_state,
     get_unique_function_call,
-    is_json,
     update_llm_response,
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
+from agents.matmaster_agent.utils.tool_response_utils import check_valid_tool_response
 
 logger = logging.getLogger(__name__)
 
@@ -457,18 +457,51 @@ def tgz_oss_to_oss_list(
             raise TypeError('Not CalculationMCPTool type')
 
         # 检查是否为有效的 json 字典
-        if not (
-            tool_response
-            and tool_response.content
-            and tool_response.content[0].text
-            and is_json(tool_response.content[0].text)
-        ):
+        if not check_valid_tool_response(tool_response):
             return None
 
         tool_result = json.loads(tool_response.content[0].text)
         tgz_flag, new_tool_result = await update_tgz_dict(tool_result)
         if tgz_flag:
             return new_tool_result
+
+    return wrapper
+
+
+def remove_job_link(func: AfterToolCallback) -> AfterToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool,
+        args: dict,
+        tool_context: ToolContext,
+        tool_response: Union[dict, CallToolResult],
+    ) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 after_tool_callback；
+        # 2. 如果调用的 after_tool_callback 有返回值，以这个为准
+        # 如果 tool 为 Transfer2Agent，直接 return
+        if tool.name == Transfer2Agent:
+            return None
+
+        if (
+            after_tool_result := await func(tool, args, tool_context, tool_response)
+        ) is not None:
+            return after_tool_result
+
+        # 检查是否为有效的 json 字典
+        if not check_valid_tool_response(tool_response):
+            return None
+
+        # 移除 job_link
+        tool_result: dict = json.loads(tool_response.content[0].text)
+        if tool_result.get('extra_info', None) is not None:
+            del tool_result['extra_info']['job_link']
+            tool_response.content[0] = TextContent(
+                type='text', text=json.dumps(tool_result)
+            )
+
+            logger.info(f"[remove_job_link] final_tool_result = {tool_response}")
+            return tool_response
 
     return wrapper
 
