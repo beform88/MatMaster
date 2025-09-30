@@ -413,13 +413,11 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             if not ctx.session.state['dflow']:
                                 bohr_job_id = results['extra_info']['bohr_job_id']
                                 job_query_url = f'{OpenAPIJobAPI}/{bohr_job_id}'
-                                job_detail_url = results['extra_info']['job_link']
                                 frontend_result = BohrJobInfo(
                                     origin_job_id=origin_job_id,
                                     job_name=job_name,
                                     job_status=job_status,
                                     job_query_url=job_query_url,
-                                    job_detail_url=job_detail_url,
                                     job_id=bohr_job_id,
                                     agent_name=ctx.agent.parent_agent.parent_agent.name,
                                 ).model_dump(mode='json')
