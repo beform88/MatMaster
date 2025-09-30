@@ -78,9 +78,17 @@ class LLMConfig:
         gpt_5_chat = 'gpt-5-chat'
 
         # Helper to init any provider model
-        def _init_model(provider_key: str, model_name: str):
+        def _init_model(
+            provider_key: str,
+            model_name: str,
+            **kwargs,
+        ):
+            llm_kwargs = {'stream_options': {'include_usage': True}}
+            if kwargs:
+                llm_kwargs.update(kwargs)
             return LiteLlm(
-                model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL)
+                model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL),
+                **llm_kwargs,
             )
 
         self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
