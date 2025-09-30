@@ -124,13 +124,13 @@ async def matmaster_check_job_status(
             i18n.language = 'en'
 
         reset = False
-        for origin_job_id, job_id, job_query_url, agent_name in running_job_ids:
+        for origin_job_id, job_id, agent_name in running_job_ids:
             if not callback_context.state['last_llm_response_partial']:
                 logger.info(
                     '[matmaster_check_job_status] new LlmResponse, prepare call API'
                 )
                 job_status = await get_job_status(
-                    job_query_url, access_key=MATERIALS_ACCESS_KEY
+                    job_id, access_key=MATERIALS_ACCESS_KEY
                 )  # 查询任务的最新状态
                 callback_context.state['new_query_job_status'][
                     'origin_job_id'

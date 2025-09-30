@@ -52,7 +52,6 @@ class JobResult(BaseModel):
 class BohrJobInfo(BaseModel):
     origin_job_id: str
     job_id: Union[int, str]
-    job_query_url: str
     job_status: JobStatus
     job_name: str
     job_result: Optional[List[JobResult]] = None
