@@ -16,7 +16,7 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 from agents.matmaster_agent.agent import root_agent
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import MATMASTER_CORE_AGENT_NAME
 from agents.matmaster_agent.utils.event_utils import is_function_call
 from evaluate.base.human_simulator import ConversationGoal, HumanSimulator
 from evaluate.utils import load_dataset_json
@@ -29,11 +29,13 @@ load_dotenv(find_dotenv())
 def evaluation_task(dataset_item):
     session_service = InMemorySessionService()
     runner = Runner(
-        agent=root_agent, app_name=MATMASTER_AGENT_NAME, session_service=session_service
+        agent=root_agent,
+        app_name=MATMASTER_CORE_AGENT_NAME,
+        session_service=session_service,
     )
     session = asyncio.run(
         session_service.create_session(
-            app_name=MATMASTER_AGENT_NAME,
+            app_name=MATMASTER_CORE_AGENT_NAME,
             user_id='evaluator',
             session_id=uuid.uuid4().hex,
         )
@@ -81,11 +83,13 @@ def evaluation_task(dataset_item):
 def multi_turn_evaluation_task(dataset_item):
     session_service = InMemorySessionService()
     runner = Runner(
-        agent=root_agent, app_name=MATMASTER_AGENT_NAME, session_service=session_service
+        agent=root_agent,
+        app_name=MATMASTER_CORE_AGENT_NAME,
+        session_service=session_service,
     )
     session = asyncio.run(
         session_service.create_session(
-            app_name=MATMASTER_AGENT_NAME,
+            app_name=MATMASTER_CORE_AGENT_NAME,
             user_id='evaluator',
             session_id=uuid.uuid4().hex,
         )

@@ -1,8 +1,9 @@
 import logging
 import traceback
 import uuid
-from typing import Iterable, Optional
+from typing import Iterable, Optional, Union
 
+from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
@@ -213,8 +214,12 @@ def all_text_event(ctx: InvocationContext, author: str, text: str, role: str):
     yield context_text_event(ctx, author, text, role)
 
 
-def cherry_pick_events(ctx: InvocationContext):
-    events = ctx.session.events
+def cherry_pick_events(ctx: Union[InvocationContext, CallbackContext]):
+    events = (
+        ctx.session.events
+        if isinstance(ctx, InvocationContext)
+        else ctx._invocation_context.session.events
+    )
     cherry_pick_parts = []
     for event in events:
         if event.content:

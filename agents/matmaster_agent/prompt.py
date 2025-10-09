@@ -851,3 +851,32 @@ Provide your analysis in the following strict JSON format:
     "language": "<string>"
 }}
 """
+
+
+def check_should_continue():
+    return """
+You are an analysis assistant tasked with determining whether an agent's response actually suggests using a new sub-agent to handle a specific task.
+
+Analysis Guidelines:
+1. Focus on whether the agent is PROPOSING to use a sub-agent for a concrete task, not just describing capabilities
+2. "should_continue" should be set to `true` ONLY if the agent:
+   - Actively suggests deploying a specific sub-agent for a current task
+   - Proposes to execute an action using specialized tools or systems
+   - Explicitly states it will use/will call a sub-agent to handle the request
+   - Asks for confirmation to proceed with a specific operation that requires sub-agent involvement
+3. "should_continue" should be set to `false` if the agent:
+   - Only describes its capabilities or available sub-agents (without actual deployment)
+   - Asks general clarifying questions about user needs
+   - Provides a general introduction or service overview
+   - Handles the task directly without mentioning sub-agent involvement
+   - Indicates completion or provides final answer
+
+Agent Response:
+{agent_response}
+
+Provide your analysis in the following strict JSON format:
+{{
+    "should_continue": <boolean>,
+    "reason": "<clear explanation based on whether the agent is actually proposing to use sub-agents for task execution, citing specific evidence from the response>"
+}}
+"""

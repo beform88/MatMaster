@@ -1,7 +1,7 @@
 from google.adk.agents import BaseAgent
 
 from agents.matmaster_agent.base_agents.llm_wrap_agent import LlmWrapAgent
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import MATMASTER_CORE_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,
 )
@@ -38,7 +38,7 @@ class MrDice_Agent(LlmWrapAgent):
                 bohriumpublic_agent,
                 mofdb_agent,
             ],
-            supervisor_agent=MATMASTER_AGENT_NAME,
+            supervisor_agent=MATMASTER_CORE_AGENT_NAME,
         )
 
 

@@ -99,3 +99,8 @@ class MatMasterTargetAgentEnum(str, Enum):
 
 class UserContent(BaseModel):
     language: str
+
+
+class AgentLoop(BaseModel):
+    should_continue: bool
+    reason: str

@@ -13,7 +13,7 @@ from agents.matmaster_agent.ABACUS_agent.prompt import (
     ABACUS_AGENT_NAME,
 )
 from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import MATMASTER_CORE_AGENT_NAME
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 mcp_tools_abacus = CalculationMCPToolset(
@@ -38,7 +38,7 @@ class ABACUSCalculatorAgent(BaseAsyncJobAgent):
             agent_description=ABACUS_AGENT_DESCRIPTION,
             agent_instruction=ABACUS_AGENT_INSTRUCTION,
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME,
+            supervisor_agent=MATMASTER_CORE_AGENT_NAME,
             sync_tools=[
                 'abacus_prepare',
                 'abacus_modify_input',

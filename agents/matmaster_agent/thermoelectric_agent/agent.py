@@ -6,7 +6,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import (
-    MATMASTER_AGENT_NAME,
+    MATMASTER_CORE_AGENT_NAME,
     BohriumExecutor,
     BohriumStorge,
 )
@@ -49,7 +49,7 @@ class ThermoAgent(BaseAsyncJobAgent):
             agent_description=ThermoAgentDescription,
             agent_instruction=ThermoAgentInstruction,
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME,
+            supervisor_agent=MATMASTER_CORE_AGENT_NAME,
         )
 
 

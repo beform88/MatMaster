@@ -3,7 +3,7 @@ from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import MATMASTER_CORE_AGENT_NAME
 from agents.matmaster_agent.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
     DPACalulator_BOHRIUM_EXECUTOR,
@@ -35,7 +35,7 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
             agent_description=DPAAgentDescription,
             agent_instruction=DPAAgentInstruction,
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME,
+            supervisor_agent=MATMASTER_CORE_AGENT_NAME,
         )
 
 

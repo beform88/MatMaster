@@ -8,7 +8,7 @@ FRONTEND_STATE_KEY = 'frontend_state'
 TMP_FRONTEND_STATE_KEY = 'tmp_frontend_state'
 
 # Matmaster Constants
-MATMASTER_AGENT_NAME = 'matmaster_agent'
+MATMASTER_CORE_AGENT_NAME = 'matmaster_core_agent'
 
 # Agent Constant
 ModelRole = 'model'

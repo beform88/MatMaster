@@ -13,9 +13,10 @@ from google.genai.types import FunctionCall, Part
 
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATERIALS_ACCESS_KEY
 from agents.matmaster_agent.locales import i18n
-from agents.matmaster_agent.model import UserContent
-from agents.matmaster_agent.prompt import get_user_content_lang
+from agents.matmaster_agent.model import AgentLoop, UserContent
+from agents.matmaster_agent.prompt import check_should_continue, get_user_content_lang
 from agents.matmaster_agent.style import get_job_complete_card
+from agents.matmaster_agent.utils.event_utils import cherry_pick_events
 from agents.matmaster_agent.utils.job_utils import (
     get_job_status,
     get_running_jobs_detail,
@@ -76,6 +77,9 @@ async def matmaster_prepare_state(
     )
     callback_context.state['new_query_job_status'] = callback_context.state.get(
         'new_query_job_status', {}
+    )
+    callback_context.state['should_continue'] = callback_context.state.get(
+        'should_continue', True
     )
 
 
@@ -173,3 +177,30 @@ async def matmaster_check_job_status(
 
     callback_context.state['last_llm_response_partial'] = llm_response.partial
     return None
+
+
+# after_agent_callback
+async def matmaster_should_continue(
+    callback_context: CallbackContext,
+) -> Optional[types.Content]:
+    cherry_pick_parts = cherry_pick_events(callback_context)[-1]
+    context_messages = cherry_pick_parts[1]
+    logger.info(f"[matmaster_should_continue] context_messages = {context_messages}")
+
+    prompt = check_should_continue().format(agent_response=context_messages)
+    response = litellm.completion(
+        model='azure/gpt-4o',
+        messages=[{'role': 'user', 'content': prompt}],
+        response_format=AgentLoop,
+    )
+    should_continue_json: dict = json.loads(response.choices[0].message.content)
+    logger.info(
+        f"[matmaster_should_continue] should_continue_json = {should_continue_json}"
+    )
+
+    callback_context.state['should_continue'] = bool(
+        should_continue_json['should_continue']
+    )
+    logger.info(
+        f"[matmaster_should_continue] {callback_context.state['should_continue']}"
+    )
