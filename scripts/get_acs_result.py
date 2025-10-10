@@ -145,12 +145,9 @@ def main():
     # 解析JSON获取resultUrl
     if job_info.get('code') == 0:
         result_url = job_info.get('data', {}).get('resultUrl', '')
-    elif job_info.get('code') == 6020:
-        logger.error(f"API returned error code: {job_info.get('code')}")
-        sys.exit(-1)
     else:
-        result_url = ''
-        logger.error(f"API returned error code: {job_info.get('code')}")
+        logger.error(f"API returned error，{job_info}")
+        sys.exit(-1)
 
     create_time = job_info['data']['createTime']
     update_time = job_info['data']['updateTime']
