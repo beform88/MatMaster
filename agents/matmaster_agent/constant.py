@@ -37,6 +37,8 @@ elif CURRENT_ENV == 'prod':
     BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
 
 OpenAPIJobAPI = f"{OPENAPI_HOST}/openapi/v1/sandbox/job"
+OPENAPI_JOB_CREATE_API = f'{OpenAPIJobAPI}/create'
+OPENAPI_FILE_TOKEN_API = f'{OpenAPIJobAPI}/file/token'
 
 MATERIALS_ACCESS_KEY = str(os.getenv('MATERIALS_ACCESS_KEY'))
 MATERIALS_PROJECT_ID = int(os.getenv('MATERIALS_PROJECT_ID'))
