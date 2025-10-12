@@ -10,8 +10,8 @@ import requests
 from dotenv import find_dotenv, load_dotenv
 from toolsy.logger import init_colored_logger
 
+from agents.matmaster_agent.constant import OPENAPI_FILE_TOKEN_API, OpenAPIJobAPI
 from agents.matmaster_agent.utils.job_utils import mapping_status
-from scripts.constant import FILE_TOKEN_API, JOB_DETAIL_API
 
 load_dotenv(find_dotenv())
 
@@ -88,7 +88,7 @@ def get_token_and_download_file(file_path, job_id):
     # 获取log文件的token
     request_body = {'filePath': file_path, 'jobId': job_id}
     response = requests.post(
-        f"{FILE_TOKEN_API}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}",
+        f"{OPENAPI_FILE_TOKEN_API}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}",
         json=request_body,
     )
     response.raise_for_status()
@@ -129,7 +129,7 @@ def main():
 
     try:
         response = requests.get(
-            f"{JOB_DETAIL_API}/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
+            f"{OpenAPIJobAPI}/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
         )
         response.raise_for_status()
         job_info = response.json()
