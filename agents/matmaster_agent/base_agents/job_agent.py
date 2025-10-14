@@ -17,6 +17,7 @@ from agents.matmaster_agent.base_agents.callback import (
     catch_before_tool_callback_error,
     check_before_tool_callback_effect,
     check_job_create,
+    check_user_phonon_balance,
     default_after_model_callback,
     default_after_tool_callback,
     default_before_tool_callback,
@@ -161,7 +162,9 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         # Todo: support List[before_tool_callback]
         before_tool_callback = catch_before_tool_callback_error(
             inject_current_env(
-                inject_username_ticket(check_job_create(before_tool_callback))
+                inject_username_ticket(
+                    check_job_create(check_user_phonon_balance(before_tool_callback))
+                )
             )
         )
         after_tool_callback = check_before_tool_callback_effect(
@@ -359,6 +362,8 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 ):
                     try:
                         dict_result = load_tool_response(event)
+                        if dict_result.get('status', None) == 'error':
+                            raise eval(dict_result['error_type'])(dict_result['error'])
                     except BaseException:
                         yield event
                         raise

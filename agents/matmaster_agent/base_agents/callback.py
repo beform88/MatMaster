@@ -4,7 +4,7 @@ import logging
 import os
 import traceback
 from functools import wraps
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 import aiohttp
 import litellm
@@ -27,6 +27,7 @@ from agents.matmaster_agent.constant import (
 )
 from agents.matmaster_agent.prompt import get_params_check_info_prompt
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
+from agents.matmaster_agent.utils.finance import get_user_photon_balance
 from agents.matmaster_agent.utils.helper_func import (
     check_None_wrapper,
     function_calls_to_str,
@@ -164,6 +165,100 @@ async def default_before_tool_callback(tool, args, tool_context):
     return
 
 
+def default_cost_func() -> int:
+    return 300
+
+
+def check_user_phonon_balance(
+    func: BeforeToolCallback, cost_func: Callable[[], int] = default_cost_func
+) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            raise TypeError(
+                "Not CalculationMCPTool type, current tool can't create job!"
+            )
+
+        user_id = _get_user_id(tool_context)
+        cost = cost_func()
+        balance = await get_user_photon_balance(user_id)
+
+        logger.info(
+            f"[check_user_phonon_balance] user_id={user_id}, cost={cost}, balance={balance}"
+        )
+        if balance < cost:
+            raise RuntimeError('Phonon is not enough, Please recharge.')
+
+    return wrapper
+
+
+def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            raise TypeError(
+                "Not CalculationMCPTool type, current tool can't create job!"
+            )
+
+        if tool.executor is not None:
+            job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
+            user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
+            payload = {
+                'projectId': MATERIALS_PROJECT_ID,
+                'name': 'check_job_create',
+            }
+            params = {'accessKey': MATERIALS_ACCESS_KEY}
+
+            logger.info(
+                f"[check_job_create] project_id = {MATERIALS_PROJECT_ID}, "
+                f"ak = {MATERIALS_ACCESS_KEY}"
+            )
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    user_project_list_url, params=params
+                ) as response:
+                    res = json.loads(await response.text())
+                    logger.info(f"[check_job_create] res = {res}")
+                    project_name = [
+                        item['project_name']
+                        for item in res['data']['items']
+                        if item['project_id'] == MATERIALS_PROJECT_ID
+                    ][0]
+
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    job_create_url, json=payload, params=params
+                ) as response:
+                    res = json.loads(await response.text())
+                    if res['code'] != 0:
+                        if res['code'] == 2000:
+                            res['error'][
+                                'msg'
+                            ] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
+                        return res
+
+    return wrapper
+
+
 @check_None_wrapper
 def _get_ak(ctx: Union[InvocationContext, ToolContext, CallbackContext]):
     session_state = get_session_state(ctx)
@@ -177,6 +272,14 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
     session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv(
         'BOHRIUM_PROJECT_ID'
+    )
+
+
+@check_None_wrapper
+def _get_user_id(ctx: Union[InvocationContext, ToolContext]):
+    session_state = get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY].get('adk_user_id') or os.getenv(
+        'MATERIALS_USER_ID'
     )
 
 
@@ -291,64 +394,6 @@ def inject_current_env(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 注入当前环境
         tool.executor = _inject_current_env(tool.executor)
-
-    return wrapper
-
-
-def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
-    @wraps(func)
-    async def wrapper(
-        tool: BaseTool, args: dict, tool_context: ToolContext
-    ) -> Optional[dict]:
-        # 两步操作：
-        # 1. 调用被装饰的 before_tool_callback；
-        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
-        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
-        if not isinstance(tool, CalculationMCPTool):
-            raise TypeError(
-                "Not CalculationMCPTool type, current tool can't create job!"
-            )
-
-        if tool.executor is not None:
-            job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
-            user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
-            payload = {
-                'projectId': MATERIALS_PROJECT_ID,
-                'name': 'check_job_create',
-            }
-            params = {'accessKey': MATERIALS_ACCESS_KEY}
-
-            logger.info(
-                f"[check_job_create] project_id = {MATERIALS_PROJECT_ID}, "
-                f"ak = {MATERIALS_ACCESS_KEY}"
-            )
-
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    user_project_list_url, params=params
-                ) as response:
-                    res = json.loads(await response.text())
-                    logger.info(f"[check_job_create] res = {res}")
-                    project_name = [
-                        item['project_name']
-                        for item in res['data']['items']
-                        if item['project_id'] == MATERIALS_PROJECT_ID
-                    ][0]
-
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    job_create_url, json=payload, params=params
-                ) as response:
-                    res = json.loads(await response.text())
-                    if res['code'] != 0:
-                        if res['code'] == 2000:
-                            res['error'][
-                                'msg'
-                            ] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
-                        return res
 
     return wrapper
 
