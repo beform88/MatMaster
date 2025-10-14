@@ -40,3 +40,32 @@ def get_job_complete_card(i18n: I18N, job_id):
     ">{i18n.t("ResultRetrieving")}...</div>
 </div>
 """
+
+
+def photon_consume_success(cost):
+    return f"""
+<div style="
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border: 2px solid #28a745;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin: 15px 0;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    text-align: left;
+">
+
+<p style="
+    font-size: 16px;
+    color: #155724;
+    margin: 0;
+    font-weight: bold;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+">
+✅ 扣除成功 <span style="color: #27ae60; font-size: 22px; font-weight: 800;">{cost}</span> 光子
+</p>
+
+</div>
+"""

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Union
+from typing import Callable, List, Optional, TypeVar, Union
 
 from pydantic import BaseModel
 
@@ -28,6 +28,8 @@ from agents.matmaster_agent.structure_generate_agent.constant import (
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
+
+CostFuncType: TypeVar = Callable[[], tuple[int, int]]
 
 
 class JobStatus(str, Enum):

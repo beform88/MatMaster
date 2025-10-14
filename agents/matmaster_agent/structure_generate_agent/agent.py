@@ -17,6 +17,7 @@ from agents.matmaster_agent.structure_generate_agent.prompt import (
     StructureGenerateAgentName,
 )
 
+from ..base_agents.callback import default_cost_func
 from .constant import StructureGenerateServerUrl
 
 StructureGenerateBohriumExecutor = copy.deepcopy(BohriumExecutor)
@@ -64,6 +65,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
                 'build_surface_interface',
                 'get_structure_info',
             ],
+            cost_func=default_cost_func,
         )
 
 

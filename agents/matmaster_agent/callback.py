@@ -77,6 +77,7 @@ async def matmaster_prepare_state(
     callback_context.state['new_query_job_status'] = callback_context.state.get(
         'new_query_job_status', {}
     )
+    callback_context.state['cost'] = callback_context.state.get('cost', {})
 
 
 async def matmaster_set_lang(

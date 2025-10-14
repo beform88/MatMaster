@@ -1,14 +1,10 @@
-import time
-
 import requests
 from dotenv import find_dotenv, load_dotenv
 
 from agents.matmaster_agent.constant import (
-    FINANCE_CONSUME_API,
     FINANCE_WALLET_INFO_API,
     GOODS_SKU_LIST_API,
     MATERIALS_ORG_ID,
-    MATERIALS_USER_ID,
 )
 
 load_dotenv(find_dotenv())
@@ -31,22 +27,6 @@ def wallet_info():
     response = requests.get(
         f'{FINANCE_WALLET_INFO_API}/{MATERIALS_ORG_ID}',
         headers={'Content-Type': 'application/json'},
-    )
-    response.raise_for_status()
-    data = response.json()
-    print(data)
-
-
-def consume():
-    payload = {
-        'userId': MATERIALS_USER_ID,
-        'bizNo': int(time.time()),
-        'changeType': 2,
-        'eventValue': int(1),
-        'skuId': int(sku_id),
-    }
-    response = requests.post(
-        FINANCE_CONSUME_API, json=payload, headers={'Content-Type': 'application/json'}
     )
     response.raise_for_status()
     data = response.json()

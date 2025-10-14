@@ -4,7 +4,7 @@ import logging
 import os
 import traceback
 from functools import wraps
-from typing import Callable, Optional, Union
+from typing import Optional, Union
 
 import aiohttp
 import litellm
@@ -25,6 +25,7 @@ from agents.matmaster_agent.constant import (
     OPENAPI_HOST,
     Transfer2Agent,
 )
+from agents.matmaster_agent.model import CostFuncType
 from agents.matmaster_agent.prompt import get_params_check_info_prompt
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
 from agents.matmaster_agent.utils.finance import get_user_photon_balance
@@ -165,12 +166,12 @@ async def default_before_tool_callback(tool, args, tool_context):
     return
 
 
-def default_cost_func() -> int:
-    return 0
+def default_cost_func() -> tuple[int, int]:
+    return 0, 10808
 
 
 def check_user_phonon_balance(
-    func: BeforeToolCallback, cost_func: Callable[[], int]
+    func: BeforeToolCallback, cost_func: CostFuncType
 ) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(
@@ -182,6 +183,10 @@ def check_user_phonon_balance(
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
 
+        logger.info(
+            f'[check_user_phonon_balance] {tool.name}:{tool_context.function_call_id}'
+        )
+
         if cost_func is None:
             return
 
@@ -192,11 +197,16 @@ def check_user_phonon_balance(
             )
 
         user_id = _get_user_id(tool_context)
-        cost = cost_func()
+        cost, sku_id = cost_func()
+        tool_context.state['cost'][tool_context.function_call_id] = {
+            'value': cost,
+            'sku_id': sku_id,
+            'status': 'evaluate',
+        }
         balance = await get_user_photon_balance(user_id)
 
         logger.info(
-            f"[check_user_phonon_balance] user_id={user_id}, cost={cost}, balance={balance}"
+            f"[check_user_phonon_balance] user_id={user_id}, sku_id={sku_id}, cost={cost}, balance={balance}"
         )
         if balance < cost:
             raise RuntimeError('Phonon is not enough, Please recharge.')
