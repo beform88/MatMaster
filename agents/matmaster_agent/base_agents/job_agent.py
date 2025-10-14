@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import AsyncGenerator, Optional, override
+from typing import AsyncGenerator, Callable, Optional, override
 
 import jsonpickle
 import litellm
@@ -21,6 +21,7 @@ from agents.matmaster_agent.base_agents.callback import (
     default_after_model_callback,
     default_after_tool_callback,
     default_before_tool_callback,
+    default_cost_func,
     inject_current_env,
     inject_username_ticket,
     remove_function_call,
@@ -109,6 +110,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
     enable_tgz_unpack: bool = Field(
         True, description='Whether unpack tgz files for tool_results'
     )
+    cost_func: Optional[Callable[[], int]] = None
 
     def __init__(
         self,
@@ -131,6 +133,7 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         disallow_transfer_to_parent=False,
         supervisor_agent=None,
         enable_tgz_unpack=True,
+        cost_func=default_cost_func,
     ):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
@@ -163,7 +166,9 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         before_tool_callback = catch_before_tool_callback_error(
             inject_current_env(
                 inject_username_ticket(
-                    check_job_create(check_user_phonon_balance(before_tool_callback))
+                    check_job_create(
+                        check_user_phonon_balance(before_tool_callback, cost_func)
+                    )
                 )
             )
         )
@@ -331,8 +336,10 @@ class ParamsCheckInfoAgent(LlmAgent):
 
 
 class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
-    def __init__(self, enable_tgz_unpack, **kwargs):
-        super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
+    def __init__(self, enable_tgz_unpack, cost_func, **kwargs):
+        super().__init__(
+            enable_tgz_unpack=enable_tgz_unpack, cost_func=cost_func, **kwargs
+        )
 
     @override
     async def _run_async_impl(
@@ -747,6 +754,7 @@ class BaseAsyncJobAgent(LlmAgent):
         supervisor_agent: str,
         sync_tools: Optional[list] = None,
         enable_tgz_unpack: bool = True,
+        cost_func: Optional[Callable[[], int]] = None,
     ):
         agent_prefix = agent_name.replace('_agent', '')
 
@@ -759,6 +767,7 @@ class BaseAsyncJobAgent(LlmAgent):
             tools=mcp_tools,
             disallow_transfer_to_parent=True,
             enable_tgz_unpack=enable_tgz_unpack,
+            cost_func=cost_func,
         )
 
         # 创建提交渲染代理

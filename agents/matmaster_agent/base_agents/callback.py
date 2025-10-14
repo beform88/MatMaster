@@ -166,11 +166,11 @@ async def default_before_tool_callback(tool, args, tool_context):
 
 
 def default_cost_func() -> int:
-    return 300
+    return 0
 
 
 def check_user_phonon_balance(
-    func: BeforeToolCallback, cost_func: Callable[[], int] = default_cost_func
+    func: BeforeToolCallback, cost_func: Callable[[], int]
 ) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(
@@ -181,6 +181,9 @@ def check_user_phonon_balance(
         # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
         if (before_tool_result := await func(tool, args, tool_context)) is not None:
             return before_tool_result
+
+        if cost_func is None:
+            return
 
         # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
         if not isinstance(tool, CalculationMCPTool):
