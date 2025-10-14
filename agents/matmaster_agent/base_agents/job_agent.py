@@ -160,8 +160,8 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
 
         # Todo: support List[before_tool_callback]
         before_tool_callback = catch_before_tool_callback_error(
-            check_job_create(
-                inject_current_env(inject_username_ticket(before_tool_callback))
+            inject_current_env(
+                inject_username_ticket(check_job_create(before_tool_callback))
             )
         )
         after_tool_callback = check_before_tool_callback_effect(
