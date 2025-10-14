@@ -1,18 +1,24 @@
 import time
 
 import requests
+from dotenv import find_dotenv, load_dotenv
 
-GOODS_API_BASE = 'https://goods-server.test.dp.tech'
-FINANCE_API_BASE = 'https://finance-web.test.dp.tech'
-user_id = 110680
+from agents.matmaster_agent.constant import (
+    FINANCE_CONSUME_API,
+    FINANCE_INFO_API,
+    GOODS_SKU_LIST_API,
+    MATERIALS_USER_ID,
+)
+
+load_dotenv(find_dotenv())
+
 sku_id = 10808
 
 
 def sku_list():
-    url = f"{GOODS_API_BASE}/api/v1/sku/list"
     payload = {'skuIds': [sku_id]}
     response = requests.post(
-        url, json=payload, headers={'Content-Type': 'application/json'}
+        GOODS_SKU_LIST_API, json=payload, headers={'Content-Type': 'application/json'}
     )
     response.raise_for_status()
     data = response.json()
@@ -21,11 +27,9 @@ def sku_list():
 
 
 def info():
-    url = f"{FINANCE_API_BASE}/api/integral/info"
-    payload = {'userId': int(user_id)}
-
+    payload = {'userId': MATERIALS_USER_ID}
     response = requests.post(
-        url, json=payload, headers={'Content-Type': 'application/json'}
+        FINANCE_INFO_API, json=payload, headers={'Content-Type': 'application/json'}
     )
     response.raise_for_status()
     data = response.json()
@@ -33,16 +37,15 @@ def info():
 
 
 def consume():
-    url = f"{FINANCE_API_BASE}/api/integral/consume"
     payload = {
-        'userId': int(user_id),
+        'userId': MATERIALS_USER_ID,
         'bizNo': int(time.time()),
         'changeType': 2,
         'eventValue': int(1),
         'skuId': int(sku_id),
     }
     response = requests.post(
-        url, json=payload, headers={'Content-Type': 'application/json'}
+        FINANCE_CONSUME_API, json=payload, headers={'Content-Type': 'application/json'}
     )
     response.raise_for_status()
     data = response.json()
