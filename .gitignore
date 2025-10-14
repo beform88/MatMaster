@@ -23,3 +23,4 @@ evalate_threads/test_adk_intergration.py
 evaluation_results.json
 output.zip
 log
+*.csv
