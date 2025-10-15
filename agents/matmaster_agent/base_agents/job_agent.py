@@ -21,6 +21,7 @@ from agents.matmaster_agent.base_agents.callback import (
     default_after_tool_callback,
     default_before_tool_callback,
     inject_current_env,
+    inject_userId_sessionId,
     inject_username_ticket,
     remove_function_call,
     remove_job_link,
@@ -161,7 +162,11 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
         # Todo: support List[before_tool_callback]
         before_tool_callback = catch_before_tool_callback_error(
             check_job_create(
-                inject_current_env(inject_username_ticket(before_tool_callback))
+                inject_current_env(
+                    inject_username_ticket(
+                        inject_userId_sessionId(before_tool_callback)
+                    )
+                )
             )
         )
         after_tool_callback = check_before_tool_callback_effect(
