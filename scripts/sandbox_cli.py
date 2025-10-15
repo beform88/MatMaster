@@ -12,6 +12,7 @@ from toolsy.logger import init_colored_logger
 
 from agents.matmaster_agent.constant import OPENAPI_FILE_TOKEN_API, OpenAPIJobAPI
 from agents.matmaster_agent.utils.job_utils import mapping_status
+from scripts.sandbox_api import kill_job
 
 load_dotenv(find_dotenv())
 
@@ -108,74 +109,94 @@ def get_token_and_download_file(file_path, job_id):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Download job results from API')
-    parser.add_argument('job_id', help='Job ID to fetch results for')
-    parser.add_argument(
+    parser = argparse.ArgumentParser(description='Sandbox job cli')
+    subparsers = parser.add_subparsers(
+        dest='command', help='Available commands', required=True
+    )
+
+    # detail 子命令
+    detail_parser = subparsers.add_parser(
+        'detail', help='Get job details and download results'
+    )
+    detail_parser.add_argument('job_id', help='Job ID to fetch results for')
+    detail_parser.add_argument(
         '-o',
         '--output',
         default='output.zip',
         help='Output file path (default: output.zip)',
     )
-    parser.add_argument('-d', '--download_output', action='store_true')
+    detail_parser.add_argument('-d', '--download_output', action='store_true')
+    detail_parser.add_argument('--debug', action='store_true')
+
+    # kill 子命令
+    kill_parser = subparsers.add_parser('kill', help='Kill a job')
+    kill_parser.add_argument('job_id', help='Job ID to kill')
 
     args = parser.parse_args()
-
-    # 删除已存在的输出文件
-    if os.path.exists(args.output):
-        os.remove(args.output)
 
     # 调用API获取job信息
     logger.info(f"Job ID: {args.job_id}")
 
-    try:
-        response = requests.get(
-            f"{OpenAPIJobAPI}/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
-        )
-        response.raise_for_status()
-        job_info = response.json()
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Error: Failed to fetch data from API: {e}")
-        sys.exit(1)
-    except json.JSONDecodeError as e:
-        logger.error(f"Error: Failed to parse JSON response: {e}")
-        sys.exit(1)
+    # 根据子命令执行不同的逻辑
+    if args.command == 'detail':
+        # 删除已存在的输出文件
+        if os.path.exists(args.output):
+            os.remove(args.output)
 
-    logger.debug(f"\n{json.dumps(job_info, indent=2, ensure_ascii=False)}")
+        try:
+            response = requests.get(
+                f"{OpenAPIJobAPI}/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
+            )
+            response.raise_for_status()
+            job_info = response.json()
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error: Failed to fetch data from API: {e}")
+            sys.exit(1)
+        except json.JSONDecodeError as e:
+            logger.error(f"Error: Failed to parse JSON response: {e}")
+            sys.exit(1)
 
-    # 解析JSON获取resultUrl
-    if job_info.get('code') == 0:
-        result_url = job_info.get('data', {}).get('resultUrl', '')
-    else:
-        logger.error(f"API returned error，{job_info}")
-        sys.exit(-1)
+        if args.debug:
+            logger.setLevel('DEBUG')
+            logger.debug(f"\n{json.dumps(job_info, indent=2, ensure_ascii=False)}")
+            logger.setLevel('INFO')
 
-    create_time = job_info['data']['createTime']
-    update_time = job_info['data']['updateTime']
-    duration = get_duration(create_time, update_time)
-    job_status = mapping_status(job_info['data']['status'])
-    job_name = job_info['data']['jobName']
-    logger.info(f"{job_name}[{job_status}] -- {duration}")
+        # 解析JSON获取resultUrl
+        if job_info.get('code') == 0:
+            result_url = job_info.get('data', {}).get('resultUrl', '')
+        else:
+            logger.error(f"API returned error，{job_info}")
+            sys.exit(-1)
 
-    # download log
-    get_token_and_download_file('log', args.job_id)
+        create_time = job_info['data']['createTime']
+        update_time = job_info['data']['updateTime']
+        duration = get_duration(create_time, update_time)
+        job_status = mapping_status(job_info['data']['status'])
+        job_name = job_info['data']['jobName']
+        logger.info(f"{job_name}[{job_status}] -- {duration}")
 
-    if job_status in ['Running']:
-        return
-    elif job_status == 'Finished':
-        # download result.txt
-        results_txt = 'results.txt'
-        get_token_and_download_file(results_txt, args.job_id)
-        with open(results_txt) as f:
-            logger.info(jsonpickle.loads(f.read()))
-        os.remove(results_txt)
+        # download log
+        get_token_and_download_file('log', args.job_id)
 
-        if args.download_output:
-            # 下载结果文件
-            if result_url and result_url != 'null':
-                result_response = requests.get(result_url, stream=True)
-                check_status_and_download_file(result_response, args.output)
-            else:
-                logger.error('No resultUrl found or resultUrl is empty')
+        if job_status in ['Running']:
+            return
+        elif job_status == 'Finished':
+            # download result.txt
+            results_txt = 'results.txt'
+            get_token_and_download_file(results_txt, args.job_id)
+            with open(results_txt) as f:
+                logger.info(jsonpickle.loads(f.read()))
+            os.remove(results_txt)
+
+            if args.download_output:
+                # 下载结果文件
+                if result_url and result_url != 'null':
+                    result_response = requests.get(result_url, stream=True)
+                    check_status_and_download_file(result_response, args.output)
+                else:
+                    logger.error('No resultUrl found or resultUrl is empty')
+    elif args.command == 'kill':
+        kill_job(args.job_id)
 
 
 if __name__ == '__main__':
