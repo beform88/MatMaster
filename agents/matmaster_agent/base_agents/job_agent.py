@@ -70,13 +70,13 @@ from agents.matmaster_agent.utils.event_utils import (
     is_text,
     is_text_and_not_bohrium,
     send_error_event,
+    update_state_event,
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
     get_session_state,
     load_tool_response,
     parse_result,
-    update_session_state,
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
@@ -353,8 +353,15 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     in ctx.session.state['sync_tools']
                 ):
                     event.long_running_tool_ids = None  # Untag Async Job
-                    ctx.session.state['long_running_jobs_count'] += 1
-                    await update_session_state(ctx, self.name)
+                    yield update_state_event(
+                        ctx,
+                        state_delta={
+                            'long_running_jobs_count': ctx.session.state[
+                                'long_running_jobs_count'
+                            ]
+                            + 1
+                        },
+                    )
 
                 if (
                     is_function_response(event)
@@ -396,8 +403,13 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
 
                 # Only for Long Running Tools Call
                 if event.long_running_tool_ids:
-                    ctx.session.state['long_running_ids'] += event.long_running_tool_ids
-                    await update_session_state(ctx, self.name)
+                    yield update_state_event(
+                        ctx,
+                        state_delta={
+                            'long_running_ids': ctx.session.state['long_running_ids']
+                            + list(event.long_running_tool_ids)
+                        },
+                    )
 
                 if event.content and event.content.parts:
                     for part in event.content.parts:
@@ -438,13 +450,21 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                     workflow_uid=workflow_uid,
                                     workflow_url=workflow_url,
                                 ).model_dump(mode='json')
-                            ctx.session.state['long_running_jobs'][
-                                origin_job_id
-                            ] = frontend_result
-                            ctx.session.state['render_job_list'] = True
-                            ctx.session.state['render_job_id'].append(origin_job_id)
-                            ctx.session.state['long_running_jobs_count'] += 1
-                            await update_session_state(ctx, self.name)
+                            yield update_state_event(
+                                ctx,
+                                state_delta={
+                                    'long_running_jobs': {
+                                        origin_job_id: frontend_result
+                                    },
+                                    'render_job_list': True,
+                                    'render_job_id': ctx.session.state['render_job_id']
+                                    + [origin_job_id],
+                                    'long_running_jobs_count': ctx.session.state[
+                                        'long_running_jobs_count'
+                                    ]
+                                    + 1,
+                                },
+                            )
                 # END
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
@@ -497,9 +517,9 @@ class SubmitRenderAgent(LlmAgent):
                             ):
                                 yield event
 
-                    ctx.session.state['render_job_list'] = False
-                    ctx.session.state['render_job_id'] = []
-                    await update_session_state(ctx, self.name)
+                    yield update_state_event(
+                        ctx, state_delta={'render_job_list': False, 'render_job_id': []}
+                    )
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
@@ -518,10 +538,14 @@ class SubmitValidatorAgent(LlmAgent):
             > ctx.session.state['long_running_jobs_count_ori']
         ):
             submit_validator_msg = 'The Job has indeed been submitted.'
-            ctx.session.state['long_running_jobs_count_ori'] = ctx.session.state[
-                'long_running_jobs_count'
-            ]
-            await update_session_state(ctx, self.name)
+            yield update_state_event(
+                ctx,
+                state_delta={
+                    'long_running_jobs_count_ori': ctx.session.state[
+                        'long_running_jobs_count'
+                    ]
+                },
+            )
         else:
             submit_validator_msg = (
                 'System is experiencing task submission hallucination; '
@@ -681,11 +705,12 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         ):
                             yield event
 
-                        ctx.session.state['long_running_jobs'][origin_job_id][
-                            'job_in_ctx'
-                        ] = True
-                    await update_session_state(ctx, self.name)
-
+                    yield update_state_event(
+                        ctx,
+                        state_delta={
+                            'long_running_jobs': {origin_job_id: {'job_in_ctx': True}}
+                        },
+                    )
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 for event in context_function_event(
                     ctx,
@@ -823,9 +848,9 @@ class BaseAsyncJobAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         session_state = get_session_state(ctx)
-        session_state['dflow'] = self.dflow_flag
-        session_state['sync_tools'] = self.sync_tools
-        await update_session_state(ctx, self.name)
+        yield update_state_event(
+            ctx, state_delta={'dflow': self.dflow_flag, 'sync_tools': self.sync_tools}
+        )
 
         async for result_event in self.result_agent.run_async(ctx):
             yield result_event

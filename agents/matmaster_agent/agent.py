@@ -50,8 +50,8 @@ from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_
 from agents.matmaster_agent.utils.event_utils import (
     frontend_text_event,
     send_error_event,
+    update_state_event,
 )
-from agents.matmaster_agent.utils.helper_func import update_session_state
 
 logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
     logging.ERROR
@@ -125,8 +125,9 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                     yield frontend_text_event(
                         ctx, self.name, event.content.parts[0].text, ModelRole
                     )
-                    ctx.session.state['special_llm_response'] = False
-                    await update_session_state(ctx, self.name)
+                    yield update_state_event(
+                        ctx, state_delta={'special_llm_response': False}
+                    )
                 yield event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
