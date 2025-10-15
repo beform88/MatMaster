@@ -7,6 +7,7 @@ from agents.matmaster_agent.model import BohrJobInfo, JobStatus
 def mapping_status(status):
     return {
         -1: 'Failed',
+        -2: 'Deleted',
         0: 'Pending',
         1: 'Running',
         2: 'Finished',
