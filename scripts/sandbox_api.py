@@ -1,14 +1,29 @@
+import os
+
 import requests
 from toolsy.logger import init_colored_logger
 
 from agents.matmaster_agent.constant import (
+    BOHRIUM_HOST,
     MATERIALS_ACCESS_KEY,
     MATERIALS_PROJECT_ID,
     OPENAPI_JOB_CREATE_API,
     OPENAPI_JOB_KILL_API,
+    OPENAPI_JOB_LIST_API,
+    OpenAPIJobAPI,
 )
 
 logger = init_colored_logger(__name__)
+
+
+def get_ticket(authorization):
+    headers = {'authorization': authorization}
+
+    url = f'{BOHRIUM_HOST}/bohrapi/v1/ticket/get'
+    response = requests.get(url, headers=headers)
+    logger.info(response.json())
+
+    return response.json()['data']['ticket']
 
 
 def create_job():
@@ -21,10 +36,48 @@ def create_job():
     print(response)
 
 
-def kill_job(job_id):
-    request_query_string = {'accessKey': MATERIALS_ACCESS_KEY}
+def kill_job(job_id, use_ticket=False, authorization=None):
+    url = f'{OPENAPI_JOB_KILL_API}/{job_id}'
+    if use_ticket and authorization:
+        ticket = get_ticket(authorization)
+        headers = {'Brm-Ticket': ticket}
+        response = requests.post(url, headers=headers)
+    else:
+        request_query_string = {'accessKey': MATERIALS_ACCESS_KEY}
+        response = requests.post(url, params=request_query_string)
 
-    response = requests.post(
-        f'{OPENAPI_JOB_KILL_API}/{job_id}', params=request_query_string
-    )
     logger.info(response.json())
+
+
+def get_job_detail(job_id, use_ticket=False, authorization=None):
+    if use_ticket and authorization:
+        ticket = get_ticket(authorization)
+        headers = {'Brm-Ticket': ticket}
+        response = requests.get(f"{OpenAPIJobAPI}/{job_id}", headers=headers)
+        logger.info(response.json())
+
+
+def get_job_list(
+    job_ids, use_ticket=False, authorization=None, realUserId=None, sessionId=None
+):
+    if use_ticket and authorization:
+        ticket = get_ticket(authorization)
+        headers = {'Brm-Ticket': ticket}
+        query_params = {
+            'jobIds': job_ids,
+            'realUserId': realUserId,
+            'sessionId': sessionId,
+        }
+        response = requests.get(
+            OPENAPI_JOB_LIST_API, headers=headers, params=query_params
+        )
+        logger.info(response.json())
+
+
+if __name__ == '__main__':
+    authorization = os.getenv('BEARER_TOKEN')
+    # use_ticket_get_job_detail('03b212ee76964c82bc58c1c2314fac79')
+    # use_ticket_get_job_list(['03b212ee76964c82bc58c1c2314fac79'], 110680, '19c1a7d4-2502-44fc-a58c-f29cce49986f')
+    kill_job(
+        '03b212ee76964c82bc58c1c2314fac79', use_ticket=True, authorization=authorization
+    )
