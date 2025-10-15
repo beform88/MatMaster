@@ -36,7 +36,9 @@ elif CURRENT_ENV == 'prod':
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
     BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
 
-OpenAPIJobAPI = f"{OPENAPI_HOST}/openapi/v1/sandbox/job"
+OPENAPI_SANDBOX = f'{OPENAPI_HOST}/openapi/v1/sandbox'
+OpenAPIJobAPI = f"{OPENAPI_SANDBOX}/job"
+OPENAPI_JOB_KILL_API = f'{OPENAPI_SANDBOX}/kill'
 OPENAPI_JOB_CREATE_API = f'{OpenAPIJobAPI}/create'
 OPENAPI_FILE_TOKEN_API = f'{OpenAPIJobAPI}/file/token'
 
