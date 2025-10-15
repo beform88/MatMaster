@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import os
@@ -450,12 +451,15 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                     workflow_uid=workflow_uid,
                                     workflow_url=workflow_url,
                                 ).model_dump(mode='json')
+
+                            update_long_running_jobs = copy.deepcopy(
+                                ctx.session.state['long_running_jobs']
+                            )
+                            update_long_running_jobs[origin_job_id] = frontend_result
                             yield update_state_event(
                                 ctx,
                                 state_delta={
-                                    'long_running_jobs': {
-                                        origin_job_id: frontend_result
-                                    },
+                                    'long_running_jobs': update_long_running_jobs,
                                     'render_job_list': True,
                                     'render_job_id': ctx.session.state['render_job_id']
                                     + [origin_job_id],
@@ -705,11 +709,13 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         ):
                             yield event
 
+                    update_long_running_jobs = copy.deepcopy(
+                        ctx.session.state['long_running_jobs']
+                    )
+                    update_long_running_jobs[origin_job_id]['job_in_ctx'] = True
                     yield update_state_event(
                         ctx,
-                        state_delta={
-                            'long_running_jobs': {origin_job_id: {'job_in_ctx': True}}
-                        },
+                        state_delta={'long_running_jobs': update_long_running_jobs},
                     )
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 for event in context_function_event(
