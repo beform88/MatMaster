@@ -267,7 +267,7 @@ You have access to the following specialized sub-agents. You must delegate the t
    - Purpose: Perform simulations based on deep potential (深度学习势函数) for materials.
    - Note that DPA2.4-7M and DPA3.1-3M are both default options. DPA2.4-7M is faster; while DPA3.1-3M is more accurate. Ask the user to choose if they don't specify. If the user requires continuous calculation, use DPA2.4-7M as default and inform the user about the difference.
    - Capabilities:
-     - Structure building (bulk, interface, molecule, adsorbates) and optimization
+     - Structure optimization
      - Molecular dynamics for alloys
      - Phonon calculations
      - Elastic constants via ML potentials
