@@ -11,6 +11,7 @@ from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
 from agents.matmaster_agent.callback import (
     matmaster_check_job_status,
+    matmaster_hallucination_retry,
     matmaster_prepare_state,
     matmaster_set_lang,
 )
@@ -110,6 +111,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                     prompt=MatMasterCheckTransferPrompt,
                     target_agent_enum=MatMasterTargetAgentEnum,
                 ),
+                matmaster_hallucination_retry,
             ],
         )
 

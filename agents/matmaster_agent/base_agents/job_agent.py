@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import os
@@ -56,6 +57,7 @@ from agents.matmaster_agent.prompt import (
     gen_submit_agent_description,
     gen_submit_core_agent_description,
     gen_submit_core_agent_instruction,
+    gen_tool_call_info_instruction,
 )
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
@@ -68,7 +70,6 @@ from agents.matmaster_agent.utils.event_utils import (
     is_function_call,
     is_function_response,
     is_text,
-    is_text_and_not_bohrium,
     send_error_event,
     update_state_event,
 )
@@ -306,262 +307,6 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                 yield error_event
 
 
-class ParamsCheckCompletedAgent(LlmAgent):
-    pass
-
-
-class ParamsCheckInfoAgent(LlmAgent):
-    @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        try:
-            async for event in super()._run_async_impl(ctx):
-                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                if not event.partial:
-                    for system_job_result_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'system_params_check',
-                        {'msg': event.content.parts[0].text},
-                        ModelRole,
-                    ):
-                        yield system_job_result_event
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
-
-
-class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
-    def __init__(self, enable_tgz_unpack, **kwargs):
-        super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
-
-    @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        logger.info(f"[{self.name}] state: {ctx.session.state}")
-
-        try:
-            async for event in super()._run_async_impl(ctx):
-                # Only For Sync Tool Call
-                if (
-                    is_function_call(event)
-                    and ctx.session.state['sync_tools']
-                    and (function_indexes := get_function_call_indexes(event))
-                    and event.content.parts[function_indexes[0]].function_call.name
-                    in ctx.session.state['sync_tools']
-                ):
-                    event.long_running_tool_ids = None  # Untag Async Job
-                    yield update_state_event(
-                        ctx,
-                        state_delta={
-                            'long_running_jobs_count': ctx.session.state[
-                                'long_running_jobs_count'
-                            ]
-                            + 1
-                        },
-                    )
-
-                if (
-                    is_function_response(event)
-                    and ctx.session.state['sync_tools']
-                    and event.content.parts[0].function_response.name
-                    in ctx.session.state['sync_tools']
-                ):
-                    try:
-                        dict_result = load_tool_response(event)
-                    except BaseException:
-                        yield event
-                        raise
-
-                    if self.enable_tgz_unpack:
-                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
-                    else:
-                        new_tool_result = dict_result
-                    parsed_result = await parse_result(new_tool_result)
-                    job_result_comp_data = get_frontend_job_result_data(parsed_result)
-
-                    for frontend_job_result_event in all_text_event(
-                        ctx,
-                        self.name,
-                        f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
-                        ModelRole,
-                    ):
-                        yield frontend_job_result_event
-
-                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                    for db_job_result_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'system_job_result',
-                        {JOB_RESULT_KEY: parsed_result},
-                        ModelRole,
-                    ):
-                        yield db_job_result_event
-                # END
-
-                # Only for Long Running Tools Call
-                if event.long_running_tool_ids:
-                    yield update_state_event(
-                        ctx,
-                        state_delta={
-                            'long_running_ids': ctx.session.state['long_running_ids']
-                            + list(event.long_running_tool_ids)
-                        },
-                    )
-
-                if event.content and event.content.parts:
-                    for part in event.content.parts:
-                        if (
-                            part
-                            and part.function_response
-                            and part.function_response.id
-                            in ctx.session.state['long_running_ids']
-                            and 'result' in part.function_response.response
-                            and not part.function_response.response['result'].isError
-                        ):
-                            raw_result = part.function_response.response['result']
-                            results = json.loads(raw_result.content[0].text)
-                            logger.info(
-                                f"[SubmitCoreCalculationMCPLlmAgent] results = {results}"
-                            )
-                            origin_job_id = results['job_id']
-                            job_name = part.function_response.name
-                            job_status = results['status']
-                            if not ctx.session.state['dflow']:
-                                bohr_job_id = results['extra_info']['bohr_job_id']
-                                frontend_result = BohrJobInfo(
-                                    origin_job_id=origin_job_id,
-                                    job_name=job_name,
-                                    job_status=job_status,
-                                    job_id=bohr_job_id,
-                                    agent_name=ctx.agent.parent_agent.parent_agent.name,
-                                ).model_dump(mode='json')
-                            else:
-                                workflow_id = results['extra_info']['workflow_id']
-                                workflow_uid = results['extra_info']['workflow_uid']
-                                workflow_url = results['extra_info']['workflow_link']
-                                frontend_result = DFlowJobInfo(
-                                    origin_job_id=origin_job_id,
-                                    job_name=job_name,
-                                    job_status=job_status,
-                                    workflow_id=workflow_id,
-                                    workflow_uid=workflow_uid,
-                                    workflow_url=workflow_url,
-                                ).model_dump(mode='json')
-                            yield update_state_event(
-                                ctx,
-                                state_delta={
-                                    'long_running_jobs': {
-                                        origin_job_id: frontend_result
-                                    },
-                                    'render_job_list': True,
-                                    'render_job_id': ctx.session.state['render_job_id']
-                                    + [origin_job_id],
-                                    'long_running_jobs_count': ctx.session.state[
-                                        'long_running_jobs_count'
-                                    ]
-                                    + 1,
-                                },
-                            )
-                # END
-
-                # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
-                if is_text(event):
-                    if not event.partial:
-                        for multi_part_event in context_multipart2function_event(
-                            ctx, self.name, event, 'system_submit_core_info'
-                        ):
-                            yield multi_part_event
-                else:
-                    yield event
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
-
-
-class SubmitRenderAgent(LlmAgent):
-    def __init__(self, **kwargs):
-        super().__init__(description=SubmitRenderAgentDescription, **kwargs)
-
-    @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        logger.info(f"[{self.name}] state: {ctx.session.state}")
-        try:
-            async for event in super()._run_async_impl(ctx):
-                if is_text(event) and ctx.session.state['render_job_list']:
-                    for cur_render_job_id in ctx.session.state['render_job_id']:
-                        # Render Frontend Job-List Component
-                        job_list_comp_data = {
-                            'eventType': 1,
-                            'eventData': {
-                                'contentType': 1,
-                                'renderType': '@bohrium-chat/matmodeler/task-message',
-                                'content': {
-                                    JOB_LIST_KEY: ctx.session.state[
-                                        'long_running_jobs'
-                                    ][cur_render_job_id]
-                                },
-                            },
-                        }
-                        if not ctx.session.state['dflow']:
-                            # 同时发送流式消息（聊条的时候可见）和数据库消息（历史记录的时候可见）
-                            for event in all_text_event(
-                                ctx=ctx,
-                                author=self.name,
-                                text=f"<bohrium-chat-msg>{json.dumps(job_list_comp_data)}</bohrium-chat-msg>",
-                                role=ModelRole,
-                            ):
-                                yield event
-
-                    yield update_state_event(
-                        ctx, state_delta={'render_job_list': False, 'render_job_id': []}
-                    )
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
-
-
-class SubmitValidatorAgent(LlmAgent):
-    @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        if ctx.session.state['error_occurred']:
-            return
-
-        if (
-            ctx.session.state['long_running_jobs_count']
-            > ctx.session.state['long_running_jobs_count_ori']
-        ):
-            submit_validator_msg = 'The Job has indeed been submitted.'
-            yield update_state_event(
-                ctx,
-                state_delta={
-                    'long_running_jobs_count_ori': ctx.session.state[
-                        'long_running_jobs_count'
-                    ]
-                },
-            )
-        else:
-            submit_validator_msg = (
-                'System is experiencing task submission hallucination; '
-                'I recommend retrying with the original parameters.'
-            )
-
-        for function_event in context_function_event(
-            ctx,
-            self.name,
-            'system_submit_validator',
-            {'msg': submit_validator_msg},
-            ModelRole,
-        ):
-            yield function_event
-
-
 class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(
@@ -705,11 +450,13 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         ):
                             yield event
 
+                    update_long_running_jobs = copy.deepcopy(
+                        ctx.session.state['long_running_jobs']
+                    )
+                    update_long_running_jobs[origin_job_id]['job_in_ctx'] = True
                     yield update_state_event(
                         ctx,
-                        state_delta={
-                            'long_running_jobs': {origin_job_id: {'job_in_ctx': True}}
-                        },
+                        state_delta={'long_running_jobs': update_long_running_jobs},
                     )
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 for event in context_function_event(
@@ -726,30 +473,328 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 yield error_event
 
 
-class ResultTransferLlmAgent(LlmAgent):
+class ParamsCheckCompletedAgent(LlmAgent):
+    pass
+
+
+class ParamsCheckInfoAgent(LlmAgent):
     @override
     async def _run_async_impl(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
-        async for event in super()._run_async_impl(ctx):
-            # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
-            if is_text_and_not_bohrium(event):
-                for function_event in context_function_event(
-                    ctx,
-                    self.name,
-                    'system_result_transfer_info',
-                    {'response': event.content.parts[0].text},
-                    ModelRole,
+        try:
+            async for event in super()._run_async_impl(ctx):
+                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                if not event.partial:
+                    for system_job_result_event in context_function_event(
+                        ctx,
+                        self.name,
+                        'system_params_check',
+                        {'msg': event.content.parts[0].text},
+                        ModelRole,
+                    ):
+                        yield system_job_result_event
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
+
+
+class ToolCallInfoAgent(LlmAgent):
+    @override
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        try:
+            async for event in super()._run_async_impl(ctx):
+                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                if not event.partial:
+                    tool_call_info = json.loads(event.content.parts[0].text)
+                    for system_job_result_event in context_function_event(
+                        ctx,
+                        self.name,
+                        'system_tool_call_info',
+                        tool_call_info,
+                        ModelRole,
+                    ):
+                        yield system_job_result_event
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
+
+
+class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
+    def __init__(self, enable_tgz_unpack, **kwargs):
+        super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
+
+    @override
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        logger.info(f"[{self.name}] state: {ctx.session.state}")
+
+        try:
+            async for event in super()._run_async_impl(ctx):
+                # Only For Sync Tool Call
+                if (
+                    is_function_call(event)
+                    and ctx.session.state['sync_tools']
+                    and (function_indexes := get_function_call_indexes(event))
+                    and event.content.parts[function_indexes[0]].function_call.name
+                    in ctx.session.state['sync_tools']
                 ):
-                    yield function_event
+                    event.long_running_tool_ids = None  # Untag Async Job
+                    yield update_state_event(
+                        ctx,
+                        state_delta={
+                            'long_running_jobs_count': ctx.session.state[
+                                'long_running_jobs_count'
+                            ]
+                            + 1
+                        },
+                    )
+
+                if (
+                    is_function_response(event)
+                    and ctx.session.state['sync_tools']
+                    and event.content.parts[0].function_response.name
+                    in ctx.session.state['sync_tools']
+                ):
+                    try:
+                        dict_result = load_tool_response(event)
+                    except BaseException:
+                        yield event
+                        raise
+
+                    if self.enable_tgz_unpack:
+                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+                    else:
+                        new_tool_result = dict_result
+                    parsed_result = await parse_result(new_tool_result)
+                    job_result_comp_data = get_frontend_job_result_data(parsed_result)
+
+                    for frontend_job_result_event in all_text_event(
+                        ctx,
+                        self.name,
+                        f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
+                        ModelRole,
+                    ):
+                        yield frontend_job_result_event
+
+                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                    for db_job_result_event in context_function_event(
+                        ctx,
+                        self.name,
+                        'system_job_result',
+                        {JOB_RESULT_KEY: parsed_result},
+                        ModelRole,
+                    ):
+                        yield db_job_result_event
+                # END
+
+                # Only for Long Running Tools Call
+                if event.long_running_tool_ids:
+                    yield update_state_event(
+                        ctx,
+                        state_delta={
+                            'long_running_ids': ctx.session.state['long_running_ids']
+                            + list(event.long_running_tool_ids)
+                        },
+                    )
+
+                if event.content and event.content.parts:
+                    for part in event.content.parts:
+                        if (
+                            part
+                            and part.function_response
+                            and part.function_response.id
+                            in ctx.session.state['long_running_ids']
+                            and 'result' in part.function_response.response
+                        ):
+                            if not part.function_response.response['result'].isError:
+                                raw_result = part.function_response.response['result']
+                                results = json.loads(raw_result.content[0].text)
+                                logger.info(
+                                    f"[SubmitCoreCalculationMCPLlmAgent] results = {results}"
+                                )
+                                origin_job_id = results['job_id']
+                                job_name = part.function_response.name
+                                job_status = results['status']
+                                if not ctx.session.state['dflow']:
+                                    bohr_job_id = results['extra_info']['bohr_job_id']
+                                    frontend_result = BohrJobInfo(
+                                        origin_job_id=origin_job_id,
+                                        job_name=job_name,
+                                        job_status=job_status,
+                                        job_id=bohr_job_id,
+                                        agent_name=ctx.agent.parent_agent.parent_agent.name,
+                                    ).model_dump(mode='json')
+                                else:
+                                    workflow_id = results['extra_info']['workflow_id']
+                                    workflow_uid = results['extra_info']['workflow_uid']
+                                    workflow_url = results['extra_info'][
+                                        'workflow_link'
+                                    ]
+                                    frontend_result = DFlowJobInfo(
+                                        origin_job_id=origin_job_id,
+                                        job_name=job_name,
+                                        job_status=job_status,
+                                        workflow_id=workflow_id,
+                                        workflow_uid=workflow_uid,
+                                        workflow_url=workflow_url,
+                                    ).model_dump(mode='json')
+
+                                update_long_running_jobs = copy.deepcopy(
+                                    ctx.session.state['long_running_jobs']
+                                )
+                                update_long_running_jobs[origin_job_id] = (
+                                    frontend_result
+                                )
+                                yield update_state_event(
+                                    ctx,
+                                    state_delta={
+                                        'long_running_jobs': update_long_running_jobs,
+                                        'render_job_list': True,
+                                        'render_job_id': ctx.session.state[
+                                            'render_job_id'
+                                        ]
+                                        + [origin_job_id],
+                                        'long_running_jobs_count': ctx.session.state[
+                                            'long_running_jobs_count'
+                                        ]
+                                        + 1,
+                                    },
+                                )
+                            else:
+                                # 提交报错同样+1，避免幻觉 card
+                                yield update_state_event(
+                                    ctx,
+                                    state_delta={
+                                        'long_running_jobs_count': ctx.session.state[
+                                            'long_running_jobs_count'
+                                        ]
+                                        + 1,
+                                    },
+                                )
+                # END
+
+                # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
+                if is_text(event):
+                    if not event.partial:
+                        for multi_part_event in context_multipart2function_event(
+                            ctx, self.name, event, 'system_submit_core_info'
+                        ):
+                            yield multi_part_event
+                else:
+                    yield event
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
+
+
+class SubmitRenderAgent(LlmAgent):
+    def __init__(self, **kwargs):
+        super().__init__(description=SubmitRenderAgentDescription, **kwargs)
+
+    @override
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        logger.info(f"[{self.name}] state: {ctx.session.state}")
+        try:
+            async for event in super()._run_async_impl(ctx):
+                if is_text(event) and ctx.session.state['render_job_list']:
+                    for cur_render_job_id in ctx.session.state['render_job_id']:
+                        # Render Frontend Job-List Component
+                        job_list_comp_data = {
+                            'eventType': 1,
+                            'eventData': {
+                                'contentType': 1,
+                                'renderType': '@bohrium-chat/matmodeler/task-message',
+                                'content': {
+                                    JOB_LIST_KEY: ctx.session.state[
+                                        'long_running_jobs'
+                                    ][cur_render_job_id]
+                                },
+                            },
+                        }
+                        if not ctx.session.state['dflow']:
+                            # 同时发送流式消息（聊条的时候可见）和数据库消息（历史记录的时候可见）
+                            for event in all_text_event(
+                                ctx=ctx,
+                                author=self.name,
+                                text=f"<bohrium-chat-msg>{json.dumps(job_list_comp_data)}</bohrium-chat-msg>",
+                                role=ModelRole,
+                            ):
+                                yield event
+
+                    yield update_state_event(
+                        ctx, state_delta={'render_job_list': False, 'render_job_id': []}
+                    )
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
+
+
+class SubmitValidatorAgent(LlmAgent):
+    @override
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        if ctx.session.state['error_occurred']:
+            return
+
+        if (
+            ctx.session.state['long_running_jobs_count']
+            > ctx.session.state['long_running_jobs_count_ori']
+        ):
+            submit_validator_msg = 'The Job has indeed been submitted.'
+            yield update_state_event(
+                ctx,
+                state_delta={
+                    'long_running_jobs_count_ori': ctx.session.state[
+                        'long_running_jobs_count'
+                    ]
+                },
+            )
+        else:
+            submit_validator_msg = (
+                'System is experiencing task submission hallucination; '
+                'I recommend retrying with the original parameters.'
+            )
+
+            current_agent = ctx.agent.parent_agent.parent_agent.name
+            if ctx.session.state['hallucination_agent'] != current_agent:
+                yield update_state_event(
+                    ctx,
+                    state_delta={
+                        'hallucination': True,
+                        'hallucination_agent': ctx.agent.parent_agent.parent_agent.name,
+                    },
+                )
             else:
-                yield event
+                yield update_state_event(
+                    ctx,
+                    state_delta={
+                        'hallucination_agent': None,
+                    },
+                )
+        logger.info(f'[SubmitValidatorAgent] state = {ctx.session.state}')
+
+        for function_event in context_function_event(
+            ctx,
+            self.name,
+            'system_submit_validator',
+            {'msg': submit_validator_msg},
+            ModelRole,
+        ):
+            yield function_event
 
 
 class BaseAsyncJobAgent(LlmAgent):
     submit_agent: SequentialAgent
     result_agent: SequentialAgent
     params_check_info_agent: LlmAgent
+    tool_call_info_agent: LlmAgent
     dflow_flag: bool = Field(
         False, description='Whether the agent is dflow related', exclude=True
     )
@@ -828,6 +873,16 @@ class BaseAsyncJobAgent(LlmAgent):
             after_model_callback=remove_function_call,
         )
 
+        tool_call_info_agent = ToolCallInfoAgent(
+            model=model,
+            name=f"{agent_prefix}_tool_call_info_agent",
+            instruction=gen_tool_call_info_instruction(),
+            tools=mcp_tools,
+            disallow_transfer_to_parent=True,
+            disallow_transfer_to_peers=True,
+            after_model_callback=remove_function_call,
+        )
+
         # 初始化父类
         super().__init__(
             name=agent_name,
@@ -836,8 +891,14 @@ class BaseAsyncJobAgent(LlmAgent):
             submit_agent=submit_agent,
             result_agent=result_agent,
             params_check_info_agent=params_check_info_agent,
+            tool_call_info_agent=tool_call_info_agent,
             dflow_flag=dflow_flag,
-            sub_agents=[submit_agent, result_agent, params_check_info_agent],
+            sub_agents=[
+                submit_agent,
+                result_agent,
+                params_check_info_agent,
+                tool_call_info_agent,
+            ],
             supervisor_agent=supervisor_agent,
             sync_tools=sync_tools,
             enable_tgz_unpack=enable_tgz_unpack,
@@ -911,6 +972,10 @@ class BaseAsyncJobAgent(LlmAgent):
                 ) in self.params_check_info_agent.run_async(ctx):
                     yield params_check_info_event
             else:
+                async for tool_call_info_event in self.tool_call_info_agent.run_async(
+                    ctx
+                ):
+                    yield tool_call_info_event
                 async for submit_event in self.submit_agent.run_async(ctx):
                     yield submit_event
 
