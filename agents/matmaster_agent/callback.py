@@ -154,9 +154,8 @@ async def matmaster_check_job_status(
                     llm_response.content = None
                     break
                 if not reset:
-                    callback_context.state['special_llm_response'] = (
-                        True  # 标记开始处理原来消息的非流式版本
-                    )
+                    # 标记开始处理原来消息的非流式版本
+                    callback_context.state['special_llm_response'] = True
                     llm_response.content.parts = []
                     reset = True
                 function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
@@ -190,6 +189,14 @@ async def matmaster_hallucination_retry(
     )
     if not callback_context.state['hallucination']:
         return
+
+    if llm_response.partial:  # 原来消息的流式版本置空 None
+        llm_response.content = None
+        return
+
+    # 标记开始处理原来消息的非流式版本
+    callback_context.state['special_llm_response'] = True
+    llm_response.content.parts = []
 
     llm_response.content.parts.append(Part(text=hallucination_card(i18n=i18n)))
     function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
