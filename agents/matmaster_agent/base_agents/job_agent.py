@@ -720,13 +720,23 @@ class SubmitValidatorAgent(LlmAgent):
                 'System is experiencing task submission hallucination; '
                 'I recommend retrying with the original parameters.'
             )
-            yield update_state_event(
-                ctx,
-                state_delta={
-                    'hallucination': True,
-                    'hallucination_agent': ctx.agent.parent_agent.parent_agent.name,
-                },
-            )
+
+            current_agent = ctx.agent.parent_agent.parent_agent.name
+            if ctx.session.state['hallucination_agent'] != current_agent:
+                yield update_state_event(
+                    ctx,
+                    state_delta={
+                        'hallucination': True,
+                        'hallucination_agent': ctx.agent.parent_agent.parent_agent.name,
+                    },
+                )
+            else:
+                yield update_state_event(
+                    ctx,
+                    state_delta={
+                        'hallucination_agent': None,
+                    },
+                )
         logger.info(f'[SubmitValidatorAgent] state = {ctx.session.state}')
 
         for function_event in context_function_event(
@@ -897,13 +907,13 @@ class BaseAsyncJobAgent(LlmAgent):
             ):
                 yield params_check_reason_event
 
-            if not params_check_completed:
-                # Call ParamsCheckInfoAgent to generate params needing check
-                async for (
-                    params_check_info_event
-                ) in self.params_check_info_agent.run_async(ctx):
-                    yield params_check_info_event
-            else:
+            # Call ParamsCheckInfoAgent to generate params needing check
+            async for params_check_info_event in self.params_check_info_agent.run_async(
+                ctx
+            ):
+                yield params_check_info_event
+
+            if params_check_completed:
                 async for submit_event in self.submit_agent.run_async(ctx):
                     yield submit_event
 
