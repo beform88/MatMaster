@@ -4,6 +4,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
+import time
 
 import jsonpickle
 import requests
@@ -108,6 +109,52 @@ def get_token_and_download_file(file_path, job_id):
         logger.error(f'Incomplete {file_path} information - cannot construct file URL')
 
 
+def poll_job_status(job_id, interval=10):
+    """轮询作业状态并在每次轮询时下载最新的日志"""
+    last_log_size = 0
+    logger.info(f"开始轮询作业 {job_id} 的状态 (间隔: {interval} 秒)")
+    
+    while True:
+        try:
+            response = requests.get(
+                f"{OpenAPIJobAPI}/{job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
+            )
+            response.raise_for_status()
+            job_info = response.json()
+            
+            if job_info.get('code') != 0:
+                logger.error(f"API返回错误: {job_info}")
+                break
+            
+            create_time = job_info['data']['createTime']
+            update_time = job_info['data']['updateTime']
+            duration = get_duration(create_time, update_time)
+            job_status = mapping_status(job_info['data']['status'])
+            job_name = job_info['data']['jobName']
+            logger.info(f"{job_name}[{job_status}] -- {duration}")
+            
+            # 下载日志
+            get_token_and_download_file('log', job_id)
+            
+            # 如果作业已完成，则退出轮询
+            if job_status in ['Finished', 'Failed', 'Killed']:
+                logger.info(f"作业状态为 {job_status}，停止轮询")
+                break
+                
+            # 等待下次轮询
+            time.sleep(interval)
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"网络请求失败: {e}")
+            time.sleep(interval)
+        except KeyboardInterrupt:
+            logger.info("用户中断轮询")
+            break
+        except Exception as e:
+            logger.error(f"轮询过程中发生错误: {e}")
+            time.sleep(interval)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Sandbox job cli')
     subparsers = parser.add_subparsers(
@@ -131,6 +178,18 @@ def main():
     # kill 子命令
     kill_parser = subparsers.add_parser('kill', help='Kill a job')
     kill_parser.add_argument('job_id', help='Job ID to kill')
+    
+    # poll 子命令
+    poll_parser = subparsers.add_parser(
+        'poll', help='Poll job status and update logs periodically'
+    )
+    poll_parser.add_argument('job_id', help='Job ID to poll')
+    poll_parser.add_argument(
+        '-i', '--interval', 
+        type=int, 
+        default=10, 
+        help='Polling interval in seconds (default: 10)'
+    )
 
     args = parser.parse_args()
 
@@ -197,6 +256,8 @@ def main():
                     logger.error('No resultUrl found or resultUrl is empty')
     elif args.command == 'kill':
         kill_job(args.job_id)
+    elif args.command == 'poll':
+        poll_job_status(args.job_id, args.interval)
 
 
 if __name__ == '__main__':
