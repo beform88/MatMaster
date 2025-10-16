@@ -136,7 +136,7 @@ def poll_job_status(job_id, interval=10):
             # 下载日志
             get_token_and_download_file('log', job_id)
             
-            # 如果作业已完成，则退出轮询
+            # 如果作业已结束，则退出轮询
             if job_status in ['Finished', 'Failed', 'Killed']:
                 logger.info(f"作业状态为 {job_status}，停止轮询")
                 break
