@@ -69,7 +69,6 @@ from agents.matmaster_agent.utils.event_utils import (
     is_function_call,
     is_function_response,
     is_text,
-    is_text_and_not_bohrium,
     send_error_event,
     update_state_event,
 )
@@ -730,26 +729,6 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
-
-
-class ResultTransferLlmAgent(LlmAgent):
-    @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        async for event in super()._run_async_impl(ctx):
-            # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
-            if is_text_and_not_bohrium(event):
-                for function_event in context_function_event(
-                    ctx,
-                    self.name,
-                    'system_result_transfer_info',
-                    {'response': event.content.parts[0].text},
-                    ModelRole,
-                ):
-                    yield function_event
-            else:
-                yield event
 
 
 class BaseAsyncJobAgent(LlmAgent):

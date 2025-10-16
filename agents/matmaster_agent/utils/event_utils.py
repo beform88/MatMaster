@@ -42,12 +42,6 @@ def is_text(event: Event):
     return has_part(event) and event.content.parts[0].text
 
 
-def is_text_and_not_bohrium(event: Event):
-    return is_text(event) and not event.content.parts[0].text.startswith(
-        '<bohrium-chat-msg>'
-    )
-
-
 def is_function_call(event: Event) -> bool:
     """检查事件是否包含函数调用"""
     return has_part(event) and any(part.function_call for part in event.content.parts)
