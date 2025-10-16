@@ -609,55 +609,72 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             and part.function_response.id
                             in ctx.session.state['long_running_ids']
                             and 'result' in part.function_response.response
-                            and not part.function_response.response['result'].isError
                         ):
-                            raw_result = part.function_response.response['result']
-                            results = json.loads(raw_result.content[0].text)
-                            logger.info(
-                                f"[SubmitCoreCalculationMCPLlmAgent] results = {results}"
-                            )
-                            origin_job_id = results['job_id']
-                            job_name = part.function_response.name
-                            job_status = results['status']
-                            if not ctx.session.state['dflow']:
-                                bohr_job_id = results['extra_info']['bohr_job_id']
-                                frontend_result = BohrJobInfo(
-                                    origin_job_id=origin_job_id,
-                                    job_name=job_name,
-                                    job_status=job_status,
-                                    job_id=bohr_job_id,
-                                    agent_name=ctx.agent.parent_agent.parent_agent.name,
-                                ).model_dump(mode='json')
-                            else:
-                                workflow_id = results['extra_info']['workflow_id']
-                                workflow_uid = results['extra_info']['workflow_uid']
-                                workflow_url = results['extra_info']['workflow_link']
-                                frontend_result = DFlowJobInfo(
-                                    origin_job_id=origin_job_id,
-                                    job_name=job_name,
-                                    job_status=job_status,
-                                    workflow_id=workflow_id,
-                                    workflow_uid=workflow_uid,
-                                    workflow_url=workflow_url,
-                                ).model_dump(mode='json')
-
-                            update_long_running_jobs = copy.deepcopy(
-                                ctx.session.state['long_running_jobs']
-                            )
-                            update_long_running_jobs[origin_job_id] = frontend_result
-                            yield update_state_event(
-                                ctx,
-                                state_delta={
-                                    'long_running_jobs': update_long_running_jobs,
-                                    'render_job_list': True,
-                                    'render_job_id': ctx.session.state['render_job_id']
-                                    + [origin_job_id],
-                                    'long_running_jobs_count': ctx.session.state[
-                                        'long_running_jobs_count'
+                            if not part.function_response.response['result'].isError:
+                                raw_result = part.function_response.response['result']
+                                results = json.loads(raw_result.content[0].text)
+                                logger.info(
+                                    f"[SubmitCoreCalculationMCPLlmAgent] results = {results}"
+                                )
+                                origin_job_id = results['job_id']
+                                job_name = part.function_response.name
+                                job_status = results['status']
+                                if not ctx.session.state['dflow']:
+                                    bohr_job_id = results['extra_info']['bohr_job_id']
+                                    frontend_result = BohrJobInfo(
+                                        origin_job_id=origin_job_id,
+                                        job_name=job_name,
+                                        job_status=job_status,
+                                        job_id=bohr_job_id,
+                                        agent_name=ctx.agent.parent_agent.parent_agent.name,
+                                    ).model_dump(mode='json')
+                                else:
+                                    workflow_id = results['extra_info']['workflow_id']
+                                    workflow_uid = results['extra_info']['workflow_uid']
+                                    workflow_url = results['extra_info'][
+                                        'workflow_link'
                                     ]
-                                    + 1,
-                                },
-                            )
+                                    frontend_result = DFlowJobInfo(
+                                        origin_job_id=origin_job_id,
+                                        job_name=job_name,
+                                        job_status=job_status,
+                                        workflow_id=workflow_id,
+                                        workflow_uid=workflow_uid,
+                                        workflow_url=workflow_url,
+                                    ).model_dump(mode='json')
+
+                                update_long_running_jobs = copy.deepcopy(
+                                    ctx.session.state['long_running_jobs']
+                                )
+                                update_long_running_jobs[origin_job_id] = (
+                                    frontend_result
+                                )
+                                yield update_state_event(
+                                    ctx,
+                                    state_delta={
+                                        'long_running_jobs': update_long_running_jobs,
+                                        'render_job_list': True,
+                                        'render_job_id': ctx.session.state[
+                                            'render_job_id'
+                                        ]
+                                        + [origin_job_id],
+                                        'long_running_jobs_count': ctx.session.state[
+                                            'long_running_jobs_count'
+                                        ]
+                                        + 1,
+                                    },
+                                )
+                            else:
+                                # 提交报错同样+1，避免幻觉 card
+                                yield update_state_event(
+                                    ctx,
+                                    state_delta={
+                                        'long_running_jobs_count': ctx.session.state[
+                                            'long_running_jobs_count'
+                                        ]
+                                        + 1,
+                                    },
+                                )
                 # END
 
                 # Send Normal LlmResponse to Frontend, function_call -> function_response -> Llm_response
