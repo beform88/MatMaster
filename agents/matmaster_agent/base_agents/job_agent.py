@@ -57,6 +57,7 @@ from agents.matmaster_agent.prompt import (
     gen_submit_agent_description,
     gen_submit_core_agent_description,
     gen_submit_core_agent_instruction,
+    gen_tool_call_info_instruction,
 )
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
@@ -498,6 +499,29 @@ class ParamsCheckInfoAgent(LlmAgent):
                 yield error_event
 
 
+class ToolCallInfoAgent(LlmAgent):
+    @override
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        try:
+            async for event in super()._run_async_impl(ctx):
+                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                if not event.partial:
+                    tool_call_info = json.loads(event.content.parts[0].text)
+                    for system_job_result_event in context_function_event(
+                        ctx,
+                        self.name,
+                        'system_tool_call_info',
+                        tool_call_info,
+                        ModelRole,
+                    ):
+                        yield system_job_result_event
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
+
+
 class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
@@ -753,6 +777,7 @@ class BaseAsyncJobAgent(LlmAgent):
     submit_agent: SequentialAgent
     result_agent: SequentialAgent
     params_check_info_agent: LlmAgent
+    tool_call_info_agent: LlmAgent
     dflow_flag: bool = Field(
         False, description='Whether the agent is dflow related', exclude=True
     )
@@ -831,6 +856,16 @@ class BaseAsyncJobAgent(LlmAgent):
             after_model_callback=remove_function_call,
         )
 
+        tool_call_info_agent = ToolCallInfoAgent(
+            model=model,
+            name=f"{agent_prefix}_tool_call_info_agent",
+            instruction=gen_tool_call_info_instruction(),
+            tools=mcp_tools,
+            disallow_transfer_to_parent=True,
+            disallow_transfer_to_peers=True,
+            after_model_callback=remove_function_call,
+        )
+
         # 初始化父类
         super().__init__(
             name=agent_name,
@@ -839,8 +874,14 @@ class BaseAsyncJobAgent(LlmAgent):
             submit_agent=submit_agent,
             result_agent=result_agent,
             params_check_info_agent=params_check_info_agent,
+            tool_call_info_agent=tool_call_info_agent,
             dflow_flag=dflow_flag,
-            sub_agents=[submit_agent, result_agent, params_check_info_agent],
+            sub_agents=[
+                submit_agent,
+                result_agent,
+                params_check_info_agent,
+                tool_call_info_agent,
+            ],
             supervisor_agent=supervisor_agent,
             sync_tools=sync_tools,
             enable_tgz_unpack=enable_tgz_unpack,
@@ -907,13 +948,17 @@ class BaseAsyncJobAgent(LlmAgent):
             ):
                 yield params_check_reason_event
 
-            # Call ParamsCheckInfoAgent to generate params needing check
-            async for params_check_info_event in self.params_check_info_agent.run_async(
-                ctx
-            ):
-                yield params_check_info_event
-
-            if params_check_completed:
+            if not params_check_completed:
+                # Call ParamsCheckInfoAgent to generate params needing check
+                async for (
+                    params_check_info_event
+                ) in self.params_check_info_agent.run_async(ctx):
+                    yield params_check_info_event
+            else:
+                async for tool_call_info_event in self.tool_call_info_agent.run_async(
+                    ctx
+                ):
+                    yield tool_call_info_event
                 async for submit_event in self.submit_agent.run_async(ctx):
                     yield submit_event
 

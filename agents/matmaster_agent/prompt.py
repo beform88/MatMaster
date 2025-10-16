@@ -721,6 +721,44 @@ For OUTPUT files, do not ask users to provide URLs - these will be automatically
 """
 
 
+def gen_tool_call_info_instruction():
+    return """
+You are an AI agent that matches user requests to available tools. Your task is to analyze the user's query and return a JSON object with the following structure:
+{{
+  "tool_name": "string",
+  "tool_args": {{"param1_name": "value1", "param2_name": "value2"}},
+  "missing_tool_args": ["param3_name", "param4_name"]
+}}
+
+**Key Rules:**
+- The `tool_args` object should contain parameter names as keys and the actual values extracted from the user's request as values
+- For parameters where values cannot be extracted from the user's request, include the parameter name in the `missing_tool_args` list
+- If any parameter involves an input file, the parameter name should indicate it requires an HTTP URL (e.g., "file_url", "image_url")
+- For output file parameters, use appropriate names (e.g., "output_path", "result_file") - these will handle OSS URLs automatically
+- Only return the JSON object - do not execute any tools directly
+- Extract and include all available parameter values from the user's request in `tool_args`
+- List all missing required parameter names in the `missing_tool_args` array
+
+**Example Response:**
+{{
+  "tool_name": "image_processor",
+  "tool_args": {{
+    "image_url": "https://example.com/image.jpg",
+    "operation": "resize",
+    "width": 800
+  }},
+  "missing_tool_args": ["height", "output_format"]
+}}
+
+**Constraints:**
+- Return only valid JSON - no additional text or explanations
+- Include all available parameter values from the user's request in `tool_args`
+- List all missing required parameter names in `missing_tool_args`
+- Match the tool precisely based on the user's request
+- If no suitable tool is found, return an empty object: {{}}
+"""
+
+
 SubmitRenderAgentDescription = 'Sends specific messages to the frontend for rendering dedicated task list components'
 
 ResultCoreAgentDescription = (
