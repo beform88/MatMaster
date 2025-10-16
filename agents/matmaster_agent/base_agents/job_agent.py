@@ -306,6 +306,172 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                 yield error_event
 
 
+class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
+    def __init__(self, enable_tgz_unpack, **kwargs):
+        super().__init__(
+            description=ResultCoreAgentDescription,
+            enable_tgz_unpack=enable_tgz_unpack,
+            **kwargs,
+        )
+
+    @override
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        logger.info(f"[{self.name}] state: {ctx.session.state}")
+        try:
+            await self.tools[0].get_tools()
+            if not ctx.session.state['dflow']:
+                access_key, Executor, BohriumStorge = (
+                    MATERIALS_ACCESS_KEY,
+                    get_BohriumExecutor(),
+                    get_BohriumStorage(),
+                )
+                project_id, Executor, BohriumStorge = (
+                    MATERIALS_PROJECT_ID,
+                    Executor,
+                    BohriumStorge,
+                )
+            else:
+                access_key, Executor, BohriumStorge = _inject_ak(
+                    ctx, get_DFlowExecutor(), get_BohriumStorage()
+                )
+                project_id, Executor, BohriumStorge = _inject_projectId(
+                    ctx, Executor, BohriumStorge
+                )
+
+            for origin_job_id in list(ctx.session.state['long_running_jobs'].keys()):
+                # 如果该任务结果已经在上下文中 && 用户没有请求这个任务结果，则不再重复查询
+                if ctx.session.state['long_running_jobs'][origin_job_id][
+                    'job_in_ctx'
+                ] and origin_job_id != ctx.session.state[FRONTEND_STATE_KEY]['biz'].get(
+                    'origin_id', None
+                ):
+                    continue
+
+                if self.tools[0].query_tool is None:
+                    yield context_text_event(
+                        ctx, self.name, 'Query Tool is None, Failed', ModelRole
+                    )
+                    break
+
+                query_res = await self.tools[0].query_tool.run_async(
+                    args={'job_id': origin_job_id, 'executor': Executor},
+                    tool_context=None,
+                )
+                if query_res.isError:
+                    logger.error(query_res.content[0].text)
+                    raise RuntimeError(query_res.content[0].text)
+                status = query_res.content[0].text
+                logger.info(
+                    f'[ResultCalculationMCPLlmAgent] origin_job_id = {origin_job_id}, executor = {Executor}, '
+                    f'status = {status}'
+                )
+                if status != 'Running':
+                    ctx.session.state['long_running_jobs'][origin_job_id][
+                        'job_status'
+                    ] = status
+                    results_res = await self.tools[0].results_tool.run_async(
+                        args={
+                            'job_id': origin_job_id,
+                            'executor': Executor,
+                            'storage': BohriumStorge,
+                        },
+                        tool_context=None,
+                    )
+                    if results_res.isError:  # Job Failed
+                        err_msg = results_res.content[0].text
+                        if err_msg.startswith('Error executing tool'):
+                            err_msg = err_msg[err_msg.find(':') + 2 :]
+                        yield frontend_text_event(
+                            ctx,
+                            self.name,
+                            f"Job {origin_job_id} failed: {err_msg}",
+                            ModelRole,
+                        )
+                    else:  # Job Success
+                        raw_result = results_res.content[0].text
+                        dict_result = jsonpickle.loads(raw_result)
+                        logger.info(
+                            f"[ResultCalculationMCPLlmAgent] dict_result = {dict_result}"
+                        )
+
+                        if self.enable_tgz_unpack:
+                            tgz_flag, new_tool_result = await update_tgz_dict(
+                                dict_result
+                            )
+                        else:
+                            new_tool_result = dict_result
+                        ctx.session.state['long_running_jobs'][origin_job_id][
+                            'job_result'
+                        ] = await parse_result(new_tool_result)
+                        job_result_comp_data = get_frontend_job_result_data(
+                            ctx.session.state['long_running_jobs'][origin_job_id][
+                                'job_result'
+                            ]
+                        )
+
+                        # Only for debug
+                        if os.getenv('MODE', None) == 'debug':
+                            ctx.session.state[FRONTEND_STATE_KEY]['biz'][
+                                'origin_id'
+                            ] = origin_job_id
+
+                        # 如果用户请求这个id的任务结果，渲染前端组件
+                        if origin_job_id == ctx.session.state[FRONTEND_STATE_KEY][
+                            'biz'
+                        ].get('origin_id', None):
+                            for event in all_text_event(
+                                ctx,
+                                self.name,
+                                f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
+                                ModelRole,
+                            ):
+                                yield event
+
+                            # Only for debug
+                            if os.getenv('MODE', None) == 'debug':
+                                ctx.session.state[FRONTEND_STATE_KEY]['biz'][
+                                    'origin_id'
+                                ] = None
+
+                        # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                        for event in context_function_event(
+                            ctx,
+                            self.name,
+                            'system_job_result',
+                            {
+                                JOB_RESULT_KEY: ctx.session.state['long_running_jobs'][
+                                    origin_job_id
+                                ]['job_result']
+                            },
+                            ModelRole,
+                        ):
+                            yield event
+
+                    update_long_running_jobs = copy.deepcopy(
+                        ctx.session.state['long_running_jobs']
+                    )
+                    update_long_running_jobs[origin_job_id]['job_in_ctx'] = True
+                    yield update_state_event(
+                        ctx,
+                        state_delta={'long_running_jobs': update_long_running_jobs},
+                    )
+                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                for event in context_function_event(
+                    ctx,
+                    self.name,
+                    'system_job_status',
+                    {'msg': f"Job {origin_job_id} status is {status}"},
+                    ModelRole,
+                ):
+                    yield event
+            yield Event(author=self.name)
+        except BaseException as err:
+            async for error_event in send_error_event(err, ctx, self.name):
+                yield error_event
+
+
 class ParamsCheckCompletedAgent(LlmAgent):
     pass
 
@@ -563,172 +729,6 @@ class SubmitValidatorAgent(LlmAgent):
             ModelRole,
         ):
             yield function_event
-
-
-class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
-    def __init__(self, enable_tgz_unpack, **kwargs):
-        super().__init__(
-            description=ResultCoreAgentDescription,
-            enable_tgz_unpack=enable_tgz_unpack,
-            **kwargs,
-        )
-
-    @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        logger.info(f"[{self.name}] state: {ctx.session.state}")
-        try:
-            await self.tools[0].get_tools()
-            if not ctx.session.state['dflow']:
-                access_key, Executor, BohriumStorge = (
-                    MATERIALS_ACCESS_KEY,
-                    get_BohriumExecutor(),
-                    get_BohriumStorage(),
-                )
-                project_id, Executor, BohriumStorge = (
-                    MATERIALS_PROJECT_ID,
-                    Executor,
-                    BohriumStorge,
-                )
-            else:
-                access_key, Executor, BohriumStorge = _inject_ak(
-                    ctx, get_DFlowExecutor(), get_BohriumStorage()
-                )
-                project_id, Executor, BohriumStorge = _inject_projectId(
-                    ctx, Executor, BohriumStorge
-                )
-
-            for origin_job_id in list(ctx.session.state['long_running_jobs'].keys()):
-                # 如果该任务结果已经在上下文中 && 用户没有请求这个任务结果，则不再重复查询
-                if ctx.session.state['long_running_jobs'][origin_job_id][
-                    'job_in_ctx'
-                ] and origin_job_id != ctx.session.state[FRONTEND_STATE_KEY]['biz'].get(
-                    'origin_id', None
-                ):
-                    continue
-
-                if self.tools[0].query_tool is None:
-                    yield context_text_event(
-                        ctx, self.name, 'Query Tool is None, Failed', ModelRole
-                    )
-                    break
-
-                query_res = await self.tools[0].query_tool.run_async(
-                    args={'job_id': origin_job_id, 'executor': Executor},
-                    tool_context=None,
-                )
-                if query_res.isError:
-                    logger.error(query_res.content[0].text)
-                    raise RuntimeError(query_res.content[0].text)
-                status = query_res.content[0].text
-                logger.info(
-                    f'[ResultCalculationMCPLlmAgent] origin_job_id = {origin_job_id}, executor = {Executor}, '
-                    f'status = {status}'
-                )
-                if status != 'Running':
-                    ctx.session.state['long_running_jobs'][origin_job_id][
-                        'job_status'
-                    ] = status
-                    results_res = await self.tools[0].results_tool.run_async(
-                        args={
-                            'job_id': origin_job_id,
-                            'executor': Executor,
-                            'storage': BohriumStorge,
-                        },
-                        tool_context=None,
-                    )
-                    if results_res.isError:  # Job Failed
-                        err_msg = results_res.content[0].text
-                        if err_msg.startswith('Error executing tool'):
-                            err_msg = err_msg[err_msg.find(':') + 2 :]
-                        yield frontend_text_event(
-                            ctx,
-                            self.name,
-                            f"Job {origin_job_id} failed: {err_msg}",
-                            ModelRole,
-                        )
-                    else:  # Job Success
-                        raw_result = results_res.content[0].text
-                        dict_result = jsonpickle.loads(raw_result)
-                        logger.info(
-                            f"[ResultCalculationMCPLlmAgent] dict_result = {dict_result}"
-                        )
-
-                        if self.enable_tgz_unpack:
-                            tgz_flag, new_tool_result = await update_tgz_dict(
-                                dict_result
-                            )
-                        else:
-                            new_tool_result = dict_result
-                        ctx.session.state['long_running_jobs'][origin_job_id][
-                            'job_result'
-                        ] = await parse_result(new_tool_result)
-                        job_result_comp_data = get_frontend_job_result_data(
-                            ctx.session.state['long_running_jobs'][origin_job_id][
-                                'job_result'
-                            ]
-                        )
-
-                        # Only for debug
-                        if os.getenv('MODE', None) == 'debug':
-                            ctx.session.state[FRONTEND_STATE_KEY]['biz'][
-                                'origin_id'
-                            ] = origin_job_id
-
-                        # 如果用户请求这个id的任务结果，渲染前端组件
-                        if origin_job_id == ctx.session.state[FRONTEND_STATE_KEY][
-                            'biz'
-                        ].get('origin_id', None):
-                            for event in all_text_event(
-                                ctx,
-                                self.name,
-                                f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
-                                ModelRole,
-                            ):
-                                yield event
-
-                            # Only for debug
-                            if os.getenv('MODE', None) == 'debug':
-                                ctx.session.state[FRONTEND_STATE_KEY]['biz'][
-                                    'origin_id'
-                                ] = None
-
-                        # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                        for event in context_function_event(
-                            ctx,
-                            self.name,
-                            'system_job_result',
-                            {
-                                JOB_RESULT_KEY: ctx.session.state['long_running_jobs'][
-                                    origin_job_id
-                                ]['job_result']
-                            },
-                            ModelRole,
-                        ):
-                            yield event
-
-                    update_long_running_jobs = copy.deepcopy(
-                        ctx.session.state['long_running_jobs']
-                    )
-                    update_long_running_jobs[origin_job_id]['job_in_ctx'] = True
-                    yield update_state_event(
-                        ctx,
-                        state_delta={'long_running_jobs': update_long_running_jobs},
-                    )
-                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                for event in context_function_event(
-                    ctx,
-                    self.name,
-                    'system_job_status',
-                    {'msg': f"Job {origin_job_id} status is {status}"},
-                    ModelRole,
-                ):
-                    yield event
-            yield Event(author=self.name)
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
 
 
 class BaseAsyncJobAgent(LlmAgent):
