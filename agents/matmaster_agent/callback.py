@@ -15,7 +15,7 @@ from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATERIALS_ACCESS
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
-from agents.matmaster_agent.style import get_job_complete_card
+from agents.matmaster_agent.style import get_job_complete_card, hallucination_card
 from agents.matmaster_agent.utils.job_utils import (
     get_job_status,
     get_running_jobs_detail,
@@ -77,6 +77,12 @@ async def matmaster_prepare_state(
     callback_context.state['new_query_job_status'] = callback_context.state.get(
         'new_query_job_status', {}
     )
+    callback_context.state['hallucination'] = callback_context.state.get(
+        'hallucination', False
+    )
+    callback_context.state['hallucination_agent'] = callback_context.state.get(
+        'hallucination_agent', None
+    )
 
 
 async def matmaster_set_lang(
@@ -93,6 +99,15 @@ async def matmaster_set_lang(
     logger.info(f"[{inspect.currentframe().f_code.co_name}] result = {result}")
     language = str(result.get('language', 'zh'))
     callback_context.state['target_language'] = language
+    if callback_context.state['target_language'] in [
+        'Chinese',
+        'zh-CN',
+        '简体中文',
+        'Chinese (Simplified)',
+    ]:
+        i18n.language = 'zh'
+    else:
+        i18n.language = 'en'
 
 
 # after_model_callback
@@ -113,16 +128,6 @@ async def matmaster_check_job_status(
         jobs_dict
     ):  # 确认当前有在运行中的任务
         running_job_ids = get_running_jobs_detail(jobs_dict)  # 从 state 里面拿
-        if callback_context.state['target_language'] in [
-            'Chinese',
-            'zh-CN',
-            '简体中文',
-            'Chinese (Simplified)',
-        ]:
-            i18n.language = 'zh'
-        else:
-            i18n.language = 'en'
-
         reset = False
         for origin_job_id, job_id, agent_name in running_job_ids:
             if not callback_context.state['last_llm_response_partial']:
@@ -169,7 +174,34 @@ async def matmaster_check_job_status(
                     )
                 )
         callback_context.state['last_llm_response_partial'] = llm_response.partial
-        return llm_response
+        # return llm_response
 
     callback_context.state['last_llm_response_partial'] = llm_response.partial
-    return None
+    return
+
+
+async def matmaster_hallucination_retry(
+    callback_context: CallbackContext, llm_response: LlmResponse
+) -> Optional[LlmResponse]:
+    hallucination_flag = callback_context.state['hallucination']
+    hallucination_agent = callback_context.state['hallucination_agent']
+    logger.info(
+        f'[matmaster_hallucination_retry] hallucination_flag={hallucination_flag}, hallucination_agent={hallucination_agent}, i18n.language = {i18n.language}'
+    )
+    if not callback_context.state['hallucination']:
+        return
+
+    llm_response.content.parts.append(Part(text=hallucination_card(i18n=i18n)))
+    function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
+    llm_response.content.parts.append(
+        Part(
+            function_call=FunctionCall(
+                id=function_call_id,
+                name='transfer_to_agent',
+                args={'agent_name': callback_context.state['hallucination_agent']},
+            )
+        )
+    )
+    callback_context.state['hallucination'] = False
+
+    return llm_response

@@ -720,6 +720,14 @@ class SubmitValidatorAgent(LlmAgent):
                 'System is experiencing task submission hallucination; '
                 'I recommend retrying with the original parameters.'
             )
+            yield update_state_event(
+                ctx,
+                state_delta={
+                    'hallucination': True,
+                    'hallucination_agent': ctx.agent.parent_agent.parent_agent.name,
+                },
+            )
+        logger.info(f'[SubmitValidatorAgent] state = {ctx.session.state}')
 
         for function_event in context_function_event(
             ctx,

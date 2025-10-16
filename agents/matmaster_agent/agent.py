@@ -11,6 +11,7 @@ from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
 from agents.matmaster_agent.callback import (
     matmaster_check_job_status,
+    matmaster_hallucination_retry,
     matmaster_prepare_state,
     matmaster_set_lang,
 )
@@ -56,6 +57,9 @@ from agents.matmaster_agent.utils.event_utils import (
 logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
     logging.ERROR
 )
+logging.getLogger('_client').setLevel(logging.WARNING)
+logging.getLogger('urllib3').setLevel(logging.WARNING)
+logging.getLogger('requests').setLevel(logging.WARNING)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -110,6 +114,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                     prompt=MatMasterCheckTransferPrompt,
                     target_agent_enum=MatMasterTargetAgentEnum,
                 ),
+                matmaster_hallucination_retry,
             ],
         )
 
