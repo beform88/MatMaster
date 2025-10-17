@@ -266,12 +266,15 @@ wheels = [
 
 [[package]]
 name = "bohr-agent-sdk"
-version = "0.1.101"
+version = "0.1.106"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "bohrium-open-sdk" },
     { name = "build" },
     { name = "click" },
+    { name = "cloudpickle" },
     { name = "dpdispatcher" },
+    { name = "fastapi" },
     { name = "jsonpickle" },
     { name = "lbg" },
     { name = "mcp" },
@@ -281,11 +284,28 @@ dependencies = [
     { name = "redis" },
     { name = "twine" },
     { name = "typing-extensions" },
+    { name = "watchdog" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/75/d0/4291bd323e3f5803836d4a3afb37d7c0e3500c1678243f327a229e4473aa/bohr_agent_sdk-0.1.101.tar.gz", hash = "sha256:4b007fbb91cef336e4c1a30badc0bc92d28dfe61d1992f254c1cd7d83b31cceb", size = 38766 }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/71/cf278e048e8eb1ea41d5a23bbf88916bd500dbfcc0e53aa99f903b2034c8/bohr_agent_sdk-0.1.106.tar.gz", hash = "sha256:213cb45a2399cc324fddbba03a17024e990e3af52e9b035871cc3b37a5852288", size = 488724 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c8/e2/ff4a70e3960c437954e459ff5ca02c925afb965cf2acb5bb630f586655ef/bohr_agent_sdk-0.1.101-py3-none-any.whl", hash = "sha256:2d5b4a30d4898558b960e555056155161116b389fafe40fb14c792a46da46725", size = 48124 },
+    { url = "https://files.pythonhosted.org/packages/5b/8e/fdc681c18869d4bd543c7356dfbfbba3d38c0a7f4074d302cb6c1ca04ad7/bohr_agent_sdk-0.1.106-py3-none-any.whl", hash = "sha256:495aaf96dbfc404f5da62283cd2bfac9154807923178acd24681249a7fda21ad", size = 510878 },
 ]
+
+[[package]]
+name = "bohrium-open-sdk"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "distro" },
+    { name = "glom" },
+    { name = "httpx" },
+    { name = "pandas" },
+    { name = "pytest" },
+    { name = "python-dotenv" },
+    { name = "requests" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ba/f3/30f02baa5a369e64dd2d6f684548632dc6a15070f455cef5a860f75085f7/bohrium_open_sdk-1.0.0.tar.gz", hash = "sha256:b7844593cb3bec29a0b284dad7de0b181db9432f3df19588aa89f087317fbcf0", size = 27262 }
 
 [[package]]
 name = "bohrium-sdk"
@@ -303,6 +323,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/84/f2/4effe54b697d7d372b90a8591c14e86f3bd75b2519f7150e070ba6d6e304/bohrium-sdk-0.14.0.tar.gz", hash = "sha256:2baf9a9293c30238ec1714152865d89a5977d6685fd6c6eee2df95c6635d522b", size = 15128 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/38/a0/a7e0b81ad8de36b9f9d2185d579b6f50558e8aa140a64007fdd4136373f4/bohrium_sdk-0.14.0-py3-none-any.whl", hash = "sha256:fbc7c71677b962934933ec69f7c7e8e45f04d1942c3b8afa6229a635e50f950a", size = 18925 },
+]
+
+[[package]]
+name = "boltons"
+version = "25.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/54/71a94d8e02da9a865587fb3fff100cb0fc7aa9f4d5ed9ed3a591216ddcc7/boltons-25.0.0.tar.gz", hash = "sha256:e110fbdc30b7b9868cb604e3f71d4722dd8f4dcb4a5ddd06028ba8f1ab0b5ace", size = 246294 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/45/7f/0e961cf3908bc4c1c3e027de2794f867c6c89fb4916fc7dba295a0e80a2d/boltons-25.0.0-py3-none-any.whl", hash = "sha256:dc9fb38bf28985715497d1b54d00b62ea866eca3938938ea9043e254a3a6ca62", size = 194210 },
 ]
 
 [[package]]
@@ -580,6 +609,18 @@ wheels = [
 ]
 
 [[package]]
+name = "face"
+version = "24.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "boltons" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/79/2484075a8549cd64beae697a8f664dee69a5ccf3a7439ee40c8f93c1978a/face-24.0.0.tar.gz", hash = "sha256:611e29a01ac5970f0077f9c577e746d48c082588b411b33a0dd55c4d872949f6", size = 62732 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e9/47/21867c2e5fd006c8d36a560df9e32cb4f1f566b20c5dd41f5f8a2124f7de/face-24.0.0-py3-none-any.whl", hash = "sha256:0e2c17b426fa4639a4e77d1de9580f74a98f4869ba4c7c8c175b810611622cd3", size = 54742 },
+]
+
+[[package]]
 name = "fastapi"
 version = "0.116.1"
 source = { registry = "https://pypi.org/simple" }
@@ -685,6 +726,20 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/8b/02/0835e6ab9cfc03916fe3f78c0956cfcdb6ff2669ffa6651065d5ebf7fc98/fsspec-2025.7.0.tar.gz", hash = "sha256:786120687ffa54b8283d942929540d8bc5ccfa820deb555a2b5d0ed2b737bf58", size = 304432 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2f/e0/014d5d9d7a4564cf1c40b5039bc882db69fd881111e03ab3657ac0b218e2/fsspec-2025.7.0-py3-none-any.whl", hash = "sha256:8b012e39f63c7d5f10474de957f3ab793b47b45ae7d39f2fb735f8bbe25c0e21", size = 199597 },
+]
+
+[[package]]
+name = "glom"
+version = "24.11.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "boltons" },
+    { name = "face" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/05/89/b57cfbc448189426f2e01b244fbe9226b059ef5423a9d49c1d335a1f1026/glom-24.11.0.tar.gz", hash = "sha256:4325f96759a912044af7b6c6bd0dba44ad8c1eb6038aab057329661d2021bb27", size = 195120 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/a2/75fd80784ec33da8d39cf885e8811a4fbc045a90db5e336b8e345e66dbb2/glom-24.11.0-py3-none-any.whl", hash = "sha256:991db7fcb4bfa9687010aa519b7b541bbe21111e70e58fdd2d7e34bbaa2c1fbd", size = 102690 },
 ]
 
 [[package]]
@@ -1641,7 +1696,7 @@ wheels = [
 [[package]]
 name = "matmaster"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
     { name = "anyio" },
@@ -1661,7 +1716,7 @@ dependencies = [
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "anyio", specifier = ">=4.10.0" },
-    { name = "bohr-agent-sdk", specifier = "==0.1.101" },
+    { name = "bohr-agent-sdk", specifier = "==0.1.106" },
     { name = "bohrium-sdk", specifier = ">=0.14.0" },
     { name = "google-adk", extras = ["a2a"], specifier = "==1.14.1" },
     { name = "litellm", specifier = ">=1.76.1" },
@@ -1675,7 +1730,7 @@ requires-dist = [
 
 [[package]]
 name = "mcp"
-version = "1.12.3"
+version = "1.18.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1690,9 +1745,9 @@ dependencies = [
     { name = "starlette" },
     { name = "uvicorn", marker = "sys_platform != 'emscripten'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4d/19/9955e2df5384ff5dd25d38f8e88aaf89d2d3d9d39f27e7383eaf0b293836/mcp-1.12.3.tar.gz", hash = "sha256:ab2e05f5e5c13e1dc90a4a9ef23ac500a6121362a564447855ef0ab643a99fed", size = 427203 }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/e0/fe34ce16ea2bacce489ab859abd1b47ae28b438c3ef60b9c5eee6c02592f/mcp-1.18.0.tar.gz", hash = "sha256:aa278c44b1efc0a297f53b68df865b988e52dd08182d702019edcf33a8e109f6", size = 482926 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/8b/0be74e3308a486f1d127f3f6767de5f9f76454c9b4183210c61cc50999b6/mcp-1.12.3-py3-none-any.whl", hash = "sha256:5483345bf39033b858920a5b6348a303acacf45b23936972160ff152107b850e", size = 158810 },
+    { url = "https://files.pythonhosted.org/packages/1b/44/f5970e3e899803823826283a70b6003afd46f28e082544407e24575eccd3/mcp-1.18.0-py3-none-any.whl", hash = "sha256:42f10c270de18e7892fdf9da259029120b1ea23964ff688248c69db9d72b1d0a", size = 168762 },
 ]
 
 [[package]]
