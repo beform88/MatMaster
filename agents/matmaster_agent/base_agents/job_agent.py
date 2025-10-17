@@ -40,6 +40,7 @@ from agents.matmaster_agent.constant import (
     LOADING_TITLE,
     MATERIALS_ACCESS_KEY,
     MATERIALS_PROJECT_ID,
+    SANDBOX_JOB_DETAIL_URL,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
     get_BohriumExecutor,
@@ -380,7 +381,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         },
                         tool_context=None,
                     )
-                    if results_res.isError:  # Job Failed
+                    if results_res.isError:  # Job Result Retrival Failed
                         err_msg = results_res.content[0].text
                         if err_msg.startswith('Error executing tool'):
                             err_msg = err_msg[err_msg.find(':') + 2 :]
@@ -390,6 +391,8 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             f"Job {origin_job_id} failed: {err_msg}",
                             ModelRole,
                         )
+                    elif status == 'Failed':  # Job Failed
+                        pass
                     else:  # Job Success
                         raw_result = results_res.content[0].text
                         dict_result = jsonpickle.loads(raw_result)
@@ -508,7 +511,13 @@ class ToolCallInfoAgent(LlmAgent):
             async for event in super()._run_async_impl(ctx):
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 if not event.partial:
-                    tool_call_info = json.loads(event.content.parts[0].text)
+                    try:
+                        tool_call_info = json.loads(event.content.parts[0].text)
+                    except BaseException:
+                        logger.info(
+                            f'[ToolCallInfoAgent] raw_text = {event.content.parts[0].text}'
+                        )
+                        raise
                     for system_job_result_event in context_function_event(
                         ctx,
                         self.name,
@@ -621,11 +630,15 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                 job_status = results['status']
                                 if not ctx.session.state['dflow']:
                                     bohr_job_id = results['extra_info']['bohr_job_id']
+                                    job_detail_url = (
+                                        f'{SANDBOX_JOB_DETAIL_URL}/{bohr_job_id}'
+                                    )
                                     frontend_result = BohrJobInfo(
                                         origin_job_id=origin_job_id,
                                         job_name=job_name,
                                         job_status=job_status,
                                         job_id=bohr_job_id,
+                                        job_detail_url=job_detail_url,
                                         agent_name=ctx.agent.parent_agent.parent_agent.name,
                                     ).model_dump(mode='json')
                                 else:
