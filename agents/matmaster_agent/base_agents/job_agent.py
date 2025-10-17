@@ -40,6 +40,7 @@ from agents.matmaster_agent.constant import (
     LOADING_TITLE,
     MATERIALS_ACCESS_KEY,
     MATERIALS_PROJECT_ID,
+    SANDBOX_JOB_DETAIL_URL,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
     get_BohriumExecutor,
@@ -629,11 +630,15 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                 job_status = results['status']
                                 if not ctx.session.state['dflow']:
                                     bohr_job_id = results['extra_info']['bohr_job_id']
+                                    job_detail_url = (
+                                        f'{SANDBOX_JOB_DETAIL_URL}/{bohr_job_id}'
+                                    )
                                     frontend_result = BohrJobInfo(
                                         origin_job_id=origin_job_id,
                                         job_name=job_name,
                                         job_status=job_status,
                                         job_id=bohr_job_id,
+                                        job_detail_url=job_detail_url,
                                         agent_name=ctx.agent.parent_agent.parent_agent.name,
                                     ).model_dump(mode='json')
                                 else:
