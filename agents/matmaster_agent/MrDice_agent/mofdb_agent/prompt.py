@@ -97,7 +97,7 @@ Main tables:
          WHERE a.name = 'Hydrogen'
          GROUP BY m.id
      )
-     SELECT 
+     SELECT
          c.name, c.database, c.co2_avg, h.h2_avg,
          (c.co2_avg / h.h2_avg) as selectivity_ratio
      FROM co2_adsorption c
@@ -110,15 +110,15 @@ Main tables:
    → Tool: fetch_mofs_sql
      sql: '''
      WITH ranked_mofs AS (
-         SELECT 
+         SELECT
              name, database, surface_area_m2g, void_fraction, n_atom,
              ROW_NUMBER() OVER (PARTITION BY database ORDER BY surface_area_m2g DESC) as sa_rank,
              COUNT(*) OVER (PARTITION BY database) as total_count,
              (surface_area_m2g * void_fraction / n_atom) as efficiency_score
-         FROM mofs 
+         FROM mofs
          WHERE surface_area_m2g IS NOT NULL AND void_fraction IS NOT NULL AND n_atom > 0
      )
-     SELECT 
+     SELECT
          name, database, surface_area_m2g, void_fraction, efficiency_score,
          sa_rank, total_count, (sa_rank * 100.0 / total_count) as percentile
      FROM ranked_mofs
@@ -130,14 +130,14 @@ Main tables:
    → Tool: fetch_mofs_sql
      sql: '''
      WITH element_compositions AS (
-         SELECT 
+         SELECT
              m.id, m.name, m.database, m.n_atom, m.surface_area_m2g,
              GROUP_CONCAT(e.element_symbol || ':' || e.n_atom) as composition
          FROM mofs m
          JOIN elements e ON m.id = e.mof_id
          GROUP BY m.id, m.name, m.database, m.n_atom, m.surface_area_m2g
      )
-     SELECT 
+     SELECT
          m1.name as mof1_name, m1.database as mof1_db, m1.n_atom as mof1_atoms, m1.surface_area_m2g as mof1_sa,
          m2.name as mof2_name, m2.database as mof2_db, m2.n_atom as mof2_atoms, m2.surface_area_m2g as mof2_sa,
          ABS(m1.n_atom - m2.n_atom) * 100.0 / ((m1.n_atom + m2.n_atom) / 2) as atom_diff_percent,
