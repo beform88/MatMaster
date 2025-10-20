@@ -11,6 +11,7 @@ from dotenv import find_dotenv, load_dotenv
 from google.adk import Runner
 from google.adk.agents import RunConfig
 from google.adk.agents.run_config import StreamingMode
+from google.adk.artifacts import InMemoryArtifactService
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
@@ -142,6 +143,7 @@ async def _run_conversation(
     :param save_mode: 写文件模式 ("w" 覆盖 / "a" 追加)
     """
     session_service = InMemorySessionService()
+    artifact_service = InMemoryArtifactService()
     session = await session_service.create_session(
         app_name='matmaster_agent',
         user_id='human_simulator_test',
@@ -150,7 +152,10 @@ async def _run_conversation(
     logger.info(f"Test Session: {session.id}")
 
     runner = Runner(
-        app_name='matmaster_agent', agent=root_agent, session_service=session_service
+        app_name='matmaster_agent',
+        agent=root_agent,
+        session_service=session_service,
+        artifact_service=artifact_service,
     )
 
     simulator = HumanSimulator(max_turn_count=max_turn_count)
@@ -164,6 +169,17 @@ async def _run_conversation(
             success_criteria=dataset_item['success_criteria'],
         ),
     }
+
+    file_parts = []
+    if 'file_urls' in dataset_item:
+        for file_url in dataset_item['file_urls']:
+            # with open(file_url, "rb") as f:
+            #     file_bytes = f.read()
+            file_part = types.Part.from_uri(
+                file_uri=file_url, mime_type='application/pdf'
+            )
+            file_parts.append(file_part)
+
     print(f"\n{'=' * 20} 测试场景: {scenario['name']} {'=' * 20}")
 
     simulator.set_goal(scenario['goal'])
@@ -197,7 +213,14 @@ async def _run_conversation(
 
         # 调用 agent
         try:
-            content = types.Content(role='user', parts=[types.Part(text=user_input)])
+            if turn_count == 1 and file_parts != []:
+                content = types.Content(
+                    role='user', parts=file_parts + [types.Part(text=user_input)]
+                )
+            else:
+                content = types.Content(
+                    role='user', parts=[types.Part(text=user_input)]
+                )
             agent_response = ''
 
             events = runner.run_async(
@@ -334,4 +357,5 @@ async def evaluation_threads_single_task(
     print('\n' + '=' * 80)
     print('🎉 单条多轮对话测试完成！')
     print('=' * 80)
+
     return result

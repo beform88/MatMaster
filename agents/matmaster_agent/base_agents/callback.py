@@ -14,7 +14,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.agents.llm_agent import AfterToolCallback, BeforeToolCallback
 from google.adk.models import LlmResponse
 from google.adk.tools import BaseTool, ToolContext
-from mcp.types import CallToolResult
+from mcp.types import CallToolResult, TextContent
 
 from agents.matmaster_agent.constant import (
     CURRENT_ENV,
@@ -32,10 +32,10 @@ from agents.matmaster_agent.utils.helper_func import (
     function_calls_to_str,
     get_session_state,
     get_unique_function_call,
-    is_json,
     update_llm_response,
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
+from agents.matmaster_agent.utils.tool_response_utils import check_valid_tool_response
 
 logger = logging.getLogger(__name__)
 
@@ -180,6 +180,23 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
     )
 
 
+@check_None_wrapper
+def _get_userId(ctx: Union[InvocationContext, ToolContext]):
+    session_state = get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY].get('adk_user_id') or os.getenv(
+        'BOHRIUM_USER_ID'
+    )
+
+
+@check_None_wrapper
+def _get_sessionId(ctx: ToolContext):
+    session_state = get_session_state(ctx)
+    return (
+        session_state[FRONTEND_STATE_KEY].get('sessionId')
+        or ctx._invocation_context.session.id
+    )
+
+
 def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
     access_key = _get_ak(ctx)
     if executor is not None:
@@ -262,6 +279,28 @@ def _inject_current_env(executor):
     return executor
 
 
+def _inject_userId(ctx: Union[InvocationContext, ToolContext], executor):
+    user_id = _get_userId(ctx)
+    if user_id:
+        if executor is not None:
+            if executor['type'] == 'dispatcher':  # BohriumExecutor
+                executor['machine']['remote_profile']['real_user_id'] = int(user_id)
+        return user_id, executor
+    else:
+        raise RuntimeError('Failed to get user_id')
+
+
+def _inject_sessionId(ctx: ToolContext, executor):
+    session_id = _get_sessionId(ctx)
+    if session_id:
+        if executor is not None:
+            if executor['type'] == 'dispatcher':  # BohriumExecutor
+                executor['machine']['remote_profile']['session_id'] = str(session_id)
+        return session_id, executor
+    else:
+        raise RuntimeError('Failed to get session_id')
+
+
 def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(
@@ -276,6 +315,24 @@ def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 注入 ticket
         _, tool.executor = _inject_ticket(tool_context, tool.executor)
+
+    return wrapper
+
+
+def inject_userId_sessionId(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 先执行前面的回调链
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 注入 username
+        _, tool.executor = _inject_userId(tool_context, tool.executor)
+
+        # 注入 ticket
+        _, tool.executor = _inject_sessionId(tool_context, tool.executor)
 
     return wrapper
 
@@ -378,6 +435,8 @@ def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCall
                         tool.wait = True
                         tool.executor = LOCAL_EXECUTOR
 
+            logger.info(f'[catch_before_tool_callback_error] executor={tool.executor}')
+
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
             return {
@@ -457,18 +516,53 @@ def tgz_oss_to_oss_list(
             raise TypeError('Not CalculationMCPTool type')
 
         # 检查是否为有效的 json 字典
-        if not (
-            tool_response
-            and tool_response.content
-            and tool_response.content[0].text
-            and is_json(tool_response.content[0].text)
-        ):
+        if not check_valid_tool_response(tool_response):
             return None
 
         tool_result = json.loads(tool_response.content[0].text)
         tgz_flag, new_tool_result = await update_tgz_dict(tool_result)
         if tgz_flag:
             return new_tool_result
+
+    return wrapper
+
+
+def remove_job_link(func: AfterToolCallback) -> AfterToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool,
+        args: dict,
+        tool_context: ToolContext,
+        tool_response: Union[dict, CallToolResult],
+    ) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 after_tool_callback；
+        # 2. 如果调用的 after_tool_callback 有返回值，以这个为准
+        # 如果 tool 为 Transfer2Agent，直接 return
+        if tool.name == Transfer2Agent:
+            return None
+
+        if (
+            after_tool_result := await func(tool, args, tool_context, tool_response)
+        ) is not None:
+            return after_tool_result
+
+        # 检查是否为有效的 json 字典
+        if not check_valid_tool_response(tool_response):
+            return None
+
+        # 移除 job_link
+        tool_result: dict = json.loads(tool_response.content[0].text)
+        if tool_result.get('extra_info', None) is not None:
+            del tool_result['extra_info']['job_link']
+            tool_response.content[0] = TextContent(
+                type='text', text=json.dumps(tool_result)
+            )
+            if tool_response.structuredContent is not None:
+                tool_response.structuredContent = None
+
+            logger.info(f"[remove_job_link] final_tool_result = {tool_response}")
+            return tool_response
 
     return wrapper
 

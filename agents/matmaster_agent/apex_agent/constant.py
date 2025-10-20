@@ -14,17 +14,9 @@ else:
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
 
-if CURRENT_ENV in ['test', 'uat']:
-    # test
-    ApexBohriumExecutor['machine']['remote_profile'][
-        'image_address'
-    ] = 'registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-test:0.1.2'
-else:
-    # prod
-    ApexBohriumExecutor['machine']['remote_profile'][
-        'image_address'
-    ] = 'registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-prod:0.1.2'
-
+ApexBohriumExecutor['machine']['remote_profile'][
+    'image_address'
+] = 'registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-all:0.0.2'
 
 # APEX专用的Bohrium存储配置
 ApexBohriumStorage = copy.deepcopy(BohriumStorge)

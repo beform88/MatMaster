@@ -1,13 +1,11 @@
 import copy
-import inspect
 import json
 import logging
-import os
 from typing import List, Union
 
 import jsonpickle
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event, EventActions
+from google.adk.events import Event
 from google.adk.models import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai.types import Part
@@ -21,22 +19,6 @@ logger = logging.getLogger(__name__)
 
 def get_session_state(ctx: Union[InvocationContext, ToolContext]):
     return ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
-
-
-async def update_session_state(ctx: InvocationContext, author: str):
-    stack = inspect.stack()
-    frame = stack[1]  # stack[1] 表示调用当前函数的上一层调用
-    filename = os.path.basename(frame.filename)
-    lineno = frame.lineno
-    actions_with_update = EventActions(state_delta=ctx.session.state)
-    system_event = Event(
-        invocation_id=ctx.invocation_id,
-        author=f"{filename}:{lineno}",
-        actions=actions_with_update,
-    )
-    await ctx.session_service.append_event(
-        ctx.session, system_event
-    )  # 会引入一个空消息
 
 
 def update_llm_response(

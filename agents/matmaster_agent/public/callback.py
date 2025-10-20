@@ -38,7 +38,20 @@ def check_transfer(prompt: str, target_agent_enum: Type[Enum]) -> AfterModelCall
             response_format=create_transfer_check_model(target_agent_enum),
         )
 
-        result: dict = json.loads(response.choices[0].message.content)
+        if (
+            response
+            and response.choices
+            and response.choices[0]
+            and response.choices[0].message
+            and response.choices[0].message.content
+        ):
+            result: dict = json.loads(response.choices[0].message.content)
+        else:
+            logger.warning(
+                f'[check_transfer] LLM completion error, response = {response}'
+            )
+            return
+
         is_transfer = bool(result.get('is_transfer', False))
         target_agent = str(result.get('target_agent', ''))
         reason = str(result.get('reason', ''))

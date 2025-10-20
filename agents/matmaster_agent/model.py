@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List, Optional, Union
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 
 from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
 from agents.matmaster_agent.apex_agent.constant import ApexAgentName
@@ -52,20 +52,13 @@ class JobResult(BaseModel):
 class BohrJobInfo(BaseModel):
     origin_job_id: str
     job_id: Union[int, str]
-    job_query_url: str
     job_detail_url: str
     job_status: JobStatus
     job_name: str
     job_result: Optional[List[JobResult]] = None
     job_in_ctx: bool = False
     agent_name: str
-
-    @field_validator('job_detail_url')
-    @classmethod
-    def validate_job_detail_url(cls, v: str) -> str:
-        if '.dp.tech/jobs/detail' not in v:
-            raise ValueError('Job Detail Url Invalid')
-        return v
+    resource_type: Optional[str] = 'sandbox'
 
 
 class DFlowJobInfo(BaseModel):
