@@ -180,6 +180,23 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
     )
 
 
+@check_None_wrapper
+def _get_userId(ctx: Union[InvocationContext, ToolContext]):
+    session_state = get_session_state(ctx)
+    return session_state[FRONTEND_STATE_KEY].get('adk_user_id') or os.getenv(
+        'BOHRIUM_USER_ID'
+    )
+
+
+@check_None_wrapper
+def _get_sessionId(ctx: ToolContext):
+    session_state = get_session_state(ctx)
+    return (
+        session_state[FRONTEND_STATE_KEY].get('sessionId')
+        or ctx._invocation_context.session.id
+    )
+
+
 def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
     access_key = _get_ak(ctx)
     if executor is not None:
@@ -262,6 +279,28 @@ def _inject_current_env(executor):
     return executor
 
 
+def _inject_userId(ctx: Union[InvocationContext, ToolContext], executor):
+    user_id = _get_userId(ctx)
+    if user_id:
+        if executor is not None:
+            if executor['type'] == 'dispatcher':  # BohriumExecutor
+                executor['machine']['remote_profile']['real_user_id'] = int(user_id)
+        return user_id, executor
+    else:
+        raise RuntimeError('Failed to get user_id')
+
+
+def _inject_sessionId(ctx: ToolContext, executor):
+    session_id = _get_sessionId(ctx)
+    if session_id:
+        if executor is not None:
+            if executor['type'] == 'dispatcher':  # BohriumExecutor
+                executor['machine']['remote_profile']['session_id'] = str(session_id)
+        return session_id, executor
+    else:
+        raise RuntimeError('Failed to get session_id')
+
+
 def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(
@@ -276,6 +315,24 @@ def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 注入 ticket
         _, tool.executor = _inject_ticket(tool_context, tool.executor)
+
+    return wrapper
+
+
+def inject_userId_sessionId(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 先执行前面的回调链
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 注入 username
+        _, tool.executor = _inject_userId(tool_context, tool.executor)
+
+        # 注入 ticket
+        _, tool.executor = _inject_sessionId(tool_context, tool.executor)
 
     return wrapper
 
@@ -377,6 +434,8 @@ def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCall
                         tool.async_mode = False
                         tool.wait = True
                         tool.executor = LOCAL_EXECUTOR
+
+            logger.info(f'[catch_before_tool_callback_error] executor={tool.executor}')
 
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
@@ -499,6 +558,8 @@ def remove_job_link(func: AfterToolCallback) -> AfterToolCallback:
             tool_response.content[0] = TextContent(
                 type='text', text=json.dumps(tool_result)
             )
+            if tool_response.structuredContent is not None:
+                tool_response.structuredContent = None
 
             logger.info(f"[remove_job_link] final_tool_result = {tool_response}")
             return tool_response

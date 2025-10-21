@@ -83,13 +83,12 @@ class LLMConfig:
             model_name: str,
             **kwargs,
         ):
-            llm_kwargs = {'stream_options': {'include_usage': True}}
-            if kwargs:
-                llm_kwargs.update(kwargs)
             return LiteLlm(
                 model=MODEL_MAPPING.get((provider_key, model_name), DEFAULT_MODEL),
-                **llm_kwargs,
+                **kwargs,
             )
+
+        llm_kwargs = {'stream_options': {'include_usage': True}}
 
         self.gpt_4o_mini = _init_model(azure_provider, gpt_4o_mini)
         self.gpt_4o = _init_model(azure_provider, gpt_4o)
@@ -103,7 +102,7 @@ class LLMConfig:
         self.gpt_5 = _init_model(litellm_provider, gpt_5)
         self.gpt_5_nano = _init_model(litellm_provider, gpt_5_nano)
         self.gpt_5_mini = _init_model(litellm_provider, gpt_5_mini)
-        self.gpt_5_chat = _init_model(litellm_provider, gpt_5_chat)
+        self.gpt_5_chat = _init_model(litellm_provider, gpt_5_chat, **llm_kwargs)
 
         # tracing
         self.opik_tracer = OpikTracer()
