@@ -53,6 +53,7 @@ from agents.matmaster_agent.utils.event_utils import (
     send_error_event,
     update_state_event,
 )
+from agents.matmaster_agent.finetune_dpa_agent.agent import init_finetune_dpa_agent
 
 logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
     logging.ERROR
@@ -78,6 +79,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         chembrain_agent = init_chembrain_agent(llm_config)
         perovskite_agent = init_perovskite_agent(llm_config)
         document_parser_agent = init_document_parser_agent(llm_config)
+        finetune_dpa_agent = init_finetune_dpa_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -100,6 +102,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 chembrain_agent,
                 perovskite_agent,
                 document_parser_agent,
+                finetune_dpa_agent,
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,

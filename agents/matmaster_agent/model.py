@@ -29,6 +29,7 @@ from agents.matmaster_agent.superconductor_agent.constant import SuperconductorA
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 
+from agents.matmaster_agent.finetune_dpa_agent.constant import FinetuneDPAAgentName
 
 class JobStatus(str, Enum):
     Running = 'Running'
@@ -96,6 +97,7 @@ class MatMasterTargetAgentEnum(str, Enum):
     SuperConductorAgent = SuperconductorAgentName
     ThermoElectricAgent = ThermoelectricAgentName
     TrajAnalysisAgent = TrajAnalysisAgentName
+    FinetuneDPAAgent = FinetuneDPAAgentName
 
 
 class UserContent(BaseModel):
