@@ -152,14 +152,18 @@ async def remove_function_call(
             part.function_call = None
         llm_response.content.parts.append(part)
 
-    logger.info(f"[{MATMASTER_AGENT_NAME}] llm_generated_text = {llm_generated_text}")
+    if llm_generated_text:
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}] llm_generated_text = {llm_generated_text}"
+        )
 
     if not llm_response.content.parts[0].text:
         llm_response.content.parts[0].text = llm_generated_text
 
-    logger.info(
-        f"[{MATMASTER_AGENT_NAME}] final llm_response_text = {llm_response.content.parts[0].text}"
-    )
+    if not llm_response.partial:
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}] final llm_response_text = {llm_response.content.parts[0].text}"
+        )
 
     return llm_response
 
