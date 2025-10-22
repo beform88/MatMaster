@@ -30,6 +30,7 @@ from agents.matmaster_agent.base_agents.callback import (
     tgz_oss_to_oss_list,
 )
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
+from agents.matmaster_agent.base_agents.patch import patch_run_async_impl
 from agents.matmaster_agent.constant import (
     FRONTEND_STATE_KEY,
     JOB_LIST_KEY,
@@ -526,38 +527,39 @@ class ToolCallInfoAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
-            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] Start {time.time()}')
-            await self.tools[0].get_tools()
-            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
-            async for event in super()._run_async_impl(ctx):
-                logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
-                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                if not event.partial:
+            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] Agent Start {time.time()}')
+            with patch_run_async_impl():
+                async for event in super()._run_async_impl(ctx):
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}]:[Timing] Non-Partial-Event: {time.time()}'
+                        f'[{MATMASTER_AGENT_NAME}]:[Timing] Event {time.time()}'
                     )
-                    try:
-                        tool_call_info = json.loads(event.content.parts[0].text)
-                    except BaseException:
+                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                    if not event.partial:
                         logger.info(
-                            f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
+                            f'[{MATMASTER_AGENT_NAME}]:[Timing] Non-Partial-Event: {time.time()}'
                         )
-                        raise
-                    logger.info(
-                        f'[{MATMASTER_AGENT_NAME}]:[Timing] system_tool_call_info start: {time.time()}'
-                    )
-                    for system_job_result_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'system_tool_call_info',
-                        tool_call_info,
-                        ModelRole,
-                    ):
-                        yield system_job_result_event
-                    logger.info(
-                        f'[{MATMASTER_AGENT_NAME}]:[Timing] system_tool_call_info end: {time.time()}'
-                    )
-            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] END {time.time()}')
+                        try:
+                            tool_call_info = json.loads(event.content.parts[0].text)
+                        except BaseException:
+                            logger.info(
+                                f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
+                            )
+                            raise
+                        logger.info(
+                            f'[{MATMASTER_AGENT_NAME}]:[Timing] system_tool_call_info start: {time.time()}'
+                        )
+                        for system_job_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'system_tool_call_info',
+                            tool_call_info,
+                            ModelRole,
+                        ):
+                            yield system_job_result_event
+                        logger.info(
+                            f'[{MATMASTER_AGENT_NAME}]:[Timing] system_tool_call_info end: {time.time()}'
+                        )
+            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] Agent END {time.time()}')
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
