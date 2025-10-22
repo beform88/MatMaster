@@ -526,13 +526,16 @@ class ToolCallInfoAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
-            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
+            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] Start {time.time()}')
             await self.tools[0].get_tools()
             logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
             async for event in super()._run_async_impl(ctx):
                 logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 if not event.partial:
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}]:[Timing] Non-Partial-Event: {time.time()}'
+                    )
                     try:
                         tool_call_info = json.loads(event.content.parts[0].text)
                     except BaseException:
@@ -540,6 +543,9 @@ class ToolCallInfoAgent(LlmAgent):
                             f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
                         )
                         raise
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}]:[Timing] system_tool_call_info start: {time.time()}'
+                    )
                     for system_job_result_event in context_function_event(
                         ctx,
                         self.name,
@@ -548,7 +554,10 @@ class ToolCallInfoAgent(LlmAgent):
                         ModelRole,
                     ):
                         yield system_job_result_event
-            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}]:[Timing] system_tool_call_info end: {time.time()}'
+                    )
+            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] END {time.time()}')
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
@@ -1016,10 +1025,16 @@ class BaseAsyncJobAgent(LlmAgent):
                 ) in self.params_check_info_agent.run_async(ctx):
                     yield params_check_info_event
             else:
+                logger.info(
+                    f'[{MATMASTER_AGENT_NAME}]:[Timing] Before tool_call_info_agent'
+                )
                 async for tool_call_info_event in self.tool_call_info_agent.run_async(
                     ctx
                 ):
                     yield tool_call_info_event
+                logger.info(
+                    f'[{MATMASTER_AGENT_NAME}]:[Timing] After tool_call_info_agent'
+                )
                 async for submit_event in self.submit_agent.run_async(ctx):
                     yield submit_event
 
