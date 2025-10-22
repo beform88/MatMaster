@@ -2,6 +2,7 @@ import copy
 import json
 import logging
 import os
+import time
 from typing import AsyncGenerator, Optional, override
 
 import jsonpickle
@@ -525,7 +526,11 @@ class ToolCallInfoAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
+            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
+            await self.tools[0].get_tools()
+            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
             async for event in super()._run_async_impl(ctx):
+                logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
                 # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
                 if not event.partial:
                     try:
@@ -543,6 +548,7 @@ class ToolCallInfoAgent(LlmAgent):
                         ModelRole,
                     ):
                         yield system_job_result_event
+            logger.info(f'[{MATMASTER_AGENT_NAME}]:[Timing] {time.time()}')
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
