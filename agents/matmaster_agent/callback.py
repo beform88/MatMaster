@@ -11,7 +11,11 @@ from google.adk.models import LlmResponse
 from google.genai import types
 from google.genai.types import FunctionCall, Part
 
-from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATERIALS_ACCESS_KEY
+from agents.matmaster_agent.constant import (
+    FRONTEND_STATE_KEY,
+    MATERIALS_ACCESS_KEY,
+    MATMASTER_AGENT_NAME,
+)
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
@@ -96,7 +100,9 @@ async def matmaster_set_lang(
         response_format=UserContent,
     )
     result: dict = json.loads(response.choices[0].message.content)
-    logger.info(f"[{inspect.currentframe().f_code.co_name}] result = {result}")
+    logger.info(
+        f"[{MATMASTER_AGENT_NAME}]:[{inspect.currentframe().f_code.co_name}] result = {result}"
+    )
     language = str(result.get('language', 'zh'))
     callback_context.state['target_language'] = language
     if callback_context.state['target_language'] in [
@@ -132,7 +138,7 @@ async def matmaster_check_job_status(
         for origin_job_id, job_id, agent_name in running_job_ids:
             if not callback_context.state['last_llm_response_partial']:
                 logger.info(
-                    '[matmaster_check_job_status] new LlmResponse, prepare call API'
+                    f'[{MATMASTER_AGENT_NAME}]:[matmaster_check_job_status] new LlmResponse, prepare call API'
                 )
                 job_status = await get_job_status(
                     job_id, access_key=MATERIALS_ACCESS_KEY
@@ -145,7 +151,7 @@ async def matmaster_check_job_status(
                     'origin_job_id'
                 ]  # 从 state 里取
             logger.info(
-                f"[matmaster_check_job_status] last_llm_response_partial = "
+                f"[{MATMASTER_AGENT_NAME}]:[matmaster_check_job_status] last_llm_response_partial = "
                 f"{callback_context.state['last_llm_response_partial']}, "
                 f"job_id = {job_id}, job_status = {job_status}"
             )
@@ -184,11 +190,13 @@ async def matmaster_hallucination_retry(
 ) -> Optional[LlmResponse]:
     hallucination_flag = callback_context.state['hallucination']
     hallucination_agent = callback_context.state['hallucination_agent']
-    logger.info(
-        f'[matmaster_hallucination_retry] hallucination_flag={hallucination_flag}, hallucination_agent={hallucination_agent}, i18n.language = {i18n.language}'
-    )
+
     if not callback_context.state['hallucination']:
         return
+
+    logger.info(
+        f'[{MATMASTER_AGENT_NAME}] hallucination_flag={hallucination_flag}, hallucination_agent={hallucination_agent}, i18n.language = {i18n.language}'
+    )
 
     if llm_response.partial:  # 原来消息的流式版本置空 None
         llm_response.content = None
