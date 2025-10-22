@@ -22,6 +22,7 @@ from agents.matmaster_agent.constant import (
     LOCAL_EXECUTOR,
     MATERIALS_ACCESS_KEY,
     MATERIALS_PROJECT_ID,
+    MATMASTER_AGENT_NAME,
     OPENAPI_HOST,
     Transfer2Agent,
 )
@@ -72,18 +73,18 @@ async def default_after_model_callback(
         != list(callback_context.state['invocation_id_with_tool_call'].keys())[0]
     ):  # 首次调用 function_call 或新一轮对话
         if len(current_function_calls) == 1:
-            logger.info('Single Function Call In New Turn')
+            logger.info(f'[{MATMASTER_AGENT_NAME}] Single Function Call In New Turn')
             logger.info(
-                f"current_function_calls = {function_calls_to_str(current_function_calls)}"
+                f"[{MATMASTER_AGENT_NAME}] current_function_calls = {function_calls_to_str(current_function_calls)}"
             )
 
             callback_context.state['invocation_id_with_tool_call'] = {
                 callback_context.invocation_id: current_function_calls
             }
         else:
-            logger.warning('Multi Function Calls In One Turn')
+            logger.warning(f'[{MATMASTER_AGENT_NAME}] Multi Function Calls In One Turn')
             logger.info(
-                f"current_function_calls = {function_calls_to_str(current_function_calls)}"
+                f"[{MATMASTER_AGENT_NAME}] current_function_calls = {function_calls_to_str(current_function_calls)}"
             )
 
             callback_context.state['invocation_id_with_tool_call'] = {
@@ -93,13 +94,15 @@ async def default_after_model_callback(
             }
             return update_llm_response(llm_response, current_function_calls, [])
     else:  # 同一轮对话又出现了 Function Call
-        logger.warning('Same InvocationId with Function Calls')
+        logger.warning(
+            f'[{MATMASTER_AGENT_NAME}] Same InvocationId with Function Calls'
+        )
         before_function_calls = callback_context.state['invocation_id_with_tool_call'][
             callback_context.invocation_id
         ]
         logger.info(
-            f"before_function_calls = {function_calls_to_str(before_function_calls)},"
-            f"current_function_calls = {function_calls_to_str(current_function_calls)}"
+            f"[{MATMASTER_AGENT_NAME}] before_function_calls = {function_calls_to_str(before_function_calls)},"
+            f"[{MATMASTER_AGENT_NAME}] current_function_calls = {function_calls_to_str(current_function_calls)}"
         )
 
         callback_context.state['invocation_id_with_tool_call'] = {
@@ -135,7 +138,7 @@ async def remove_function_call(
             function_args = part.function_call.args
 
             logger.info(
-                f"FunctionCall will be removed, name = {function_name}, args = {function_args}"
+                f"[{MATMASTER_AGENT_NAME}] FunctionCall will be removed, name = {function_name}, args = {function_args}"
             )
 
             prompt = get_params_check_info_prompt().format(
@@ -151,12 +154,18 @@ async def remove_function_call(
             part.function_call = None
         llm_response.content.parts.append(part)
 
-    logger.info(f"llm_generated_text = {llm_generated_text}")
+    if llm_generated_text:
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}] llm_generated_text = {llm_generated_text}"
+        )
 
     if not llm_response.content.parts[0].text:
         llm_response.content.parts[0].text = llm_generated_text
 
-    logger.info(f"final llm_response_text = {llm_response.content.parts[0].text}")
+    if not llm_response.partial:
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}] final llm_response_text = {llm_response.content.parts[0].text}"
+        )
 
     return llm_response
 
@@ -196,7 +205,7 @@ def check_user_phonon_balance(
                 "Not CalculationMCPTool type, current tool can't create job!"
             )
 
-        user_id = _get_user_id(tool_context)
+        user_id = _get_userId(tool_context)
         cost, sku_id = cost_func()
         tool_context.state['cost'][tool_context.function_call_id] = {
             'value': cost,
@@ -210,64 +219,6 @@ def check_user_phonon_balance(
         )
         if balance < cost:
             raise RuntimeError('Phonon is not enough, Please recharge.')
-
-    return wrapper
-
-
-def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
-    @wraps(func)
-    async def wrapper(
-        tool: BaseTool, args: dict, tool_context: ToolContext
-    ) -> Optional[dict]:
-        # 两步操作：
-        # 1. 调用被装饰的 before_tool_callback；
-        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
-        if (before_tool_result := await func(tool, args, tool_context)) is not None:
-            return before_tool_result
-
-        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
-        if not isinstance(tool, CalculationMCPTool):
-            raise TypeError(
-                "Not CalculationMCPTool type, current tool can't create job!"
-            )
-
-        if tool.executor is not None:
-            job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
-            user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
-            payload = {
-                'projectId': MATERIALS_PROJECT_ID,
-                'name': 'check_job_create',
-            }
-            params = {'accessKey': MATERIALS_ACCESS_KEY}
-
-            logger.info(
-                f"[check_job_create] project_id = {MATERIALS_PROJECT_ID}, "
-                f"ak = {MATERIALS_ACCESS_KEY}"
-            )
-
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    user_project_list_url, params=params
-                ) as response:
-                    res = json.loads(await response.text())
-                    logger.info(f"[check_job_create] res = {res}")
-                    project_name = [
-                        item['project_name']
-                        for item in res['data']['items']
-                        if item['project_id'] == MATERIALS_PROJECT_ID
-                    ][0]
-
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    job_create_url, json=payload, params=params
-                ) as response:
-                    res = json.loads(await response.text())
-                    if res['code'] != 0:
-                        if res['code'] == 2000:
-                            res['error'][
-                                'msg'
-                            ] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
-                        return res
 
     return wrapper
 
@@ -289,10 +240,19 @@ def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
 
 
 @check_None_wrapper
-def _get_user_id(ctx: Union[InvocationContext, ToolContext]):
+def _get_userId(ctx: Union[InvocationContext, ToolContext]):
     session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY].get('adk_user_id') or os.getenv(
-        'MATERIALS_USER_ID'
+        'BOHRIUM_USER_ID'
+    )
+
+
+@check_None_wrapper
+def _get_sessionId(ctx: ToolContext):
+    session_state = get_session_state(ctx)
+    return (
+        session_state[FRONTEND_STATE_KEY].get('sessionId')
+        or ctx._invocation_context.session.id
     )
 
 
@@ -378,6 +338,28 @@ def _inject_current_env(executor):
     return executor
 
 
+def _inject_userId(ctx: Union[InvocationContext, ToolContext], executor):
+    user_id = _get_userId(ctx)
+    if user_id:
+        if executor is not None:
+            if executor['type'] == 'dispatcher':  # BohriumExecutor
+                executor['machine']['remote_profile']['real_user_id'] = int(user_id)
+        return user_id, executor
+    else:
+        raise RuntimeError('Failed to get user_id')
+
+
+def _inject_sessionId(ctx: ToolContext, executor):
+    session_id = _get_sessionId(ctx)
+    if session_id:
+        if executor is not None:
+            if executor['type'] == 'dispatcher':  # BohriumExecutor
+                executor['machine']['remote_profile']['session_id'] = str(session_id)
+        return session_id, executor
+    else:
+        raise RuntimeError('Failed to get session_id')
+
+
 def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(
@@ -396,6 +378,24 @@ def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     return wrapper
 
 
+def inject_userId_sessionId(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 先执行前面的回调链
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 注入 username
+        _, tool.executor = _inject_userId(tool_context, tool.executor)
+
+        # 注入 ticket
+        _, tool.executor = _inject_sessionId(tool_context, tool.executor)
+
+    return wrapper
+
+
 def inject_current_env(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(
@@ -407,6 +407,66 @@ def inject_current_env(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 注入当前环境
         tool.executor = _inject_current_env(tool.executor)
+
+    return wrapper
+
+
+def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            raise TypeError(
+                "Not CalculationMCPTool type, current tool can't create job!"
+            )
+
+        if tool.executor is not None:
+            job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
+            user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
+            payload = {
+                'projectId': MATERIALS_PROJECT_ID,
+                'name': 'check_job_create',
+            }
+            params = {'accessKey': MATERIALS_ACCESS_KEY}
+
+            logger.info(
+                f"[{MATMASTER_AGENT_NAME}]:[check_job_create] project_id = {MATERIALS_PROJECT_ID}, "
+                f"ak = {MATERIALS_ACCESS_KEY}"
+            )
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    user_project_list_url, params=params
+                ) as response:
+                    res = json.loads(await response.text())
+                    logger.info(
+                        f"[{MATMASTER_AGENT_NAME}]:[check_job_create] res = {res}"
+                    )
+                    project_name = [
+                        item['project_name']
+                        for item in res['data']['items']
+                        if item['project_id'] == MATERIALS_PROJECT_ID
+                    ][0]
+
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    job_create_url, json=payload, params=params
+                ) as response:
+                    res = json.loads(await response.text())
+                    if res['code'] != 0:
+                        if res['code'] == 2000:
+                            res['error'][
+                                'msg'
+                            ] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
+                        return res
 
     return wrapper
 
@@ -435,6 +495,10 @@ def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCall
                         tool.async_mode = False
                         tool.wait = True
                         tool.executor = LOCAL_EXECUTOR
+
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}]:[catch_before_tool_callback_error] executor={tool.executor}'
+            )
 
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
@@ -557,8 +621,12 @@ def remove_job_link(func: AfterToolCallback) -> AfterToolCallback:
             tool_response.content[0] = TextContent(
                 type='text', text=json.dumps(tool_result)
             )
+            if tool_response.structuredContent is not None:
+                tool_response.structuredContent = None
 
-            logger.info(f"[remove_job_link] final_tool_result = {tool_response}")
+            logger.info(
+                f"[{MATMASTER_AGENT_NAME}]:[remove_job_link] final_tool_result = {tool_response}"
+            )
             return tool_response
 
     return wrapper

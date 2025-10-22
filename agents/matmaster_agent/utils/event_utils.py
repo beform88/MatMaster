@@ -1,16 +1,30 @@
+import inspect
 import logging
+import os
 import traceback
 import uuid
 from typing import Iterable, Optional
 
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event
+from google.adk.events import Event, EventActions
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
-from agents.matmaster_agent.constant import ModelRole
-from agents.matmaster_agent.utils.helper_func import update_session_state
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 
 logger = logging.getLogger(__name__)
+
+
+def update_state_event(ctx: InvocationContext, state_delta: dict):
+    stack = inspect.stack()
+    frame = stack[1]  # stack[1] 表示调用当前函数的上一层调用
+    filename = os.path.basename(frame.filename)
+    lineno = frame.lineno
+    actions_with_update = EventActions(state_delta=state_delta)
+    return Event(
+        invocation_id=ctx.invocation_id,
+        author=f"{filename}:{lineno}",
+        actions=actions_with_update,
+    )
 
 
 # event check funcs
@@ -26,12 +40,6 @@ def has_part(event: Event):
 
 def is_text(event: Event):
     return has_part(event) and event.content.parts[0].text
-
-
-def is_text_and_not_bohrium(event: Event):
-    return is_text(event) and not event.content.parts[0].text.startswith(
-        '<bohrium-chat-msg>'
-    )
 
 
 def is_function_call(event: Event) -> bool:
@@ -195,7 +203,7 @@ def context_multipart2function_event(
             )
         elif part.function_call:
             logger.warning(
-                f"[context_multipart2function_event] function_name = {part.function_call.name}"
+                f"[{MATMASTER_AGENT_NAME}]:[context_multipart2function_event] function_name = {part.function_call.name}"
             )
             yield context_function_call_event(
                 ctx,
@@ -226,8 +234,7 @@ def cherry_pick_events(ctx: InvocationContext):
 
 
 async def send_error_event(err, ctx: InvocationContext, author):
-    ctx.session.state['error_occurred'] = True
-    await update_session_state(ctx, author)
+    yield update_state_event(ctx, state_delta={'error_occurred': True})
 
     # 判断是否是异常组
     if isinstance(err, BaseExceptionGroup):

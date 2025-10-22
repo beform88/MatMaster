@@ -20,6 +20,8 @@ OPENAPI_HOST = ''
 DFLOW_HOST = ''
 DFLOW_K8S_API_SERVER = ''
 BOHRIUM_API_URL = ''
+BOHRIUM_HOST = ''
+BOHRIUM_COM = ''
 
 CURRENT_ENV = os.getenv('OPIK_PROJECT_NAME', 'prod')
 if CURRENT_ENV == 'test':
@@ -29,20 +31,28 @@ if CURRENT_ENV == 'test':
     BOHRIUM_API_URL = 'https://bohrium-api.test.dp.tech'
     GOODS_API_BASE = 'https://goods-server.test.dp.tech'
     FINANCE_API_BASE = 'https://finance-web.test.dp.tech'
+    BOHRIUM_HOST = 'https://bohrium.test.dp.tech'
+    BOHRIUM_COM = 'https://www.test.bohrium.com'
 elif CURRENT_ENV == 'uat':
     OPENAPI_HOST = 'https://openapi.uat.dp.tech'
     BOHRIUM_API_URL = 'https://bohrium-api.uat.dp.tech'
+    BOHRIUM_COM = 'https://www.uat.bohrium.com'
 elif CURRENT_ENV == 'prod':
     OPENAPI_HOST = 'https://openapi.dp.tech'
     DFLOW_HOST = 'https://workflows.deepmodeling.com'
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
     BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
+    BOHRIUM_COM = 'https://www.bohrium.com'
 
+SANDBOX_JOB_DETAIL_URL = f'{BOHRIUM_COM}/sandboxjob/detail'
+
+BOHRIUM_TICKET_API = f'{BOHRIUM_HOST}/bohrapi/v1/ticket/get'
 OPENAPI_SANDBOX = f'{OPENAPI_HOST}/openapi/v1/sandbox'
-OpenAPIJobAPI = f"{OPENAPI_SANDBOX}/job"
 OPENAPI_JOB_KILL_API = f'{OPENAPI_SANDBOX}/kill'
+OpenAPIJobAPI = f"{OPENAPI_SANDBOX}/job"
 OPENAPI_JOB_CREATE_API = f'{OpenAPIJobAPI}/create'
 OPENAPI_FILE_TOKEN_API = f'{OpenAPIJobAPI}/file/token'
+OPENAPI_JOB_LIST_API = f'{OpenAPIJobAPI}/list'
 
 GOODS_SKU_LIST_API = f"{GOODS_API_BASE}/api/v1/sku/list"
 FINANCE_WALLET_INFO_API = f"{FINANCE_API_BASE}/api/wallet/detail"
@@ -78,6 +88,8 @@ BohriumExecutor = {
             'image_address': '',
             'platform': 'ali',
             'machine_type': 'c2_m8_cpu',
+            'real_user_id': -1,
+            'session_id': '',
         },
     },
     'resources': {'envs': {'BOHRIUM_PROJECT_ID': MATERIALS_PROJECT_ID}},
