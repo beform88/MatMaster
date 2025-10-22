@@ -29,7 +29,7 @@ def patch_run_async_impl():
     ) -> AsyncGenerator[Event, None]:
         """One step means one LLM call."""
         logger.info(
-            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched Start patched_BaseLlmFlow_run_one_step_async {time.time()}'
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async Start {time.time()}'
         )
         logger.info(
             f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async before llm_request {time.time()}'
@@ -117,7 +117,7 @@ def patch_run_async_impl():
         )
 
         logger.info(
-            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched End patched_BaseLlmFlow_run_one_step_async {time.time()}'
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async End {time.time()}'
         )
 
     async def patched_SingleFlow_run_async(
