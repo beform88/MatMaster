@@ -4,6 +4,7 @@ from agents.matmaster_agent.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
 from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
+from agents.matmaster_agent.finetune_dpa_agent.constant import FinetuneDPAAgentName
 from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
 from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
 from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
@@ -126,6 +127,7 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "mrdice" → {MrDice_Agent_Name}
    - "traj" → {TrajAnalysisAgentName}
    - "sse" → SSE-related agents (context dependent)
+   - "finetune_dpa" → {FinetuneDPAAgentName}
 
 3. **If No Explicit Tool Mention**: When user asks for property calculations without specifying a tool:
    - **Identify Overlapping Tools**: Identify ALL tools that can perform the requested calculation
@@ -508,6 +510,14 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
       - "这个文献里面计算的材料用的是什么结构？"
       - "分析附件中的实验报告，提取所有提到的材料及其性能"
       - "从这个网页中提取有关石墨烯的性能数据"
+16. **{FinetuneDPAAgentName}** - **FinetuneDPA material specialist**
+   - Purpose: Fine tune pretrained DPA model with user provided label data
+   - Capabilities:
+     -Based on user given dpdata to fine tune pretrained dpa model to provide with user finetuned model which is aligned with their requirement.
+   - Workflow: Prepare train.json -> split train and valid dataset -> fine tune pretrained dpa model
+   - If user mention fine tune model, use all tools in FinetuneDPAAgentName
+
+8. **{SuperconductorAgentName}** - **Superconductor critical temperature specialist**
 
 ## CRITICAL RULES TO PREVENT HALLUCINATION
 0. Strictly follow the rules below UNLESS the USERS explicitly instruct you to break them.
