@@ -95,7 +95,13 @@ def patch_run_async_impl():
         async with Aclosing(
             self._call_llm_async(invocation_context, llm_request, model_response_event)
         ) as agen:
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async before agen {time.time()}'
+            )
             async for llm_response in agen:
+                logger.info(
+                    f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async before _postprocess_async {time.time()}'
+                )
                 # Postprocess after calling the LLM.
                 async with Aclosing(
                     self._postprocess_async(
@@ -105,13 +111,31 @@ def patch_run_async_impl():
                         model_response_event,
                     )
                 ) as agen:
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async before agen-for {time.time()}'
+                    )
                     async for event in agen:
                         # Update the mutable event id to avoid conflict
                         model_response_event.id = Event.new_id()
                         model_response_event.timestamp = (
                             datetime.datetime.now().timestamp()
                         )
+                        logger.info(
+                            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async before agen-event {time.time()}'
+                        )
                         yield event
+                        logger.info(
+                            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async after agen-event {time.time()}'
+                        )
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async after agen-for {time.time()}'
+                    )
+                logger.info(
+                    f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async after _postprocess_async {time.time()}'
+                )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async after agen {time.time()}'
+            )
         logger.info(
             f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_run_one_step_async after _call_llm_async {time.time()}'
         )
