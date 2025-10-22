@@ -23,10 +23,19 @@ def patch_run_async_impl():
         logger.info(
             f'[{MATMASTER_AGENT_NAME}] [Timing] Patched _run_async_impl {time.time()}'
         )
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched _run_async_impl before agent_state {time.time()}'
+        )
         agent_state = self._load_agent_state(ctx, BaseAgentState)
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched _run_async_impl after agent_state {time.time()}'
+        )
 
         # If there is an sub-agent to resume, run it and then end the current
         # agent.
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched _run_async_impl before agent_to_transfer {time.time()}'
+        )
         if agent_state is not None and (
             agent_to_transfer := self._get_subagent_to_resume(ctx)
         ):
@@ -36,7 +45,13 @@ def patch_run_async_impl():
 
             yield self._create_agent_state_event(ctx, end_of_agent=True)
             return
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched _run_async_impl after agent_to_transfer {time.time()}'
+        )
 
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched _run_async_impl before _llm_flow {time.time()}'
+        )
         async with Aclosing(self._llm_flow.run_async(ctx)) as agen:
             async for event in agen:
                 # 使用 _LlmAgent__maybe_save_output_to_state 来绕过名称修饰
@@ -45,6 +60,9 @@ def patch_run_async_impl():
                 yield event
                 if ctx.should_pause_invocation(event):
                     return
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched _run_async_impl after _llm_flow {time.time()}'
+        )
 
         if ctx.is_resumable:
             yield self._create_agent_state_event(ctx, end_of_agent=True)
