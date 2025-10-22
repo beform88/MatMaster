@@ -190,11 +190,13 @@ async def matmaster_hallucination_retry(
 ) -> Optional[LlmResponse]:
     hallucination_flag = callback_context.state['hallucination']
     hallucination_agent = callback_context.state['hallucination_agent']
-    logger.info(
-        f'[{MATMASTER_AGENT_NAME}]:[matmaster_hallucination_retry] hallucination_flag={hallucination_flag}, hallucination_agent={hallucination_agent}, i18n.language = {i18n.language}'
-    )
+
     if not callback_context.state['hallucination']:
         return
+
+    logger.info(
+        f'[{MATMASTER_AGENT_NAME}] hallucination_flag={hallucination_flag}, hallucination_agent={hallucination_agent}, i18n.language = {i18n.language}'
+    )
 
     if llm_response.partial:  # 原来消息的流式版本置空 None
         llm_response.content = None
