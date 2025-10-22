@@ -4,6 +4,7 @@ from agents.matmaster_agent.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
 from agents.matmaster_agent.DPACalculator_agent.constant import DPACalulator_AGENT_NAME
+from agents.matmaster_agent.finetune_dpa_agent.constant import FinetuneDPAAgentName
 from agents.matmaster_agent.HEA_assistant_agent.constant import HEA_assistant_AgentName
 from agents.matmaster_agent.HEACalculator_agent.constant import HEACALCULATOR_AGENT_NAME
 from agents.matmaster_agent.INVAR_agent.constant import INVAR_AGENT_NAME
@@ -21,7 +22,6 @@ from agents.matmaster_agent.structure_generate_agent.constant import (
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
-from agents.matmaster_agent.finetune_dpa_agent.constant import FinetuneDPAAgentName
 
 GlobalInstruction = """
 ---

@@ -10,12 +10,12 @@ from agents.matmaster_agent.constant import (
     BohriumExecutor,
     BohriumStorge,
 )
-from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.finetune_dpa_agent.prompt import (
     FinetuneDPAAgentDescription,
     FinetuneDPAAgentInstruction,
     FinetuneDPAAgentName,
 )
+from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 from .constant import FinetuneDPAServerUrl
 

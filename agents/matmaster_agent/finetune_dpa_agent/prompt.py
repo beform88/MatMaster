@@ -166,9 +166,7 @@ Step 4: Render parameters (if new) → Step 5: User Confirmation (MANDATORY for 
 """
 
 # FinetuneDPASubmitAgent
-FinetuneDPASubmitAgentDescription = (
-    'Coordinates FinetuneDPA computational job submission and frontend task queue display'
-)
+FinetuneDPASubmitAgentDescription = 'Coordinates FinetuneDPA computational job submission and frontend task queue display'
 FinetuneDPASubmitAgentInstruction = f"""
 You are a task coordination agent. You must strictly follow this workflow:
 

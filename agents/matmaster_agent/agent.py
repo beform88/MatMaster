@@ -21,6 +21,7 @@ from agents.matmaster_agent.document_parser_agent.agent import (
     init_document_parser_agent,
 )
 from agents.matmaster_agent.DPACalculator_agent.agent import init_dpa_calculations_agent
+from agents.matmaster_agent.finetune_dpa_agent.agent import init_finetune_dpa_agent
 from agents.matmaster_agent.HEA_assistant_agent.agent import init_HEA_assistant_agent
 from agents.matmaster_agent.HEACalculator_agent.agent import init_hea_calculator_agent
 from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
@@ -53,7 +54,6 @@ from agents.matmaster_agent.utils.event_utils import (
     send_error_event,
     update_state_event,
 )
-from agents.matmaster_agent.finetune_dpa_agent.agent import init_finetune_dpa_agent
 
 logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
     logging.ERROR
