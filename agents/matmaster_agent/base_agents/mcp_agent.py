@@ -1,5 +1,7 @@
-from typing import Callable, Optional
+from typing import AsyncGenerator, Callable, Optional, override
 
+from google.adk.agents import InvocationContext
+from google.adk.events import Event
 from pydantic import Field
 
 from agents.matmaster_agent.base_agents.callback import (
@@ -140,3 +142,12 @@ class MCPLlmAgent(SubordinateAgent):
         self.loading = loading
         self.render_tool_response = render_tool_response
         self.enable_tgz_unpack = enable_tgz_unpack
+
+
+class NonSubMCPLlmAgent(MCPLlmAgent):
+    @override
+    async def _after_events(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        return
+        yield

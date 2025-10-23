@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, override
+from typing import AsyncGenerator, final, override
 
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
@@ -8,6 +8,7 @@ from agents.matmaster_agent.utils.event_utils import send_error_event
 
 # LlmAgent -> ErrorHandleAgent
 class ErrorHandleAgent(LlmAgent):
+    @final
     @override
     async def _run_async_impl(
         self, ctx: InvocationContext
@@ -20,6 +21,7 @@ class ErrorHandleAgent(LlmAgent):
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
 
+    @final
     async def _process_events(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
