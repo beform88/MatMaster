@@ -16,6 +16,7 @@ from agents.matmaster_agent.base_agents.callback import (
     _inject_projectId,
     remove_function_call,
 )
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.mcp_agent import NonSubMCPLlmAgent
 from agents.matmaster_agent.constant import (
     FRONTEND_STATE_KEY,
@@ -60,7 +61,6 @@ from agents.matmaster_agent.utils.event_utils import (
     is_function_response,
     is_text,
     photon_consume_event,
-    send_error_event,
     update_state_event,
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
@@ -252,55 +252,43 @@ class ParamsCheckCompletedAgent(LlmAgent):
     pass
 
 
-class ParamsCheckInfoAgent(LlmAgent):
+class ParamsCheckInfoAgent(ErrorHandleAgent):
     @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        try:
-            async for event in super()._run_async_impl(ctx):
-                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                if not event.partial:
-                    for system_job_result_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'system_params_check',
-                        {'msg': event.content.parts[0].text},
-                        ModelRole,
-                    ):
-                        yield system_job_result_event
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        async for event in super()._run_events(ctx):
+            # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+            if not event.partial:
+                for system_job_result_event in context_function_event(
+                    ctx,
+                    self.name,
+                    'system_params_check',
+                    {'msg': event.content.parts[0].text},
+                    ModelRole,
+                ):
+                    yield system_job_result_event
 
 
-class ToolCallInfoAgent(LlmAgent):
+class ToolCallInfoAgent(ErrorHandleAgent):
     @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        try:
-            async for event in super()._run_async_impl(ctx):
-                # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                if not event.partial:
-                    try:
-                        tool_call_info = json.loads(event.content.parts[0].text)
-                    except BaseException:
-                        logger.info(
-                            f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
-                        )
-                        raise
-                    for system_job_result_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'system_tool_call_info',
-                        tool_call_info,
-                        ModelRole,
-                    ):
-                        yield system_job_result_event
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        async for event in super()._run_events(ctx):
+            # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+            if not event.partial:
+                try:
+                    tool_call_info = json.loads(event.content.parts[0].text)
+                except BaseException:
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
+                    )
+                    raise
+                for system_job_result_event in context_function_event(
+                    ctx,
+                    self.name,
+                    'system_tool_call_info',
+                    tool_call_info,
+                    ModelRole,
+                ):
+                    yield system_job_result_event
 
 
 class SubmitCoreCalculationMCPLlmAgent(NonSubMCPLlmAgent):
@@ -477,50 +465,44 @@ class SubmitCoreCalculationMCPLlmAgent(NonSubMCPLlmAgent):
                 yield event
 
 
-class SubmitRenderAgent(LlmAgent):
+class SubmitRenderAgent(ErrorHandleAgent):
     def __init__(self, **kwargs):
         super().__init__(description=SubmitRenderAgentDescription, **kwargs)
 
     @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         logger.info(
             f"[{MATMASTER_AGENT_NAME}]:[{self.name}] state: {ctx.session.state}"
         )
-        try:
-            async for event in super()._run_async_impl(ctx):
-                if is_text(event) and ctx.session.state['render_job_list']:
-                    for cur_render_job_id in ctx.session.state['render_job_id']:
-                        # Render Frontend Job-List Component
-                        job_list_comp_data = {
-                            'eventType': 1,
-                            'eventData': {
-                                'contentType': 1,
-                                'renderType': '@bohrium-chat/matmodeler/task-message',
-                                'content': {
-                                    JOB_LIST_KEY: ctx.session.state[
-                                        'long_running_jobs'
-                                    ][cur_render_job_id]
-                                },
+        async for event in super()._run_events(ctx):
+            if is_text(event) and ctx.session.state['render_job_list']:
+                for cur_render_job_id in ctx.session.state['render_job_id']:
+                    # Render Frontend Job-List Component
+                    job_list_comp_data = {
+                        'eventType': 1,
+                        'eventData': {
+                            'contentType': 1,
+                            'renderType': '@bohrium-chat/matmodeler/task-message',
+                            'content': {
+                                JOB_LIST_KEY: ctx.session.state['long_running_jobs'][
+                                    cur_render_job_id
+                                ]
                             },
-                        }
-                        if not ctx.session.state['dflow']:
-                            # 同时发送流式消息（聊条的时候可见）和数据库消息（历史记录的时候可见）
-                            for event in all_text_event(
-                                ctx=ctx,
-                                author=self.name,
-                                text=f"<bohrium-chat-msg>{json.dumps(job_list_comp_data)}</bohrium-chat-msg>",
-                                role=ModelRole,
-                            ):
-                                yield event
+                        },
+                    }
+                    if not ctx.session.state['dflow']:
+                        # 同时发送流式消息（聊条的时候可见）和数据库消息（历史记录的时候可见）
+                        for event in all_text_event(
+                            ctx=ctx,
+                            author=self.name,
+                            text=f"<bohrium-chat-msg>{json.dumps(job_list_comp_data)}</bohrium-chat-msg>",
+                            role=ModelRole,
+                        ):
+                            yield event
 
-                    yield update_state_event(
-                        ctx, state_delta={'render_job_list': False, 'render_job_id': []}
-                    )
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
+                yield update_state_event(
+                    ctx, state_delta={'render_job_list': False, 'render_job_id': []}
+                )
 
 
 class SubmitValidatorAgent(LlmAgent):
