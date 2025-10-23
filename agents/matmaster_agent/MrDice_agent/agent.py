@@ -1,6 +1,6 @@
 from google.adk.agents import BaseAgent
 
-from agents.matmaster_agent.base_agents.llm_wrap_agent import LlmWrapAgent
+from agents.matmaster_agent.base_agents.subordinate_agent import SubordinateAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,
@@ -24,7 +24,7 @@ from agents.matmaster_agent.MrDice_agent.prompt import (
 from agents.matmaster_agent.public.callback import check_transfer
 
 
-class MrDice_Agent(LlmWrapAgent):
+class MrDice_Agent(SubordinateAgent):
     def __init__(self, llm_config):
         optimade_agent = init_optimade_database_agent(llm_config)
         openlam_agent = init_openlam_database_agent(llm_config)

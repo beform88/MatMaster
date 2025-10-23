@@ -11,7 +11,7 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 
 
-class LlmWrapAgent(LlmAgent):
+class SubordinateAgent(LlmAgent):
     supervisor_agent: Optional[str] = Field(
         None, description='Which one is the supervisor_agent'
     )
