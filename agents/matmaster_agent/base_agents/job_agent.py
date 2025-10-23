@@ -40,6 +40,7 @@ from agents.matmaster_agent.constant import (
     LOADING_TITLE,
     MATERIALS_ACCESS_KEY,
     MATERIALS_PROJECT_ID,
+    MATMASTER_AGENT_NAME,
     SANDBOX_JOB_DETAIL_URL,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
@@ -320,7 +321,9 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
     async def _run_async_impl(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
-        logger.info(f"[{self.name}] state: {ctx.session.state}")
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}]:[{self.name}] state: {ctx.session.state}"
+        )
         try:
             await self.tools[0].get_tools()
             if not ctx.session.state['dflow']:
@@ -362,17 +365,24 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                     tool_context=None,
                 )
                 if query_res.isError:
-                    logger.error(query_res.content[0].text)
+                    logger.error(
+                        f'[{MATMASTER_AGENT_NAME}] {query_res.content[0].text}'
+                    )
                     raise RuntimeError(query_res.content[0].text)
                 status = query_res.content[0].text
                 logger.info(
-                    f'[ResultCalculationMCPLlmAgent] origin_job_id = {origin_job_id}, executor = {Executor}, '
+                    f'[{MATMASTER_AGENT_NAME}]:[{self.name}] origin_job_id = {origin_job_id}, executor = {Executor}, '
                     f'status = {status}'
                 )
                 if status != 'Running':
-                    ctx.session.state['long_running_jobs'][origin_job_id][
-                        'job_status'
-                    ] = status
+                    update_long_running_jobs = copy.deepcopy(
+                        ctx.session.state['long_running_jobs']
+                    )
+                    update_long_running_jobs[origin_job_id]['job_status'] = status
+                    yield update_state_event(
+                        ctx,
+                        state_delta={'long_running_jobs': update_long_running_jobs},
+                    )
                     results_res = await self.tools[0].results_tool.run_async(
                         args={
                             'job_id': origin_job_id,
@@ -397,7 +407,7 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                         raw_result = results_res.content[0].text
                         dict_result = jsonpickle.loads(raw_result)
                         logger.info(
-                            f"[ResultCalculationMCPLlmAgent] dict_result = {dict_result}"
+                            f"[{MATMASTER_AGENT_NAME}]:[{self.name}] dict_result = {dict_result}"
                         )
 
                         if self.enable_tgz_unpack:
@@ -406,9 +416,16 @@ class ResultCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             )
                         else:
                             new_tool_result = dict_result
-                        ctx.session.state['long_running_jobs'][origin_job_id][
-                            'job_result'
-                        ] = await parse_result(new_tool_result)
+                        update_long_running_jobs = copy.deepcopy(
+                            ctx.session.state['long_running_jobs']
+                        )
+                        update_long_running_jobs[origin_job_id]['job_result'] = (
+                            await parse_result(new_tool_result)
+                        )
+                        yield update_state_event(
+                            ctx,
+                            state_delta={'long_running_jobs': update_long_running_jobs},
+                        )
                         job_result_comp_data = get_frontend_job_result_data(
                             ctx.session.state['long_running_jobs'][origin_job_id][
                                 'job_result'
@@ -515,7 +532,7 @@ class ToolCallInfoAgent(LlmAgent):
                         tool_call_info = json.loads(event.content.parts[0].text)
                     except BaseException:
                         logger.info(
-                            f'[ToolCallInfoAgent] raw_text = {event.content.parts[0].text}'
+                            f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
                         )
                         raise
                     for system_job_result_event in context_function_event(
@@ -539,7 +556,9 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
     async def _run_async_impl(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
-        logger.info(f"[{self.name}] state: {ctx.session.state}")
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}]:[{self.name}] state: {ctx.session.state}"
+        )
 
         try:
             async for event in super()._run_async_impl(ctx):
@@ -623,7 +642,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                 raw_result = part.function_response.response['result']
                                 results = json.loads(raw_result.content[0].text)
                                 logger.info(
-                                    f"[SubmitCoreCalculationMCPLlmAgent] results = {results}"
+                                    f"[{MATMASTER_AGENT_NAME}]:[{self.name}] results = {results}"
                                 )
                                 origin_job_id = results['job_id']
                                 job_name = part.function_response.name
@@ -712,7 +731,9 @@ class SubmitRenderAgent(LlmAgent):
     async def _run_async_impl(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
-        logger.info(f"[{self.name}] state: {ctx.session.state}")
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}]:[{self.name}] state: {ctx.session.state}"
+        )
         try:
             async for event in super()._run_async_impl(ctx):
                 if is_text(event) and ctx.session.state['render_job_list']:
@@ -791,7 +812,9 @@ class SubmitValidatorAgent(LlmAgent):
                         'hallucination_agent': None,
                     },
                 )
-        logger.info(f'[SubmitValidatorAgent] state = {ctx.session.state}')
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}]:[{self.name}] state = {ctx.session.state}'
+        )
 
         for function_event in context_function_event(
             ctx,
@@ -944,7 +967,9 @@ class BaseAsyncJobAgent(LlmAgent):
                     for item in cherry_pick_parts
                 ]
             )
-            logger.info(f"[BaseAsyncJobAgent] context_messages = {context_messages}")
+            logger.info(
+                f"[{MATMASTER_AGENT_NAME}]:[{self.name}] context_messages = {context_messages}"
+            )
 
             prompt = gen_params_check_completed_agent_instruction().format(
                 context_messages=context_messages
@@ -958,7 +983,7 @@ class BaseAsyncJobAgent(LlmAgent):
                 response.choices[0].message.content
             )
             logger.info(
-                f"[BaseAsyncJobAgent] params_check_completed_json = {params_check_completed_json}"
+                f"[{MATMASTER_AGENT_NAME}]:[{self.name}] params_check_completed_json = {params_check_completed_json}"
             )
             params_check_completed = params_check_completed_json['flag']
             params_check_reason = params_check_completed_json['reason']

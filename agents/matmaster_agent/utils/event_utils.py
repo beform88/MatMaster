@@ -9,7 +9,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
-from agents.matmaster_agent.constant import ModelRole
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 
 logger = logging.getLogger(__name__)
 
@@ -203,7 +203,7 @@ def context_multipart2function_event(
             )
         elif part.function_call:
             logger.warning(
-                f"[context_multipart2function_event] function_name = {part.function_call.name}"
+                f"[{MATMASTER_AGENT_NAME}]:[context_multipart2function_event] function_name = {part.function_call.name}"
             )
             yield context_function_call_event(
                 ctx,
