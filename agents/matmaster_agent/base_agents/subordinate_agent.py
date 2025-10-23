@@ -1,10 +1,9 @@
-from typing import AsyncGenerator, Optional
+from typing import Optional, override
 
 from google.adk.agents import InvocationContext
-from google.adk.events import Event
 from pydantic import Field
 
-from agents.matmaster_agent.base_agents.error_handle_agent import ErrorHandleAgent
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.constant import ModelRole
 from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
@@ -22,13 +21,8 @@ class SubordinateAgent(ErrorHandleAgent):
 
         self.supervisor_agent = supervisor_agent
 
-    async def _process_events(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        """可重写的方法，专门处理事件循环"""
-        async for event in super()._process_events(ctx):
-            yield event
-
+    @override
+    async def _after_events(self, ctx: InvocationContext):
         if self.supervisor_agent:
             for function_event in context_function_event(
                 ctx,

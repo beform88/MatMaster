@@ -24,5 +24,19 @@ class ErrorHandleAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         """可重写的方法，专门处理事件循环"""
+        async for run_event in self._run_events(ctx):
+            yield run_event
+
+        async for after_event in self._after_events(ctx):
+            yield after_event
+
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        """可重写的方法，专门处理事件循环"""
         async for event in super()._run_async_impl(ctx):
             yield event
+
+    async def _after_events(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
+        return
+        yield
