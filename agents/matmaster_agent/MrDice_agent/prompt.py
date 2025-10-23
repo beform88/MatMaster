@@ -167,18 +167,18 @@ RESPONSE TEXT (previous LLM's response to evaluate):
 Provide your evaluation in the following JSON format:
 {{
     "is_transfer": <true or false>,
-    "target_agent": "bohrium_public_agent" or "optimade_agent" or "openlam_agent" or "mofdb_agent" (if transfer detected) or null (if no transfer),
+    "target_agent": "bohriumpublic_agent" or "optimade_agent" or "openlam_agent" or "mofdb_agent" (if transfer detected) or null (if no transfer),
     "reason": <string> // *A concise explanation of the reasoning behind the judgment, covering both positive and negative evidence found in the response text. Return empty string only if there is absolutely no relevant content to analyze.*
 }}
 
 Examples for reference:
-- Case1 (false): "使用bohrium_public_agent根据用户要求检索Cu的晶体结构"
+- Case1 (false): "使用bohriumpublic_agent根据用户要求检索Cu的晶体结构"
   -> Reason: "Only mentions the agent's function but lacks any explicit transfer verbs or immediate action indicators."
 
-- Case2 (true): "正在转移到bohrium_public_agent进行晶体结构检索"
+- Case2 (true): "正在转移到bohriumpublic_agent进行晶体结构检索"
   -> Reason: "Contains explicit transfer phrase '正在转移到' (transferring to) followed by a clear target agent name."
 
-- Case3 (true): "I will now use the bohrium_public_agent to retrieve crystal structures"
+- Case3 (true): "I will now use the bohriumpublic_agent to retrieve crystal structures"
   -> Reason: "Uses immediate action indicator 'I will now use' followed by a specific agent name, demonstrating transfer intent."
 
 - Case4 (false): "Next I will retrieve the Cu crystal structure"
@@ -187,9 +187,9 @@ Examples for reference:
 - Case5 (true): `{{"agent_name":"optimade_agent"}}`
   -> Reason: "Standalone JSON object with an 'agent_name' key is an explicit programmatic instruction to transfer."
 
-- Case6 (false): "I can hand you over to the bohrium_public_agent. Should I proceed?"
+- Case6 (false): "I can hand you over to the bohriumpublic_agent. Should I proceed?"
   -> Reason: "Although a transfer action ('hand you over to') and a target agent are mentioned, the phrase ends with a request for user confirmation ('Should I proceed?'), indicating the transfer is conditional and not immediate."
 
-- Case7 (false): "正在切换到bohrium_public_agent。您是希望直接继续，还是需要修改参数？"
+- Case7 (false): "正在切换到bohriumpublic_agent。您是希望直接继续，还是需要修改参数？"
   -> Reason: "Uses a transfer phrase '正在切换到' (switching to) but follows it with a question asking for user confirmation, pausing the immediate transfer action."
 """

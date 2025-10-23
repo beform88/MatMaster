@@ -5,7 +5,6 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,
 )
-from agents.matmaster_agent.MrDice_agent.callback import mrdice_check_transfer
 from agents.matmaster_agent.MrDice_agent.constant import MrDiceTargetAgentEnum
 from agents.matmaster_agent.MrDice_agent.mofdb_agent.agent import (
     init_mofdb_database_agent,
@@ -22,6 +21,7 @@ from agents.matmaster_agent.MrDice_agent.prompt import (
     MrDiceAgentName,
     MrDiceCheckTransferPrompt,
 )
+from agents.matmaster_agent.public.callback import check_transfer
 
 
 class MrDice_Agent(LlmWrapAgent):
@@ -43,7 +43,7 @@ class MrDice_Agent(LlmWrapAgent):
             ],
             supervisor_agent=MATMASTER_AGENT_NAME,
             after_model_callback=[
-                mrdice_check_transfer(
+                check_transfer(
                     prompt=MrDiceCheckTransferPrompt,
                     target_agent_enum=MrDiceTargetAgentEnum,
                 )
