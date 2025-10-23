@@ -5,6 +5,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.job_agent import CalculationMCPLlmAgent
 from agents.matmaster_agent.constant import LOCAL_EXECUTOR, BohriumStorge
+from agents.matmaster_agent.MrDice_agent.callback import create_mrdice_subagent_callback
 from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.MrDice_agent.mofdb_agent.constant import (
     MOFDB_URL,
@@ -36,6 +37,7 @@ class Mofdb_Agent(CalculationMCPLlmAgent):
             tools=[mcp_tools],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,
+            after_tool_callback=create_mrdice_subagent_callback(),  # 添加统一的 MrDice callback
         )
 
 
