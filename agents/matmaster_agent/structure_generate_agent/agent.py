@@ -17,8 +17,8 @@ from agents.matmaster_agent.structure_generate_agent.prompt import (
     StructureGenerateAgentName,
 )
 
-from .callback import cost_func
 from .constant import StructureGenerateServerUrl
+from .finance import cost_func
 
 StructureGenerateBohriumExecutor = copy.deepcopy(BohriumExecutor)
 StructureGenerateBohriumStorge = copy.deepcopy(BohriumStorge)
