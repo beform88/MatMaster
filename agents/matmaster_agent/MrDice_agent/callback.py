@@ -10,20 +10,24 @@ from google.adk.agents.llm_agent import AfterModelCallback
 from google.adk.models import LlmResponse
 from google.genai.types import FunctionCall, Part
 
-from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name, MrDiceTargetAgentEnum
-from agents.matmaster_agent.MrDice_agent.prompt import MrDiceCheckTransferPrompt
+from agents.matmaster_agent.MrDice_agent.constant import (
+    MrDice_Agent_Name,
+)
 from agents.matmaster_agent.utils.llm_response_utils import has_function_call
 from agents.matmaster_agent.utils.model_utils import create_transfer_check_model
 
 logger = logging.getLogger(__name__)
 
 
-def mrdice_check_transfer(prompt: str, target_agent_enum: Type[Enum]) -> AfterModelCallback:
+def mrdice_check_transfer(
+    prompt: str, target_agent_enum: Type[Enum]
+) -> AfterModelCallback:
     """
     MrDice 的转移检测 callback
-    
+
     检测 LLM 响应是否包含转移意图，如果没有则自动添加转移指令
     """
+
     async def wrapper(
         callback_context: CallbackContext, llm_response: LlmResponse
     ) -> Optional[LlmResponse]:
@@ -69,7 +73,7 @@ def mrdice_check_transfer(prompt: str, target_agent_enum: Type[Enum]) -> AfterMo
             f"[{MrDice_Agent_Name}]:[mrdice_check_transfer] {symbol_name} target_agent = {target_agent}, is_transfer = {is_transfer}, "
             f"response_text = {llm_response.content.parts[0].text}, reason = {reason}"
         )
-        
+
         if is_transfer and not has_function_call(llm_response):
             logger.warning(
                 f"[{MrDice_Agent_Name}]:[mrdice_check_transfer] {symbol_name} add `transfer_to_agent`"
@@ -90,5 +94,3 @@ def mrdice_check_transfer(prompt: str, target_agent_enum: Type[Enum]) -> AfterMo
         return None
 
     return wrapper
-
-
