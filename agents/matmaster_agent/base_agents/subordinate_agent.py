@@ -1,17 +1,17 @@
-from typing import AsyncGenerator, Optional, override
+from typing import AsyncGenerator, Optional
 
-from google.adk.agents import InvocationContext, LlmAgent
+from google.adk.agents import InvocationContext
 from google.adk.events import Event
 from pydantic import Field
 
+from agents.matmaster_agent.base_agents.error_handle_agent import ErrorHandleAgent
 from agents.matmaster_agent.constant import ModelRole
 from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
-    send_error_event,
 )
 
 
-class SubordinateAgent(LlmAgent):
+class SubordinateAgent(ErrorHandleAgent):
     supervisor_agent: Optional[str] = Field(
         None, description='Which one is the supervisor_agent'
     )
@@ -21,24 +21,20 @@ class SubordinateAgent(LlmAgent):
 
         self.supervisor_agent = supervisor_agent
 
-    @override
-    async def _run_async_impl(
+    async def _process_events(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
-        try:
-            async for event in super()._run_async_impl(ctx):
-                yield event
+        """可重写的方法，专门处理事件循环"""
+        async for event in super()._process_events(ctx):
+            yield event
 
-            if self.supervisor_agent:
-                for function_event in context_function_event(
-                    ctx,
-                    self.name,
-                    'transfer_to_agent',
-                    None,
-                    ModelRole,
-                    {'agent_name': self.supervisor_agent},
-                ):
-                    yield function_event
-        except BaseException as err:
-            async for error_event in send_error_event(err, ctx, self.name):
-                yield error_event
+        if self.supervisor_agent:
+            for function_event in context_function_event(
+                ctx,
+                self.name,
+                'transfer_to_agent',
+                None,
+                ModelRole,
+                {'agent_name': self.supervisor_agent},
+            ):
+                yield function_event
