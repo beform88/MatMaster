@@ -1,11 +1,14 @@
 import datetime
+import inspect
 import logging
 import time
 from contextlib import contextmanager
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional
 
 from google.adk.agents import InvocationContext, LiveRequestQueue, LlmAgent
 from google.adk.agents.base_agent import BaseAgentState
+from google.adk.agents.callback_context import CallbackContext
+from google.adk.agents.readonly_context import ReadonlyContext
 from google.adk.agents.run_config import StreamingMode
 from google.adk.events import Event
 from google.adk.flows.llm_flows.base_llm_flow import (
@@ -29,6 +32,89 @@ def patch_run_async_impl():
     original_SingleFlow_run_async = SingleFlow.run_async
     original_BaseLlmFlow_run_one_step_async = BaseLlmFlow._run_one_step_async
     original_BaseLlmFlow_call_llm_async = BaseLlmFlow._call_llm_async
+    original_BaseLlmFlow_handle_after_model_callback = (
+        BaseLlmFlow._handle_after_model_callback
+    )
+
+    async def patched_BaseLlmFlow_handle_after_model_callback(
+        self,
+        invocation_context: InvocationContext,
+        llm_response: LlmResponse,
+        model_response_event: Event,
+    ) -> Optional[LlmResponse]:
+        agent = invocation_context.agent
+
+        # Add grounding metadata to the response if needed.
+        # TODO(b/448114567): Remove this function once the workaround is no longer needed.
+        async def _maybe_add_grounding_metadata(
+            response: Optional[LlmResponse] = None,
+        ) -> Optional[LlmResponse]:
+            readonly_context = ReadonlyContext(invocation_context)
+            tools = await agent.canonical_tools(readonly_context)
+            if not any(tool.name == 'google_search_agent' for tool in tools):
+                return response
+            ground_metadata = invocation_context.session.state.get(
+                'temp:_adk_grounding_metadata', None
+            )
+            if not ground_metadata:
+                return response
+
+            if not response:
+                response = llm_response
+            response.grounding_metadata = ground_metadata
+            return response
+
+        callback_context = CallbackContext(
+            invocation_context, event_actions=model_response_event.actions
+        )
+
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before run_after_model_callback {time.time()}'
+        )
+        # First run callbacks from the plugins.
+        callback_response = (
+            await invocation_context.plugin_manager.run_after_model_callback(
+                callback_context=CallbackContext(invocation_context),
+                llm_response=llm_response,
+            )
+        )
+        if callback_response:
+            return await _maybe_add_grounding_metadata(callback_response)
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback after run_after_model_callback {time.time()}'
+        )
+
+        # If no overrides are provided from the plugins, further run the canonical
+        # callbacks.
+        if not agent.canonical_after_model_callbacks:
+            return await _maybe_add_grounding_metadata()
+        for callback in agent.canonical_after_model_callbacks:
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before callback {time.time()}'
+            )
+            callback_response = callback(
+                callback_context=callback_context, llm_response=llm_response
+            )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback after callback {time.time()}'
+            )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before await callback {time.time()}'
+            )
+            if inspect.isawaitable(callback_response):
+                callback_response = await callback_response
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback after await callback {time.time()}'
+            )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before _maybe_add_grounding_metadata {time.time()}'
+            )
+            if callback_response:
+                return await _maybe_add_grounding_metadata(callback_response)
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback after _maybe_add_grounding_metadata {time.time()}'
+            )
+        return await _maybe_add_grounding_metadata()
 
     async def patched_BaseLlmFlow_call_llm_async(
         self,
@@ -57,14 +143,8 @@ def patch_run_async_impl():
             )
 
         # Calls the LLM.
-        logger.info(
-            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_call_llm_async before __get_llm {time.time()}'
-        )
         if hasattr(self, '_BaseLlmFlow__get_llm'):
             llm = self._BaseLlmFlow__get_llm(invocation_context)
-        logger.info(
-            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_call_llm_async after __get_llm {time.time()}'
-        )
 
         async def _call_llm_with_tracing() -> AsyncGenerator[LlmResponse, None]:
             with tracer.start_as_current_span('call_llm'):
@@ -134,14 +214,29 @@ def patch_run_async_impl():
                             logger.info(
                                 f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_call_llm_async before _handle_after_model_callback {time.time()}'
                             )
-                            # Runs after_model_callback if it exists.
-                            if altered_llm_response := await self._handle_after_model_callback(
-                                invocation_context, llm_response, model_response_event
-                            ):
-                                llm_response = altered_llm_response
+
+                            logger.info(
+                                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_call_llm_async before _handle_after_model_callback llm_response = {llm_response.model_dump_json()}'
+                            )
+                            BaseLlmFlow._handle_after_model_callback = (
+                                patched_BaseLlmFlow_handle_after_model_callback
+                            )
+                            try:
+                                # Runs after_model_callback if it exists.
+                                if altered_llm_response := await self._handle_after_model_callback(
+                                    invocation_context,
+                                    llm_response,
+                                    model_response_event,
+                                ):
+                                    llm_response = altered_llm_response
+                            finally:
+                                BaseLlmFlow._handle_after_model_callback = (
+                                    original_BaseLlmFlow_handle_after_model_callback
+                                )
                             logger.info(
                                 f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_call_llm_async after _handle_after_model_callback {time.time()}'
                             )
+
                             yield llm_response
                         logger.info(
                             f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_call_llm_async after _run_and_handle_error agen {time.time()}'
