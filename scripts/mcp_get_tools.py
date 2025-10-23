@@ -16,13 +16,33 @@ async def get_tools(type='mcphub'):
             await session.initialize()
 
             # 调用 tools/list 方法（对应 get_tools）
-            result = await session.list_tools()
-            print('Available tools:', result.tools)
+            await session.list_tools()
+
+
+def color_text(text, color_code):
+    """返回带颜色的文本"""
+    return f"\033[{color_code}m{text}\033[0m"
+
+
+def format_time(duration):
+    """格式化时间，如果超过1秒则显示为红色"""
+    if duration > 1.0:
+        return color_text(f"{duration:.3f}", '91')  # 91 是亮红色
+    else:
+        return f"{duration:.3f}"
 
 
 if __name__ == '__main__':
-    print(time.time())
-    asyncio.run(get_tools(type='node'))
-    print('node', time.time())
-    asyncio.run(get_tools(type='mcphub'))
-    print('mcphub', time.time())
+    for i in range(10):
+        start1 = time.time()
+        asyncio.run(get_tools(type='node'))
+        start2 = time.time()
+        asyncio.run(get_tools(type='mcphub'))
+        start3 = time.time()
+
+        node_time = start2 - start1
+        mcphub_time = start3 - start2
+
+        print(
+            f'第 {i + 1} 轮测试：【Node】{format_time(node_time)};【MCPHub】{format_time(mcphub_time)}'
+        )
