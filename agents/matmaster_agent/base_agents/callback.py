@@ -572,7 +572,7 @@ def remove_job_link(func: AfterToolCallback) -> AfterToolCallback:
                 type='text', text=json.dumps(tool_result)
             )
             if (
-                tool_response.get('structuredContent', None) is not None
+                getattr(tool_response, 'structuredContent', None) is not None
                 and tool_response.structuredContent is not None
             ):
                 tool_response.structuredContent = None
