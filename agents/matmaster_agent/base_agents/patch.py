@@ -49,8 +49,23 @@ def patch_run_async_impl():
         async def _maybe_add_grounding_metadata(
             response: Optional[LlmResponse] = None,
         ) -> Optional[LlmResponse]:
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata Start {time.time()}'
+            )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata before readonly_context {time.time()}'
+            )
             readonly_context = ReadonlyContext(invocation_context)
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata after readonly_context {time.time()}'
+            )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata before canonical_tools {time.time()}'
+            )
             tools = await agent.canonical_tools(readonly_context)
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata after canonical_tools {time.time()}'
+            )
             if not any(tool.name == 'google_search_agent' for tool in tools):
                 return response
             ground_metadata = invocation_context.session.state.get(
@@ -62,6 +77,9 @@ def patch_run_async_impl():
             if not response:
                 response = llm_response
             response.grounding_metadata = ground_metadata
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata End {time.time()}'
+            )
             return response
 
         callback_context = CallbackContext(
