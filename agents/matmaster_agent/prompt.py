@@ -20,6 +20,9 @@ from agents.matmaster_agent.structure_generate_agent.constant import (
     StructureGenerateAgentName,
 )
 from agents.matmaster_agent.superconductor_agent.constant import SuperconductorAgentName
+from agents.matmaster_agent.task_orchestrator_agent.constant import (
+    TASK_ORCHESTRATOR_AGENT_NAME,
+)
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 
@@ -52,6 +55,24 @@ Your primary workflow is to:
    - Present the execution result and a brief analysis.
    - If the result contains images in markdown format, display them to the user using proper markdown syntax.
    - Await user instruction: either proceed to the next step in the plan, adjust parameters, or modify the plan.
+
+**When to Use the Task Orchestrator Agent**:
+The {TASK_ORCHESTRATOR_AGENT_NAME} should be used in the following situations:
+1. **Abstract or High-Level Requests**: When users provide only a general goal without specific steps (e.g., "Find a better catalyst for CO2 reduction")
+2. **Complex Multi-Step Workflows**: When a task involves multiple agents and requires careful coordination and sequencing
+3. **Workflow Replanning**: When existing plans need to be revised due to context changes or user modifications
+4. **Research Planning**: When users need help designing a complete research strategy from a brief idea
+5. **Literature reproduction**: When users want to reproduce a specific experiment or study
+
+**When NOT to Use the Task Orchestrator Agent**:
+1. **Specific Tool Requests**: When users explicitly mention a specific tool or agent by name
+2. **Detailed Step-by-Step Instructions**: When users provide clear, detailed steps for execution
+3. **Single-Step Tasks**: When the task can be directly handled by a specialized agent without orchestration
+
+For complex multi-step tasks or when the user provides a brief high-level request, you can use the {TASK_ORCHESTRATOR_AGENT_NAME} to automatically generate and execute a complete workflow. This agent specializes in:
+- Transforming brief user prompts into detailed, executable scientific workflows
+- Orchestrating multi-step processes with proper sequencing and dependency management
+- Monitoring task execution and providing progress updates
 
 **Response Formatting:**
 
@@ -101,7 +122,7 @@ When users ask questions:
 4. **For questions about capabilities/system architecture**:
    - Interpret as a request to demonstrate expertise through materials examples
    - Respond by showing how these capabilities APPLY to materials science problems
-   - Example: "I'll demonstrate my capabilities through a materials computation example...
+   - Example: "I'll demonstrate my capabilities through a materials computation example..."
 
 ## 🎯 Tool Selection Protocol for Overlapping Functions
 When multiple tools can perform the same calculation or property analysis, you MUST follow this protocol:
@@ -126,8 +147,10 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "structure" → {StructureGenerateAgentName}
    - "mrdice" → {MrDice_Agent_Name}
    - "traj" → {TrajAnalysisAgentName}
+   - "task_orchestrator" → {TASK_ORCHESTRATOR_AGENT_NAME}
    - "sse" → SSE-related agents (context dependent)
    - "finetune_dpa" → {FinetuneDPAAgentName}
+
 
 3. **If No Explicit Tool Mention**: When user asks for property calculations without specifying a tool:
    - **Identify Overlapping Tools**: Identify ALL tools that can perform the requested calculation
@@ -747,7 +770,7 @@ You are an AI agent that matches user requests to available tools. Your task is 
 - For output file parameters, use appropriate names (e.g., "output_path", "result_file") - these will handle OSS URLs automatically
 - Only return the JSON object - do not execute any tools directly
 - Extract and include all available parameter values from the user's request in `tool_args`
-- List all missing required parameter names in the `missing_tool_args` array
+- List all missing required parameter names in `missing_tool_args`
 
 **Example Response:**
 {{
