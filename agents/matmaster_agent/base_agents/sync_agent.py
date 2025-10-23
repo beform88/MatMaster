@@ -5,7 +5,7 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event, EventActions
 
-from agents.matmaster_agent.base_agents.mcp_agent import MCPLlmAgent
+from agents.matmaster_agent.base_agents.mcp_agent import SubMCPLlmAgent
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     LOADING_DESC,
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 # LlmAgent -> ErrorHandleAgent -> SubordinateAgent -> MCPLlmAgent -> SyncMCPLlmAgent
-class SyncMCPLlmAgent(MCPLlmAgent):
+class SyncSubMCPLlmAgent(SubMCPLlmAgent):
     # Execution Order: user_question -> chembrain_llm -> event -> user_agree_transfer -> retrosyn_llm (param) -> event
     #                  -> user_agree_param -> retrosyn_llm (function_call) -> event -> tool_call
     #                  -> retrosyn_llm (function_response) -> event

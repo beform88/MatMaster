@@ -1,7 +1,5 @@
-from typing import AsyncGenerator, Callable, Optional, override
+from typing import Callable, Optional
 
-from google.adk.agents import InvocationContext
-from google.adk.events import Event
 from pydantic import Field
 
 from agents.matmaster_agent.base_agents.callback import (
@@ -20,24 +18,13 @@ from agents.matmaster_agent.base_agents.callback import (
     remove_job_link,
     tgz_oss_to_oss_list,
 )
-from agents.matmaster_agent.base_agents.subordinate_agent import SubordinateAgent
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
+from agents.matmaster_agent.base_agents.subordinate_agent import (
+    SubordinateFeaturesMixin,
+)
 
 
-# LlmAgent -> ErrorHandleAgent -> SubordinateAgent -> MCPLlmAgent
-class MCPLlmAgent(SubordinateAgent):
-    """An LLM agent specialized for calculation tasks with built-in error handling and project ID management.
-
-    Extends the HandleFileUploadLlmAgent with additional features:
-    - Automatic error handling for tool calls
-    - Project ID retrieval before tool execution
-    - OpikTracer integration for comprehensive operation tracing
-
-    Note: User-provided callbacks will execute before the built-in OpikTracer callbacks.
-
-    Attributes:
-        Inherits all attributes from LlmAgent.
-    """
-
+class MCPFeaturesMixin:
     loading: bool = Field(
         False, description='Whether the agent display loading state', exclude=True
     )
@@ -53,6 +40,7 @@ class MCPLlmAgent(SubordinateAgent):
         self,
         model,
         name,
+        *args,
         instruction='',
         description='',
         sub_agents=None,
@@ -68,9 +56,9 @@ class MCPLlmAgent(SubordinateAgent):
         loading=False,
         render_tool_response=False,
         disallow_transfer_to_parent=False,
-        supervisor_agent=None,
         enable_tgz_unpack=True,
         cost_func=default_cost_func,
+        **kwargs,
     ):
         """Initialize a CalculationLlmAgent with enhanced tool call capabilities.
 
@@ -120,6 +108,7 @@ class MCPLlmAgent(SubordinateAgent):
         )
 
         super().__init__(
+            *args,
             model=model,
             name=name,
             description=description,
@@ -135,8 +124,8 @@ class MCPLlmAgent(SubordinateAgent):
             after_model_callback=after_model_callback,
             after_agent_callback=after_agent_callback,
             disallow_transfer_to_parent=disallow_transfer_to_parent,
-            supervisor_agent=supervisor_agent,
             enable_tgz_unpack=enable_tgz_unpack,
+            **kwargs,
         )
 
         self.loading = loading
@@ -144,10 +133,11 @@ class MCPLlmAgent(SubordinateAgent):
         self.enable_tgz_unpack = enable_tgz_unpack
 
 
-class NonSubMCPLlmAgent(MCPLlmAgent):
-    @override
-    async def _after_events(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
-        return
-        yield
+class SubMCPLlmAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAgent):
+    def __init__(self, *args, supervisor_agent=None, **kwargs):
+        # 确保 supervisor_agent 被正确处理
+        super().__init__(*args, supervisor_agent=supervisor_agent, **kwargs)
+
+
+class NonSubMCPLlmAgent(MCPFeaturesMixin, ErrorHandleAgent):
+    pass
