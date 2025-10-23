@@ -1,13 +1,15 @@
+import copy
 import datetime
 import inspect
 import logging
 import time
 from contextlib import contextmanager
-from typing import AsyncGenerator, Optional
+from typing import AsyncGenerator, List, Optional, Union, cast
 
-from google.adk.agents import InvocationContext, LiveRequestQueue, LlmAgent
+from google.adk.agents import InvocationContext, LiveRequestQueue, LlmAgent, llm_agent
 from google.adk.agents.base_agent import BaseAgentState
 from google.adk.agents.callback_context import CallbackContext
+from google.adk.agents.llm_agent import ToolUnion
 from google.adk.agents.readonly_context import ReadonlyContext
 from google.adk.agents.run_config import StreamingMode
 from google.adk.events import Event
@@ -16,10 +18,25 @@ from google.adk.flows.llm_flows.base_llm_flow import (
     BaseLlmFlow,
 )
 from google.adk.flows.llm_flows.single_flow import SingleFlow
-from google.adk.models import LlmRequest, LlmResponse
+from google.adk.models import BaseLlm, LlmRequest, LlmResponse
 from google.adk.telemetry import trace_call_llm, tracer
+from google.adk.tools import (
+    BaseTool,
+    DiscoveryEngineSearchTool,
+    FunctionTool,
+    VertexAiSearchTool,
+    google_search,
+)
+from google.adk.tools.base_toolset import BaseToolset
+from google.adk.tools.google_search_agent_tool import (
+    GoogleSearchAgentTool,
+    create_google_search_agent,
+)
+from google.adk.tools.mcp_tool import MCPTool, McpToolset
+from google.adk.tools.mcp_tool.mcp_session_manager import retry_on_closed_resource
 from google.adk.utils.context_utils import Aclosing
 from google.genai import types
+from mcp import ListToolsResult
 
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 
@@ -35,6 +52,204 @@ def patch_run_async_impl():
     original_BaseLlmFlow_handle_after_model_callback = (
         BaseLlmFlow._handle_after_model_callback
     )
+    original_LlmAgent_canonical_tools = LlmAgent.canonical_tools
+    original_convert_tool_union_to_tools = llm_agent._convert_tool_union_to_tools
+    original_BaseToolset_get_tools_with_prefix = BaseToolset.get_tools_with_prefix
+    original_McpToolset_get_tools = McpToolset.get_tools
+
+    @retry_on_closed_resource
+    async def patched_McpToolset_get_tools(
+        self,
+        readonly_context: Optional[ReadonlyContext] = None,
+    ) -> List[BaseTool]:
+        """Return all tools in the toolset based on the provided context.
+
+        Args:
+            readonly_context: Context used to filter tools available to the agent.
+                If None, all tools in the toolset are returned.
+
+        Returns:
+            List[BaseTool]: A list of tools available under the specified context.
+        """
+        # Get session from session manager
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_McpToolset_get_tools before create_session {time.time()}'
+        )
+        session = await self._mcp_session_manager.create_session()
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_McpToolset_get_tools after create_session {time.time()}'
+        )
+
+        # Fetch available tools from the MCP server
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_McpToolset_get_tools before list_tools {time.time()}'
+        )
+        tools_response: ListToolsResult = await session.list_tools()
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_McpToolset_get_tools after list_tools {time.time()}'
+        )
+
+        # Apply filtering based on context and tool_filter
+        tools = []
+        for tool in tools_response.tools:
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_McpToolset_get_tools before MCPTool {time.time()}'
+            )
+            mcp_tool = MCPTool(
+                mcp_tool=tool,
+                mcp_session_manager=self._mcp_session_manager,
+                auth_scheme=self._auth_scheme,
+                auth_credential=self._auth_credential,
+            )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_McpToolset_get_tools after MCPTool {time.time()}'
+            )
+
+            if self._is_tool_selected(mcp_tool, readonly_context):
+                tools.append(mcp_tool)
+        return tools
+
+    async def patched_BaseToolset_get_tools_with_prefix(
+        self,
+        readonly_context: Optional[ReadonlyContext] = None,
+    ) -> list[BaseTool]:
+        """Return all tools with optional prefix applied to tool names.
+
+        This method calls get_tools() and applies prefixing if tool_name_prefix is provided.
+
+        Args:
+          readonly_context (ReadonlyContext, optional): Context used to filter tools
+            available to the agent. If None, all tools in the toolset are returned.
+
+        Returns:
+          list[BaseTool]: A list of tools with prefixed names if tool_name_prefix is provided.
+        """
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseToolset_get_tools_with_prefix before get_tools {time.time()}'
+        )
+        McpToolset.get_tools = patched_McpToolset_get_tools
+        try:
+            tools = await self.get_tools(readonly_context)
+        finally:
+            McpToolset.get_tools = original_McpToolset_get_tools
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseToolset_get_tools_with_prefix after get_tools {time.time()}'
+        )
+
+        if not self.tool_name_prefix:
+            return tools
+
+        prefix = self.tool_name_prefix
+
+        # Create copies of tools to avoid modifying original instances
+        prefixed_tools = []
+        for tool in tools:
+            # Create a shallow copy of the tool
+            tool_copy = copy.copy(tool)
+
+            # Apply prefix to the copied tool
+            prefixed_name = f"{prefix}_{tool.name}"
+            tool_copy.name = prefixed_name
+
+            # Also update the function declaration name if the tool has one
+            # Use default parameters to capture the current values in the closure
+            def _create_prefixed_declaration(
+                original_get_declaration=tool._get_declaration,
+                prefixed_name=prefixed_name,
+            ):
+                def _get_prefixed_declaration():
+                    declaration = original_get_declaration()
+                    if declaration is not None:
+                        declaration.name = prefixed_name
+                        return declaration
+                    return None
+
+                return _get_prefixed_declaration
+
+            tool_copy._get_declaration = _create_prefixed_declaration()
+            prefixed_tools.append(tool_copy)
+
+        return prefixed_tools
+
+    async def patched_convert_tool_union_to_tools(
+        tool_union: ToolUnion,
+        ctx: ReadonlyContext,
+        model: Union[str, BaseLlm],
+        multiple_tools: bool = False,
+    ) -> list[BaseTool]:
+        # Wrap google_search tool with AgentTool if there are multiple tools because
+        # the built-in tools cannot be used together with other tools.
+        # TODO(b/448114567): Remove once the workaround is no longer needed.
+        if multiple_tools and tool_union is google_search:
+            return [GoogleSearchAgentTool(create_google_search_agent(model))]
+
+        # Replace VertexAiSearchTool with DiscoveryEngineSearchTool if there are
+        # multiple tools because the built-in tools cannot be used together with
+        # other tools.
+        # TODO(b/448114567): Remove once the workaround is no longer needed.
+        if multiple_tools and isinstance(tool_union, VertexAiSearchTool):
+            vais_tool = cast(VertexAiSearchTool, tool_union)
+            return [
+                DiscoveryEngineSearchTool(
+                    data_store_id=vais_tool.data_store_id,
+                    data_store_specs=vais_tool.data_store_specs,
+                    search_engine_id=vais_tool.search_engine_id,
+                    filter=vais_tool.filter,
+                    max_results=vais_tool.max_results,
+                )
+            ]
+
+        if isinstance(tool_union, BaseTool):
+            return [tool_union]
+        if callable(tool_union):
+            return [FunctionTool(func=tool_union)]
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_convert_tool_union_to_tools before get_tools_with_prefix {time.time()}'
+        )
+        # At this point, tool_union must be a BaseToolset
+        BaseToolset.get_tools_with_prefix = patched_BaseToolset_get_tools_with_prefix
+        try:
+            result = await tool_union.get_tools_with_prefix(ctx)
+        finally:
+            BaseToolset.get_tools_with_prefix = (
+                original_BaseToolset_get_tools_with_prefix
+            )
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_convert_tool_union_to_tools after get_tools_with_prefix {time.time()}'
+        )
+        return result
+
+    async def patched_LlmAgent_canonical_tools(
+        self, ctx: ReadonlyContext = None
+    ) -> list[BaseTool]:
+        """The resolved self.tools field as a list of BaseTool based on the context.
+
+        This method is only for use by Agent Development Kit.
+        """
+        resolved_tools = []
+        # We may need to wrap some built-in tools if there are other tools
+        # because the built-in tools cannot be used together with other tools.
+        # TODO(b/448114567): Remove once the workaround is no longer needed.
+        multiple_tools = len(self.tools) > 1
+        for tool_union in self.tools:
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_LlmAgent_canonical_tools before _convert_tool_union_to_tools {time.time()}'
+            )
+            llm_agent._convert_tool_union_to_tools = patched_convert_tool_union_to_tools
+            try:
+                resolved_tools.extend(
+                    await llm_agent._convert_tool_union_to_tools(
+                        tool_union, ctx, self.model, multiple_tools
+                    )
+                )
+            finally:
+                llm_agent._convert_tool_union_to_tools = (
+                    original_convert_tool_union_to_tools
+                )
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_LlmAgent_canonical_tools after _convert_tool_union_to_tools {time.time()}'
+            )
+        return resolved_tools
 
     async def patched_BaseLlmFlow_handle_after_model_callback(
         self,
@@ -52,20 +267,20 @@ def patch_run_async_impl():
             logger.info(
                 f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata Start {time.time()}'
             )
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata before readonly_context {time.time()}'
-            )
             readonly_context = ReadonlyContext(invocation_context)
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata after readonly_context {time.time()}'
-            )
+
             logger.info(
                 f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata before canonical_tools {time.time()}'
             )
-            tools = await agent.canonical_tools(readonly_context)
+            LlmAgent.canonical_tools = patched_LlmAgent_canonical_tools
+            try:
+                tools = await agent.canonical_tools(readonly_context)
+            finally:
+                LlmAgent.canonical_tools = original_LlmAgent_canonical_tools
             logger.info(
                 f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback _maybe_add_grounding_metadata after canonical_tools {time.time()}'
             )
+
             if not any(tool.name == 'google_search_agent' for tool in tools):
                 return response
             ground_metadata = invocation_context.session.state.get(
@@ -86,9 +301,6 @@ def patch_run_async_impl():
             invocation_context, event_actions=model_response_event.actions
         )
 
-        logger.info(
-            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before run_after_model_callback {time.time()}'
-        )
         # First run callbacks from the plugins.
         callback_response = (
             await invocation_context.plugin_manager.run_after_model_callback(
@@ -98,32 +310,17 @@ def patch_run_async_impl():
         )
         if callback_response:
             return await _maybe_add_grounding_metadata(callback_response)
-        logger.info(
-            f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback after run_after_model_callback {time.time()}'
-        )
 
         # If no overrides are provided from the plugins, further run the canonical
         # callbacks.
         if not agent.canonical_after_model_callbacks:
             return await _maybe_add_grounding_metadata()
         for callback in agent.canonical_after_model_callbacks:
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before callback {time.time()}'
-            )
             callback_response = callback(
                 callback_context=callback_context, llm_response=llm_response
             )
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback after callback {time.time()}'
-            )
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before await callback {time.time()}'
-            )
             if inspect.isawaitable(callback_response):
                 callback_response = await callback_response
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback after await callback {time.time()}'
-            )
             logger.info(
                 f'[{MATMASTER_AGENT_NAME}] [Timing] Patched patched_BaseLlmFlow_handle_after_model_callback before _maybe_add_grounding_metadata {time.time()}'
             )

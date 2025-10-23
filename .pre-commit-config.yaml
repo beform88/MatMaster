@@ -88,4 +88,4 @@ repos:
     hooks:
       - id: flake8
         additional_dependencies: [ flake8-bugbear ]
-        args: [ '--extend-ignore=E501,B036,E203', --max-line-length=88 ]
+        args: [ '--extend-ignore=E501,B036,E203,B023', --max-line-length=88 ]
