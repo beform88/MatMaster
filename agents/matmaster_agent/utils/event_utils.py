@@ -9,7 +9,10 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
+from agents.matmaster_agent.base_agents.callback import _get_userId
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.style import photon_consume_success
+from agents.matmaster_agent.utils.finance import photon_consume
 
 logger = logging.getLogger(__name__)
 
@@ -272,3 +275,20 @@ async def send_error_event(err, ctx: InvocationContext, author):
         ctx, author, 'system_detail_error', {'msg': detailed_error}, ModelRole
     ):
         yield event
+
+
+async def photon_consume_event(ctx, event, author):
+    user_id = _get_userId(ctx)
+    current_cost = ctx.session.state['cost'].get(
+        event.content.parts[0].function_response.id, None
+    )
+    if current_cost is not None:
+        res = await photon_consume(user_id, sku_id=current_cost['sku_id'])
+        if res['code'] == 0:
+            for consume_event in all_text_event(
+                ctx,
+                author,
+                f"{photon_consume_success(current_cost['value'])}",
+                ModelRole,
+            ):
+                yield consume_event

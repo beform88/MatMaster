@@ -132,3 +132,5 @@ LOADING_TITLE = 'loading_title'
 
 JOB_RESULT_KEY = 'job_result'
 JOB_LIST_KEY = 'job_list'
+
+SKU_MAPPING = {'matmaster': 10808}

@@ -24,6 +24,7 @@ from agents.matmaster_agent.constant import (
     MATERIALS_PROJECT_ID,
     MATMASTER_AGENT_NAME,
     OPENAPI_HOST,
+    SKU_MAPPING,
     Transfer2Agent,
 )
 from agents.matmaster_agent.model import CostFuncType
@@ -175,8 +176,8 @@ async def default_before_tool_callback(tool, args, tool_context):
     return
 
 
-def default_cost_func() -> tuple[int, int]:
-    return 0, 10808
+def default_cost_func(tool: BaseTool) -> tuple[int, int]:
+    return 0, SKU_MAPPING['matmaster']
 
 
 def check_user_phonon_balance(
@@ -206,7 +207,7 @@ def check_user_phonon_balance(
             )
 
         user_id = _get_userId(tool_context)
-        cost, sku_id = cost_func()
+        cost, sku_id = cost_func(tool)
         tool_context.state['cost'][tool_context.function_call_id] = {
             'value': cost,
             'sku_id': sku_id,

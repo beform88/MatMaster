@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Callable, List, Optional, TypeVar, Union
 
+from google.adk.tools import BaseTool
 from pydantic import BaseModel
 
 from agents.matmaster_agent.ABACUS_agent.constant import ABACUS_AGENT_NAME
@@ -30,7 +31,7 @@ from agents.matmaster_agent.superconductor_agent.constant import SuperconductorA
 from agents.matmaster_agent.thermoelectric_agent.constant import ThermoelectricAgentName
 from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 
-CostFuncType: TypeVar = Callable[[], tuple[int, int]]
+CostFuncType: TypeVar = Callable[[BaseTool], tuple[int, int]]
 
 
 class JobStatus(str, Enum):

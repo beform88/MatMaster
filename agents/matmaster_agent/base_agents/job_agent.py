@@ -12,7 +12,6 @@ from google.adk.events import Event, EventActions
 from pydantic import Field
 
 from agents.matmaster_agent.base_agents.callback import (
-    _get_userId,
     _inject_ak,
     _inject_projectId,
     catch_after_tool_callback_error,
@@ -69,7 +68,6 @@ from agents.matmaster_agent.prompt import (
     gen_submit_core_agent_instruction,
     gen_tool_call_info_instruction,
 )
-from agents.matmaster_agent.style import photon_consume_success
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
     cherry_pick_events,
@@ -81,10 +79,10 @@ from agents.matmaster_agent.utils.event_utils import (
     is_function_call,
     is_function_response,
     is_text,
+    photon_consume_event,
     send_error_event,
     update_state_event,
 )
-from agents.matmaster_agent.utils.finance import photon_consume
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
     get_session_state,
@@ -268,6 +266,10 @@ class CalculationMCPLlmAgent(HandleFileUploadLlmAgent):
                     if not isinstance(self, SubmitCoreCalculationMCPLlmAgent):
                         try:
                             dict_result = load_tool_response(event)
+                            async for consume_event in photon_consume_event(
+                                ctx, event, self.name
+                            ):
+                                yield consume_event
                         except BaseException:
                             yield event
                             raise
@@ -603,24 +605,10 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 ):
                     try:
                         dict_result = load_tool_response(event)
-                        if dict_result.get('status', None) == 'error':
-                            raise eval(dict_result['error_type'])(dict_result['error'])
-                        user_id = _get_userId(ctx)
-                        current_cost = ctx.session.state['cost'].get(
-                            event.content.parts[0].function_response.id, None
-                        )
-                        if current_cost is not None:
-                            res = await photon_consume(
-                                user_id, sku_id=current_cost['sku_id']
-                            )
-                            if res['code'] == 0:
-                                for consume_event in all_text_event(
-                                    ctx,
-                                    self.name,
-                                    f"{photon_consume_success(current_cost['value'])}",
-                                    ModelRole,
-                                ):
-                                    yield consume_event
+                        async for consume_event in photon_consume_event(
+                            ctx, event, self.name
+                        ):
+                            yield consume_event
                     except BaseException:
                         yield event
                         raise
