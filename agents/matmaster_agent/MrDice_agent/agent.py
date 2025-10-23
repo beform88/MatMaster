@@ -19,6 +19,9 @@ from agents.matmaster_agent.MrDice_agent.prompt import (
     MrDiceAgentInstruction,
     MrDiceAgentName,
 )
+from agents.matmaster_agent.MrDice_agent.callback import mrdice_check_transfer
+from agents.matmaster_agent.MrDice_agent.constant import MrDiceTargetAgentEnum
+from agents.matmaster_agent.MrDice_agent.prompt import MrDiceCheckTransferPrompt
 
 
 class MrDice_Agent(LlmWrapAgent):
@@ -39,6 +42,12 @@ class MrDice_Agent(LlmWrapAgent):
                 mofdb_agent,
             ],
             supervisor_agent=MATMASTER_AGENT_NAME,
+            after_model_callback=[
+                mrdice_check_transfer(
+                    prompt=MrDiceCheckTransferPrompt,
+                    target_agent_enum=MrDiceTargetAgentEnum,
+                )
+            ],
         )
 
 

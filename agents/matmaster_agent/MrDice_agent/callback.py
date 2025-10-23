@@ -1,97 +1,94 @@
 import json
 import logging
-from typing import Optional
+import uuid
+from enum import Enum
+from typing import Optional, Type
 
+import litellm
+from google.adk.agents.callback_context import CallbackContext
+from google.adk.agents.llm_agent import AfterModelCallback
+from google.adk.models import LlmResponse
+from google.genai.types import FunctionCall, Part
+
+from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name, MrDiceTargetAgentEnum
+from agents.matmaster_agent.MrDice_agent.prompt import MrDiceCheckTransferPrompt
+from agents.matmaster_agent.utils.llm_response_utils import has_function_call
+from agents.matmaster_agent.utils.model_utils import create_transfer_check_model
 
 logger = logging.getLogger(__name__)
 
 
-async def mrdice_subagent_force_execution(
-    tool, args, tool_context, tool_response
-) -> Optional[dict]:
+def mrdice_check_transfer(prompt: str, target_agent_enum: Type[Enum]) -> AfterModelCallback:
     """
-    MrDice 子代理强制执行 callback
-
-    统一解决幻觉和确认问题：
-    1. 如果工具调用失败 → 强制执行工具调用
-    2. 如果没有真实的检索结果 → 强制执行工具调用
+    MrDice 的转移检测 callback
+    
+    检测 LLM 响应是否包含转移意图，如果没有则自动添加转移指令
     """
-    logger.info(f"[mrdice_subagent_force_execution] Checking tool: {tool.name}")
+    async def wrapper(
+        callback_context: CallbackContext, llm_response: LlmResponse
+    ) -> Optional[LlmResponse]:
+        # 检查响应是否有效
+        if not (
+            llm_response
+            and not llm_response.partial
+            and llm_response.content
+            and llm_response.content.parts
+            and len(llm_response.content.parts)
+            and llm_response.content.parts[0].text
+        ):
+            return None
 
-    # 检查1: 工具调用是否成功
-    # tool_response 可能是 dict 或 CallToolResult 对象
-    if isinstance(tool_response, dict):
-        # 如果是字典，检查 status
-        if not tool_response or tool_response.get('status') != 'success':
-            logger.warning(
-                f"[mrdice_subagent_force_execution] Tool call failed, forcing execution"
-            )
-            return await tool.run_async(args=args, tool_context=tool_context)
-
-        # 获取结果数据
-        result_data = tool_response.get('result', {})
-    else:
-        # 如果是 CallToolResult 对象，说明工具调用成功
-        # 需要解析 CallToolResult 的内容
-        if not tool_response or not tool_response.content:
-            logger.warning(
-                f"[mrdice_subagent_force_execution] Invalid CallToolResult, forcing execution"
-            )
-            return await tool.run_async(args=args, tool_context=tool_context)
-
-        # 解析 CallToolResult 的内容
-        try:
-            result_data = json.loads(tool_response.content[0].text)
-        except (json.JSONDecodeError, IndexError, AttributeError) as e:
-            logger.warning(
-                f"[mrdice_subagent_force_execution] Failed to parse CallToolResult: {e}, forcing execution"
-            )
-            return await tool.run_async(args=args, tool_context=tool_context)
-
-    # 检查2: 是否有真实的检索结果
-    n_found = result_data.get('n_found')
-    output_dir = result_data.get('output_dir')
-    cleaned_structures = result_data.get('cleaned_structures', [])
-
-    # 更严格的 output_dir 格式检查
-    is_valid_output_dir = (
-        output_dir
-        and output_dir.startswith('https://')
-        and output_dir.endswith('.tgz')
-        and 'oss-cn-' in output_dir
-        and '/outputs/output_dir/' in output_dir
-    )
-    # 核心检查：基于实际输出结构
-    # 1. n_found 必须是有效的非负整数
-    # 2. cleaned_structures 必须非空（包含实际结构数据）
-    # 3. output_dir 必须符合严格的固定格式
-    validation_passed = (
-        isinstance(n_found, int)
-        and n_found >= 0
-        and cleaned_structures
-        and len(cleaned_structures) > 0
-        and is_valid_output_dir
-    )
-
-    if not validation_passed:
-        logger.warning(
-            f"[mrdice_subagent_force_execution] Validation failed: n_found={n_found} (type: {type(n_found)}), cleaned_structures_len={len(cleaned_structures)}, output_dir_valid={is_valid_output_dir}, forcing execution"
+        llm_prompt = prompt.format(response_text=llm_response.content.parts[0].text)
+        response = litellm.completion(
+            model='azure/gpt-4o',
+            messages=[{'role': 'user', 'content': llm_prompt}],
+            response_format=create_transfer_check_model(target_agent_enum),
         )
-        return await tool.run_async(args=args, tool_context=tool_context)
 
-    # 所有检查都通过，返回原始结果
-    logger.info(
-        f"[mrdice_subagent_force_execution] Validation passed: n_found={n_found}, structures={len(cleaned_structures)}, output_dir_valid={is_valid_output_dir}"
-    )
-    return None
+        if (
+            response
+            and response.choices
+            and response.choices[0]
+            and response.choices[0].message
+            and response.choices[0].message.content
+        ):
+            result: dict = json.loads(response.choices[0].message.content)
+        else:
+            logger.warning(
+                f'[{MrDice_Agent_Name}]:[mrdice_check_transfer] LLM completion error, response = {response}'
+            )
+            return None
+
+        is_transfer = bool(result.get('is_transfer', False))
+        target_agent = str(result.get('target_agent', ''))
+        reason = str(result.get('reason', ''))
+        symbol_name = (
+            f"[{callback_context.agent_name.replace('_agent', '')}_check_transfer]"
+        )
+        logger.info(
+            f"[{MrDice_Agent_Name}]:[mrdice_check_transfer] {symbol_name} target_agent = {target_agent}, is_transfer = {is_transfer}, "
+            f"response_text = {llm_response.content.parts[0].text}, reason = {reason}"
+        )
+        
+        if is_transfer and not has_function_call(llm_response):
+            logger.warning(
+                f"[{MrDice_Agent_Name}]:[mrdice_check_transfer] {symbol_name} add `transfer_to_agent`"
+            )
+            function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
+            llm_response.content.parts.append(
+                Part(
+                    function_call=FunctionCall(
+                        id=function_call_id,
+                        name='transfer_to_agent',
+                        args={'agent_name': target_agent},
+                    )
+                )
+            )
+
+            return llm_response
+
+        return None
+
+    return wrapper
 
 
-def create_mrdice_subagent_callback():
-    """
-    创建 MrDice 子代理专用的 callback
-
-    返回一个 after_tool_callback，统一处理：
-    1. 工具调用失败检测和重试
-    2. 结果数据有效性检测和强制执行
-    """
-    return mrdice_subagent_force_execution

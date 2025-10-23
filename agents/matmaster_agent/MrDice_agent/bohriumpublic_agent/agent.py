@@ -13,7 +13,6 @@ from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.prompt import (
     BohriumPublicAgentInstruction,
     BohriumPublicAgentName,
 )
-from agents.matmaster_agent.MrDice_agent.callback import create_mrdice_subagent_callback
 from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 
 load_dotenv()
@@ -37,7 +36,6 @@ class Bohriumpublic_Agent(CalculationMCPLlmAgent):
             tools=[mcp_tools],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,
-            after_tool_callback=create_mrdice_subagent_callback(),  # 添加统一的 MrDice callback
         )
 
 
