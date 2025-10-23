@@ -431,7 +431,7 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
 
 10. **{MrDice_Agent_Name}** - **Crystal structure meta-database search**
     - Purpose: Retrieve crystal structure data by coordinating multiple sub-agents:
-      * `bohrium_public_agent` → Bohrium Public database (includes Materials Project / MP; supports formula, elements, space group, atom counts, band gap, formation energy)
+      * `bohriumpublic_agent` → Bohrium Public database (includes Materials Project / MP; supports formula, elements, space group, atom counts, band gap, formation energy)
       * `optimade_agent` → OPTIMADE-compliant providers (broad coverage, complex logic filters, space-group, band-gap queries)
       * `openlam_agent` → OpenLAM internal database (formula, energy range, submission time filters)
       * `mofdb_agent` → MOFdb (Metal-Organic Frameworks; queries by MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area)
