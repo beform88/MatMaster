@@ -6,6 +6,7 @@ import aiohttp
 from agents.matmaster_agent.constant import (
     FINANCE_CONSUME_API,
     FINANCE_INFO_API,
+    MATMASTER_AGENT_NAME,
 )
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ async def get_user_photon_balance(user_id):
             response.raise_for_status()
             res = await response.json()
 
-            logger.info(f'[get_user_photon_balance] balance = {res['data']['balance']}')
+            logger.info(f'[{MATMASTER_AGENT_NAME}] balance = {res['data']['balance']}')
             return res['data']['balance']
 
 

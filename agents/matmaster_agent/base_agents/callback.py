@@ -193,7 +193,7 @@ def check_user_phonon_balance(
             return before_tool_result
 
         logger.info(
-            f'[check_user_phonon_balance] {tool.name}:{tool_context.function_call_id}'
+            f'[{MATMASTER_AGENT_NAME}] {tool.name}:{tool_context.function_call_id}'
         )
 
         if cost_func is None:
@@ -215,7 +215,7 @@ def check_user_phonon_balance(
         balance = await get_user_photon_balance(user_id)
 
         logger.info(
-            f"[check_user_phonon_balance] user_id={user_id}, sku_id={sku_id}, cost={cost}, balance={balance}"
+            f"[{MATMASTER_AGENT_NAME}] user_id={user_id}, sku_id={sku_id}, cost={cost}, balance={balance}"
         )
         if balance < cost:
             raise RuntimeError('Phonon is not enough, Please recharge.')
