@@ -605,6 +605,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                 ):
                     try:
                         dict_result = load_tool_response(event)
+                        # Photon Consume Event Display Frontend & Store DB
                         async for consume_event in photon_consume_event(
                             ctx, event, self.name
                         ):
@@ -658,7 +659,9 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                             in ctx.session.state['long_running_ids']
                             and 'result' in part.function_response.response
                         ):
-                            if not part.function_response.response['result'].isError:
+                            if not part.function_response.response[
+                                'result'
+                            ].isError:  # Submit Success
                                 raw_result = part.function_response.response['result']
                                 results = json.loads(raw_result.content[0].text)
                                 logger.info(
@@ -667,7 +670,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                 origin_job_id = results['job_id']
                                 job_name = part.function_response.name
                                 job_status = results['status']
-                                if not ctx.session.state['dflow']:
+                                if not ctx.session.state['dflow']:  # Non-Dflow Job
                                     bohr_job_id = results['extra_info']['bohr_job_id']
                                     job_detail_url = (
                                         f'{SANDBOX_JOB_DETAIL_URL}/{bohr_job_id}'
@@ -680,7 +683,7 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                         job_detail_url=job_detail_url,
                                         agent_name=ctx.agent.parent_agent.parent_agent.name,
                                     ).model_dump(mode='json')
-                                else:
+                                else:  # Dflow Job (Deprecated)
                                     workflow_id = results['extra_info']['workflow_id']
                                     workflow_uid = results['extra_info']['workflow_uid']
                                     workflow_url = results['extra_info'][
@@ -716,7 +719,12 @@ class SubmitCoreCalculationMCPLlmAgent(CalculationMCPLlmAgent):
                                         + 1,
                                     },
                                 )
-                            else:
+                                # Photon Consume Event
+                                async for consume_event in photon_consume_event(
+                                    ctx, event, self.name
+                                ):
+                                    yield consume_event
+                            else:  # Submit Failed
                                 # 提交报错同样+1，避免幻觉 card
                                 yield update_state_event(
                                     ctx,
