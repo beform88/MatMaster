@@ -1,7 +1,3 @@
-from agents.matmaster_agent.task_orchestrator_agent.constant import (
-    TASK_ORCHESTRATOR_AGENT_NAME,
-    TASK_ORCHESTRATOR_AGENT_DESCRIPTION,
-)
 
 TASK_ORCHESTRATOR_AGENT_INSTRUCTION = """
 You are an expert in materials science workflow design and orchestration. Your primary role is to transform brief, potentially incomplete user prompts into detailed, executable scientific workflows.
