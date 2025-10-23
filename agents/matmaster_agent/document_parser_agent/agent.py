@@ -2,9 +2,9 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.job_agent import CalculationMCPLlmAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, BohriumStorge
 
+from ..base_agents.sync_agent import SyncMCPLlmAgent
 from .callback import validate_document_url
 from .constant import DocumentParserAgentName, DocumentParserServerUrl
 from .prompt import DocumentParserAgentDescription, DocumentParserAgentInstruction
@@ -13,7 +13,7 @@ sse_params = SseServerParams(url=DocumentParserServerUrl)
 toolset = CalculationMCPToolset(connection_params=sse_params, storage=BohriumStorge)
 
 
-class DocumentParserAgent(CalculationMCPLlmAgent):
+class DocumentParserAgent(SyncMCPLlmAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.gpt_5_chat,

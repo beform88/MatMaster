@@ -5,9 +5,9 @@ import dotenv
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.job_agent import CalculationMCPLlmAgent
 from agents.matmaster_agent.constant import BohriumStorge
 
+from ..base_agents.sync_agent import SyncMCPLlmAgent
 from .constant import PEROVSKITE_PLOT_URL, PerovskiteAgentName
 from .prompt import PerovskiteAgentDescription, PerovskiteAgentInstruction
 
@@ -39,7 +39,7 @@ def init_perovskite_agent(llm_config):
     # Choose model per flag with sensible fallbacks
     model = llm_config.gpt_5_chat
 
-    return CalculationMCPLlmAgent(
+    return SyncMCPLlmAgent(
         model=model,
         name=PerovskiteAgentName,
         description=PerovskiteAgentDescription,

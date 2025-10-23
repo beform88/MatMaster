@@ -33,25 +33,12 @@ logger = logging.getLogger(__name__)
 
 # LlmAgent -> ErrorHandleAgent -> SubordinateAgent -> MCPLlmAgent -> SyncMCPLlmAgent
 class SyncMCPLlmAgent(MCPLlmAgent):
-    """An LLM agent specialized for calculation tasks with built-in error handling and project ID management.
-
-    Extends the HandleFileUploadLlmAgent with additional features:
-    - Automatic error handling for tool calls
-    - Project ID retrieval before tool execution
-    - OpikTracer integration for comprehensive operation tracing
-
-    Note: User-provided callbacks will execute before the built-in OpikTracer callbacks.
-
-    Attributes:
-        Inherits all attributes from LlmAgent.
-    """
-
     # Execution Order: user_question -> chembrain_llm -> event -> user_agree_transfer -> retrosyn_llm (param) -> event
     #                  -> user_agree_param -> retrosyn_llm (function_call) -> event -> tool_call
     #                  -> retrosyn_llm (function_response) -> event
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        async for event in super()._run_async_impl(ctx):
+        async for event in super()._run_events(ctx):
             if is_function_call(event):
                 if self.loading:
                     loading_title_msg = (

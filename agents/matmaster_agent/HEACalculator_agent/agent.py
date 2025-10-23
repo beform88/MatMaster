@@ -4,12 +4,12 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.job_agent import CalculationMCPLlmAgent
 from agents.matmaster_agent.constant import (  # BohriumExecutor,
     LOCAL_EXECUTOR,
     BohriumStorge,
 )
 
+from ..base_agents.sync_agent import SyncMCPLlmAgent
 from .constant import HEACALCULATOR_AGENT_NAME, HEACALCULATOR_SERVER_URL
 from .prompt import HEACALC_AGENT_DESCRIPTION, HEACALC_AGENT_INSTRUCTION
 
@@ -27,7 +27,7 @@ mcp_tools = CalculationMCPToolset(
 )
 
 
-class HEACalculatorAgent(CalculationMCPLlmAgent):
+class HEACalculatorAgent(SyncMCPLlmAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.gpt_5_chat,
