@@ -11,6 +11,7 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 
 
+# LlmAgent -> ErrorHandleAgent -> SubordinateAgent
 class SubordinateAgent(ErrorHandleAgent):
     supervisor_agent: Optional[str] = Field(
         None, description='Which one is the supervisor_agent'

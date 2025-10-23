@@ -6,6 +6,7 @@ from google.adk.events import Event
 from agents.matmaster_agent.utils.event_utils import send_error_event
 
 
+# LlmAgent -> ErrorHandleAgent
 class ErrorHandleAgent(LlmAgent):
     @override
     async def _run_async_impl(

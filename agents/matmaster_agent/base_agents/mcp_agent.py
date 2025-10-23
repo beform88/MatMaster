@@ -21,6 +21,7 @@ from agents.matmaster_agent.base_agents.callback import (
 from agents.matmaster_agent.base_agents.subordinate_agent import SubordinateAgent
 
 
+# LlmAgent -> ErrorHandleAgent -> SubordinateAgent -> MCPLlmAgent
 class MCPLlmAgent(SubordinateAgent):
     """An LLM agent specialized for calculation tasks with built-in error handling and project ID management.
 
