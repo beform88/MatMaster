@@ -47,6 +47,9 @@ from agents.matmaster_agent.structure_generate_agent.agent import (
     init_structure_generate_agent,
 )
 from agents.matmaster_agent.superconductor_agent.agent import init_superconductor_agent
+from agents.matmaster_agent.task_orchestrator_agent.agent import (
+    init_task_orchestrator_agent,
+)
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
 from agents.matmaster_agent.utils.event_utils import (
@@ -80,6 +83,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
         perovskite_agent = init_perovskite_agent(llm_config)
         document_parser_agent = init_document_parser_agent(llm_config)
         finetune_dpa_agent = init_finetune_dpa_agent(llm_config)
+        task_orchestrator_agent = init_task_orchestrator_agent(llm_config)
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
@@ -103,6 +107,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 perovskite_agent,
                 document_parser_agent,
                 finetune_dpa_agent,
+                task_orchestrator_agent,
             ],
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
