@@ -7,7 +7,6 @@ from agents.matmaster_agent.task_orchestrator_agent.constant import (
     TASK_ORCHESTRATOR_AGENT_NAME,
 )
 from agents.matmaster_agent.task_orchestrator_agent.prompt import (
-    TASK_ORCHESTRATOR_AGENT_DESCRIPTION,
     TASK_ORCHESTRATOR_AGENT_INSTRUCTION,
 )
 
