@@ -42,6 +42,35 @@ def get_job_complete_card(i18n: I18N, job_id):
 """
 
 
+def photon_consume_notify_card(cost):
+    return f"""
+<div style="
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 1.5px solid #ffc107;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin: 12px 0;
+    box-shadow: 0 3px 8px rgba(255, 193, 7, 0.25);
+    text-align: left;
+">
+
+<p style="
+    font-size: 15px;
+    color: #856404;
+    margin: 0;
+    font-weight: bold;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+">
+⚠️ 即将扣除 <span style="color: #e74c3c; font-size: 18px; font-weight: 800;">{cost}</span> 光子
+</p>
+
+</div>
+"""
+
+
 def photon_consume_success_card(cost):
     return f"""
 <div style="

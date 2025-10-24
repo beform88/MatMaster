@@ -10,7 +10,7 @@ from agents.matmaster_agent.DPACalculator_agent.constant import (
     DPACalulator_BOHRIUM_STORAGE,
     DPAMCPServerUrl,
 )
-from agents.matmaster_agent.DPACalculator_agent.finance import cost_func
+from agents.matmaster_agent.DPACalculator_agent.finance import dpa_cost_func
 from agents.matmaster_agent.DPACalculator_agent.prompt import (
     DPAAgentDescription,
     DPAAgentInstruction,
@@ -37,7 +37,7 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
             agent_instruction=DPAAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
-            cost_func=cost_func,
+            cost_func=dpa_cost_func,
         )
 
 

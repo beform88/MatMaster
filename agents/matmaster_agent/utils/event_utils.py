@@ -7,12 +7,14 @@ from typing import Iterable, Optional
 
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
+from google.adk.tools import BaseTool
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.style import (
+    photon_consume_notify_card,
     photon_consume_success_card,
     tool_response_failed_card,
 )
@@ -299,6 +301,20 @@ async def photon_consume_event(ctx, event, author):
                 ModelRole,
             ):
                 yield consume_event
+
+
+async def display_future_consume_event(event, cost_func, ctx, author):
+    for index in get_function_call_indexes(event):
+        function_call_name = event.content.parts[index].function_call.name
+        invocated_tool = BaseTool(name=function_call_name, description='')
+        tool_cost, _ = cost_func(invocated_tool)
+        for photon_consume_notify_event in all_text_event(
+            ctx,
+            author,
+            f"{photon_consume_notify_card(tool_cost)}",
+            ModelRole,
+        ):
+            yield photon_consume_notify_event
 
 
 async def display_failed_result_or_consume(dict_result, ctx, author, event):

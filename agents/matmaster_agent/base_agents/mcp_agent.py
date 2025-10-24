@@ -39,6 +39,7 @@ from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     context_multipart2function_event,
     display_failed_result_or_consume,
+    display_future_consume_event,
     is_function_call,
     is_function_response,
     is_text,
@@ -66,7 +67,6 @@ class MCPInitMixin:
         self,
         model,
         name,
-        *args,
         instruction='',
         description='',
         sub_agents=None,
@@ -79,9 +79,9 @@ class MCPInitMixin:
         after_tool_callback=default_after_tool_callback,
         after_model_callback=default_after_model_callback,
         after_agent_callback=None,
+        disallow_transfer_to_parent=False,
         loading=False,
         render_tool_response=False,
-        disallow_transfer_to_parent=False,
         enable_tgz_unpack=True,
         cost_func=default_cost_func,
         **kwargs,
@@ -134,7 +134,6 @@ class MCPInitMixin:
         )
 
         super().__init__(
-            *args,
             model=model,
             name=name,
             description=description,
@@ -150,13 +149,17 @@ class MCPInitMixin:
             after_model_callback=after_model_callback,
             after_agent_callback=after_agent_callback,
             disallow_transfer_to_parent=disallow_transfer_to_parent,
+            loading=loading,
+            render_tool_response=render_tool_response,
             enable_tgz_unpack=enable_tgz_unpack,
+            cost_func=cost_func,
             **kwargs,
         )
 
         self.loading = loading
         self.render_tool_response = render_tool_response
         self.enable_tgz_unpack = enable_tgz_unpack
+        self.cost_func = cost_func
 
 
 class MCPRunEventsMixin:
@@ -184,12 +187,19 @@ class MCPRunEventsMixin:
                                 }
                             ),
                         )
+                    # update state: `tools_count`
                     yield update_state_event(
                         ctx,
                         state_delta={
                             'tools_count': ctx.session.state['tools_count'] + 1
                         },
                     )
+                    # prompt user photon cost
+                    cost_func = self.parent_agent.dpa_cost_func
+                    async for future_consume_event in display_future_consume_event(
+                        event, cost_func, ctx, self.name
+                    ):
+                        yield future_consume_event
                 elif is_function_response(event):
                     # Loading Event
                     if self.loading:
@@ -257,10 +267,15 @@ class MCPFeaturesMixin(MCPInitMixin, MCPRunEventsMixin):
     pass
 
 
+class NonSubMCPLlmAgentOnlyWithInit(MCPInitMixin, ErrorHandleAgent):
+    pass
+
+
 class NonSubMCPLlmAgent(MCPFeaturesMixin, ErrorHandleAgent):
     def __init__(
         self,
         *args,
+        loading=False,
         enable_tgz_unpack=True,
         cost_func=None,
         render_tool_response=False,
@@ -268,24 +283,7 @@ class NonSubMCPLlmAgent(MCPFeaturesMixin, ErrorHandleAgent):
     ):
         super().__init__(
             *args,
-            enable_tgz_unpack=enable_tgz_unpack,
-            cost_func=cost_func,
-            render_tool_response=render_tool_response,
-            **kwargs,
-        )
-
-
-class NonSubMCPLlmAgentOnlyWithInit(MCPInitMixin, ErrorHandleAgent):
-    def __init__(
-        self,
-        *args,
-        enable_tgz_unpack=True,
-        cost_func=None,
-        render_tool_response=False,
-        **kwargs,
-    ):
-        super().__init__(
-            *args,
+            loading=loading,
             enable_tgz_unpack=enable_tgz_unpack,
             cost_func=cost_func,
             render_tool_response=render_tool_response,

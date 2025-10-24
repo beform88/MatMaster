@@ -137,7 +137,7 @@ class BaseSyncSubAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAge
                 break
 
 
-class BaseAsyncJobAgent(LlmAgent):
+class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
     """
     Base agent class for handling asynchronous job submissions.
 
@@ -163,6 +163,7 @@ class BaseAsyncJobAgent(LlmAgent):
     enable_tgz_unpack: bool = Field(
         True, description='Whether to automatically unpack tgz files from tool results'
     )
+    cost_func: Optional[CostFuncType] = None
 
     def __init__(
         self,
@@ -170,12 +171,14 @@ class BaseAsyncJobAgent(LlmAgent):
         agent_name: str,
         agent_description: str,
         agent_instruction: str,
+        *args,
         mcp_tools: list,
         dflow_flag: bool,
         supervisor_agent: str,
         sync_tools: Optional[list] = None,
         enable_tgz_unpack: bool = True,
-        cost_func: Optional[CostFuncType] = None,
+        cost_func=None,
+        **kwargs,
     ):
         """
         Initialize the BaseAsyncJobAgent with specialized sub-agents.
@@ -276,12 +279,13 @@ class BaseAsyncJobAgent(LlmAgent):
             supervisor_agent=supervisor_agent,
             sync_tools=sync_tools,
             enable_tgz_unpack=enable_tgz_unpack,
+            cost_func=cost_func,
         )
 
+        self.cost_func = cost_func
+
     @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         session_state = get_session_state(ctx)
         yield update_state_event(
             ctx, state_delta={'dflow': self.dflow_flag, 'sync_tools': self.sync_tools}
@@ -354,13 +358,3 @@ class BaseAsyncJobAgent(LlmAgent):
                     yield tool_call_info_event
                 async for submit_event in self.submit_agent.run_async(ctx):
                     yield submit_event
-
-        for function_event in context_function_event(
-            ctx,
-            self.name,
-            'transfer_to_agent',
-            None,
-            ModelRole,
-            {'agent_name': self.supervisor_agent},
-        ):
-            yield function_event
