@@ -195,7 +195,7 @@ class MCPRunEventsMixin:
                         },
                     )
                     # prompt user photon cost
-                    cost_func = self.parent_agent.dpa_cost_func
+                    cost_func = self.parent_agent.cost_func
                     async for future_consume_event in display_future_consume_event(
                         event, cost_func, ctx, self.name
                     ):
@@ -281,6 +281,7 @@ class NonSubMCPLlmAgent(MCPFeaturesMixin, ErrorHandleAgent):
         render_tool_response=False,
         **kwargs,
     ):
+        # 先执行 MCPFeaturesMixin 的 init，遇到 super 的时候再执行 ErrorHandleAgent 的 init
         super().__init__(
             *args,
             loading=loading,

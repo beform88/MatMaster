@@ -2,7 +2,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.multi_agent import BaseSyncSubAgent
+from agents.matmaster_agent.base_agents.multi_agent import BaseSyncMCPAgent
 from agents.matmaster_agent.constant import BohriumStorge
 from agents.matmaster_agent.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
@@ -16,7 +16,7 @@ toolset = CalculationMCPToolset(
 
 
 def init_traj_analysis_agent(llm_config) -> BaseAgent:
-    return BaseSyncSubAgent(
+    return BaseSyncMCPAgent(
         model=llm_config.gpt_5_chat,
         name=TrajAnalysisAgentName,
         description='An agent designed to perform trajectory analysis, including calculations like '

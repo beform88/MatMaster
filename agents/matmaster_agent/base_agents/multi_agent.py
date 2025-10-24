@@ -55,7 +55,7 @@ from agents.matmaster_agent.utils.helper_func import (
 logger = logging.getLogger(__name__)
 
 
-class BaseSyncSubAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAgent):
+class BaseSyncMCPAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAgent):
     def __init__(self, *args, supervisor_agent=None, **kwargs):
         # 确保 supervisor_agent 被正确处理
         super().__init__(*args, supervisor_agent=supervisor_agent, **kwargs)

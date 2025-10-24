@@ -9,7 +9,7 @@ from agents.matmaster_agent.constant import (  # BohriumExecutor,
     BohriumStorge,
 )
 
-from ..base_agents.multi_agent import BaseSyncSubAgent
+from ..base_agents.multi_agent import BaseSyncMCPAgent
 from .constant import HEACALCULATOR_AGENT_NAME, HEACALCULATOR_SERVER_URL
 from .prompt import HEACALC_AGENT_DESCRIPTION, HEACALC_AGENT_INSTRUCTION
 
@@ -27,7 +27,7 @@ mcp_tools = CalculationMCPToolset(
 )
 
 
-class HEACalculatorAgentBase(BaseSyncSubAgent):
+class HEACalculatorAgentBase(BaseSyncMCPAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.gpt_5_chat,
