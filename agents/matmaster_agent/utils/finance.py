@@ -27,12 +27,12 @@ async def get_user_photon_balance(user_id):
             return res['data']['balance']
 
 
-async def photon_consume(user_id, sku_id):
+async def photon_consume(user_id, sku_id, event_value):
     payload = {
         'userId': int(user_id),
         'bizNo': int(time.time()),
         'changeType': 2,
-        'eventValue': int(1),
+        'eventValue': int(event_value),
         'skuId': int(sku_id),
     }
 

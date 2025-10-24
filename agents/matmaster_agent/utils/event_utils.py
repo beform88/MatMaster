@@ -10,7 +10,7 @@ from google.adk.events import Event, EventActions
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.style import photon_consume_success_card
 from agents.matmaster_agent.utils.finance import photon_consume
 
@@ -283,7 +283,10 @@ async def photon_consume_event(ctx, event, author):
         event.content.parts[0].function_response.id, None
     )
     if current_cost is not None:
-        res = await photon_consume(user_id, sku_id=current_cost['sku_id'])
+        event_value = current_cost['value'] if CURRENT_ENV != 'test' else 1
+        res = await photon_consume(
+            user_id, sku_id=current_cost['sku_id'], event_value=event_value
+        )
         if res['code'] == 0:
             for consume_event in all_text_event(
                 ctx,
