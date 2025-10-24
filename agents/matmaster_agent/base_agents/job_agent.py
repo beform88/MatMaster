@@ -63,7 +63,7 @@ from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 logger = logging.getLogger(__name__)
 
 
-class ResultCalculationMCPLlmAgentAgentComp(MCPInitAgentComp):
+class ResultMCPAgentComp(MCPInitAgentComp):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(
             description=ResultCoreAgentDescription,
@@ -280,7 +280,7 @@ class ToolCallInfoAgent(ErrorHandleAgent):
                     yield system_job_result_event
 
 
-class SubmitCoreCalculationMCPLlmAgentAgentComp(MCPInitAgentComp):
+class SubmitCoreMCPAgentComp(MCPInitAgentComp):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
 

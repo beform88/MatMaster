@@ -10,8 +10,8 @@ from pydantic import Field
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.job_agent import (
     ParamsCheckInfoAgent,
-    ResultCalculationMCPLlmAgentAgentComp,
-    SubmitCoreCalculationMCPLlmAgentAgentComp,
+    ResultMCPAgentComp,
+    SubmitCoreMCPAgentComp,
     SubmitRenderAgent,
     SubmitValidatorAgent,
     ToolCallInfoAgent,
@@ -198,7 +198,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
         agent_prefix = agent_name.replace('_agent', '')
 
         # Create submission workflow agents
-        submit_core_agent = SubmitCoreCalculationMCPLlmAgentAgentComp(
+        submit_core_agent = SubmitCoreMCPAgentComp(
             model=model,
             name=f"{agent_prefix}_submit_core_agent",
             description=gen_submit_core_agent_description(agent_prefix),
@@ -225,7 +225,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
         )
 
         # Create result retrieval agent
-        result_core_agent = ResultCalculationMCPLlmAgentAgentComp(
+        result_core_agent = ResultMCPAgentComp(
             model=model,
             name=f"{agent_prefix}_result_core_agent",
             tools=mcp_tools,

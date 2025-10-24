@@ -16,7 +16,7 @@ class SubordinateFeaturesMixin:
     )
 
     def __init__(self, supervisor_agent, *args, **kwargs):
-        super().__init__(*args, supervisor_agent=supervisor_agent, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.supervisor_agent = supervisor_agent
 

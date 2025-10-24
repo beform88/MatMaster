@@ -149,10 +149,6 @@ class MCPInitMixin:
             after_model_callback=after_model_callback,
             after_agent_callback=after_agent_callback,
             disallow_transfer_to_parent=disallow_transfer_to_parent,
-            loading=loading,
-            render_tool_response=render_tool_response,
-            enable_tgz_unpack=enable_tgz_unpack,
-            cost_func=cost_func,
             **kwargs,
         )
 
