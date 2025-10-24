@@ -9,7 +9,7 @@ from opik.integrations.adk import track_adk_agent_recursive
 from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
 from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
-from agents.matmaster_agent.base_callbacks.callback import check_transfer
+from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
 from agents.matmaster_agent.callback import (
     matmaster_check_job_status,
     matmaster_hallucination_retry,
