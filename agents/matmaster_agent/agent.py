@@ -9,6 +9,7 @@ from opik.integrations.adk import track_adk_agent_recursive
 from agents.matmaster_agent.ABACUS_agent.agent import init_abacus_calculation_agent
 from agents.matmaster_agent.apex_agent.agent import init_apex_agent
 from agents.matmaster_agent.base_agents.io_agent import HandleFileUploadLlmAgent
+from agents.matmaster_agent.base_callbacks.callback import check_transfer
 from agents.matmaster_agent.callback import (
     matmaster_check_job_status,
     matmaster_hallucination_retry,
@@ -41,7 +42,6 @@ from agents.matmaster_agent.prompt import (
     GlobalInstruction,
     MatMasterCheckTransferPrompt,
 )
-from agents.matmaster_agent.public.callback import check_transfer
 from agents.matmaster_agent.ssebrain_agent.agent import init_ssebrain_agent
 from agents.matmaster_agent.structure_generate_agent.agent import (
     init_structure_generate_agent,

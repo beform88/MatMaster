@@ -1,6 +1,7 @@
 from google.adk.agents import BaseAgent
 
 from agents.matmaster_agent.base_agents.subordinate_agent import SubordinateAgent
+from agents.matmaster_agent.base_callbacks.callback import check_transfer
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,
@@ -21,7 +22,6 @@ from agents.matmaster_agent.MrDice_agent.prompt import (
     MrDiceAgentName,
     MrDiceCheckTransferPrompt,
 )
-from agents.matmaster_agent.public.callback import check_transfer
 
 
 class MrDice_Agent(SubordinateAgent):
