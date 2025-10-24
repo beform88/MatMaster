@@ -4,7 +4,6 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     BohriumExecutor,
@@ -17,6 +16,7 @@ from agents.matmaster_agent.finetune_dpa_agent.prompt import (
 )
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
+from ..base_agents.multi_agent import BaseAsyncJobAgent
 from .constant import FinetuneDPAServerUrl
 
 FinetuneDPABohriumExecutor = copy.deepcopy(BohriumExecutor)
