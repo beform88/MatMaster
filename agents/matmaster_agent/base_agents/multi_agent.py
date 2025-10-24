@@ -10,15 +10,15 @@ from pydantic import Field
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.job_agent import (
     ParamsCheckInfoAgent,
-    ResultCalculationMCPLlmAgent,
-    SubmitCoreCalculationMCPLlmAgent,
+    ResultCalculationMCPLlmAgentAgentComp,
+    SubmitCoreCalculationMCPLlmAgentAgentComp,
     SubmitRenderAgent,
     SubmitValidatorAgent,
     ToolCallInfoAgent,
 )
 from agents.matmaster_agent.base_agents.mcp_agent import (
+    MCPAgentComp,
     MCPFeaturesMixin,
-    NonSubMCPLlmAgent,
 )
 from agents.matmaster_agent.base_agents.sflow_agent import (
     ToolValidatorAgent,
@@ -62,7 +62,7 @@ class BaseSyncMCPAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAg
 
 
 class BaseSyncMCPAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAgent):
-    sync_mcp_agent: NonSubMCPLlmAgent
+    sync_mcp_agent: MCPAgentComp
     tool_validator_agent: ToolValidatorAgent
     enable_tgz_unpack: bool = Field(
         True, description='Whether to automatically unpack tgz files from tool results'
@@ -86,7 +86,7 @@ class BaseSyncMCPAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAge
     ):
         agent_prefix = name.replace('_agent', '')
 
-        sync_mcp_agent = NonSubMCPLlmAgent(
+        sync_mcp_agent = MCPAgentComp(
             model=model,
             name=f"{agent_prefix}_sync_mcp_agent",
             description=description,
@@ -198,7 +198,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
         agent_prefix = agent_name.replace('_agent', '')
 
         # Create submission workflow agents
-        submit_core_agent = SubmitCoreCalculationMCPLlmAgent(
+        submit_core_agent = SubmitCoreCalculationMCPLlmAgentAgentComp(
             model=model,
             name=f"{agent_prefix}_submit_core_agent",
             description=gen_submit_core_agent_description(agent_prefix),
@@ -225,7 +225,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
         )
 
         # Create result retrieval agent
-        result_core_agent = ResultCalculationMCPLlmAgent(
+        result_core_agent = ResultCalculationMCPLlmAgentAgentComp(
             model=model,
             name=f"{agent_prefix}_result_core_agent",
             tools=mcp_tools,

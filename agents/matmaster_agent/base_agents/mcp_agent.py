@@ -267,11 +267,11 @@ class MCPFeaturesMixin(MCPInitMixin, MCPRunEventsMixin):
     pass
 
 
-class NonSubMCPLlmAgentOnlyWithInit(MCPInitMixin, ErrorHandleAgent):
+class MCPInitAgentComp(MCPInitMixin, ErrorHandleAgent):
     pass
 
 
-class NonSubMCPLlmAgent(MCPFeaturesMixin, ErrorHandleAgent):
+class MCPAgentComp(MCPFeaturesMixin, ErrorHandleAgent):
     def __init__(
         self,
         *args,
