@@ -61,7 +61,7 @@ class BaseSyncMCPAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAg
         super().__init__(*args, supervisor_agent=supervisor_agent, **kwargs)
 
 
-class BaseSyncSubAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAgent):
+class BaseSyncMCPAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAgent):
     sync_mcp_agent: NonSubMCPLlmAgent
     tool_validator_agent: ToolValidatorAgent
     enable_tgz_unpack: bool = Field(
