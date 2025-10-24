@@ -6,7 +6,6 @@ import traceback
 from functools import wraps
 from typing import Optional, Union
 
-import aiohttp
 import litellm
 from dp.agent.adapter.adk import CalculationMCPTool
 from google.adk.agents.callback_context import CallbackContext
@@ -21,9 +20,7 @@ from agents.matmaster_agent.constant import (
     FRONTEND_STATE_KEY,
     LOCAL_EXECUTOR,
     MATERIALS_ACCESS_KEY,
-    MATERIALS_PROJECT_ID,
     MATMASTER_AGENT_NAME,
-    OPENAPI_HOST,
     SKU_MAPPING,
     Transfer2Agent,
 )
@@ -39,6 +36,7 @@ from agents.matmaster_agent.utils.helper_func import (
     update_llm_response,
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
+from agents.matmaster_agent.utils.job_utils import check_job_create_service
 from agents.matmaster_agent.utils.tool_response_utils import check_valid_tool_response
 
 logger = logging.getLogger(__name__)
@@ -430,44 +428,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             )
 
         if tool.executor is not None:
-            job_create_url = f"{OPENAPI_HOST}/openapi/v1/job/create"
-            user_project_list_url = f"{OPENAPI_HOST}/openapi/v1/open/user/project/list"
-            payload = {
-                'projectId': MATERIALS_PROJECT_ID,
-                'name': 'check_job_create',
-            }
-            params = {'accessKey': MATERIALS_ACCESS_KEY}
-
-            logger.info(
-                f"[{MATMASTER_AGENT_NAME}]:[check_job_create] project_id = {MATERIALS_PROJECT_ID}, "
-                f"ak = {MATERIALS_ACCESS_KEY}"
-            )
-
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    user_project_list_url, params=params
-                ) as response:
-                    res = json.loads(await response.text())
-                    logger.info(
-                        f"[{MATMASTER_AGENT_NAME}]:[check_job_create] res = {res}"
-                    )
-                    project_name = [
-                        item['project_name']
-                        for item in res['data']['items']
-                        if item['project_id'] == MATERIALS_PROJECT_ID
-                    ][0]
-
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    job_create_url, json=payload, params=params
-                ) as response:
-                    res = json.loads(await response.text())
-                    if res['code'] != 0:
-                        if res['code'] == 2000:
-                            res['error'][
-                                'msg'
-                            ] = f"您所用项目为 `{project_name}`，该项目余额不足，请充值或更换项目后重试。"
-                        return res
+            return await check_job_create_service()
 
     return wrapper
 
