@@ -6,7 +6,6 @@ from google.adk.agents import InvocationContext, LlmAgent, SequentialAgent
 from google.adk.events import Event
 from pydantic import Field
 
-from agents.matmaster_agent.base_agents.callback import remove_function_call
 from agents.matmaster_agent.base_agents.job_agent import (
     ParamsCheckInfoAgent,
     ResultCalculationMCPLlmAgent,
@@ -16,6 +15,7 @@ from agents.matmaster_agent.base_agents.job_agent import (
     ToolCallInfoAgent,
     logger,
 )
+from agents.matmaster_agent.base_callbacks.private_callback import remove_function_call
 from agents.matmaster_agent.constant import (
     FRONTEND_STATE_KEY,
     MATMASTER_AGENT_NAME,

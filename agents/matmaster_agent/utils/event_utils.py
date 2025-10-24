@@ -9,7 +9,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
-from agents.matmaster_agent.base_agents.callback import _get_userId
+from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.style import photon_consume_success
 from agents.matmaster_agent.utils.finance import photon_consume

@@ -2,7 +2,11 @@ from typing import Callable, Optional
 
 from pydantic import Field
 
-from agents.matmaster_agent.base_agents.callback import (
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
+from agents.matmaster_agent.base_agents.subordinate_agent import (
+    SubordinateFeaturesMixin,
+)
+from agents.matmaster_agent.base_callbacks.private_callback import (
     catch_after_tool_callback_error,
     catch_before_tool_callback_error,
     check_before_tool_callback_effect,
@@ -17,10 +21,6 @@ from agents.matmaster_agent.base_agents.callback import (
     inject_username_ticket,
     remove_job_link,
     tgz_oss_to_oss_list,
-)
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
-from agents.matmaster_agent.base_agents.subordinate_agent import (
-    SubordinateFeaturesMixin,
 )
 
 
