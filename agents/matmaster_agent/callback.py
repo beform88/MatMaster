@@ -88,6 +88,16 @@ async def matmaster_prepare_state(
     callback_context.state['hallucination_agent'] = callback_context.state.get(
         'hallucination_agent', None
     )
+    callback_context.state['tools_count'] = callback_context.state.get('tools_count', 0)
+    callback_context.state['tools_count_ori'] = callback_context.state.get(
+        'tools_count_ori', 0
+    )
+    callback_context.state['tool_hallucination'] = callback_context.state.get(
+        'tool_hallucination', False
+    )
+    callback_context.state['tool_hallucination_agent'] = callback_context.state.get(
+        'tool_hallucination_agent', None
+    )
 
 
 async def matmaster_set_lang(

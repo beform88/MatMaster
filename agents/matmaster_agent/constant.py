@@ -16,32 +16,27 @@ ModelRole = 'model'
 # DB
 DBUrl = os.getenv('SESSION_API_URL')
 
-OPENAPI_HOST = ''
 DFLOW_HOST = ''
 DFLOW_K8S_API_SERVER = ''
-BOHRIUM_API_URL = ''
 BOHRIUM_HOST = ''
 BOHRIUM_COM = ''
 
 CURRENT_ENV = os.getenv('OPIK_PROJECT_NAME', 'prod')
+URL_PART = f'.{CURRENT_ENV}' if CURRENT_ENV != 'prod' else ''
+OPENAPI_HOST = f'https://openapi{URL_PART}.dp.tech'
+BOHRIUM_API_URL = f'https://bohrium-api{URL_PART}.dp.tech'
+GOODS_API_BASE = f'https://goods-server{URL_PART}.dp.tech'
+FINANCE_API_BASE = f'https://finance-web{URL_PART}.dp.tech'
 if CURRENT_ENV == 'test':
-    OPENAPI_HOST = 'https://openapi.test.dp.tech'
     DFLOW_HOST = 'https://lbg-workflow-mlops.test.dp.tech'
     DFLOW_K8S_API_SERVER = 'https://lbg-workflow-mlops.test.dp.tech'
-    BOHRIUM_API_URL = 'https://bohrium-api.test.dp.tech'
-    GOODS_API_BASE = 'https://goods-server.test.dp.tech'
-    FINANCE_API_BASE = 'https://finance-web.test.dp.tech'
     BOHRIUM_HOST = 'https://bohrium.test.dp.tech'
     BOHRIUM_COM = 'https://www.test.bohrium.com'
 elif CURRENT_ENV == 'uat':
-    OPENAPI_HOST = 'https://openapi.uat.dp.tech'
-    BOHRIUM_API_URL = 'https://bohrium-api.uat.dp.tech'
     BOHRIUM_COM = 'https://www.uat.bohrium.com'
 elif CURRENT_ENV == 'prod':
-    OPENAPI_HOST = 'https://openapi.dp.tech'
     DFLOW_HOST = 'https://workflows.deepmodeling.com'
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
-    BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
     BOHRIUM_COM = 'https://www.bohrium.com'
 
 SANDBOX_JOB_DETAIL_URL = f'{BOHRIUM_COM}/sandboxjob/detail'

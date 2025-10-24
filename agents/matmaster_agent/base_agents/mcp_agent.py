@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Optional
 
 from pydantic import Field
 
@@ -22,6 +22,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_job_link,
     tgz_oss_to_oss_list,
 )
+from agents.matmaster_agent.model import CostFuncType
 
 
 class MCPFeaturesMixin:
@@ -34,7 +35,7 @@ class MCPFeaturesMixin:
     enable_tgz_unpack: bool = Field(
         True, description='Whether unpack tgz files for tool_results'
     )
-    cost_func: Optional[Callable[[], int]] = None
+    cost_func: Optional[CostFuncType] = None
 
     def __init__(
         self,
@@ -140,4 +141,7 @@ class SubMCPLlmAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAgen
 
 
 class NonSubMCPLlmAgent(MCPFeaturesMixin, ErrorHandleAgent):
-    pass
+    def __init__(self, *args, enable_tgz_unpack=True, cost_func=None, **kwargs):
+        super().__init__(
+            *args, enable_tgz_unpack=enable_tgz_unpack, cost_func=cost_func, **kwargs
+        )

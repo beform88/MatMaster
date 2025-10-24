@@ -9,7 +9,7 @@ from agents.matmaster_agent.constant import (  # BohriumExecutor,
     BohriumStorge,
 )
 
-from ..base_agents.sync_agent import SyncSubMCPLlmAgent
+from ..base_agents.multi_agent import BaseSyncSubAgent
 from .constant import HEACALCULATOR_AGENT_NAME, HEACALCULATOR_SERVER_URL
 from .prompt import HEACALC_AGENT_DESCRIPTION, HEACALC_AGENT_INSTRUCTION
 
@@ -27,7 +27,7 @@ mcp_tools = CalculationMCPToolset(
 )
 
 
-class HEACalculatorAgent(SyncSubMCPLlmAgent):
+class HEACalculatorAgentBase(BaseSyncSubAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.gpt_5_chat,
@@ -55,7 +55,7 @@ def init_hea_calculator_agent(llm_config=None, use_deepseek=False) -> BaseAgent:
             print('使用DeepSeek模型配置')
             llm_config = deepseek_config
 
-    return HEACalculatorAgent(llm_config)
+    return HEACalculatorAgentBase(llm_config)
 
 
 # 创建独立的root_agent实例供ADK使用

@@ -8,7 +8,7 @@ from agents.matmaster_agent.HEA_assistant_agent.prompt import (
     HEA_assistant_AgentName,
 )
 
-from ..base_agents.sync_agent import SyncSubMCPLlmAgent
+from ..base_agents.multi_agent import BaseSyncSubAgent
 from .constant import HEA_assistant_agent_ServerUrl
 
 sse_params = SseServerParams(url=HEA_assistant_agent_ServerUrl)
@@ -20,7 +20,7 @@ toolset = CalculationMCPToolset(
 )
 
 
-class HEA_assistant_Agent(SyncSubMCPLlmAgent):
+class HEA_assistant_AgentBase(BaseSyncSubAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.gpt_5_chat,
@@ -32,4 +32,4 @@ class HEA_assistant_Agent(SyncSubMCPLlmAgent):
 
 
 def init_HEA_assistant_agent(llm_config) -> BaseAgent:
-    return HEA_assistant_Agent(llm_config)
+    return HEA_assistant_AgentBase(llm_config)
