@@ -42,6 +42,7 @@ from agents.matmaster_agent.utils.event_utils import (
     is_function_response,
     is_text,
     photon_consume_event,
+    update_state_event,
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import load_tool_response, parse_result
@@ -181,6 +182,12 @@ class MCPFeaturesMixin:
                                 }
                             ),
                         )
+                    yield update_state_event(
+                        ctx,
+                        state_delta={
+                            'tools_count': ctx.session.state['tools_count'] + 1
+                        },
+                    )
                 elif is_function_response(event):
                     # Loading Event
                     if self.loading:
@@ -216,7 +223,7 @@ class MCPFeaturesMixin:
                     for system_job_result_event in context_function_event(
                         ctx,
                         self.name,
-                        'system_job_result',
+                        'matmaster_job_result',
                         {JOB_RESULT_KEY: job_result},
                         ModelRole,
                     ):
@@ -235,7 +242,7 @@ class MCPFeaturesMixin:
                 if is_text(event):
                     if not event.partial:
                         for multi_part_event in context_multipart2function_event(
-                            ctx, self.name, event, 'system_sync_mcp_agent'
+                            ctx, self.name, event, 'matmaster_sync_mcp_event'
                         ):
                             yield multi_part_event
                 else:

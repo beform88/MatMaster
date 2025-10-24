@@ -8,8 +8,10 @@ from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     ModelRole,
 )
+from agents.matmaster_agent.locales import i18n
+from agents.matmaster_agent.style import tool_hallucination_card, tool_retry_failed_card
 from agents.matmaster_agent.utils.event_utils import (
-    context_function_event,
+    all_text_event,
     update_state_event,
 )
 
@@ -27,39 +29,31 @@ class ToolValidatorAgent(LlmAgent):
         if ctx.session.state['tools_count'] > ctx.session.state['tools_count_ori']:
             yield update_state_event(
                 ctx,
-                state_delta={'tools_count_ori': ctx.session.state['tools_count']},
+                state_delta={
+                    'tools_count_ori': ctx.session.state['tools_count'],
+                    'tool_hallucination': False,
+                },
             )
             yield Event(author=self.name)
         else:
-            tool_validator_msg = (
-                'System is experiencing tool invocation hallucination; '
-                'I recommend retrying with the original parameters.'
-            )
-            for function_event in context_function_event(
-                ctx,
-                self.name,
-                'matmaster_tool_validator',
-                {'msg': tool_validator_msg},
-                ModelRole,
-            ):
-                yield function_event
-
-            current_agent = ctx.agent.parent_agent.parent_agent.name
-            if ctx.session.state['tool_hallucination_agent'] != current_agent:
+            if not ctx.session.state['tool_hallucination']:
+                message = tool_hallucination_card(i18n=i18n)
                 yield update_state_event(
                     ctx,
                     state_delta={
                         'tool_hallucination': True,
-                        'tool_hallucination_agent': ctx.agent.parent_agent.parent_agent.name,
                     },
                 )
             else:
-                yield update_state_event(
-                    ctx,
-                    state_delta={
-                        'tool_hallucination_agent': None,
-                    },
-                )
+                message = tool_retry_failed_card(i18n=i18n)
+
+            for tool_hallucination_event in all_text_event(
+                ctx,
+                self.name,
+                message,
+                ModelRole,
+            ):
+                yield tool_hallucination_event
 
         logger.info(
             f'[{MATMASTER_AGENT_NAME}]:[{self.name}] state = {ctx.session.state}'

@@ -62,8 +62,8 @@ class BaseSyncSubAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAg
 
 
 class BaseSyncSubAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAgent):
-    sync_mcp_agent: LlmAgent
-    tool_validator_agent: LlmAgent
+    sync_mcp_agent: NonSubMCPLlmAgent
+    tool_validator_agent: ToolValidatorAgent
     enable_tgz_unpack: bool = Field(
         True, description='Whether to automatically unpack tgz files from tool results'
     )
@@ -125,11 +125,16 @@ class BaseSyncSubAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAge
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        async for sync_mcp_event in self.sync_mcp_agent.run_async(ctx):
-            yield sync_mcp_event
+        yield update_state_event(ctx, state_delta={'tool_hallucination': False})
+        for _ in range(2):
+            async for sync_mcp_event in self.sync_mcp_agent.run_async(ctx):
+                yield sync_mcp_event
 
-        async for tool_validator_event in self.tool_validator_agent.run_async(ctx):
-            yield tool_validator_event
+            async for tool_validator_event in self.tool_validator_agent.run_async(ctx):
+                yield tool_validator_event
+
+            if not ctx.session.state['tool_hallucination']:
+                break
 
 
 class BaseAsyncJobAgent(LlmAgent):

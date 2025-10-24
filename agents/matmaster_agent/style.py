@@ -143,3 +143,93 @@ def hallucination_card(i18n: I18N):
     </div>"""
         + _inner_css()
     )
+
+
+def tool_hallucination_card(i18n: I18N):
+    def _inner_css():
+        return """
+<style>
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    @keyframes progress {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(200%); }
+    }
+</style>
+    """
+
+    return (
+        f"""
+<div style="
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <div style="font-size: 16px; animation: pulse 1.5s infinite;">🔧</div>
+        <div style="flex: 1; text-align: left;">
+            <div style="font-size: 13px; font-weight: 600;">{i18n.t("ToolInvocateHallucinationAction")}</div>
+        </div>
+    </div>
+    <div style="
+        height: 1.5px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 1px;
+        margin-top: 6px;
+        overflow: hidden;
+    ">
+        <div style="
+            height: 100%;
+            width: 25%;
+            background: white;
+            animation: progress 1.2s ease-in-out infinite;
+        "></div>
+    </div>
+</div>
+"""
+        + _inner_css()
+    )
+
+
+def tool_retry_failed_card(i18n: I18N):
+    def _inner_css():
+        return """
+    <style>
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+    }
+    </style>
+        """
+
+    return (
+        f"""
+    <div style="
+    background: linear-gradient(135deg, #ffa502 0%, #ff7f50 100%);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(255, 165, 2, 0.2);
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="font-size: 16px; animation: bounce 2s infinite;">🔄</div>
+        <div style="flex: 1; text-align: left;">
+            <div style="font-size: 13px; font-weight: 600;">{i18n.t('ToolInvocateHallucination')}</div>
+            <div style="font-size: 11px; opacity: 0.9;">{i18n.t('ToolInvocateHallucinationRetryFailed')}</div>
+        </div>
+    </div>
+</div>
+    """
+        + _inner_css()
+    )
