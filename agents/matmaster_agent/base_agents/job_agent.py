@@ -43,6 +43,7 @@ from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     context_multipart2function_event,
     context_text_event,
+    display_failed_result_or_consume,
     frontend_text_event,
     get_function_call_indexes,
     is_function_call,
@@ -315,11 +316,12 @@ class SubmitCoreCalculationMCPLlmAgent(NonSubMCPLlmAgentOnlyWithInit):
             ):
                 try:
                     dict_result = load_tool_response(event)
-                    # Photon Consume Event Display Frontend & Store DB
-                    async for consume_event in photon_consume_event(
-                        ctx, event, self.name
+                    async for (
+                        display_or_consume_event
+                    ) in display_failed_result_or_consume(
+                        dict_result, ctx, self.name, event
                     ):
-                        yield consume_event
+                        yield display_or_consume_event
                 except BaseException:
                     yield event
                     raise

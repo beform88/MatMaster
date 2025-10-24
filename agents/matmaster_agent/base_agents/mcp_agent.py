@@ -33,17 +33,15 @@ from agents.matmaster_agent.constant import (
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
 )
-from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import CostFuncType
-from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
     context_function_event,
     context_multipart2function_event,
+    display_failed_result_or_consume,
     is_function_call,
     is_function_response,
     is_text,
-    photon_consume_event,
     update_state_event,
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
@@ -212,23 +210,12 @@ class MCPRunEventsMixin:
                     # Parse Tool Response
                     try:
                         dict_result = load_tool_response(event)
-                        if (
-                            dict_result.get('code', None) is not None
-                            and dict_result['code'] != 0
+                        async for (
+                            display_or_consume_event
+                        ) in display_failed_result_or_consume(
+                            dict_result, ctx, self.name, event
                         ):
-                            # Tool Failed
-                            for tool_response_failed_event in all_text_event(
-                                ctx,
-                                self.name,
-                                f"{tool_response_failed_card(i18n=i18n)}",
-                                ModelRole,
-                            ):
-                                yield tool_response_failed_event
-                        else:
-                            async for consume_event in photon_consume_event(
-                                ctx, event, self.name
-                            ):
-                                yield consume_event
+                            yield display_or_consume_event
                     except BaseException:
                         yield event
                         raise

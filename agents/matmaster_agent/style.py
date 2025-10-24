@@ -46,25 +46,25 @@ def photon_consume_success_card(cost):
     return f"""
 <div style="
     background: linear-gradient(135deg, #d4edda, #c3e6cb);
-    border: 2px solid #28a745;
-    border-radius: 12px;
-    padding: 15px 20px;
-    margin: 15px 0;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    border: 1.5px solid #28a745;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin: 12px 0;
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.25);
     text-align: left;
 ">
 
 <p style="
-    font-size: 16px;
+    font-size: 15px;
     color: #155724;
     margin: 0;
     font-weight: bold;
-    line-height: 1.4;
+    line-height: 1.3;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 ">
-✅ 扣除成功 <span style="color: #27ae60; font-size: 22px; font-weight: 800;">{cost}</span> 光子
+✅ 扣除成功 <span style="color: #27ae60; font-size: 18px; font-weight: 800;">{cost}</span> 光子
 </p>
 
 </div>
