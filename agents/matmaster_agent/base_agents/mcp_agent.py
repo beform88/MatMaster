@@ -50,7 +50,7 @@ from agents.matmaster_agent.utils.helper_func import load_tool_response, parse_r
 logger = logging.getLogger(__name__)
 
 
-class MCPFeaturesMixin:
+class MCPInitMixin:
     loading: bool = Field(
         False, description='Whether the agent display loading state', exclude=True
     )
@@ -158,6 +158,8 @@ class MCPFeaturesMixin:
         self.render_tool_response = render_tool_response
         self.enable_tgz_unpack = enable_tgz_unpack
 
+
+class MCPRunEventsMixin:
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         parent = super()
         if hasattr(parent, '_run_events'):
@@ -249,7 +251,29 @@ class MCPFeaturesMixin:
                     yield event
 
 
+class MCPFeaturesMixin(MCPInitMixin, MCPRunEventsMixin):
+    pass
+
+
 class NonSubMCPLlmAgent(MCPFeaturesMixin, ErrorHandleAgent):
+    def __init__(
+        self,
+        *args,
+        enable_tgz_unpack=True,
+        cost_func=None,
+        render_tool_response=False,
+        **kwargs,
+    ):
+        super().__init__(
+            *args,
+            enable_tgz_unpack=enable_tgz_unpack,
+            cost_func=cost_func,
+            render_tool_response=render_tool_response,
+            **kwargs,
+        )
+
+
+class NonSubMCPLlmAgentOnlyWithInit(MCPInitMixin, ErrorHandleAgent):
     def __init__(
         self,
         *args,

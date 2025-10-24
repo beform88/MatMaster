@@ -42,7 +42,7 @@ def get_job_complete_card(i18n: I18N, job_id):
 """
 
 
-def photon_consume_success(cost):
+def photon_consume_success_card(cost):
     return f"""
 <div style="
     background: linear-gradient(135deg, #d4edda, #c3e6cb);

@@ -10,7 +10,9 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
 
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
-from agents.matmaster_agent.base_agents.mcp_agent import NonSubMCPLlmAgent
+from agents.matmaster_agent.base_agents.mcp_agent import (
+    NonSubMCPLlmAgentOnlyWithInit,
+)
 from agents.matmaster_agent.base_callbacks.private_callback import (
     _inject_ak,
     _inject_projectId,
@@ -59,7 +61,7 @@ from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 logger = logging.getLogger(__name__)
 
 
-class ResultCalculationMCPLlmAgent(NonSubMCPLlmAgent):
+class ResultCalculationMCPLlmAgent(NonSubMCPLlmAgentOnlyWithInit):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(
             description=ResultCoreAgentDescription,
@@ -276,7 +278,7 @@ class ToolCallInfoAgent(ErrorHandleAgent):
                     yield system_job_result_event
 
 
-class SubmitCoreCalculationMCPLlmAgent(NonSubMCPLlmAgent):
+class SubmitCoreCalculationMCPLlmAgent(NonSubMCPLlmAgentOnlyWithInit):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
 
