@@ -3,7 +3,9 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.multi_agent import BaseSyncSubAgent
+from agents.matmaster_agent.base_agents.multi_agent import (
+    BaseSyncSubAgentWithToolValidator,
+)
 from agents.matmaster_agent.constant import LOCAL_EXECUTOR, BohriumStorge
 from agents.matmaster_agent.MrDice_agent.bohriumpublic_agent.constant import (
     BOHRIUMPUBLIC_URL,
@@ -26,7 +28,7 @@ mcp_tools = CalculationMCPToolset(
 )
 
 
-class Bohriumpublic_AgentBase(BaseSyncSubAgent):
+class Bohriumpublic_AgentBase(BaseSyncSubAgentWithToolValidator):
     def __init__(self, llm_config):
         super().__init__(
             # model=llm_config.deepseek_chat,

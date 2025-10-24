@@ -25,16 +25,24 @@ class ToolValidatorAgent(LlmAgent):
             return
 
         if ctx.session.state['tools_count'] > ctx.session.state['tools_count_ori']:
-            tool_validator_msg = 'The tool has been successfully invoked.'
             yield update_state_event(
                 ctx,
                 state_delta={'tools_count_ori': ctx.session.state['tools_count']},
             )
+            yield Event(author=self.name)
         else:
             tool_validator_msg = (
                 'System is experiencing tool invocation hallucination; '
                 'I recommend retrying with the original parameters.'
             )
+            for function_event in context_function_event(
+                ctx,
+                self.name,
+                'matmaster_tool_validator',
+                {'msg': tool_validator_msg},
+                ModelRole,
+            ):
+                yield function_event
 
             current_agent = ctx.agent.parent_agent.parent_agent.name
             if ctx.session.state['tool_hallucination_agent'] != current_agent:
@@ -52,15 +60,7 @@ class ToolValidatorAgent(LlmAgent):
                         'tool_hallucination_agent': None,
                     },
                 )
+
         logger.info(
             f'[{MATMASTER_AGENT_NAME}]:[{self.name}] state = {ctx.session.state}'
         )
-
-        for function_event in context_function_event(
-            ctx,
-            self.name,
-            'matmaster_tool_validator',
-            {'msg': tool_validator_msg},
-            ModelRole,
-        ):
-            yield function_event
