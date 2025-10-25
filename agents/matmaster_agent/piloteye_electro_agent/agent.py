@@ -48,8 +48,8 @@ class PiloteyeElectroAgent(BaseAsyncJobAgent):
         super().__init__(
             model=llm_config.gpt_5_chat,
             mcp_tools=[piloteye_electro_tool],
-            agent_name=PiloteyeElectroAgentName,
-            agent_description=PiloteyeElectroAgentDescription,
+            name=PiloteyeElectroAgentName,
+            description=PiloteyeElectroAgentDescription,
             agent_instruction=PiloteyeElectroAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

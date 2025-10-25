@@ -45,8 +45,8 @@ class ThermoAgent(BaseAsyncJobAgent):
         super().__init__(
             model=llm_config.gpt_5_chat,
             mcp_tools=[toolset],
-            agent_name=ThermoAgentName,
-            agent_description=ThermoAgentDescription,
+            name=ThermoAgentName,
+            description=ThermoAgentDescription,
             agent_instruction=ThermoAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

@@ -46,8 +46,8 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
         super().__init__(
             model=llm_config.gpt_5_chat,
             mcp_tools=[toolset],
-            agent_name=StructureGenerateAgentName,
-            agent_description=StructureGenerateAgentDescription,
+            name=StructureGenerateAgentName,
+            description=StructureGenerateAgentDescription,
             agent_instruction=StructureGenerateAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

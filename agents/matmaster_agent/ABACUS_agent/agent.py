@@ -34,8 +34,8 @@ class ABACUSCalculatorAgent(BaseAsyncJobAgent):
         super().__init__(
             model=llm_config.gpt_5_chat,
             mcp_tools=[mcp_tools_abacus],
-            agent_name=ABACUS_AGENT_NAME,
-            agent_description=ABACUS_AGENT_DESCRIPTION,
+            name=ABACUS_AGENT_NAME,
+            description=ABACUS_AGENT_DESCRIPTION,
             agent_instruction=ABACUS_AGENT_INSTRUCTION,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

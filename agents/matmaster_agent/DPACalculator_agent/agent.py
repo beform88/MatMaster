@@ -30,10 +30,10 @@ mcp_tools_dpa = CalculationMCPToolset(
 class DPACalculationsAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            agent_name=DPACalulator_AGENT_NAME,
+            name=DPACalulator_AGENT_NAME,
             mcp_tools=[mcp_tools_dpa],
             model=llm_config.gpt_5_chat,
-            agent_description=DPAAgentDescription,
+            description=DPAAgentDescription,
             agent_instruction=DPAAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

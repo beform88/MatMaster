@@ -29,10 +29,10 @@ mcp_tools_invar = CalculationMCPToolset(
 class INVARAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            agent_name=INVAR_AGENT_NAME,
+            name=INVAR_AGENT_NAME,
             mcp_tools=[mcp_tools_invar],
             model=llm_config.gpt_5_chat,
-            agent_description=INVARAgentDescription,
+            description=INVARAgentDescription,
             agent_instruction=INVARAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

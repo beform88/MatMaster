@@ -44,8 +44,8 @@ class ApexAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.gpt_5_chat,
-            agent_name=ApexAgentName,
-            agent_description=ApexAgentDescription,
+            name=ApexAgentName,
+            description=ApexAgentDescription,
             agent_instruction=ApexAgentInstruction,
             mcp_tools=[toolset],
             dflow_flag=False,

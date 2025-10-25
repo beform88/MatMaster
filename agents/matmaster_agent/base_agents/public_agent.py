@@ -126,8 +126,6 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
     """
 
     model: Union[str, BaseLlm]
-    agent_name: str
-    agent_description: str
     agent_instruction: str
     mcp_tools: list
     dflow_flag: bool = Field(
@@ -140,20 +138,9 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
         description='List of tools that will be executed synchronously on the server',
     )
 
-    @model_validator(mode='before')
-    @classmethod
-    def before_init(cls, data):
-        if not isinstance(data, dict):
-            return data
-
-        data['name'] = data['agent_name']
-        data['description'] = data['agent_description']
-
-        return data
-
     @model_validator(mode='after')
     def after_init(self):
-        agent_prefix = self.agent_name.replace('_agent', '')
+        agent_prefix = self.name.replace('_agent', '')
 
         # Create submission workflow agents
         submit_core_agent = SubmitCoreMCPAgent(

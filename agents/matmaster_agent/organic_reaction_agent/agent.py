@@ -31,9 +31,9 @@ tools = [autoTS]
 class OragnicReactionAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            agent_name=ORGANIC_REACTION_AGENT_NAME,
+            name=ORGANIC_REACTION_AGENT_NAME,
             model=llm_config.gpt_5_chat,
-            agent_description=description,
+            description=description,
             agent_instruction=instruction_en,
             mcp_tools=tools,
             dflow_flag=False,
