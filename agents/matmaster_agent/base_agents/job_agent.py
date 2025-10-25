@@ -537,6 +537,10 @@ class SubmitValidatorAgent(ErrorHandleAgent):
                 'I recommend retrying with the original parameters.'
             )
 
+            logger.info(f'[{MATMASTER_AGENT_NAME}] ctx.agent.name = {ctx.agent.name}')
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] ctx.agent.parent_agent.name = {ctx.agent.parent_agent.name}'
+            )
             current_agent = ctx.agent.parent_agent.parent_agent.name
             if ctx.session.state['hallucination_agent'] != current_agent:
                 yield update_state_event(

@@ -1,20 +1,20 @@
-from typing import AsyncGenerator, final, override
+from typing import AsyncGenerator, final
 
-from google.adk.agents import InvocationContext, LlmAgent
+from google.adk.agents import BaseAgent, InvocationContext, LlmAgent
 from google.adk.events import Event
 
+from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
 from agents.matmaster_agent.utils.event_utils import send_error_event
 
 
-# LlmAgent -> ErrorHandleAgent
-class ErrorHandleAgent(LlmAgent):
+class ErrorHandlerMixin(BaseMixin):
+    """错误处理混入类"""
+
     @final
-    @override
     async def _run_async_impl(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
-            # 修改这里：调用一个可重写的方法
             async for event in self._process_events(ctx):
                 yield event
         except BaseException as err:
@@ -34,6 +34,7 @@ class ErrorHandleAgent(LlmAgent):
 
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         """可重写的方法，专门处理事件循环"""
+        # 调用父类的实现，这里会根据实际的继承关系调用正确的方法
         async for event in super()._run_async_impl(ctx):
             yield event
 
@@ -42,3 +43,11 @@ class ErrorHandleAgent(LlmAgent):
     ) -> AsyncGenerator[Event, None]:
         return
         yield
+
+
+class ErrorHandleBaseAgent(ErrorHandlerMixin, BaseAgent):
+    pass
+
+
+class ErrorHandleAgent(ErrorHandlerMixin, LlmAgent):
+    pass
