@@ -51,10 +51,14 @@ from agents.matmaster_agent.utils.helper_func import load_tool_response, parse_r
 logger = logging.getLogger(__name__)
 
 
-class MCPCallbackMixin(BaseMixin):
+class MCPInitMixin(BaseMixin):
+    loading: bool = False  # Whether the agent display loading state
+    render_tool_response: bool = False  # Whether render tool response in frontend
     enable_tgz_unpack: bool = True  # Whether unpack tgz files for tool_results
     cost_func: Optional[CostFuncType] = None
 
+
+class MCPCallbackMixin(BaseMixin):
     @model_validator(mode='before')
     @classmethod
     def decorate_callbacks(cls, data: Any) -> Any:
@@ -100,9 +104,6 @@ class MCPCallbackMixin(BaseMixin):
 
 
 class MCPRunEventsMixin(BaseMixin):
-    loading: bool = False  # Whether the agent display loading state
-    render_tool_response: bool = False  # Whether render tool response in frontend
-
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         parent = super()
         if hasattr(parent, '_run_events'):
@@ -135,7 +136,7 @@ class MCPRunEventsMixin(BaseMixin):
                         },
                     )
                     # prompt user photon cost
-                    cost_func = self.parent_agent.cost_func
+                    cost_func = self.cost_func
                     async for future_consume_event in display_future_consume_event(
                         event, cost_func, ctx, self.name
                     ):
@@ -203,5 +204,5 @@ class MCPRunEventsMixin(BaseMixin):
                     yield event
 
 
-class MCPAgent(MCPCallbackMixin, ErrorHandleAgent):
+class MCPAgent(MCPInitMixin, MCPCallbackMixin, ErrorHandleAgent):
     pass

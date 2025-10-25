@@ -1,11 +1,11 @@
 import json
 import logging
-from typing import AsyncGenerator, Optional, override
+from typing import Any, AsyncGenerator, Optional, override
 
 import litellm
 from google.adk.agents import InvocationContext, LlmAgent, SequentialAgent
 from google.adk.events import Event
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.job_agent import (
@@ -16,6 +16,7 @@ from agents.matmaster_agent.base_agents.job_agent import (
     SubmitValidatorAgent,
     ToolCallInfoAgent,
 )
+from agents.matmaster_agent.base_agents.mcp_agent import MCPInitMixin
 from agents.matmaster_agent.base_agents.subordinate_agent import (
     SubordinateFeaturesMixin,
 )
@@ -56,67 +57,39 @@ class BaseSyncAgent(SubordinateFeaturesMixin, SyncMCPAgent):
     pass
 
 
-class BaseSyncAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAgent):
-    sync_mcp_agent: SyncMCPAgent
-    tool_validator_agent: ToolValidatorAgent
-    enable_tgz_unpack: bool = Field(
-        True, description='Whether to automatically unpack tgz files from tool results'
-    )
-    render_tool_response: bool = Field(
-        False, description='Whether render tool response in frontend', exclude=True
-    )
-    cost_func: Optional[CostFuncType] = None
+class BaseSyncAgentWithToolValidator(
+    SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleAgent
+):
+    sync_mcp_agent: Optional[SyncMCPAgent] = None
+    tool_validator_agent: Optional[ToolValidatorAgent] = None
 
-    def __init__(
-        self,
-        model,
-        name: str,
-        description: str,
-        instruction: str,
-        tools: list,
-        supervisor_agent: str,
-        enable_tgz_unpack: bool = True,
-        cost_func: Optional[CostFuncType] = None,
-        render_tool_response=False,
-    ):
-        agent_prefix = name.replace('_agent', '')
+    @model_validator(mode='after')
+    def after_init(self) -> Any:
+        agent_prefix = self.name.replace('_agent', '')
 
-        sync_mcp_agent = SyncMCPAgent(
-            model=model,
+        self.sync_mcp_agent = SyncMCPAgent(
+            model=self.model,
             name=f"{agent_prefix}_sync_mcp_agent",
-            description=description,
-            instruction=instruction,
-            tools=tools,
+            description=self.description,
+            instruction=self.instruction,
+            tools=self.tools,
             disallow_transfer_to_peers=True,
             disallow_transfer_to_parent=True,
-            enable_tgz_unpack=enable_tgz_unpack,
-            cost_func=cost_func,
-            render_tool_response=render_tool_response,
+            enable_tgz_unpack=self.enable_tgz_unpack,
+            cost_func=self.cost_func,
+            render_tool_response=self.render_tool_response,
         )
 
-        tool_validator_agent = ToolValidatorAgent(
-            model=model,
+        self.tool_validator_agent = ToolValidatorAgent(
+            model=self.model,
             name=f"{agent_prefix}_tool_validator_agent",
             disallow_transfer_to_peers=True,
             disallow_transfer_to_parent=True,
         )
 
-        # Initialize parent class
-        super().__init__(
-            name=name,
-            model=model,
-            description=description,
-            instruction=instruction,
-            sync_mcp_agent=sync_mcp_agent,
-            tool_validator_agent=tool_validator_agent,
-            sub_agents=[
-                sync_mcp_agent,
-                tool_validator_agent,
-            ],
-            supervisor_agent=supervisor_agent,
-            enable_tgz_unpack=enable_tgz_unpack,
-            cost_func=cost_func,
-        )
+        self.sub_agents = [self.sync_mcp_agent, self.tool_validator_agent]
+
+        return self
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
