@@ -1,13 +1,16 @@
 import json
 import logging
-from typing import AsyncGenerator, Optional, override
+from typing import AsyncGenerator, Optional, Union, override
 
 import litellm
 from google.adk.agents import InvocationContext, LlmAgent, SequentialAgent
 from google.adk.events import Event
+from google.adk.models import BaseLlm
 from pydantic import Field, model_validator
 
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
+from agents.matmaster_agent.base_agents.error_agent import (
+    ErrorHandleBaseAgent,
+)
 from agents.matmaster_agent.base_agents.job_agent import (
     ParamsCheckInfoAgent,
     ResultMCPAgent,
@@ -58,8 +61,11 @@ class BaseSyncAgent(SubordinateFeaturesMixin, SyncMCPAgent):
 
 
 class BaseSyncAgentWithToolValidator(
-    SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleLlmAgent
+    SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseAgent
 ):
+    model: Union[str, BaseLlm]
+    instruction: str
+    tools: list
     sync_mcp_agent: Optional[SyncMCPAgent] = None
     tool_validator_agent: Optional[ToolValidatorAgent] = None
 
@@ -81,10 +87,7 @@ class BaseSyncAgentWithToolValidator(
         )
 
         self.tool_validator_agent = ToolValidatorAgent(
-            model=self.model,
             name=f"{agent_prefix}_tool_validator_agent",
-            disallow_transfer_to_peers=True,
-            disallow_transfer_to_parent=True,
         )
 
         self.sub_agents = [self.sync_mcp_agent, self.tool_validator_agent]
@@ -105,7 +108,7 @@ class BaseSyncAgentWithToolValidator(
                 break
 
 
-class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleLlmAgent):
+class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseAgent):
     """
     Base agent class for handling asynchronous job submissions.
 
@@ -114,6 +117,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleLlmAg
     parameter validation through specialized sub-agents.
     """
 
+    model: Union[str, BaseLlm]
     agent_name: str
     agent_description: str
     agent_instruction: str
@@ -164,7 +168,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleLlmAg
         )
 
         submit_validator_agent = SubmitValidatorAgent(
-            model=self.model, name=f"{agent_prefix}_submit_validator_agent"
+            name=f"{agent_prefix}_submit_validator_agent"
         )
 
         # Create sequential agent for submission process

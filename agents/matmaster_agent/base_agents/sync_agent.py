@@ -4,7 +4,9 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
+from agents.matmaster_agent.base_agents.error_agent import (
+    ErrorHandleBaseAgent,
+)
 from agents.matmaster_agent.base_agents.mcp_agent import (
     MCPAgent,
     MCPRunEventsMixin,
@@ -27,7 +29,7 @@ class SyncMCPAgent(MCPRunEventsMixin, MCPAgent):
     pass
 
 
-class ToolValidatorAgent(ErrorHandleLlmAgent):
+class ToolValidatorAgent(ErrorHandleBaseAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         if ctx.session.state['error_occurred']:

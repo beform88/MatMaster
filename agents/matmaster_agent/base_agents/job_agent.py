@@ -9,7 +9,10 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
+from agents.matmaster_agent.base_agents.error_agent import (
+    ErrorHandleBaseAgent,
+    ErrorHandleLlmAgent,
+)
 from agents.matmaster_agent.base_agents.mcp_agent import (
     MCPAgent,
 )
@@ -512,7 +515,7 @@ class SubmitRenderAgent(ErrorHandleLlmAgent):
                 )
 
 
-class SubmitValidatorAgent(ErrorHandleLlmAgent):
+class SubmitValidatorAgent(ErrorHandleBaseAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         if ctx.session.state['error_occurred']:

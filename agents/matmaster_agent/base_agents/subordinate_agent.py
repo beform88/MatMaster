@@ -27,5 +27,5 @@ class SubordinateFeaturesMixin(BaseMixin):
 
 
 # LlmAgent -> ErrorHandleAgent -> SubordinateAgent
-class SubordinateAgent(SubordinateFeaturesMixin, ErrorHandleLlmAgent):
+class SubordinateLlmAgent(SubordinateFeaturesMixin, ErrorHandleLlmAgent):
     pass
