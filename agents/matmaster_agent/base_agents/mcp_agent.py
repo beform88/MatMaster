@@ -207,26 +207,9 @@ class MCPFeaturesMixin(MCPCallbackMixin, MCPRunEventsMixin):
     pass
 
 
-class MCPCallbackAgentComp(MCPCallbackMixin, ErrorHandleAgent):
+class MCPAgent(MCPCallbackMixin, ErrorHandleAgent):
     pass
 
 
-class MCPAgentComp(MCPFeaturesMixin, ErrorHandleAgent):
-    def __init__(
-        self,
-        *args,
-        loading=False,
-        enable_tgz_unpack=True,
-        cost_func=None,
-        render_tool_response=False,
-        **kwargs,
-    ):
-        # 先执行 MCPFeaturesMixin 的 init，遇到 super 的时候再执行 ErrorHandleAgent 的 init
-        super().__init__(
-            *args,
-            loading=loading,
-            enable_tgz_unpack=enable_tgz_unpack,
-            cost_func=cost_func,
-            render_tool_response=render_tool_response,
-            **kwargs,
-        )
+class SyncMCPAgent(MCPFeaturesMixin, ErrorHandleAgent):
+    pass

@@ -3,7 +3,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.multi_agent import BaseSyncMCPAgent
+from agents.matmaster_agent.base_agents.multi_agent import BaseSyncAgent
 from agents.matmaster_agent.constant import LOCAL_EXECUTOR, BohriumStorge
 from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.MrDice_agent.optimade_agent.constant import OPTIMADE_URL
@@ -23,7 +23,7 @@ mcp_tools = CalculationMCPToolset(
 )
 
 
-class Optimade_AgentBase(BaseSyncMCPAgent):
+class Optimade_AgentBase(BaseSyncAgent):
     def __init__(self, llm_config):
         super().__init__(
             # model=llm_config.deepseek_chat,

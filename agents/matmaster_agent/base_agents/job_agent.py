@@ -2,16 +2,17 @@ import copy
 import json
 import logging
 import os
-from typing import AsyncGenerator, override
+from typing import Any, AsyncGenerator, override
 
 import jsonpickle
 from google.adk.agents import LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
+from pydantic import model_validator
 
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.mcp_agent import (
-    MCPCallbackAgentComp,
+    MCPAgent,
 )
 from agents.matmaster_agent.base_callbacks.private_callback import (
     _inject_ak,
@@ -63,13 +64,15 @@ from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 logger = logging.getLogger(__name__)
 
 
-class ResultMCPAgentComp(MCPCallbackAgentComp):
-    def __init__(self, enable_tgz_unpack, **kwargs):
-        super().__init__(
-            description=ResultCoreAgentDescription,
-            enable_tgz_unpack=enable_tgz_unpack,
-            **kwargs,
-        )
+class ResultMCPAgent(MCPAgent):
+    @model_validator(mode='before')
+    @classmethod
+    def modify_description(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+
+        if data.get('description') is None:
+            data['description'] = ResultCoreAgentDescription
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -280,10 +283,7 @@ class ToolCallInfoAgent(ErrorHandleAgent):
                     yield system_job_result_event
 
 
-class SubmitCoreMCPAgentComp(MCPCallbackAgentComp):
-    def __init__(self, enable_tgz_unpack, **kwargs):
-        super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
-
+class SubmitCoreMCPAgent(MCPAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         logger.info(

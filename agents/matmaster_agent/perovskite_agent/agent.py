@@ -7,7 +7,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.constant import BohriumStorge
 
-from ..base_agents.multi_agent import BaseSyncMCPAgent
+from ..base_agents.multi_agent import BaseSyncAgent
 from .constant import PEROVSKITE_PLOT_URL, PerovskiteAgentName
 from .prompt import PerovskiteAgentDescription, PerovskiteAgentInstruction
 
@@ -39,7 +39,7 @@ def init_perovskite_agent(llm_config):
     # Choose model per flag with sensible fallbacks
     model = llm_config.gpt_5_chat
 
-    return BaseSyncMCPAgent(
+    return BaseSyncAgent(
         model=model,
         name=PerovskiteAgentName,
         description=PerovskiteAgentDescription,

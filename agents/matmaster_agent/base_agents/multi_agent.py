@@ -10,15 +10,14 @@ from pydantic import Field
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.job_agent import (
     ParamsCheckInfoAgent,
-    ResultMCPAgentComp,
-    SubmitCoreMCPAgentComp,
+    ResultMCPAgent,
+    SubmitCoreMCPAgent,
     SubmitRenderAgent,
     SubmitValidatorAgent,
     ToolCallInfoAgent,
 )
 from agents.matmaster_agent.base_agents.mcp_agent import (
-    MCPAgentComp,
-    MCPFeaturesMixin,
+    SyncMCPAgent,
 )
 from agents.matmaster_agent.base_agents.sflow_agent import (
     ToolValidatorAgent,
@@ -55,14 +54,12 @@ from agents.matmaster_agent.utils.helper_func import (
 logger = logging.getLogger(__name__)
 
 
-class BaseSyncMCPAgent(MCPFeaturesMixin, SubordinateFeaturesMixin, ErrorHandleAgent):
-    def __init__(self, *args, supervisor_agent=None, **kwargs):
-        # 确保 supervisor_agent 被正确处理
-        super().__init__(*args, supervisor_agent=supervisor_agent, **kwargs)
+class BaseSyncAgent(SubordinateFeaturesMixin, SyncMCPAgent):
+    pass
 
 
-class BaseSyncMCPAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAgent):
-    sync_mcp_agent: MCPAgentComp
+class BaseSyncAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAgent):
+    sync_mcp_agent: SyncMCPAgent
     tool_validator_agent: ToolValidatorAgent
     enable_tgz_unpack: bool = Field(
         True, description='Whether to automatically unpack tgz files from tool results'
@@ -86,7 +83,7 @@ class BaseSyncMCPAgentWithToolValidator(SubordinateFeaturesMixin, ErrorHandleAge
     ):
         agent_prefix = name.replace('_agent', '')
 
-        sync_mcp_agent = MCPAgentComp(
+        sync_mcp_agent = SyncMCPAgent(
             model=model,
             name=f"{agent_prefix}_sync_mcp_agent",
             description=description,
@@ -198,7 +195,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
         agent_prefix = agent_name.replace('_agent', '')
 
         # Create submission workflow agents
-        submit_core_agent = SubmitCoreMCPAgentComp(
+        submit_core_agent = SubmitCoreMCPAgent(
             model=model,
             name=f"{agent_prefix}_submit_core_agent",
             description=gen_submit_core_agent_description(agent_prefix),
@@ -225,7 +222,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
         )
 
         # Create result retrieval agent
-        result_core_agent = ResultMCPAgentComp(
+        result_core_agent = ResultMCPAgent(
             model=model,
             name=f"{agent_prefix}_result_core_agent",
             tools=mcp_tools,
