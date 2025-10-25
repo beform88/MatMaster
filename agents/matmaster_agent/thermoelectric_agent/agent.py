@@ -16,7 +16,7 @@ from agents.matmaster_agent.thermoelectric_agent.prompt import (
     ThermoAgentName,
 )
 
-from ..base_agents.multi_agent import BaseAsyncJobAgent
+from ..base_agents.public_agent import BaseAsyncJobAgent
 from .constant import ThermoelectricServerUrl
 
 ThermoelectricBohriumExecutor = copy.deepcopy(BohriumExecutor)

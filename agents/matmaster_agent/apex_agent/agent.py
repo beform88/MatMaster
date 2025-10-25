@@ -5,7 +5,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
-from ..base_agents.multi_agent import BaseAsyncJobAgent
+from ..base_agents.public_agent import BaseAsyncJobAgent
 from .constant import (
     ApexAgentName,
     ApexBohriumExecutor,

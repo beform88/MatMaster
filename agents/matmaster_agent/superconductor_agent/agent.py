@@ -16,7 +16,7 @@ from agents.matmaster_agent.superconductor_agent.prompt import (
     SuperconductorAgentName,
 )
 
-from ..base_agents.multi_agent import BaseAsyncJobAgent
+from ..base_agents.public_agent import BaseAsyncJobAgent
 from .constant import SuperconductorServerUrl
 
 SuperconductorBohriumExecutor = copy.deepcopy(BohriumExecutor)

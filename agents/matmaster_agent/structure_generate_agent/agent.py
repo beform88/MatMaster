@@ -16,7 +16,7 @@ from agents.matmaster_agent.structure_generate_agent.prompt import (
     StructureGenerateAgentName,
 )
 
-from ..base_agents.multi_agent import BaseAsyncJobAgent
+from ..base_agents.public_agent import BaseAsyncJobAgent
 from .constant import StructureGenerateServerUrl
 from .finance import cost_func
 

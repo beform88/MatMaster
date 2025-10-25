@@ -12,7 +12,7 @@ from agents.matmaster_agent.ABACUS_agent.prompt import (
     ABACUS_AGENT_INSTRUCTION,
     ABACUS_AGENT_NAME,
 )
-from agents.matmaster_agent.base_agents.multi_agent import BaseAsyncJobAgent
+from agents.matmaster_agent.base_agents.public_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 

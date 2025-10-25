@@ -2,7 +2,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.multi_agent import BaseAsyncJobAgent
+from agents.matmaster_agent.base_agents.public_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.piloteye_electro_agent.constant import (

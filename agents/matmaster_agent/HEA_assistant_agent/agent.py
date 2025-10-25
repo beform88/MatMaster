@@ -8,7 +8,7 @@ from agents.matmaster_agent.HEA_assistant_agent.prompt import (
     HEA_assistant_AgentName,
 )
 
-from ..base_agents.multi_agent import BaseSyncAgent
+from ..base_agents.public_agent import BaseSyncAgent
 from .constant import HEA_assistant_agent_ServerUrl
 
 sse_params = SseServerParams(url=HEA_assistant_agent_ServerUrl)

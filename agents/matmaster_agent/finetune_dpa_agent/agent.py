@@ -16,7 +16,7 @@ from agents.matmaster_agent.finetune_dpa_agent.prompt import (
 )
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
-from ..base_agents.multi_agent import BaseAsyncJobAgent
+from ..base_agents.public_agent import BaseAsyncJobAgent
 from .constant import FinetuneDPAServerUrl
 
 FinetuneDPABohriumExecutor = copy.deepcopy(BohriumExecutor)

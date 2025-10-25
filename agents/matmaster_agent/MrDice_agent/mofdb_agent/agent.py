@@ -3,7 +3,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.multi_agent import BaseSyncAgent
+from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgent
 from agents.matmaster_agent.constant import LOCAL_EXECUTOR, BohriumStorge
 from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.MrDice_agent.mofdb_agent.constant import (

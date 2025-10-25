@@ -7,7 +7,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.constant import BohriumStorge
 
-from ..base_agents.multi_agent import BaseSyncAgent
+from ..base_agents.public_agent import BaseSyncAgent
 from .constant import PEROVSKITE_PLOT_URL, PerovskiteAgentName
 from .prompt import PerovskiteAgentDescription, PerovskiteAgentInstruction
 
