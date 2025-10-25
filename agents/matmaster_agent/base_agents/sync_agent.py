@@ -1,9 +1,10 @@
 import logging
 from typing import AsyncGenerator, override
 
-from google.adk.agents import InvocationContext, LlmAgent
+from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.mcp_agent import MCPAgent, MCPRunEventsMixin
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
@@ -23,11 +24,9 @@ class SyncMCPAgent(MCPRunEventsMixin, MCPAgent):
     pass
 
 
-class ToolValidatorAgent(LlmAgent):
+class ToolValidatorAgent(ErrorHandleAgent):
     @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         if ctx.session.state['error_occurred']:
             return
 

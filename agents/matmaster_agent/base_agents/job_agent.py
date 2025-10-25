@@ -5,7 +5,6 @@ import os
 from typing import Any, AsyncGenerator, override
 
 import jsonpickle
-from google.adk.agents import LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
@@ -242,10 +241,6 @@ class ResultMCPAgent(MCPAgent):
         yield Event(author=self.name)
 
 
-class ParamsCheckCompletedAgent(LlmAgent):
-    pass
-
-
 class ParamsCheckInfoAgent(ErrorHandleAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -470,8 +465,16 @@ class SubmitCoreMCPAgent(MCPAgent):
 
 
 class SubmitRenderAgent(ErrorHandleAgent):
-    def __init__(self, **kwargs):
-        super().__init__(description=SubmitRenderAgentDescription, **kwargs)
+    @model_validator(mode='before')
+    @classmethod
+    def modify_description(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+
+        if data.get('description') is None:
+            data['description'] = SubmitRenderAgentDescription
+
+        return data
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -509,11 +512,9 @@ class SubmitRenderAgent(ErrorHandleAgent):
                 )
 
 
-class SubmitValidatorAgent(LlmAgent):
+class SubmitValidatorAgent(ErrorHandleAgent):
     @override
-    async def _run_async_impl(
-        self, ctx: InvocationContext
-    ) -> AsyncGenerator[Event, None]:
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         if ctx.session.state['error_occurred']:
             return
 
