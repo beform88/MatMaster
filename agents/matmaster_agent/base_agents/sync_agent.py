@@ -4,6 +4,7 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 
+from agents.matmaster_agent.base_agents.mcp_agent import MCPAgent, MCPRunEventsMixin
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     ModelRole,
@@ -16,6 +17,10 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class SyncMCPAgent(MCPRunEventsMixin, MCPAgent):
+    pass
 
 
 class ToolValidatorAgent(LlmAgent):

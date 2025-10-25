@@ -16,14 +16,12 @@ from agents.matmaster_agent.base_agents.job_agent import (
     SubmitValidatorAgent,
     ToolCallInfoAgent,
 )
-from agents.matmaster_agent.base_agents.mcp_agent import (
-    SyncMCPAgent,
-)
-from agents.matmaster_agent.base_agents.sflow_agent import (
-    ToolValidatorAgent,
-)
 from agents.matmaster_agent.base_agents.subordinate_agent import (
     SubordinateFeaturesMixin,
+)
+from agents.matmaster_agent.base_agents.sync_agent import (
+    SyncMCPAgent,
+    ToolValidatorAgent,
 )
 from agents.matmaster_agent.base_callbacks.private_callback import remove_function_call
 from agents.matmaster_agent.constant import (

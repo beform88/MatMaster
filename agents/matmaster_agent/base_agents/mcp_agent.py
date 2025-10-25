@@ -203,13 +203,5 @@ class MCPRunEventsMixin(BaseMixin):
                     yield event
 
 
-class MCPFeaturesMixin(MCPCallbackMixin, MCPRunEventsMixin):
-    pass
-
-
 class MCPAgent(MCPCallbackMixin, ErrorHandleAgent):
-    pass
-
-
-class SyncMCPAgent(MCPFeaturesMixin, ErrorHandleAgent):
     pass

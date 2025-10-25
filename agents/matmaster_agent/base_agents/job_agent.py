@@ -74,6 +74,8 @@ class ResultMCPAgent(MCPAgent):
         if data.get('description') is None:
             data['description'] = ResultCoreAgentDescription
 
+        return data
+
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         logger.info(
