@@ -3,10 +3,10 @@ import logging
 from typing import AsyncGenerator, Optional, Union, override
 
 import litellm
-from google.adk.agents import InvocationContext, LlmAgent, SequentialAgent
+from google.adk.agents import InvocationContext, SequentialAgent
 from google.adk.events import Event
 from google.adk.models import BaseLlm
-from pydantic import Field, model_validator
+from pydantic import Field, computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.error_agent import (
     ErrorHandleBaseAgent,
@@ -66,14 +66,12 @@ class BaseSyncAgentWithToolValidator(
     model: Union[str, BaseLlm]
     instruction: str
     tools: list
-    sync_mcp_agent: Optional[SyncMCPAgent] = None
-    tool_validator_agent: Optional[ToolValidatorAgent] = None
 
     @model_validator(mode='after')
     def after_init(self):
         agent_prefix = self.name.replace('_agent', '')
 
-        self.sync_mcp_agent = SyncMCPAgent(
+        self._sync_mcp_agent = SyncMCPAgent(
             model=self.model,
             name=f"{agent_prefix}_sync_mcp_agent",
             description=self.description,
@@ -86,13 +84,23 @@ class BaseSyncAgentWithToolValidator(
             render_tool_response=self.render_tool_response,
         )
 
-        self.tool_validator_agent = ToolValidatorAgent(
+        self._tool_validator_agent = ToolValidatorAgent(
             name=f"{agent_prefix}_tool_validator_agent",
         )
 
         self.sub_agents = [self.sync_mcp_agent, self.tool_validator_agent]
 
         return self
+
+    @computed_field
+    @property
+    def sync_mcp_agent(self) -> SyncMCPAgent:
+        return self._sync_mcp_agent
+
+    @computed_field
+    @property
+    def tool_validator_agent(self) -> ToolValidatorAgent:
+        return self._tool_validator_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -122,10 +130,6 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
     agent_description: str
     agent_instruction: str
     mcp_tools: list
-    submit_agent: Optional[SequentialAgent] = None
-    result_agent: Optional[SequentialAgent] = None
-    params_check_info_agent: Optional[LlmAgent] = None
-    tool_call_info_agent: Optional[LlmAgent] = None
     dflow_flag: bool = Field(
         False,
         description='Indicates if this agent is related to dflow workflows',
@@ -172,7 +176,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
         )
 
         # Create sequential agent for submission process
-        self.submit_agent = SequentialAgent(
+        self._submit_agent = SequentialAgent(
             name=f"{agent_prefix}_submit_agent",
             description=gen_submit_agent_description(agent_prefix),
             sub_agents=[submit_core_agent, submit_render_agent, submit_validator_agent],
@@ -187,14 +191,14 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             enable_tgz_unpack=self.enable_tgz_unpack,
         )
 
-        self.result_agent = SequentialAgent(
+        self._result_agent = SequentialAgent(
             name=f"{agent_prefix}_result_agent",
             description=gen_result_agent_description(),
             sub_agents=[result_core_agent],
         )
 
         # Create validation and information agents
-        self.params_check_info_agent = ParamsCheckInfoAgent(
+        self._params_check_info_agent = ParamsCheckInfoAgent(
             model=self.model,
             name=f"{agent_prefix}_params_check_info_agent",
             instruction=gen_params_check_info_agent_instruction(),
@@ -204,7 +208,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             after_model_callback=remove_function_call,
         )
 
-        self.tool_call_info_agent = ToolCallInfoAgent(
+        self._tool_call_info_agent = ToolCallInfoAgent(
             model=self.model,
             name=f"{agent_prefix}_tool_call_info_agent",
             instruction=gen_tool_call_info_instruction(),
@@ -222,6 +226,26 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
         ]
 
         return self
+
+    @computed_field
+    @property
+    def submit_agent(self) -> SequentialAgent:
+        return self._submit_agent
+
+    @computed_field
+    @property
+    def result_agent(self) -> SequentialAgent:
+        return self._result_agent
+
+    @computed_field
+    @property
+    def params_check_info_agent(self) -> ParamsCheckInfoAgent:
+        return self._params_check_info_agent
+
+    @computed_field
+    @property
+    def tool_call_info_agent(self) -> ToolCallInfoAgent:
+        return self._tool_call_info_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
