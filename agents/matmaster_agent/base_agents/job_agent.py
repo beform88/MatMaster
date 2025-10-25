@@ -11,7 +11,7 @@ from google.adk.events import Event
 
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.base_agents.mcp_agent import (
-    MCPInitAgentComp,
+    MCPCallbackAgentComp,
 )
 from agents.matmaster_agent.base_callbacks.private_callback import (
     _inject_ak,
@@ -63,7 +63,7 @@ from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 logger = logging.getLogger(__name__)
 
 
-class ResultMCPAgentComp(MCPInitAgentComp):
+class ResultMCPAgentComp(MCPCallbackAgentComp):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(
             description=ResultCoreAgentDescription,
@@ -280,7 +280,7 @@ class ToolCallInfoAgent(ErrorHandleAgent):
                     yield system_job_result_event
 
 
-class SubmitCoreMCPAgentComp(MCPInitAgentComp):
+class SubmitCoreMCPAgentComp(MCPCallbackAgentComp):
     def __init__(self, enable_tgz_unpack, **kwargs):
         super().__init__(enable_tgz_unpack=enable_tgz_unpack, **kwargs)
 
