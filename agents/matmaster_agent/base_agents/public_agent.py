@@ -7,7 +7,7 @@ from google.adk.agents import InvocationContext, LlmAgent, SequentialAgent
 from google.adk.events import Event
 from pydantic import Field, model_validator
 
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.base_agents.job_agent import (
     ParamsCheckInfoAgent,
     ResultMCPAgent,
@@ -58,7 +58,7 @@ class BaseSyncAgent(SubordinateFeaturesMixin, SyncMCPAgent):
 
 
 class BaseSyncAgentWithToolValidator(
-    SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleAgent
+    SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleLlmAgent
 ):
     sync_mcp_agent: Optional[SyncMCPAgent] = None
     tool_validator_agent: Optional[ToolValidatorAgent] = None
@@ -105,7 +105,7 @@ class BaseSyncAgentWithToolValidator(
                 break
 
 
-class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleAgent):
+class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleLlmAgent):
     """
     Base agent class for handling asynchronous job submissions.
 

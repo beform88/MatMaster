@@ -49,5 +49,5 @@ class ErrorHandleBaseAgent(ErrorHandlerMixin, BaseAgent):
     pass
 
 
-class ErrorHandleAgent(ErrorHandlerMixin, LlmAgent):
+class ErrorHandleLlmAgent(ErrorHandlerMixin, LlmAgent):
     pass

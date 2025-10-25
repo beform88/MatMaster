@@ -9,7 +9,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.base_agents.mcp_agent import (
     MCPAgent,
 )
@@ -241,7 +241,7 @@ class ResultMCPAgent(MCPAgent):
         yield Event(author=self.name)
 
 
-class ParamsCheckInfoAgent(ErrorHandleAgent):
+class ParamsCheckInfoAgent(ErrorHandleLlmAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         async for event in super()._run_events(ctx):
@@ -257,7 +257,7 @@ class ParamsCheckInfoAgent(ErrorHandleAgent):
                     yield system_job_result_event
 
 
-class ToolCallInfoAgent(ErrorHandleAgent):
+class ToolCallInfoAgent(ErrorHandleLlmAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         async for event in super()._run_events(ctx):
@@ -464,7 +464,7 @@ class SubmitCoreMCPAgent(MCPAgent):
                 yield event
 
 
-class SubmitRenderAgent(ErrorHandleAgent):
+class SubmitRenderAgent(ErrorHandleLlmAgent):
     @model_validator(mode='before')
     @classmethod
     def modify_description(cls, data: Any) -> Any:
@@ -512,7 +512,7 @@ class SubmitRenderAgent(ErrorHandleAgent):
                 )
 
 
-class SubmitValidatorAgent(ErrorHandleAgent):
+class SubmitValidatorAgent(ErrorHandleLlmAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         if ctx.session.state['error_occurred']:
