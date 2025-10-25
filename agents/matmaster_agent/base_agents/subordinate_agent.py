@@ -1,8 +1,8 @@
 from typing import Optional
 
 from google.adk.agents import InvocationContext
-from pydantic import Field
 
+from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleAgent
 from agents.matmaster_agent.constant import ModelRole
 from agents.matmaster_agent.utils.event_utils import (
@@ -10,15 +10,8 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 
 
-class SubordinateFeaturesMixin:
-    supervisor_agent: Optional[str] = Field(
-        None, description='Which one is the supervisor_agent'
-    )
-
-    def __init__(self, supervisor_agent, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.supervisor_agent = supervisor_agent
+class SubordinateFeaturesMixin(BaseMixin):
+    supervisor_agent: Optional[str] = None  # Direct supervisor agent in the hierarchy
 
     async def _after_events(self, ctx: InvocationContext):
         if self.supervisor_agent:
