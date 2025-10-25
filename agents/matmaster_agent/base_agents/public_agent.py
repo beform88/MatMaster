@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Any, AsyncGenerator, Optional, override
+from typing import AsyncGenerator, Optional, override
 
 import litellm
 from google.adk.agents import InvocationContext, LlmAgent, SequentialAgent
@@ -30,7 +30,7 @@ from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     ModelRole,
 )
-from agents.matmaster_agent.model import CostFuncType, ParamsCheckComplete
+from agents.matmaster_agent.model import ParamsCheckComplete
 from agents.matmaster_agent.prompt import (
     gen_params_check_completed_agent_instruction,
     gen_params_check_info_agent_instruction,
@@ -64,7 +64,7 @@ class BaseSyncAgentWithToolValidator(
     tool_validator_agent: Optional[ToolValidatorAgent] = None
 
     @model_validator(mode='after')
-    def after_init(self) -> Any:
+    def after_init(self):
         agent_prefix = self.name.replace('_agent', '')
 
         self.sync_mcp_agent = SyncMCPAgent(
@@ -105,7 +105,7 @@ class BaseSyncAgentWithToolValidator(
                 break
 
 
-class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
+class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleAgent):
     """
     Base agent class for handling asynchronous job submissions.
 
@@ -114,79 +114,61 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
     parameter validation through specialized sub-agents.
     """
 
-    submit_agent: SequentialAgent
-    result_agent: SequentialAgent
-    params_check_info_agent: LlmAgent
-    tool_call_info_agent: LlmAgent
+    agent_name: str
+    agent_description: str
+    agent_instruction: str
+    mcp_tools: list
+    submit_agent: Optional[SequentialAgent] = None
+    result_agent: Optional[SequentialAgent] = None
+    params_check_info_agent: Optional[LlmAgent] = None
+    tool_call_info_agent: Optional[LlmAgent] = None
     dflow_flag: bool = Field(
         False,
         description='Indicates if this agent is related to dflow workflows',
         exclude=True,
     )
-    supervisor_agent: str
     sync_tools: Optional[list] = Field(
         None,
         description='List of tools that will be executed synchronously on the server',
     )
-    enable_tgz_unpack: bool = Field(
-        True, description='Whether to automatically unpack tgz files from tool results'
-    )
-    cost_func: Optional[CostFuncType] = None
 
-    def __init__(
-        self,
-        model,
-        agent_name: str,
-        agent_description: str,
-        agent_instruction: str,
-        *args,
-        mcp_tools: list,
-        dflow_flag: bool,
-        supervisor_agent: str,
-        sync_tools: Optional[list] = None,
-        enable_tgz_unpack: bool = True,
-        cost_func=None,
-        **kwargs,
-    ):
-        """
-        Initialize the BaseAsyncJobAgent with specialized sub-agents.
+    @model_validator(mode='before')
+    @classmethod
+    def before_init(cls, data):
+        if not isinstance(data, dict):
+            return data
 
-        Args:
-            model: The language model to use
-            agent_name: Name identifier for the agent
-            agent_description: Description of the agent's purpose
-            agent_instruction: Instructions for the agent's behavior
-            mcp_tools: List of MCP tools available to the agent
-            dflow_flag: Whether this agent is related to dflow workflows
-            supervisor_agent: Identifier for the supervisor agent
-            sync_tools: Tools to run synchronously on the server
-            enable_tgz_unpack: Whether to unpack tgz files from results
-            cost_func: Optional cost calculation function
-        """
-        agent_prefix = agent_name.replace('_agent', '')
+        data['name'] = data['agent_name']
+        data['description'] = data['agent_description']
+
+        return data
+
+    @model_validator(mode='after')
+    def after_init(self):
+        agent_prefix = self.agent_name.replace('_agent', '')
 
         # Create submission workflow agents
         submit_core_agent = SubmitCoreMCPAgent(
-            model=model,
+            model=self.model,
             name=f"{agent_prefix}_submit_core_agent",
             description=gen_submit_core_agent_description(agent_prefix),
             instruction=gen_submit_core_agent_instruction(agent_prefix),
-            tools=mcp_tools,
+            tools=self.mcp_tools,
             disallow_transfer_to_parent=True,
-            enable_tgz_unpack=enable_tgz_unpack,
-            cost_func=cost_func,
+            enable_tgz_unpack=self.enable_tgz_unpack,
+            cost_func=self.cost_func,
         )
 
         submit_render_agent = SubmitRenderAgent(
-            model=model, name=f"{agent_prefix}_submit_render_agent"
+            model=self.model, name=f"{agent_prefix}_submit_render_agent"
         )
 
         submit_validator_agent = SubmitValidatorAgent(
-            model=model, name=f"{agent_prefix}_submit_validator_agent"
+            model=self.model, name=f"{agent_prefix}_submit_validator_agent"
         )
 
         # Create sequential agent for submission process
-        submit_agent = SequentialAgent(
+        self.submit_agent = SequentialAgent(
             name=f"{agent_prefix}_submit_agent",
             description=gen_submit_agent_description(agent_prefix),
             sub_agents=[submit_core_agent, submit_render_agent, submit_validator_agent],
@@ -194,63 +176,48 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, ErrorHandleAgent):
 
         # Create result retrieval agent
         result_core_agent = ResultMCPAgent(
-            model=model,
+            model=self.model,
             name=f"{agent_prefix}_result_core_agent",
-            tools=mcp_tools,
+            tools=self.mcp_tools,
             instruction=gen_result_core_agent_instruction(agent_prefix),
-            enable_tgz_unpack=enable_tgz_unpack,
+            enable_tgz_unpack=self.enable_tgz_unpack,
         )
 
-        result_agent = SequentialAgent(
+        self.result_agent = SequentialAgent(
             name=f"{agent_prefix}_result_agent",
             description=gen_result_agent_description(),
             sub_agents=[result_core_agent],
         )
 
         # Create validation and information agents
-        params_check_info_agent = ParamsCheckInfoAgent(
-            model=model,
+        self.params_check_info_agent = ParamsCheckInfoAgent(
+            model=self.model,
             name=f"{agent_prefix}_params_check_info_agent",
             instruction=gen_params_check_info_agent_instruction(),
-            tools=mcp_tools,
+            tools=self.mcp_tools,
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
             after_model_callback=remove_function_call,
         )
 
-        tool_call_info_agent = ToolCallInfoAgent(
-            model=model,
+        self.tool_call_info_agent = ToolCallInfoAgent(
+            model=self.model,
             name=f"{agent_prefix}_tool_call_info_agent",
             instruction=gen_tool_call_info_instruction(),
-            tools=mcp_tools,
+            tools=self.mcp_tools,
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
             after_model_callback=remove_function_call,
         )
 
-        # Initialize parent class
-        super().__init__(
-            name=agent_name,
-            model=model,
-            description=agent_description,
-            submit_agent=submit_agent,
-            result_agent=result_agent,
-            params_check_info_agent=params_check_info_agent,
-            tool_call_info_agent=tool_call_info_agent,
-            dflow_flag=dflow_flag,
-            sub_agents=[
-                submit_agent,
-                result_agent,
-                params_check_info_agent,
-                tool_call_info_agent,
-            ],
-            supervisor_agent=supervisor_agent,
-            sync_tools=sync_tools,
-            enable_tgz_unpack=enable_tgz_unpack,
-            cost_func=cost_func,
-        )
+        self.sub_agents = [
+            self.submit_agent,
+            self.result_agent,
+            self.params_check_info_agent,
+            self.tool_call_info_agent,
+        ]
 
-        self.cost_func = cost_func
+        return self
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
