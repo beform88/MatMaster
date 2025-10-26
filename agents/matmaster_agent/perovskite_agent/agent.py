@@ -6,6 +6,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.constant import BohriumStorge
+from agents.matmaster_agent.llm_config import LLMConfig
 
 from ..base_agents.public_agent import BaseSyncAgent
 from .constant import PEROVSKITE_PLOT_URL, PerovskiteAgentName
@@ -34,10 +35,10 @@ perovskite_toolset = CalculationMCPToolset(
 )
 
 
-def init_perovskite_agent(llm_config):
+def init_perovskite_agent(llm_config: LLMConfig):
     """Initialize Perovskite Solar Cell Data Analysis Agent using CalculationMCPLlmAgent."""
     # Choose model per flag with sensible fallbacks
-    model = llm_config.gpt_5_chat
+    model = llm_config.default_litellm_model
 
     return BaseSyncAgent(
         model=model,

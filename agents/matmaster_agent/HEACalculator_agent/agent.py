@@ -8,6 +8,7 @@ from agents.matmaster_agent.constant import (  # BohriumExecutor,
     LOCAL_EXECUTOR,
     BohriumStorge,
 )
+from agents.matmaster_agent.llm_config import LLMConfig
 
 from ..base_agents.public_agent import BaseSyncAgent
 from .constant import HEACALCULATOR_AGENT_NAME, HEACALCULATOR_SERVER_URL
@@ -28,9 +29,9 @@ mcp_tools = CalculationMCPToolset(
 
 
 class HEACalculatorAgentBase(BaseSyncAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             name=HEACALCULATOR_AGENT_NAME,
             description=HEACALC_AGENT_DESCRIPTION,
             instruction=HEACALC_AGENT_INSTRUCTION,

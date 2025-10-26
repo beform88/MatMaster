@@ -33,6 +33,7 @@ from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     ModelRole,
 )
+from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.model import ParamsCheckComplete
 from agents.matmaster_agent.prompt import (
     gen_params_check_completed_agent_instruction,
@@ -125,7 +126,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
     parameter validation through specialized sub-agents.
     """
 
-    model: Union[str, BaseLlm]
+    model: Union[str, BaseLlm] = MatMasterLlmConfig.default_litellm_model
     agent_instruction: str
     mcp_tools: list
     dflow_flag: bool = Field(

@@ -9,6 +9,7 @@ from agents.matmaster_agent.constant import (
     BohriumExecutor,
     BohriumStorge,
 )
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.structure_generate_agent.prompt import (
     StructureGenerateAgentDescription,
@@ -42,9 +43,9 @@ toolset = CalculationMCPToolset(
 
 
 class StructureGenerateAgent(BaseAsyncJobAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             mcp_tools=[toolset],
             name=StructureGenerateAgentName,
             description=StructureGenerateAgentDescription,

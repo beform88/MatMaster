@@ -14,6 +14,7 @@ from agents.matmaster_agent.finetune_dpa_agent.prompt import (
     FinetuneDPAAgentInstruction,
     FinetuneDPAAgentName,
 )
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 from ..base_agents.public_agent import BaseAsyncJobAgent
@@ -41,9 +42,9 @@ toolset = CalculationMCPToolset(
 
 
 class FinetuneDPAAgent(BaseAsyncJobAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             mcp_tools=[toolset],
             name=FinetuneDPAAgentName,
             description=FinetuneDPAAgentDescription,

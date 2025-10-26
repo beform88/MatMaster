@@ -4,6 +4,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgent
 from agents.matmaster_agent.constant import BohriumStorge
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
     TrajAnalysisMCPServerUrl,
@@ -15,9 +16,9 @@ toolset = CalculationMCPToolset(
 )
 
 
-def init_traj_analysis_agent(llm_config) -> BaseAgent:
+def init_traj_analysis_agent(llm_config: LLMConfig) -> BaseAgent:
     return BaseSyncAgent(
-        model=llm_config.gpt_5_chat,
+        model=llm_config.default_litellm_model,
         name=TrajAnalysisAgentName,
         description='An agent designed to perform trajectory analysis, including calculations like '
         'Solvation Structure Analysis, Mean Squared Displacement (MSD), Radial Distribution Function (RDF), '

@@ -3,6 +3,7 @@ from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 from ..base_agents.public_agent import BaseAsyncJobAgent
@@ -41,9 +42,9 @@ class ApexAgent(BaseAsyncJobAgent):
     - 异步任务处理（继承BaseAsyncJobAgent）
     """
 
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             name=ApexAgentName,
             description=ApexAgentDescription,
             agent_instruction=ApexAgentInstruction,

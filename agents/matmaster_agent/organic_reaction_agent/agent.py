@@ -4,6 +4,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.public_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.organic_reaction_agent.constant import (
     ORGANIC_REACTION_AGENT_NAME,
@@ -29,10 +30,10 @@ tools = [autoTS]
 
 
 class OragnicReactionAgent(BaseAsyncJobAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=ORGANIC_REACTION_AGENT_NAME,
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             description=description,
             agent_instruction=instruction_en,
             mcp_tools=tools,

@@ -26,7 +26,11 @@ from agents.matmaster_agent.finetune_dpa_agent.agent import init_finetune_dpa_ag
 from agents.matmaster_agent.HEA_assistant_agent.agent import init_HEA_assistant_agent
 from agents.matmaster_agent.HEACalculator_agent.agent import init_hea_calculator_agent
 from agents.matmaster_agent.INVAR_agent.agent import init_invar_agent
-from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+from agents.matmaster_agent.llm_config import (
+    DEFAULT_MODEL,
+    LLMConfig,
+    MatMasterLlmConfig,
+)
 from agents.matmaster_agent.model import MatMasterTargetAgentEnum
 from agents.matmaster_agent.MrDice_agent.agent import init_MrDice_agent
 from agents.matmaster_agent.organic_reaction_agent.agent import (
@@ -64,7 +68,7 @@ logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLeve
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
         traj_analysis_agent = init_traj_analysis_agent(llm_config)
         mrdice_agent = init_MrDice_agent(llm_config)
@@ -87,7 +91,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
 
         super().__init__(
             name=MATMASTER_AGENT_NAME,
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             sub_agents=[
                 piloteye_electro_agent,
                 traj_analysis_agent,
@@ -145,7 +149,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
 
             error_handel_agent = LlmAgent(
                 name='error_handel_agent',
-                model=LiteLlm(model='litellm_proxy/azure/gpt-5-chat'),
+                model=LiteLlm(model=DEFAULT_MODEL),
             )
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):

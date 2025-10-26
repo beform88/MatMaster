@@ -14,6 +14,7 @@ from agents.matmaster_agent.INVAR_agent.prompt import (
     INVARAgentDescription,
     INVARAgentInstruction,
 )
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 mcp_tools_invar = CalculationMCPToolset(
@@ -27,11 +28,11 @@ mcp_tools_invar = CalculationMCPToolset(
 
 
 class INVARAgent(BaseAsyncJobAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=INVAR_AGENT_NAME,
             mcp_tools=[mcp_tools_invar],
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             description=INVARAgentDescription,
             agent_instruction=INVARAgentInstruction,
             dflow_flag=False,
