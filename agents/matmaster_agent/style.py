@@ -42,6 +42,35 @@ def get_job_complete_card(i18n: I18N, job_id):
 """
 
 
+def photon_consume_free_card():
+    return """
+<div style="
+    background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+    border: 1.5px solid #17a2b8;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin: 12px 0;
+    box-shadow: 0 3px 8px rgba(23, 162, 184, 0.25);
+    text-align: left;
+">
+
+<p style="
+    font-size: 15px;
+    color: #0c5460;
+    margin: 0;
+    font-weight: bold;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+">
+🎁 限时免费
+</p>
+
+</div>
+"""
+
+
 def photon_consume_notify_card(cost):
     return f"""
 <div style="

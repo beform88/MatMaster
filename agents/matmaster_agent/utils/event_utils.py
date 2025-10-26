@@ -14,6 +14,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.style import (
+    photon_consume_free_card,
     photon_consume_notify_card,
     photon_consume_success_card,
     tool_response_failed_card,
@@ -289,18 +290,21 @@ async def photon_consume_event(ctx, event, author):
         event.content.parts[0].function_response.id, None
     )
     if current_cost is not None:
-        event_value = current_cost['value'] if CURRENT_ENV != 'test' else 1
-        res = await photon_consume(
-            user_id, sku_id=current_cost['sku_id'], event_value=event_value
-        )
-        if res['code'] == 0:
-            for consume_event in all_text_event(
-                ctx,
-                author,
-                f"{photon_consume_success_card(current_cost['value'])}",
-                ModelRole,
-            ):
-                yield consume_event
+        if current_cost['value']:
+            photon_value = current_cost['value'] if CURRENT_ENV != 'test' else 1
+            res = await photon_consume(
+                user_id, sku_id=current_cost['sku_id'], event_value=photon_value
+            )
+            if res['code'] == 0:
+                for consume_event in all_text_event(
+                    ctx,
+                    author,
+                    f"{photon_consume_success_card(photon_value)}",
+                    ModelRole,
+                ):
+                    yield consume_event
+        else:
+            yield Event(author=author)
 
 
 async def display_future_consume_event(event, cost_func, ctx, author):
@@ -308,10 +312,16 @@ async def display_future_consume_event(event, cost_func, ctx, author):
         function_call_name = event.content.parts[index].function_call.name
         invocated_tool = BaseTool(name=function_call_name, description='')
         tool_cost, _ = cost_func(invocated_tool)
+
+        if tool_cost:
+            future_consume_msg = f"{photon_consume_notify_card(tool_cost)}"
+        else:
+            future_consume_msg = f"{photon_consume_free_card()}"
+
         for photon_consume_notify_event in all_text_event(
             ctx,
             author,
-            f"{photon_consume_notify_card(tool_cost)}",
+            future_consume_msg,
             ModelRole,
         ):
             yield photon_consume_notify_event

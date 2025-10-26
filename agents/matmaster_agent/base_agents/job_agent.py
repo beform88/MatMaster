@@ -278,7 +278,7 @@ class ToolCallInfoAgent(ErrorHandleLlmAgent):
                         for system_job_result_event in context_function_event(
                             ctx,
                             self.name,
-                            'system_tool_call_info',
+                            'matmaster_tool_call_info',
                             tool_call_info,
                             ModelRole,
                         ):
@@ -545,10 +545,11 @@ class SubmitValidatorAgent(ErrorHandleBaseAgent):
                 'I recommend retrying with the original parameters.'
             )
 
+            logger.info(f'[{MATMASTER_AGENT_NAME}] ctx.agent.name = {ctx.agent.name}')
             logger.info(
-                f'[{MATMASTER_AGENT_NAME}] ctx.agent.parent_agent.parent_agent = {ctx.agent.parent_agent.parent_agent.__dict__}'
+                f'[{MATMASTER_AGENT_NAME}] ctx.agent.parent_agent.parent_agent = {ctx.agent.parent_agent.parent_agent}'
             )
-            current_agent = ctx.agent.parent_agent.parent_agent.name
+            current_agent = ctx.agent.name.replace('_submit_validator', '')
             if ctx.session.state['hallucination_agent'] != current_agent:
                 yield update_state_event(
                     ctx,
