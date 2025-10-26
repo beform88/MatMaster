@@ -34,7 +34,7 @@ from agents.matmaster_agent.constant import (
     ModelRole,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-from agents.matmaster_agent.model import ParamsCheckComplete
+from agents.matmaster_agent.model import ParamsCheckComplete, ToolCallInfo
 from agents.matmaster_agent.prompt import (
     gen_params_check_completed_agent_instruction,
     gen_params_check_info_agent_instruction,
@@ -204,6 +204,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
             after_model_callback=remove_function_call,
+            output_schema=ToolCallInfo,
         )
 
         self.sub_agents = [

@@ -136,21 +136,26 @@ async def remove_function_call(
             function_name = part.function_call.name
             function_args = part.function_call.args
 
-            logger.info(
-                f"[{MATMASTER_AGENT_NAME}] FunctionCall will be removed, name = {function_name}, args = {function_args}"
-            )
+            if function_name == 'set_model_response':
+                logger.warning(
+                    f'[{MATMASTER_AGENT_NAME}] Detected adk-function: `{function_name}`, continue'
+                )
+            else:
+                logger.info(
+                    f"[{MATMASTER_AGENT_NAME}] FunctionCall will be removed, name = {function_name}, args = {function_args}"
+                )
 
-            prompt = get_params_check_info_prompt().format(
-                target_language=callback_context.state['target_language'],
-                function_name=function_name,
-                function_args=function_args,
-            )
-            response = litellm.completion(
-                model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}]
-            )
-            llm_generated_text += response.choices[0].message.content
+                prompt = get_params_check_info_prompt().format(
+                    target_language=callback_context.state['target_language'],
+                    function_name=function_name,
+                    function_args=function_args,
+                )
+                response = litellm.completion(
+                    model='azure/gpt-4o', messages=[{'role': 'user', 'content': prompt}]
+                )
+                llm_generated_text += response.choices[0].message.content
 
-            part.function_call = None
+                part.function_call = None
         llm_response.content.parts.append(part)
 
     if llm_generated_text:

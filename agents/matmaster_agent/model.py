@@ -105,3 +105,9 @@ class MatMasterTargetAgentEnum(str, Enum):
 
 class UserContent(BaseModel):
     language: str
+
+
+class ToolCallInfo(BaseModel):
+    tool_name: str
+    tool_args: dict
+    missing_tool_args: List[str]

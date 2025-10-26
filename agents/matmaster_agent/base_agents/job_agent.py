@@ -264,23 +264,28 @@ class ToolCallInfoAgent(ErrorHandleLlmAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         async for event in super()._run_events(ctx):
-            # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-            if not event.partial:
-                try:
-                    tool_call_info = json.loads(event.content.parts[0].text)
-                except BaseException:
-                    logger.info(
-                        f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
-                    )
-                    raise
-                for system_job_result_event in context_function_event(
-                    ctx,
-                    self.name,
-                    'system_tool_call_info',
-                    tool_call_info,
-                    ModelRole,
-                ):
-                    yield system_job_result_event
+            for part in event.content.parts:
+                if part.text:
+                    if not event.partial:
+                        try:
+                            tool_call_info = json.loads(part.text)
+                        except BaseException:
+                            logger.info(
+                                f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
+                            )
+                            raise
+
+                        for system_job_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'system_tool_call_info',
+                            tool_call_info,
+                            ModelRole,
+                        ):
+                            yield system_job_result_event
+                    # 置空 text 消息
+                    part.text = None
+            yield event
 
 
 class SubmitCoreMCPAgent(MCPAgent):
