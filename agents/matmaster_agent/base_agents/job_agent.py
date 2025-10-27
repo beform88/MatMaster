@@ -411,7 +411,9 @@ class SubmitCoreMCPAgent(MCPAgent):
                                     job_status=job_status,
                                     job_id=bohr_job_id,
                                     job_detail_url=job_detail_url,
-                                    agent_name=ctx.agent.parent_agent.parent_agent.name,
+                                    agent_name=ctx.agent.name.replace(
+                                        '_submit_core', ''
+                                    ),
                                 ).model_dump(mode='json')
                             else:  # Dflow Job (Deprecated)
                                 workflow_id = results['extra_info']['workflow_id']
