@@ -29,10 +29,10 @@ mcp_tools_compdrt = CalculationMCPToolset(
 class CompDARTAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config):
         super().__init__(
-            agent_name=COMPDART_AGENT_NAME,
+            name=COMPDART_AGENT_NAME,
             mcp_tools=[mcp_tools_compdrt],
             model=llm_config.gpt_5_chat,
-            agent_description=CompDARTAgentDescription,
+            description=CompDARTAgentDescription,
             agent_instruction=CompDARTAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
