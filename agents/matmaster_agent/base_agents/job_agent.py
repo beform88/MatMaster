@@ -33,6 +33,7 @@ from agents.matmaster_agent.constant import (
     get_BohriumStorage,
     get_DFlowExecutor,
 )
+from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import (
     BohrJobInfo,
     DFlowJobInfo,
@@ -41,6 +42,7 @@ from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
     SubmitRenderAgentDescription,
 )
+from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
     context_function_event,
@@ -451,6 +453,13 @@ class SubmitCoreMCPAgent(MCPAgent):
                             ):
                                 yield consume_event
                         else:  # Submit Failed
+                            for tool_response_failed_event in all_text_event(
+                                ctx,
+                                self.name,
+                                f"{tool_response_failed_card(i18n=i18n)}",
+                                ModelRole,
+                            ):
+                                yield tool_response_failed_event
                             # 提交报错同样+1，避免幻觉 card
                             yield update_state_event(
                                 ctx,
