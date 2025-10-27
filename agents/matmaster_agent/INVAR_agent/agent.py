@@ -2,7 +2,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.job_agent import BaseAsyncJobAgent
+from agents.matmaster_agent.base_agents.public_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.INVAR_agent.constant import (
     INVAR_AGENT_NAME,
@@ -14,6 +14,7 @@ from agents.matmaster_agent.INVAR_agent.prompt import (
     INVARAgentDescription,
     INVARAgentInstruction,
 )
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 mcp_tools_invar = CalculationMCPToolset(
@@ -27,12 +28,12 @@ mcp_tools_invar = CalculationMCPToolset(
 
 
 class INVARAgent(BaseAsyncJobAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
-            agent_name=INVAR_AGENT_NAME,
+            name=INVAR_AGENT_NAME,
             mcp_tools=[mcp_tools_invar],
-            model=llm_config.gpt_5_chat,
-            agent_description=INVARAgentDescription,
+            model=llm_config.default_litellm_model,
+            description=INVARAgentDescription,
             agent_instruction=INVARAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

@@ -16,30 +16,27 @@ ModelRole = 'model'
 # DB
 DBUrl = os.getenv('SESSION_API_URL')
 
-OPENAPI_HOST = ''
 DFLOW_HOST = ''
 DFLOW_K8S_API_SERVER = ''
-BOHRIUM_API_URL = ''
 BOHRIUM_HOST = ''
 BOHRIUM_COM = ''
 
 CURRENT_ENV = os.getenv('OPIK_PROJECT_NAME', 'prod')
+URL_PART = f'.{CURRENT_ENV}' if CURRENT_ENV != 'prod' else ''
+OPENAPI_HOST = f'https://openapi{URL_PART}.dp.tech'
+BOHRIUM_API_URL = f'https://bohrium-api{URL_PART}.dp.tech'
+GOODS_API_BASE = f'https://goods-server{URL_PART}.dp.tech'
+FINANCE_API_BASE = f'https://finance-web{URL_PART}.dp.tech'
 if CURRENT_ENV == 'test':
-    OPENAPI_HOST = 'https://openapi.test.dp.tech'
     DFLOW_HOST = 'https://lbg-workflow-mlops.test.dp.tech'
     DFLOW_K8S_API_SERVER = 'https://lbg-workflow-mlops.test.dp.tech'
-    BOHRIUM_API_URL = 'https://bohrium-api.test.dp.tech'
     BOHRIUM_HOST = 'https://bohrium.test.dp.tech'
     BOHRIUM_COM = 'https://www.test.bohrium.com'
 elif CURRENT_ENV == 'uat':
-    OPENAPI_HOST = 'https://openapi.uat.dp.tech'
-    BOHRIUM_API_URL = 'https://bohrium-api.uat.dp.tech'
     BOHRIUM_COM = 'https://www.uat.bohrium.com'
 elif CURRENT_ENV == 'prod':
-    OPENAPI_HOST = 'https://openapi.dp.tech'
     DFLOW_HOST = 'https://workflows.deepmodeling.com'
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
-    BOHRIUM_API_URL = 'https://bohrium-api.dp.tech'
     BOHRIUM_COM = 'https://www.bohrium.com'
 
 SANDBOX_JOB_DETAIL_URL = f'{BOHRIUM_COM}/sandboxjob/detail'
@@ -52,6 +49,13 @@ OPENAPI_JOB_CREATE_API = f'{OpenAPIJobAPI}/create'
 OPENAPI_FILE_TOKEN_API = f'{OpenAPIJobAPI}/file/token'
 OPENAPI_JOB_LIST_API = f'{OpenAPIJobAPI}/list'
 
+GOODS_SKU_LIST_API = f"{GOODS_API_BASE}/api/v1/sku/list"
+FINANCE_WALLET_INFO_API = f"{FINANCE_API_BASE}/api/wallet/detail"
+FINANCE_INFO_API = f"{FINANCE_API_BASE}/api/integral/info"
+FINANCE_CONSUME_API = f"{FINANCE_API_BASE}/api/integral/consume"
+
+MATERIALS_USER_ID = int(os.getenv('MATERIALS_USER_ID', -1))
+MATERIALS_ORG_ID = int(os.getenv('MATERIALS_ORG_ID', -1))
 MATERIALS_ACCESS_KEY = str(os.getenv('MATERIALS_ACCESS_KEY'))
 MATERIALS_PROJECT_ID = int(os.getenv('MATERIALS_PROJECT_ID'))
 
@@ -123,3 +127,5 @@ LOADING_TITLE = 'loading_title'
 
 JOB_RESULT_KEY = 'job_result'
 JOB_LIST_KEY = 'job_list'
+
+SKU_MAPPING = {'matmaster': 10808}
