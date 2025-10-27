@@ -156,13 +156,17 @@ def hallucination_card(i18n: I18N):
 <div style="
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   color: #495057;
-  padding: 14px 18px;
+  padding: 12px 14px;
   border-radius: 8px;
   border: 1px solid #dee2e6;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   position: relative;
   overflow: hidden;
   margin: 12px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 ">
   <div style="
     display: flex;
