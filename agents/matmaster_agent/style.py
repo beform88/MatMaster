@@ -132,18 +132,17 @@ def photon_consume_success_card(cost):
 def hallucination_card(i18n: I18N):
     def _inner_css():
         return """
-    <style>
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        @keyframes progress {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(250%); }
-        }
-    </style>
-</div>
+<style>
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    @keyframes progress {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(250%); }
+    }
+</style>
 """
 
     return (
@@ -198,7 +197,9 @@ def hallucination_card(i18n: I18N):
             border-radius: 2px;
             animation: progress 2s ease-in-out infinite;
         "></div>
-    </div>"""
+    </div>
+</div>
+"""
         + _inner_css()
     )
 

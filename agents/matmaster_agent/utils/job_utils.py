@@ -37,6 +37,7 @@ async def get_job_status(job_id, access_key):
         async with session.get(
             f'{OpenAPIJobAPI}/{job_id}', headers={'accessKey': access_key}
         ) as response:
+            logger.info(f'[{MATMASTER_AGENT_NAME}] response = {response.text()}')
             data = await response.json()
             return mapping_status(data['data']['status'])
 
