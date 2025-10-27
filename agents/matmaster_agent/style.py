@@ -93,7 +93,12 @@ def photon_consume_notify_card(cost):
     align-items: center;
     gap: 6px;
 ">
-⚠️ 即将扣除 <span style="color: #e74c3c; font-size: 18px; font-weight: 800;">{cost}</span> 光子
+    <!-- 信息提示图标 -->
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+        <path d="M12 16H12.01M12 8V12M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+              stroke="#856404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    即将扣除 <span style="color: #e74c3c; font-size: 18px; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">{cost}</span> 光子
 </p>
 
 </div>
