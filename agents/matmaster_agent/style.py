@@ -314,19 +314,25 @@ def tool_retry_failed_card(i18n: I18N):
 def tool_response_failed_card(i18n: I18N):
     return f"""
 <div style="
-    background: #dc3545;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
-    width: 100%;
-    text-align: center;
-    box-sizing: border-box;
+    background: linear-gradient(135deg, #f1aeb5, #ea868f);
+    border: 1.5px solid #e6858f;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin: 12px 0;
+    box-shadow: 0 3px 8px rgba(241, 174, 181, 0.35);
+    text-align: left;
 ">
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="font-size: 14px;">⚡</div>
-        <div style="flex: 1; text-align: left;">
-            <div style="font-size: 13px; font-weight: 600;">{i18n.t('ToolResponseFailed')}</div>
-        </div>
-    </div>
+    <p style="
+        font-size: 15px;
+        color: #721c24;
+        margin: 0;
+        font-weight: bold;
+        line-height: 1.3;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    ">
+        ⚡ {i18n.t('ToolResponseFailed')}
+    </p>
 </div>
 """
