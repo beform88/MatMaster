@@ -14,6 +14,7 @@ from agents.matmaster_agent.CompDART_agent.prompt import (
     CompDARTAgentInstruction,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
 mcp_tools_compdrt = CalculationMCPToolset(
@@ -27,11 +28,11 @@ mcp_tools_compdrt = CalculationMCPToolset(
 
 
 class CompDARTAgent(BaseAsyncJobAgent):
-    def __init__(self, llm_config):
+    def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=COMPDART_AGENT_NAME,
             mcp_tools=[mcp_tools_compdrt],
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             description=CompDARTAgentDescription,
             agent_instruction=CompDARTAgentInstruction,
             dflow_flag=False,
