@@ -555,7 +555,7 @@ class SubmitValidatorAgent(ErrorHandleBaseAgent):
                     ctx,
                     state_delta={
                         'hallucination': True,
-                        'hallucination_agent': ctx.agent.parent_agent.parent_agent.name,
+                        'hallucination_agent': current_agent,
                     },
                 )
             else:
