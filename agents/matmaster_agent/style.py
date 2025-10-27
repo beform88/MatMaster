@@ -133,71 +133,83 @@ def hallucination_card(i18n: I18N):
     def _inner_css():
         return """
 <style>
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-    @keyframes progress {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(250%); }
-    }
+@keyframes subtle-pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+@keyframes subtle-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
 </style>
 """
 
     return (
         f"""
 <div style="
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    color: white;
-    padding: 24px 32px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    max-width: 500px;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin: 20px auto;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #495057;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 12px 0;
 ">
+  <div style="
+    display: flex;
+    align-items: center;
+  ">
     <div style="
-        position: relative;
-        z-index: 1;
-        display: flex;
-        align-items: center;
+      font-size: 20px;
+      margin-right: 12px;
+      animation: subtle-pulse 3s infinite;
+      opacity: 0.7;
+      flex-shrink: 0;
+    ">↻</div>
+    <div style="
+      flex: 1;
+      min-width: 0;
     ">
-        <div style="
-            font-size: 28px;
-            margin-right: 16px;
-            animation: pulse 2s infinite;
-        ">🔄</div>
-        <div style="flex: 1;">
-            <div style="
-                font-size: 18px;
-                font-weight: 600;
-                margin-bottom: 4px;
-            ">{i18n.t("JobSubmitHallucination")}</div>
-            <div style="
-                font-size: 14px;
-                opacity: 0.9;
-            ">{i18n.t("JobSubmitHallucinationAction")}</div>
-        </div>
-    </div>
-    <div style="
-        height: 4px;
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 2px;
-        margin-top: 16px;
+      <div style="
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 2px;
+        color: #343a40;
+        white-space: nowrap;
         overflow: hidden;
-    ">
-        <div style="
-            height: 100%;
-            width: 60%;
-            background: white;
-            border-radius: 2px;
-            animation: progress 2s ease-in-out infinite;
-        "></div>
+        text-overflow: ellipsis;
+      ">{i18n.t("JobSubmitHallucination")}</div>
+      <div style="
+        font-size: 12px;
+        opacity: 0.7;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      ">{i18n.t("JobSubmitHallucinationAction")}</div>
     </div>
+  </div>
+  <div style="
+    height: 2px;
+    background: rgba(108, 117, 125, 0.2);
+    border-radius: 1px;
+    margin-top: 10px;
+    overflow: hidden;
+  ">
+    <div style="
+      height: 100%;
+      width: 40%;
+      background: #6c757d;
+      border-radius: 1px;
+      animation: subtle-progress 3s ease-in-out infinite;
+      opacity: 0.5;
+    "></div>
+  </div>
 </div>
 """
         + _inner_css()
