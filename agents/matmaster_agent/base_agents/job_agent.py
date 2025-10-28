@@ -329,13 +329,27 @@ class SubmitCoreMCPAgent(MCPAgent):
                 in ctx.session.state['sync_tools']
             ):
                 try:
-                    dict_result = load_tool_response(event)
-                    async for (
-                        display_or_consume_event
-                    ) in display_failed_result_or_consume(
-                        dict_result, ctx, self.name, event
-                    ):
-                        yield display_or_consume_event
+                    if (
+                        not event.content.parts[0]
+                        .function_response.response['result']
+                        .isError
+                    ):  # Submit Success
+                        dict_result = load_tool_response(event)
+                        async for (
+                            display_or_consume_event
+                        ) in display_failed_result_or_consume(
+                            dict_result, ctx, self.name, event
+                        ):
+                            yield display_or_consume_event
+                    else:
+                        for tool_response_failed_event in all_text_event(
+                            ctx,
+                            self.name,
+                            f"{tool_response_failed_card(i18n=i18n)}",
+                            ModelRole,
+                        ):
+                            yield tool_response_failed_event
+                        raise RuntimeError('Tool Execute Failed')
                 except BaseException:
                     yield event
                     raise
