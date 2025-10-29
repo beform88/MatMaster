@@ -57,6 +57,8 @@ from agents.matmaster_agent.task_orchestrator_agent.agent import (
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
 from agents.matmaster_agent.utils.event_utils import (
+    all_function_event,
+    cherry_pick_events,
     frontend_text_event,
     send_error_event,
     update_state_event,
@@ -65,6 +67,8 @@ from agents.matmaster_agent.utils.event_utils import (
 logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
     logging.ERROR
 )
+
+logger = logging.getLogger(__name__)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -154,6 +158,21 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
+
+        matmaster_events = cherry_pick_events(ctx)
+        logger.info(f'[{MATMASTER_AGENT_NAME}] matmaster_events = {matmaster_events}')
+        if matmaster_events[-1][2] == MATMASTER_AGENT_NAME and matmaster_events[-2][
+            2
+        ] not in ['user', MATMASTER_AGENT_NAME]:
+            for generate_nps_event in all_function_event(
+                ctx,
+                self.name,
+                'matmaster_generate_nps',
+                None,
+                ModelRole,
+                {'invocation_id': ctx.invocation_id},
+            ):
+                yield generate_nps_event
 
 
 def init_matmaster_agent() -> LlmAgent:
