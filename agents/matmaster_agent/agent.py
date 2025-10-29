@@ -159,11 +159,24 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
 
-        matmaster_events = cherry_pick_events(ctx)
-        logger.info(f'[{MATMASTER_AGENT_NAME}] matmaster_events = {matmaster_events}')
-        if matmaster_events[-1][2] == MATMASTER_AGENT_NAME and matmaster_events[-2][
-            2
-        ] not in ['user', MATMASTER_AGENT_NAME]:
+        matmaster_events_only_author = [item[2] for item in cherry_pick_events(ctx)]
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] matmaster_events_only_author = {matmaster_events_only_author}'
+        )
+        last_user_index = (
+            len(matmaster_events_only_author)
+            - 1
+            - matmaster_events_only_author[::-1].index('user')
+        )
+        last_event_author = matmaster_events_only_author[-1]
+        slice_from_last_user = matmaster_events_only_author[last_user_index:]
+        only_user_matmaster = set(slice_from_last_user).issubset(
+            {'user', MATMASTER_AGENT_NAME}
+        )
+        if last_event_author == MATMASTER_AGENT_NAME and (
+            only_user_matmaster
+            or matmaster_events_only_author[-2] not in ['user', MATMASTER_AGENT_NAME]
+        ):
             for generate_nps_event in all_function_event(
                 ctx,
                 self.name,
