@@ -270,7 +270,7 @@ class ToolCallInfoAgent(ErrorHandleLlmAgent):
                             tool_call_info = json.loads(part.text)
                         except BaseException:
                             logger.info(
-                                f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {event.content.parts[0].text}'
+                                f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {part.text}'
                             )
                             raise
 
