@@ -183,7 +183,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 'matmaster_generate_nps',
                 None,
                 ModelRole,
-                {'invocation_id': ctx.invocation_id},
+                {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},
             ):
                 yield generate_nps_event
 
