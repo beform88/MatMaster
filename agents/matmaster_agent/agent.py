@@ -181,7 +181,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 ctx,
                 self.name,
                 'matmaster_generate_nps',
-                None,
+                {},
                 ModelRole,
                 {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},
             ):
