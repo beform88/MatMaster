@@ -57,8 +57,8 @@ from agents.matmaster_agent.task_orchestrator_agent.agent import (
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
 from agents.matmaster_agent.utils.event_utils import (
-    all_function_event,
     cherry_pick_events,
+    context_function_event,
     frontend_text_event,
     send_error_event,
     update_state_event,
@@ -177,7 +177,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             only_user_matmaster
             or matmaster_events_only_author[-2] not in ['user', MATMASTER_AGENT_NAME]
         ):
-            for generate_nps_event in all_function_event(
+            for generate_nps_event in context_function_event(
                 ctx,
                 self.name,
                 'matmaster_generate_nps',
