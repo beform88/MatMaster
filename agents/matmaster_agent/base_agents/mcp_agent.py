@@ -33,7 +33,9 @@ from agents.matmaster_agent.constant import (
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
 )
+from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import CostFuncType
+from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
     context_function_event,
@@ -46,7 +48,11 @@ from agents.matmaster_agent.utils.event_utils import (
     update_state_event,
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
-from agents.matmaster_agent.utils.helper_func import load_tool_response, parse_result
+from agents.matmaster_agent.utils.helper_func import (
+    is_mcp_result,
+    load_tool_response,
+    parse_result,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -160,13 +166,27 @@ class MCPRunEventsMixin(BaseMixin):
 
                     # Parse Tool Response
                     try:
-                        dict_result = load_tool_response(event.content.parts[0])
+                        first_part = event.content.parts[0]
+                        tool_response = first_part.function_response.response
+                        if (
+                            is_mcp_result(tool_response)
+                            and tool_response['result'].isError
+                        ):  # Original MCPResult & Error
+                            for tool_response_failed_event in all_text_event(
+                                ctx,
+                                self.name,
+                                f"{tool_response_failed_card(i18n=i18n)}",
+                                ModelRole,
+                            ):
+                                yield tool_response_failed_event
+                            raise RuntimeError('Tool Execution Failed')
+                        dict_result = load_tool_response(first_part)
                         async for (
-                            display_or_consume_event
+                            failed_or_consume_event
                         ) in display_failed_result_or_consume(
                             dict_result, ctx, self.name, event
                         ):
-                            yield display_or_consume_event
+                            yield failed_or_consume_event
                     except BaseException:
                         yield event
                         raise
