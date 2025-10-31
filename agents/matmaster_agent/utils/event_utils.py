@@ -80,7 +80,12 @@ def frontend_text_event(ctx: InvocationContext, author: str, text: str, role: st
 
 
 def frontend_function_call_event(
-    ctx: InvocationContext, author: str, function_call: FunctionCall, role: str
+    ctx: InvocationContext,
+    author: str,
+    function_call_id: str,
+    function_call_name: str,
+    role: str,
+    args: Optional[dict] = None,
 ):
     return Event(
         author=author,
@@ -89,9 +94,9 @@ def frontend_function_call_event(
             parts=[
                 Part(
                     function_call=FunctionCall(
-                        id=f"frontend_{function_call.name}",
-                        name=function_call.name,
-                        args=function_call.args,
+                        id=function_call_id,
+                        name=function_call_name,
+                        args=args,
                     )
                 )
             ],
@@ -102,7 +107,12 @@ def frontend_function_call_event(
 
 
 def frontend_function_response_event(
-    ctx: InvocationContext, author: str, function_call: FunctionCall, role: str
+    ctx: InvocationContext,
+    author: str,
+    function_call_id: str,
+    function_call_name: str,
+    response: Optional[dict],
+    role: str,
 ):
     return Event(
         author=author,
@@ -111,9 +121,9 @@ def frontend_function_response_event(
             parts=[
                 Part(
                     function_response=FunctionResponse(
-                        id=f"frontend_{function_call.name}",
-                        name=function_call.name,
-                        response=None,
+                        id=function_call_id,
+                        name=function_call_name,
+                        response=response,
                     )
                 )
             ],
@@ -186,6 +196,23 @@ def context_function_response_event(
     )
 
 
+def frontend_function_event(
+    ctx: InvocationContext,
+    author: str,
+    function_call_name: str,
+    response: Optional[dict],
+    role: str,
+    args: Optional[dict] = None,
+):
+    function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
+    yield frontend_function_call_event(
+        ctx, author, function_call_id, function_call_name, role, args
+    )
+    yield frontend_function_response_event(
+        ctx, author, function_call_id, function_call_name, response, role
+    )
+
+
 def context_function_event(
     ctx: InvocationContext,
     author: str,
@@ -231,6 +258,22 @@ def all_text_event(ctx: InvocationContext, author: str, text: str, role: str):
     yield context_text_event(ctx, author, text, role)
 
 
+def all_function_event(
+    ctx: InvocationContext,
+    author: str,
+    function_call_name: str,
+    response: Optional[dict],
+    role: str,
+    args: Optional[dict] = None,
+):
+    yield from frontend_function_event(
+        ctx, author, function_call_name, response, role, args
+    )
+    yield from context_function_event(
+        ctx, author, function_call_name, response, role, args
+    )
+
+
 def cherry_pick_events(ctx: InvocationContext):
     events = ctx.session.events
     cherry_pick_parts = []
@@ -238,7 +281,9 @@ def cherry_pick_events(ctx: InvocationContext):
         if event.content:
             for part in event.content.parts:
                 if part.text:
-                    cherry_pick_parts.append((event.content.role, part.text))
+                    cherry_pick_parts.append(
+                        (event.content.role, part.text, event.author)
+                    )
 
     return cherry_pick_parts
 

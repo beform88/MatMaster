@@ -57,6 +57,8 @@ from agents.matmaster_agent.task_orchestrator_agent.agent import (
 from agents.matmaster_agent.thermoelectric_agent.agent import init_thermoelectric_agent
 from agents.matmaster_agent.traj_analysis_agent.agent import init_traj_analysis_agent
 from agents.matmaster_agent.utils.event_utils import (
+    cherry_pick_events,
+    context_function_event,
     frontend_text_event,
     send_error_event,
     update_state_event,
@@ -65,6 +67,8 @@ from agents.matmaster_agent.utils.event_utils import (
 logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
     logging.ERROR
 )
+
+logger = logging.getLogger(__name__)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -154,6 +158,34 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
+
+        matmaster_events_only_author = [item[2] for item in cherry_pick_events(ctx)]
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] matmaster_events_only_author = {matmaster_events_only_author}'
+        )
+        last_user_index = (
+            len(matmaster_events_only_author)
+            - 1
+            - matmaster_events_only_author[::-1].index('user')
+        )
+        last_event_author = matmaster_events_only_author[-1]
+        slice_from_last_user = matmaster_events_only_author[last_user_index:]
+        only_user_matmaster = set(slice_from_last_user).issubset(
+            {'user', MATMASTER_AGENT_NAME}
+        )
+        if last_event_author == MATMASTER_AGENT_NAME and (
+            only_user_matmaster
+            or matmaster_events_only_author[-2] not in ['user', MATMASTER_AGENT_NAME]
+        ):
+            for generate_nps_event in context_function_event(
+                ctx,
+                self.name,
+                'matmaster_generate_nps',
+                {},
+                ModelRole,
+                {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},
+            ):
+                yield generate_nps_event
 
 
 def init_matmaster_agent() -> LlmAgent:

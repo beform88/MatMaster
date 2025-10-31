@@ -33,6 +33,7 @@ from agents.matmaster_agent.constant import (
     get_BohriumStorage,
     get_DFlowExecutor,
 )
+from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import (
     BohrJobInfo,
     DFlowJobInfo,
@@ -41,6 +42,7 @@ from agents.matmaster_agent.prompt import (
     ResultCoreAgentDescription,
     SubmitRenderAgentDescription,
 )
+from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
     context_function_event,
@@ -326,13 +328,27 @@ class SubmitCoreMCPAgent(MCPAgent):
                 in ctx.session.state['sync_tools']
             ):
                 try:
-                    dict_result = load_tool_response(event.content.parts[0])
-                    async for (
-                        display_or_consume_event
-                    ) in display_failed_result_or_consume(
-                        dict_result, ctx, self.name, event
+                    if (
+                        event.content.parts[0]
+                        .function_response.response['result']
+                        .isError
                     ):
-                        yield display_or_consume_event
+                        for tool_response_failed_event in all_text_event(
+                            ctx,
+                            self.name,
+                            f"{tool_response_failed_card(i18n=i18n)}",
+                            ModelRole,
+                        ):
+                            yield tool_response_failed_event
+                        raise RuntimeError('Tool Execution Failed')
+                    else:
+                        dict_result = load_tool_response(event.content.parts[0])
+                        async for (
+                            display_or_consume_event
+                        ) in display_failed_result_or_consume(
+                            dict_result, ctx, self.name, event
+                        ):
+                            yield display_or_consume_event
                 except BaseException:
                     yield event
                     raise
