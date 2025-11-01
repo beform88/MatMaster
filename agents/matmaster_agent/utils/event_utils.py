@@ -5,6 +5,7 @@ import traceback
 import uuid
 from typing import Iterable, Optional
 
+from deepmerge import always_merger
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.adk.tools import BaseTool
@@ -23,14 +24,29 @@ from agents.matmaster_agent.utils.finance import photon_consume
 from agents.matmaster_agent.utils.helper_func import is_algorithm_error
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
-def update_state_event(ctx: InvocationContext, state_delta: dict):
+def update_state_event(
+    ctx: InvocationContext, state_delta: dict, event: Optional[Event] = None
+):
     stack = inspect.stack()
     frame = stack[1]  # stack[1] 表示调用当前函数的上一层调用
     filename = os.path.basename(frame.filename)
     lineno = frame.lineno
-    actions_with_update = EventActions(state_delta=state_delta)
+
+    origin_event_state_delta = {}
+    if event and event.actions and event.actions.state_delta:
+        origin_event_state_delta = event.actions.state_delta
+        logger.warning(
+            f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} origin_event_state_delta = {origin_event_state_delta}'
+        )
+
+    final_state_delta = always_merger.merge(state_delta, origin_event_state_delta)
+    logger.info(
+        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} final_state_delta = {final_state_delta}'
+    )
+    actions_with_update = EventActions(state_delta=final_state_delta)
     return Event(
         invocation_id=ctx.invocation_id,
         author=f"{filename}:{lineno}",
