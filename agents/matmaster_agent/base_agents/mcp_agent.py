@@ -14,6 +14,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     check_before_tool_callback_effect,
     check_job_create,
     check_user_phonon_balance,
+    default_after_model_callback,
     default_after_tool_callback,
     default_before_tool_callback,
     default_cost_func,
@@ -64,6 +65,9 @@ class MCPCallbackMixin(BaseMixin):
     def decorate_callbacks(cls, data: Any) -> Any:
         if not isinstance(data, dict):
             return data
+
+        if data.get('after_model_callback') is None:
+            data['after_model_callback'] = default_after_model_callback
 
         if data.get('before_tool_callback') is None:
             data['before_tool_callback'] = default_before_tool_callback
