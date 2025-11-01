@@ -20,6 +20,7 @@ from agents.matmaster_agent.style import (
     tool_response_failed_card,
 )
 from agents.matmaster_agent.utils.finance import photon_consume
+from agents.matmaster_agent.utils.helper_func import is_algorithm_error
 
 logger = logging.getLogger(__name__)
 
@@ -375,12 +376,7 @@ async def display_future_consume_event(event, cost_func, ctx, author):
 async def display_failed_result_or_consume(
     dict_result: dict, ctx, author: str, event: Event
 ):
-    runtime_error = event.content.parts[0].function_response.response['result'].isError
-    algorithm_error = dict_result.get('code') is not None and dict_result['code'] != 0
-    is_tool_error = runtime_error or algorithm_error
-
-    if is_tool_error:
-        # Tool Failed
+    if is_algorithm_error(dict_result):
         for tool_response_failed_event in all_text_event(
             ctx,
             author,
