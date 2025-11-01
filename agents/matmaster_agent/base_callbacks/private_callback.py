@@ -40,6 +40,7 @@ from agents.matmaster_agent.utils.job_utils import check_job_create_service
 from agents.matmaster_agent.utils.tool_response_utils import check_valid_tool_response
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 # after_model_callback
@@ -74,12 +75,15 @@ async def default_after_model_callback(
         if len(current_function_calls) == 1:
             logger.info(f'[{MATMASTER_AGENT_NAME}] Single Function Call In New Turn')
             logger.info(
-                f"[{MATMASTER_AGENT_NAME}] current_function_calls = {function_calls_to_str(current_function_calls)}"
+                f"[{MATMASTER_AGENT_NAME}] {callback_context.session.id} current_function_calls = {function_calls_to_str(current_function_calls)}"
             )
 
             callback_context.state['invocation_id_with_tool_call'] = {
                 callback_context.invocation_id: current_function_calls
             }
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] {callback_context.session.id} state = {callback_context.state.to_dict()}'
+            )
         else:
             logger.warning(f'[{MATMASTER_AGENT_NAME}] Multi Function Calls In One Turn')
             logger.info(

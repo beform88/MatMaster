@@ -69,6 +69,7 @@ logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLeve
 )
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
@@ -120,7 +121,10 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             global_instruction=GlobalInstruction,
             instruction=AgentInstruction,
             description=AgentDescription,
-            before_agent_callback=[matmaster_prepare_state, matmaster_set_lang],
+            before_agent_callback=[
+                matmaster_prepare_state,
+                matmaster_set_lang,
+            ],
             after_model_callback=[
                 matmaster_check_job_status,
                 check_transfer(
@@ -186,6 +190,10 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
                 {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},
             ):
                 yield generate_nps_event
+
+        logger.info(
+            f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} state = {ctx.session.state}'
+        )
 
 
 def init_matmaster_agent() -> LlmAgent:

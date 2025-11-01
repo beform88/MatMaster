@@ -50,6 +50,7 @@ from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import load_tool_response, parse_result
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class MCPInitMixin(BaseMixin):
@@ -132,11 +133,14 @@ class MCPRunEventsMixin(BaseMixin):
                                 }
                             ),
                         )
-                    # update state: `tools_count`
+                    # update state: `tools_count`, `invocation_id_with_tool_call`
                     yield update_state_event(
                         ctx,
                         state_delta={
-                            'tools_count': ctx.session.state['tools_count'] + 1
+                            'invocation_id_with_tool_call': ctx.session.state[
+                                'invocation_id_with_tool_call'
+                            ],
+                            'tools_count': ctx.session.state['tools_count'] + 1,
                         },
                     )
                     # prompt user photon cost
