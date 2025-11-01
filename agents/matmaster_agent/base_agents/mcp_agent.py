@@ -143,11 +143,9 @@ class MCPRunEventsMixin(BaseMixin):
                     yield update_state_event(
                         ctx,
                         state_delta={
-                            'invocation_id_with_tool_call': ctx.session.state[
-                                'invocation_id_with_tool_call'
-                            ],
                             'tools_count': ctx.session.state['tools_count'] + 1,
                         },
+                        event=event,
                     )
                     # prompt user photon cost
                     cost_func = self.cost_func
