@@ -16,7 +16,14 @@ ApexResultTransferAgentName = 'apex_result_transfer_agent'
 ApexTransferAgentName = 'apex_transfer_agent'
 
 # APEX Agent Descriptions
-ApexAgentDescription = 'APEX材料性质计算智能体，专注于合金材料性质计算'
+ApexAgentDescription = '''
+APEX材料性质计算智能体，专注于合金材料性质计算, 当用户查询默认参数或参数设置时（如"默认参数是什么？"、"空位形成能需要什么参数？"等）：
+1. 必须调用 `apex_show_and_modify_config` 工具获取真实的默认参数
+2. 将 property_type 设置为对应的性质类型（vacancy/elastic/surface/eos/phonon/gamma/interstitial/optimize）
+3. structure_file 可以设置为示例文件或用户提供的文件
+4. modified_parameters 设置为 None 以获取默认参数
+5. 禁止编造或猜测参数值'
+'''
 ApexSubmitAgentDescription = 'APEX任务提交智能体'
 ApexResultAgentDescription = 'APEX结果处理智能体'
 

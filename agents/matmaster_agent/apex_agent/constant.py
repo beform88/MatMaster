@@ -9,14 +9,14 @@ ApexAgentName = 'apex_agent'
 if CURRENT_ENV in ['test', 'uat']:
     ApexServerUrl = 'http://rtvq1394775.bohrium.tech:50001/sse'
 else:
-    # ApexServerUrl = 'http://rtvq1394775.bohrium.tech:50001/sse'
-    ApexServerUrl = 'https://apex-prime-uuid1754990126.app-space.dplink.cc/sse?token=7ab16179304d4a9b84cb270ff97b2979'
+    ApexServerUrl = 'http://rtvq1394775.bohrium.tech:50001/sse'
+    #ApexServerUrl = 'https://apex-prime-uuid1754990126.app-space.dplink.cc/sse?token=7ab16179304d4a9b84cb270ff97b2979'
 # APEX专用的Bohrium执行器配置
 ApexBohriumExecutor = copy.deepcopy(BohriumExecutor)
 
 ApexBohriumExecutor['machine']['remote_profile'][
     'image_address'
-] = 'registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-all:0.0.7'
+] = 'registry.dp.tech/dptech/dp/native/prod-16664/apex-agent-all:0.0.8'
 
 # APEX专用的Bohrium存储配置
 ApexBohriumStorage = copy.deepcopy(BohriumStorge)
