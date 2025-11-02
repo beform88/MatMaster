@@ -13,6 +13,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.agents.llm_agent import AfterToolCallback, BeforeToolCallback
 from google.adk.models import LlmResponse
 from google.adk.tools import BaseTool, ToolContext
+from google.genai.types import Part
 from mcp.types import CallToolResult, TextContent
 
 from agents.matmaster_agent.constant import (
@@ -160,15 +161,22 @@ async def remove_function_call(
                 llm_generated_text += response.choices[0].message.content
 
                 part.function_call = None
-        llm_response.content.parts.append(part)
+
+        if (
+            part.text or part.function_call
+        ):  # 如果原本只有一个 part，且 part.function_call 被移除了，该 if 不会走
+            llm_response.content.parts.append(part)
 
     if llm_generated_text:
         logger.info(
             f"[{MATMASTER_AGENT_NAME}] llm_generated_text = {llm_generated_text}"
         )
 
-    if not llm_response.content.parts[0].text:
-        llm_response.content.parts[0].text = llm_generated_text
+    if llm_generated_text:
+        if not llm_response.content.parts:
+            llm_response.content.parts.append(Part(text=llm_generated_text))
+        elif not llm_response.content.parts[0].text:
+            llm_response.content.parts[0].text = llm_generated_text
 
     if not llm_response.partial:
         logger.info(
