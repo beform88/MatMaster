@@ -85,14 +85,14 @@ def _get_default_cost(tool_name: str) -> int:
     """
     # 基于Cu4的默认费用估算（单位：photon，100 photon = 1元）
     default_costs = {
-        'apex_optimize_structure': 30,  # 5min
-        'apex_calculate_vacancy': 80,  # 15min (5+10)
-        'apex_calculate_eos': 1200,  # 245min (5+30*8)
+        'apex_optimize_structure': 100,  # 5min
+        'apex_calculate_vacancy': 200,  # 15min (5+10)
+        'apex_calculate_eos': 1500,  # 245min (5+30*8)
         'apex_calculate_phonon': 5000,  # 1085min (5+180*6)
-        'apex_calculate_surface': 500,  # 95min (5+30*3)
-        'apex_calculate_gamma': 220,  # 45min (5+10*4)
-        'apex_calculate_interstitial': 150,  # 25min (5+10*2)
-        'apex_calculate_elastic': 4500,  # 965min (5+40*24)
+        'apex_calculate_surface': 1000,  # 95min (5+30*3)
+        'apex_calculate_gamma': 400,  # 45min (5+10*4)
+        'apex_calculate_interstitial': 200,  # 25min (5+10*2)
+        'apex_calculate_elastic': 5000,  # 965min (5+40*24)
     }
 
     return default_costs.get(tool_name, 200)
