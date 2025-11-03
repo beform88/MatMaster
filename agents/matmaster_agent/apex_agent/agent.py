@@ -52,6 +52,9 @@ class ApexAgent(BaseAsyncJobAgent):
             mcp_tools=[toolset],
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
+            sync_tools=[
+                'apex_show_and_modify_config',
+            ],
             cost_func=apex_cost_func,
         )
 

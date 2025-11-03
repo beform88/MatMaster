@@ -13,11 +13,9 @@ logger = logging.getLogger(__name__)
 async def fetch_file_content(url: str, timeout: int = 30) -> Optional[str]:
     """
     异步获取 URL 文件内容
-
     Args:
         url: 文件 URL 链接
         timeout: 请求超时时间（秒）
-
     Returns:
         文件内容字符串，如果失败返回 None
     """
