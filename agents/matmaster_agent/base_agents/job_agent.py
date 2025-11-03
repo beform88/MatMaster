@@ -60,6 +60,7 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
+    is_mcp_result,
     load_tool_response,
     parse_result,
 )
@@ -328,11 +329,11 @@ class SubmitCoreMCPAgent(MCPAgent):
                 in ctx.session.state['sync_tools']
             ):
                 try:
+                    first_part = event.content.parts[0]
+                    tool_response = first_part.function_response.response
                     if (
-                        event.content.parts[0]
-                        .function_response.response['result']
-                        .isError
-                    ):
+                        is_mcp_result(tool_response) and tool_response['result'].isError
+                    ):  # Original MCPResult & Error
                         for tool_response_failed_event in all_text_event(
                             ctx,
                             self.name,
@@ -341,14 +342,13 @@ class SubmitCoreMCPAgent(MCPAgent):
                         ):
                             yield tool_response_failed_event
                         raise RuntimeError('Tool Execution Failed')
-                    else:
-                        dict_result = load_tool_response(event.content.parts[0])
-                        async for (
-                            display_or_consume_event
-                        ) in display_failed_result_or_consume(
-                            dict_result, ctx, self.name, event
-                        ):
-                            yield display_or_consume_event
+                    dict_result = load_tool_response(first_part)
+                    async for (
+                        failed_or_consume_event
+                    ) in display_failed_result_or_consume(
+                        dict_result, ctx, self.name, event
+                    ):
+                        yield failed_or_consume_event
                 except BaseException:
                     yield event
                     raise
