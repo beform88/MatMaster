@@ -314,6 +314,7 @@ class SubmitCoreMCPAgent(MCPAgent):
                         ]
                         + 1
                     },
+                    event=event,
                 )
                 # prompt user photon cost
                 cost_func = self.cost_func
@@ -387,6 +388,7 @@ class SubmitCoreMCPAgent(MCPAgent):
                         'long_running_ids': ctx.session.state['long_running_ids']
                         + list(event.long_running_tool_ids)
                     },
+                    event=event,
                 )
 
                 # prompt user tool-call cost
