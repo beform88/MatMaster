@@ -26,7 +26,6 @@ from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     MATERIALS_ACCESS_KEY,
     MATERIALS_PROJECT_ID,
-    MATERIALS_TOOL_CALL_INFO,
     MATMASTER_AGENT_NAME,
     SANDBOX_JOB_DETAIL_URL,
     ModelRole,
@@ -261,33 +260,6 @@ class ParamsCheckInfoAgent(ErrorHandleLlmAgent):
                     ModelRole,
                 ):
                     yield system_job_result_event
-
-
-class ToolCallInfoAgent(ErrorHandleLlmAgent):
-    @override
-    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        async for event in super()._run_events(ctx):
-            for part in event.content.parts:
-                if part.text:
-                    if not event.partial:
-                        try:
-                            tool_call_info = json.loads(part.text)
-                            for system_job_result_event in context_function_event(
-                                ctx,
-                                self.name,
-                                MATERIALS_TOOL_CALL_INFO,
-                                tool_call_info,
-                                ModelRole,
-                            ):
-                                yield system_job_result_event
-                        except BaseException:
-                            logger.info(
-                                f'[{MATMASTER_AGENT_NAME}]:[{self.name}] raw_text = {part.text}'
-                            )
-                    # 置空 text 消息
-                    part.text = None
-            if is_function_call(event) or is_function_response(event):
-                yield event
 
 
 class SubmitCoreMCPAgent(MCPAgent):
