@@ -15,7 +15,7 @@ from agents.matmaster_agent.constant import (
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
-from agents.matmaster_agent.structure_generate_agent.constant import (
+from agents.matmaster_agent.sub_agents.structure_generate_agent.agent import (
     StructureGenerateServerUrl,
 )
 
