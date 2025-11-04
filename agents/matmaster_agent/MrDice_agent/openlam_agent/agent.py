@@ -16,7 +16,7 @@ from agents.matmaster_agent.MrDice_agent.openlam_agent.prompt import (
 load_dotenv()
 
 # Initialize MCP tools and agent
-mcp_tools = CalculationMCPToolset(
+openlam_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=OPENLAM_URL),
     storage=BohriumStorge,
     executor=LOCAL_EXECUTOR,
@@ -31,7 +31,7 @@ class Openlam_AgentBase(BaseSyncAgent):
             name=OpenlamAgentName,
             description=OpenlamAgentDescription,
             instruction=OpenlamAgentInstruction,
-            tools=[mcp_tools],
+            tools=[openlam_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,
         )

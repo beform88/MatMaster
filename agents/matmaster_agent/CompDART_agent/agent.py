@@ -17,7 +17,7 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
-mcp_tools_compdrt = CalculationMCPToolset(
+compdart_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=COMPDART_MCPServerUrl),
     storage=COMPDART_BOHRIUM_STORAGE,
     executor=COMPDART_BOHRIUM_EXECUTOR,
@@ -31,7 +31,7 @@ class CompDARTAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=COMPDART_AGENT_NAME,
-            mcp_tools=[mcp_tools_compdrt],
+            mcp_tools=[compdart_toolset],
             model=llm_config.default_litellm_model,
             description=CompDARTAgentDescription,
             agent_instruction=CompDARTAgentInstruction,

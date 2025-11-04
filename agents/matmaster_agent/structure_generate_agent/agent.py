@@ -32,7 +32,7 @@ StructureGenerateBohriumExecutor['machine']['remote_profile'][
 
 sse_params = SseServerParams(url=StructureGenerateServerUrl)
 
-toolset = CalculationMCPToolset(
+structure_generate_toolset = CalculationMCPToolset(
     connection_params=sse_params,
     storage=StructureGenerateBohriumStorge,
     executor=StructureGenerateBohriumExecutor,
@@ -46,7 +46,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[toolset],
+            mcp_tools=[structure_generate_toolset],
             name=StructureGenerateAgentName,
             description=StructureGenerateAgentDescription,
             agent_instruction=StructureGenerateAgentInstruction,

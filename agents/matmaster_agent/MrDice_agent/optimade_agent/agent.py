@@ -16,7 +16,7 @@ from agents.matmaster_agent.MrDice_agent.optimade_agent.prompt import (
 load_dotenv()
 
 # Initialize MCP tools and agent
-mcp_tools = CalculationMCPToolset(
+optimade_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=OPTIMADE_URL),
     storage=BohriumStorge,
     executor=LOCAL_EXECUTOR,
@@ -31,7 +31,7 @@ class Optimade_AgentBase(BaseSyncAgent):
             name=OptimadeAgentName,
             description=OptimadeAgentDescription,
             instruction=OptimadeAgentInstruction,
-            tools=[mcp_tools],
+            tools=[optimade_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,
         )

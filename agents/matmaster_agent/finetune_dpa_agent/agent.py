@@ -31,7 +31,7 @@ FinetuneDPABohriumExecutor['machine']['remote_profile'][
 
 sse_params = SseServerParams(url=FinetuneDPAServerUrl)
 
-toolset = CalculationMCPToolset(
+finetune_dpa_toolset = CalculationMCPToolset(
     connection_params=sse_params,
     storage=FinetuneDPABohriumStorge,
     executor=FinetuneDPABohriumExecutor,
@@ -45,7 +45,7 @@ class FinetuneDPAAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[toolset],
+            mcp_tools=[finetune_dpa_toolset],
             name=FinetuneDPAAgentName,
             description=FinetuneDPAAgentDescription,
             agent_instruction=FinetuneDPAAgentInstruction,

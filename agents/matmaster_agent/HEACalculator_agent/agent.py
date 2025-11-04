@@ -21,7 +21,7 @@ HEACalc_BohriumStorge = copy.deepcopy(BohriumStorge)
 
 sse_params = SseServerParams(url=HEACALCULATOR_SERVER_URL)
 
-mcp_tools = CalculationMCPToolset(
+hea_calculator_toolset = CalculationMCPToolset(
     connection_params=sse_params,
     storage=HEACalc_BohriumStorge,
     executor=LOCAL_EXECUTOR,  # HEACalc_BohriumExecutor
@@ -35,7 +35,7 @@ class HEACalculatorAgentBase(BaseSyncAgent):
             name=HEACALCULATOR_AGENT_NAME,
             description=HEACALC_AGENT_DESCRIPTION,
             instruction=HEACALC_AGENT_INSTRUCTION,
-            tools=[mcp_tools],
+            tools=[hea_calculator_toolset],
         )
 
 
