@@ -18,7 +18,7 @@ from agents.matmaster_agent.piloteye_electro_agent.prompt import (
 )
 
 # Configure SSE params
-piloteye_electro_tool = CalculationMCPToolset(
+piloteye_electro_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=PILOTEYE_SERVER_URL),
     storage=PILOTEYE_BOHRIUM_STORAGE,
     executor=PILOTEYE_BOHRIUM_EXECUTOR,
@@ -48,7 +48,7 @@ class PiloteyeElectroAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[piloteye_electro_tool],
+            mcp_tools=[piloteye_electro_toolset],
             name=PiloteyeElectroAgentName,
             description=PiloteyeElectroAgentDescription,
             agent_instruction=PiloteyeElectroAgentInstruction,

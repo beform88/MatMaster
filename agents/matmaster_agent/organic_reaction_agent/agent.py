@@ -17,7 +17,7 @@ from agents.matmaster_agent.organic_reaction_agent.prompt import (
     instruction_en,
 )
 
-autoTS = CalculationMCPToolset(
+organic_reaction_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=ORGANIC_REACTION_SERVER_URL),
     executor=ORGANIC_REACTION_BOHRIUM_EXECUTOR,
     storage=ORGANIC_REACTION_BOHRIUM_STORAGE,
@@ -26,7 +26,7 @@ autoTS = CalculationMCPToolset(
     logging_callback=matmodeler_logging_handler,
 )
 
-tools = [autoTS]
+tools = [organic_reaction_toolset]
 
 
 class OragnicReactionAgent(BaseAsyncJobAgent):

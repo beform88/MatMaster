@@ -11,7 +11,9 @@ from .constant import DocumentParserAgentName, DocumentParserServerUrl
 from .prompt import DocumentParserAgentDescription, DocumentParserAgentInstruction
 
 sse_params = SseServerParams(url=DocumentParserServerUrl)
-toolset = CalculationMCPToolset(connection_params=sse_params, storage=BohriumStorge)
+document_parser_toolset = CalculationMCPToolset(
+    connection_params=sse_params, storage=BohriumStorge
+)
 
 
 class DocumentParserAgentBase(BaseSyncAgent):
@@ -21,7 +23,7 @@ class DocumentParserAgentBase(BaseSyncAgent):
             name=DocumentParserAgentName,
             description=DocumentParserAgentDescription,
             instruction=DocumentParserAgentInstruction,
-            tools=[toolset],
+            tools=[document_parser_toolset],
             supervisor_agent=MATMASTER_AGENT_NAME,
             after_model_callback=validate_document_url,
         )

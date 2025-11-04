@@ -14,7 +14,7 @@ from .constant import HEA_assistant_agent_ServerUrl
 
 sse_params = SseServerParams(url=HEA_assistant_agent_ServerUrl)
 
-toolset = CalculationMCPToolset(
+hea_assistant_toolset = CalculationMCPToolset(
     connection_params=sse_params,
     async_mode=False,
     wait=True,
@@ -28,7 +28,7 @@ class HEA_assistant_AgentBase(BaseSyncAgent):
             name=HEA_assistant_AgentName,
             description=HEA_assistant_AgentDescription,
             instruction=HEA_assistant_AgentInstruction,
-            tools=[toolset],
+            tools=[hea_assistant_toolset],
         )
 
 

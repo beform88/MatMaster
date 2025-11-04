@@ -18,7 +18,7 @@ from agents.matmaster_agent.MrDice_agent.mofdb_agent.prompt import (
 load_dotenv()
 
 # Initialize MCP tools and agent
-mcp_tools = CalculationMCPToolset(
+mofdb_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=MOFDB_URL),
     storage=BohriumStorge,
     executor=LOCAL_EXECUTOR,
@@ -33,7 +33,7 @@ class Mofdb_AgentBase(BaseSyncAgent):
             name=MofdbAgentName,
             description=MofdbAgentDescription,
             instruction=MofdbAgentInstruction,
-            tools=[mcp_tools],
+            tools=[mofdb_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,
         )

@@ -21,7 +21,7 @@ from agents.matmaster_agent.MrDice_agent.constant import MrDice_Agent_Name
 load_dotenv()
 
 # Initialize MCP tools and agent
-mcp_tools = CalculationMCPToolset(
+bohriumpublic_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=BOHRIUMPUBLIC_URL),
     storage=BohriumStorge,
     executor=LOCAL_EXECUTOR,
@@ -36,7 +36,7 @@ class Bohriumpublic_AgentBase(BaseSyncAgentWithToolValidator):
             name=BohriumPublicAgentName,
             description=BohriumPublicAgentDescription,
             instruction=BohriumPublicAgentInstruction,
-            tools=[mcp_tools],
+            tools=[bohriumpublic_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,
             cost_func=cost_func,

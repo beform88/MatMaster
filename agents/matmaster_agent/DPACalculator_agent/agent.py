@@ -18,7 +18,7 @@ from agents.matmaster_agent.DPACalculator_agent.prompt import (
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
-mcp_tools_dpa = CalculationMCPToolset(
+dpa_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=DPAMCPServerUrl),
     storage=DPACalulator_BOHRIUM_STORAGE,
     executor=DPACalulator_BOHRIUM_EXECUTOR,
@@ -32,7 +32,7 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=DPACalulator_AGENT_NAME,
-            mcp_tools=[mcp_tools_dpa],
+            mcp_tools=[dpa_toolset],
             model=llm_config.default_litellm_model,
             description=DPAAgentDescription,
             agent_instruction=DPAAgentInstruction,

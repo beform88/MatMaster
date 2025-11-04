@@ -10,7 +10,7 @@ from agents.matmaster_agent.traj_analysis_agent.constant import (
     TrajAnalysisMCPServerUrl,
 )
 
-toolset = CalculationMCPToolset(
+traj_analysis_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=TrajAnalysisMCPServerUrl),
     storage=BohriumStorge,
 )
@@ -82,5 +82,5 @@ def init_traj_analysis_agent(llm_config: LLMConfig) -> BaseAgent:
         - "分析两个原子之间的键长随时间的变化"
         - "对这个分子动力学轨迹进行反应网络分析"
         """,
-        tools=[toolset],
+        tools=[traj_analysis_toolset],
     )

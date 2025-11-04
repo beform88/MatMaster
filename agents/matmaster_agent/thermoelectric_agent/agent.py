@@ -31,7 +31,7 @@ ThermoelectricBohriumExecutor['machine']['remote_profile'][
 
 sse_params = SseServerParams(url=ThermoelectricServerUrl)
 
-toolset = CalculationMCPToolset(
+thermoelectric_toolset = CalculationMCPToolset(
     connection_params=sse_params,
     storage=ThermoelectricBohriumStorge,
     executor=ThermoelectricBohriumExecutor,
@@ -45,7 +45,7 @@ class ThermoAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[toolset],
+            mcp_tools=[thermoelectric_toolset],
             name=ThermoAgentName,
             description=ThermoAgentDescription,
             agent_instruction=ThermoAgentInstruction,

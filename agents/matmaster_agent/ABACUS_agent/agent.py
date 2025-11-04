@@ -17,7 +17,7 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
-mcp_tools_abacus = CalculationMCPToolset(
+abacus_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=ABACUS_CALCULATOR_URL,
         sse_read_timeout=3600,
@@ -34,7 +34,7 @@ class ABACUSCalculatorAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[mcp_tools_abacus],
+            mcp_tools=[abacus_toolset],
             name=ABACUS_AGENT_NAME,
             description=ABACUS_AGENT_DESCRIPTION,
             agent_instruction=ABACUS_AGENT_INSTRUCTION,

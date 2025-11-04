@@ -31,7 +31,7 @@ SuperconductorBohriumExecutor['machine']['remote_profile'][
 
 sse_params = SseServerParams(url=SuperconductorServerUrl)
 
-toolset = CalculationMCPToolset(
+superconductor_toolset = CalculationMCPToolset(
     connection_params=sse_params,
     storage=SuperconductorBohriumStorge,
     executor=SuperconductorBohriumExecutor,
@@ -45,7 +45,7 @@ class SuperconductorAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[toolset],
+            mcp_tools=[superconductor_toolset],
             name=SuperconductorAgentName,
             description=SuperconductorAgentDescription,
             agent_instruction=SuperconductorAgentInstruction,
