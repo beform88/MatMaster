@@ -45,25 +45,29 @@ async def _get_structure_info(structure_url: str) -> Optional[Dict[str, Any]]:
     Returns:
         包含原子类型、原子数量、晶胞信息的字典，失败返回None
     """
-    logger.info(f"[_get_structure_info] ========== 开始分析结构 ==========")
+    logger.info('[_get_structure_info] ========== 开始分析结构 ==========')
     logger.info(f"[_get_structure_info] 结构URL: {structure_url}")
-    
+
     try:
         # 判断文件格式
         file_format = _get_structure_format(structure_url)
         logger.info(f"[_get_structure_info] 识别的文件格式: {file_format}")
 
         # 调用服务获取结构信息
-        logger.info(f"[_get_structure_info] 调用 get_info_by_path 获取结构信息...")
+        logger.info('[_get_structure_info] 调用 get_info_by_path 获取结构信息...')
         structure_info = await get_info_by_path(structure_url, file_format)
-        
-        logger.info(f"[_get_structure_info] get_info_by_path 返回类型: {type(structure_info)}")
-        logger.info(f"[_get_structure_info] get_info_by_path 返回键: {list(structure_info.keys()) if isinstance(structure_info, dict) else 'N/A'}")
+
+        logger.info(
+            f"[_get_structure_info] get_info_by_path 返回类型: {type(structure_info)}"
+        )
+        logger.info(
+            f"[_get_structure_info] get_info_by_path 返回键: {list(structure_info.keys()) if isinstance(structure_info, dict) else 'N/A'}"
+        )
 
         if structure_info and 'data' in structure_info:
             data = structure_info['data']
-            logger.info(f"[_get_structure_info] 成功获取结构数据")
-            
+            logger.info('[_get_structure_info] 成功获取结构数据')
+
             result = {
                 'atom_types': data.get('elements', []),  # 原子类型列表
                 'atom_counts': data.get('elementCount', {}),  # 各原子数量
@@ -71,31 +75,39 @@ async def _get_structure_info(structure_url: str) -> Optional[Dict[str, Any]]:
                 'lattice': data.get('lattice', {}),  # 晶胞参数
                 'lattice_volume': data.get('volume', 0.0),  # 晶胞体积
             }
-            
-            logger.info(f"[_get_structure_info] 解析结果:")
+
+            logger.info('[_get_structure_info] 解析结果:')
             logger.info(f"[_get_structure_info]   - 原子类型: {result['atom_types']}")
             logger.info(f"[_get_structure_info]   - 原子数量: {result['atom_counts']}")
             logger.info(f"[_get_structure_info]   - 总原子数: {result['total_atoms']}")
-            logger.info(f"[_get_structure_info]   - 晶胞体积: {result['lattice_volume']}")
-            logger.info(f"[_get_structure_info] ========== 结构分析成功 ==========")
-            
+            logger.info(
+                f"[_get_structure_info]   - 晶胞体积: {result['lattice_volume']}"
+            )
+            logger.info('[_get_structure_info] ========== 结构分析成功 ==========')
+
             return result
         else:
-            logger.error(f"[_get_structure_info] 获取结构信息失败")
+            logger.error('[_get_structure_info] 获取结构信息失败')
             logger.error(f"[_get_structure_info] 返回数据: {structure_info}")
-            
+
             # 检查是否有错误信息
             if isinstance(structure_info, dict) and 'error' in structure_info:
-                logger.error(f"[_get_structure_info] 错误详情: {structure_info.get('error')}")
+                logger.error(
+                    f"[_get_structure_info] 错误详情: {structure_info.get('error')}"
+                )
                 if 'raw_response' in structure_info:
-                    logger.error(f"[_get_structure_info] API原始响应: {structure_info.get('raw_response')}")
-            
-            logger.error(f"[_get_structure_info] ========== 结构分析失败 ==========")
+                    logger.error(
+                        f"[_get_structure_info] API原始响应: {structure_info.get('raw_response')}"
+                    )
+
+            logger.error('[_get_structure_info] ========== 结构分析失败 ==========')
             return None
 
     except Exception as e:
-        logger.error(f"[_get_structure_info] 获取结构信息时出错: {str(e)}", exc_info=True)
-        logger.error(f"[_get_structure_info] ========== 结构分析异常 ==========")
+        logger.error(
+            f"[_get_structure_info] 获取结构信息时出错: {str(e)}", exc_info=True
+        )
+        logger.error('[_get_structure_info] ========== 结构分析异常 ==========')
         return None
 
 
@@ -143,11 +155,11 @@ async def apex_cost_func(tool, args) -> tuple[int, int]:
     Returns:
         (photon费用, SKU_ID)元组
     """
-    logger.info(f"[apex_cost_func] ========================================")
+    logger.info('[apex_cost_func] ========================================')
     logger.info(f"[apex_cost_func] 开始计算 {tool.name} 的费用")
     logger.info(f"[apex_cost_func] 工具参数: {args}")
-    logger.info(f"[apex_cost_func] ========================================")
-    
+    logger.info('[apex_cost_func] ========================================')
+
     photon_cost = 0
 
     try:
@@ -156,35 +168,47 @@ async def apex_cost_func(tool, args) -> tuple[int, int]:
         logger.info(f"[apex_cost_func] 提取的结构文件URL: {structure_url}")
 
         if not structure_url:
-            logger.warning(f'[apex_cost_func] 未提供结构文件URL，使用默认费用')
+            logger.warning('[apex_cost_func] 未提供结构文件URL，使用默认费用')
             photon_cost = _get_default_cost(tool.name)
             logger.info(f"[apex_cost_func] 默认费用: {photon_cost} photon")
         else:
-            logger.info(f"[apex_cost_func] 开始获取并分析结构信息...")
-            
+            logger.info('[apex_cost_func] 开始获取并分析结构信息...')
+
             # 获取结构信息
             structure_info = await _get_structure_info(structure_url)
 
             if structure_info:
-                logger.info(f"[apex_cost_func] 结构信息获取成功，开始计算费用...")
-                
+                logger.info('[apex_cost_func] 结构信息获取成功，开始计算费用...')
+
                 # 使用结构分析器计算费用
                 analyzer = StructureAnalyzer(structure_info)
                 photon_cost, cost_details = calculate_apex_cost(tool.name, analyzer)
 
-                logger.info(f"[apex_cost_func] ========== 费用计算详情 ==========")
+                logger.info('[apex_cost_func] ========== 费用计算详情 ==========')
                 logger.info(f"[apex_cost_func] 工具: {tool.name}")
-                logger.info(f"[apex_cost_func] 结构: {cost_details.get('structure_summary', 'N/A')}")
-                logger.info(f"[apex_cost_func] 基准时间: {cost_details.get('base_time_minutes', 0):.1f} 分钟")
-                logger.info(f"[apex_cost_func] 时间缩放因子: {cost_details.get('scaling_factor', 0):.2f}")
-                logger.info(f"[apex_cost_func] 预计时间: {cost_details.get('actual_time_hours', 0):.2f} 小时")
-                logger.info(f"[apex_cost_func] 机器成本: {cost_details.get('machine_cost_per_hour', 0):.2f} 元/小时")
-                logger.info(f"[apex_cost_func] 总费用: {cost_details.get('total_cost_yuan', 0):.2f} 元")
+                logger.info(
+                    f"[apex_cost_func] 结构: {cost_details.get('structure_summary', 'N/A')}"
+                )
+                logger.info(
+                    f"[apex_cost_func] 基准时间: {cost_details.get('base_time_minutes', 0):.1f} 分钟"
+                )
+                logger.info(
+                    f"[apex_cost_func] 时间缩放因子: {cost_details.get('scaling_factor', 0):.2f}"
+                )
+                logger.info(
+                    f"[apex_cost_func] 预计时间: {cost_details.get('actual_time_hours', 0):.2f} 小时"
+                )
+                logger.info(
+                    f"[apex_cost_func] 机器成本: {cost_details.get('machine_cost_per_hour', 0):.2f} 元/小时"
+                )
+                logger.info(
+                    f"[apex_cost_func] 总费用: {cost_details.get('total_cost_yuan', 0):.2f} 元"
+                )
                 logger.info(f"[apex_cost_func] Photon费用: {photon_cost} photon")
-                logger.info(f"[apex_cost_func] =====================================")
+                logger.info('[apex_cost_func] =====================================')
             else:
                 # 无法获取结构信息，使用默认费用
-                logger.warning(f'[apex_cost_func] 无法获取结构信息，使用默认费用')
+                logger.warning('[apex_cost_func] 无法获取结构信息，使用默认费用')
                 photon_cost = _get_default_cost(tool.name)
                 logger.info(f"[apex_cost_func] 默认费用: {photon_cost} photon")
 
@@ -194,9 +218,11 @@ async def apex_cost_func(tool, args) -> tuple[int, int]:
         photon_cost = _get_default_cost(tool.name)
         logger.error(f"[apex_cost_func] 使用默认费用: {photon_cost} photon")
 
-    logger.info(f"[apex_cost_func] ========================================")
-    logger.info(f"[apex_cost_func] {tool.name} 最终费用: {photon_cost} photon ({photon_cost/100:.2f}元)")
+    logger.info('[apex_cost_func] ========================================')
+    logger.info(
+        f"[apex_cost_func] {tool.name} 最终费用: {photon_cost} photon ({photon_cost/100:.2f}元)"
+    )
     logger.info(f"[apex_cost_func] SKU_ID: {SKU_MAPPING['matmaster']}")
-    logger.info(f"[apex_cost_func] ========================================")
-    
+    logger.info('[apex_cost_func] ========================================')
+
     return photon_cost, SKU_MAPPING['matmaster']
