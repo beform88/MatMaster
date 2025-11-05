@@ -552,12 +552,25 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
       - "对这个分子动力学轨迹进行反应网络分析"
 
 14. **{ABACUS_AGENT_NAME}** - **DFT calculation using ABACUS**
-    - Purpose: Perform DFT calculations using ABACUS code
+    - Purpose: Calculate properties of materials by perform DFT calculations using ABACUS
     - Capabilities:
-      - Prepare ABACUS input files (INPUT, STRU, pseudopotential, orbital files) from structure files (supprors CIF, VASP POSCAR and ABACUS STRU format), can help user prepare the input files if user only provides structure file.
-      - Geometry optimization, molecular dynamics, need structure file, pseudopotential and orbital files, upload as a folder.
-      - Property calculations: band structure, phonon spectrum, elastic properties, DOS/PDOS, Bader charge. Also need structure file, pseudopotential and orbital files, upload as a folder.
-      - Result collection from ABACUS job directories
+      - Use a structure file (CIF, VASP POSCAR or ABACUS stru format) to calculate various properties including:
+        - Bader charge of a structure
+        - Electron localization function (ELF)
+        - Electronic band and band gap
+        - Density of states (DOS) and projected DOS
+        - Elastic properties, including elastic tensor, bulk modulus, shear modulus, Young's modules and Possion ratio
+        - Phonon dispersion
+        - Molecule dynamics using DFT (very expensive!)
+        - Work function
+        - Vacancy formation energy
+      - Whether to do relax before calculating selected property
+      - Collinear magnetic materials are supported, and setting initial magnetic moments and DFT+U parameters are supported
+    - Example Queries: 
+      - "请帮我计算CsPbI3的能带"
+      - "请计算BaTiO3的Bader电荷"
+      - "请计算Si的声子谱"
+      - "请计算Pt(111)面的功函数"
 
 15. **{DocumentParserAgentName}** - **Materials science document parser**
     - Purpose: Extract materials science data from scientific documents
