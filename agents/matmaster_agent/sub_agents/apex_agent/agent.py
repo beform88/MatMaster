@@ -2,11 +2,11 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.public_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 
+from ..base_agents.public_agent import BaseAsyncJobAgent
 from .constant import (
     ApexAgentName,
     ApexBohriumExecutor,
@@ -18,7 +18,7 @@ from .prompt import ApexAgentDescription, ApexAgentInstruction
 
 # 配置SSE参数
 sse_params = SseServerParams(url=ApexServerUrl)
-apex_toolset = CalculationMCPToolset(
+toolset = CalculationMCPToolset(
     connection_params=sse_params,
     storage=ApexBohriumStorage,
     executor=ApexBohriumExecutor,
@@ -49,7 +49,7 @@ class ApexAgent(BaseAsyncJobAgent):
             name=ApexAgentName,
             description=ApexAgentDescription,
             agent_instruction=ApexAgentInstruction,
-            mcp_tools=[apex_toolset],
+            mcp_tools=[toolset],
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             sync_tools=[
