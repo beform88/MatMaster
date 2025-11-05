@@ -52,7 +52,7 @@ Language: When think and answer, always use this language ({target_language}).
 """
 
 AgentDescription = (
-    'An agent specialized in material science, particularly in computational research.'
+    "An agent specialized in material science, particularly in computational research."
 )
 
 AgentInstruction = f"""
@@ -566,7 +566,7 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
         - Vacancy formation energy
       - Whether to do relax before calculating selected property
       - Collinear magnetic materials are supported, and setting initial magnetic moments and DFT+U parameters are supported
-    - Example Queries: 
+    - Example Queries:
       - "请帮我计算CsPbI3的能带"
       - "请计算BaTiO3的Bader电荷"
       - "请计算Si的声子谱"
@@ -757,7 +757,7 @@ def gen_submit_agent_description(agent_prefix: str):
 
 
 def gen_result_agent_description():
-    return 'Query status and retrieve results'
+    return "Query status and retrieve results"
 
 
 def gen_params_check_completed_agent_instruction():
@@ -862,12 +862,12 @@ You are an AI agent that matches user requests to available tools. Your task is 
 """
 
 
-SubmitRenderAgentDescription = 'Sends specific messages to the frontend for rendering dedicated task list components'
+SubmitRenderAgentDescription = "Sends specific messages to the frontend for rendering dedicated task list components"
 
 ResultCoreAgentDescription = (
-    'Provides real-time task status updates and result forwarding to UI'
+    "Provides real-time task status updates and result forwarding to UI"
 )
-TransferAgentDescription = 'Transfer to proper agent to answer user query'
+TransferAgentDescription = "Transfer to proper agent to answer user query"
 
 # LLM-Helper Prompt
 MatMasterCheckTransferPrompt = """

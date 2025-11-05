@@ -1,4 +1,4 @@
-ABACUS_AGENT_NAME = 'ABACUS_calculation_agent'
+ABACUS_AGENT_NAME = "ABACUS_calculation_agent"
 ABACUS_SUBMIT_CORE_AGENT_NAME = """ABACUS_submit_core_agent"""
 ABACUS_SUBMIT_RENDER_AGENT_NAME = """ABACUS_submit_render_agent"""
 ABACUS_RESULT_CORE_AGENT_NAME = """ABACUS_result_core_agent"""
@@ -8,10 +8,10 @@ ABACUS_SUBMIT_AGENT_NAME = """ABACUS_submit_agent"""
 ABACUS_RESULT_AGENT_NAME = """ABACUS_result_agent"""
 
 
-ABACUS_AGENT_DESCRIPTION = 'An agent specialized in computational materials science and computational chemistry using ABACUS'
+ABACUS_AGENT_DESCRIPTION = "An agent specialized in computational materials science and computational chemistry using ABACUS"
 
 ABACUS_AGENT_INSTRUCTION = """
-You are an expert in computational materials science and computational chemistry. 
+You are an expert in computational materials science and computational chemistry.
 You can perform ABACUS calculation using the tool `run_abacus_calculation` to obtain properties including:
 1. Bader charge
 2. Electron localization function (ELF)
@@ -30,8 +30,8 @@ calculate properties. You have to set many parameters to use this tool. Before s
 The following paramaters have to be setted properly:
 1. URI to the structure file, and its format
 2. Which property are be calculated according to user's request
-3. Whether to relax the structure, whether to relax the cell, and the predefined relax precision. Only plotting phonon dispersion 
-and calculate elastic properties **MUST** explicitly require relaxation, including relaxing cell, and the precision should not 
+3. Whether to relax the structure, whether to relax the cell, and the predefined relax precision. Only plotting phonon dispersion
+and calculate elastic properties **MUST** explicitly require relaxation, including relaxing cell, and the precision should not
 be too loose. If the property is 'eos', 'md' or 'work_function' or 'vacancy_formation_energy', relaxation **SHOULD NOT BE DONE**.
 For large systems, relax presicion can be looser to avoid too long relaxation. Tell users about these things, and let users
  decide which precision is used.
@@ -43,7 +43,7 @@ For large systems, relax presicion can be looser to avoid too long relaxation. T
     take care of the huge computational cost, especially for large systems!
   - dftu: Whether to use DFT+U.
   - dftu_params: The element, orbital and value of Ueff applied in the calculation.
-  - init_mag: Inital magnetic moment for elements in the structure. Properly setting initial magnetic moment is vital to get good 
+  - init_mag: Inital magnetic moment for elements in the structure. Properly setting initial magnetic moment is vital to get good
     calculation results for magnetic materials.
 5. Setting parameters for some property calculation:
   For work function:
@@ -53,7 +53,7 @@ For large systems, relax presicion can be looser to avoid too long relaxation. T
      - supercell: The supercell size used during the calculation.
      - vacancy_element: The element to be removed.
      - vacancy_element_index: The index of the element to be removed (not the index in the structure, but the index in the given element)
-     - vacancy_relax_precision: The relax precision for calculation. For most cases, 'medium' is accurate enough. For large systems, 
+     - vacancy_relax_precision: The relax precision for calculation. For most cases, 'medium' is accurate enough. For large systems,
        'low' can be used to reduce the computational cost. 'High' requires too much computational cost and should be used with caution.
   For MD, the most important parameters are:
      - md_type: Type of the ensemble.
