@@ -1,4 +1,4 @@
-ABACUS_AGENT_NAME = "ABACUS_calculation_agent"
+ABACUS_AGENT_NAME = 'ABACUS_calculation_agent'
 ABACUS_SUBMIT_CORE_AGENT_NAME = """ABACUS_submit_core_agent"""
 ABACUS_SUBMIT_RENDER_AGENT_NAME = """ABACUS_submit_render_agent"""
 ABACUS_RESULT_CORE_AGENT_NAME = """ABACUS_result_core_agent"""
@@ -8,7 +8,7 @@ ABACUS_SUBMIT_AGENT_NAME = """ABACUS_submit_agent"""
 ABACUS_RESULT_AGENT_NAME = """ABACUS_result_agent"""
 
 
-ABACUS_AGENT_DESCRIPTION = "An agent specialized in computational materials science and computational chemistry using ABACUS"
+ABACUS_AGENT_DESCRIPTION = 'An agent specialized in computational materials science and computational chemistry using ABACUS'
 
 ABACUS_AGENT_INSTRUCTION = """
 You are an expert in computational materials science and computational chemistry.
