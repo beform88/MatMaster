@@ -2,9 +2,10 @@ import argparse
 import asyncio
 import sys
 
+from evaluate.base.evaluation import evaluation_threads_single_task
+
 sys.stdout.reconfigure(encoding='utf-8')
 
-from evaluate.base.evaluation import evaluation_threads_single_task
 
 if __name__ == '__main__':
     # 运行测试
