@@ -1,5 +1,8 @@
 import argparse
 import asyncio
+import sys
+
+sys.stdout.reconfigure(encoding='utf-8')
 
 from evaluate.base.evaluation import evaluation_threads_single_task
 
@@ -14,7 +17,7 @@ if __name__ == '__main__':
 
     asyncio.run(
         evaluation_threads_single_task(
-            'database_search.json',
+            'database_search/database_search.json',
             item_id=args.item_id,
             max_turn_count=args.max_turn_count,
         )
