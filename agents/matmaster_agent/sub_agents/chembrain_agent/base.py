@@ -235,9 +235,9 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
             )
 
         # 获取 access_key
-        access_key = tool_context.state[FRONTEND_STATE_KEY]['biz'].get('ak', None)
+        access_key = os.getenv('MATERIALS_ACCESS_KEY', None)
         if access_key is None:
-            access_key = os.getenv('MATERIALS_ACCESS_KEY', None)
+            access_key = tool_context.state[FRONTEND_STATE_KEY]['biz'].get('ak', None)
         if access_key is None:
             access_key = os.getenv('BOHRIUM_ACCESS_KEY', None)
         if access_key is not None:
@@ -249,11 +249,11 @@ def get_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
             )
 
         # 获取 project_id
-        project_id = tool_context.state[FRONTEND_STATE_KEY]['biz'].get(
-            'projectId', None
-        )
+        project_id = os.getenv('MATERIALS_PROJECT_ID', None)
         if project_id is None:
-            project_id = os.getenv('MATERIALS_PROJECT_ID', None)
+            project_id = tool_context.state[FRONTEND_STATE_KEY]['biz'].get(
+                'projectId', None
+            )
         if project_id is None:
             project_id = os.getenv('BOHRIUM_PROJECT_ID', None)
 
