@@ -390,14 +390,27 @@ class SubmitCoreMCPAgent(MCPAgent):
                             },
                         )
                         try:
+                            tool_response = part.function_response.response
+                            if (
+                                is_mcp_result(tool_response)
+                                and tool_response['result'].isError
+                            ):  # Original MCPResult & Error
+                                for tool_response_failed_event in all_text_event(
+                                    ctx,
+                                    self.name,
+                                    f"{tool_response_failed_card(i18n=i18n)}",
+                                    ModelRole,
+                                ):
+                                    yield tool_response_failed_event
+
+                                raise RuntimeError('Tool Execution Failed')
                             dict_result = load_tool_response(part)
-                            # Photon Consume Event
                             async for (
-                                display_or_consume_event
+                                failed_or_consume_event
                             ) in display_failed_result_or_consume(
                                 dict_result, ctx, self.name, event
                             ):
-                                yield display_or_consume_event
+                                yield failed_or_consume_event
                         except BaseException:
                             yield event
                             raise
