@@ -18,7 +18,7 @@ from .prompt import ApexAgentDescription, ApexAgentInstruction
 
 # 配置SSE参数
 sse_params = SseServerParams(url=ApexServerUrl)
-toolset = CalculationMCPToolset(
+apex_toolset = CalculationMCPToolset(
     connection_params=sse_params,
     storage=ApexBohriumStorage,
     executor=ApexBohriumExecutor,
@@ -49,7 +49,7 @@ class ApexAgent(BaseAsyncJobAgent):
             name=ApexAgentName,
             description=ApexAgentDescription,
             agent_instruction=ApexAgentInstruction,
-            mcp_tools=[toolset],
+            mcp_tools=[apex_toolset],
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             sync_tools=[
