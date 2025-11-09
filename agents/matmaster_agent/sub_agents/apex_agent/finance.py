@@ -1,5 +1,25 @@
 import logging
-from typing import Any, Dict, Optional
+import os
+from typing import Any, Dict, List, Optional
+
+
+def _calculate_cell_volume(matrix: Optional[List[List[float]]]) -> float:
+    """根据晶胞矩阵计算体积（Å³）"""
+    if not matrix or len(matrix) != 3:
+        return 0.0
+
+    try:
+        a, b, c = matrix
+        volume = (
+            a[0] * (b[1] * c[2] - b[2] * c[1])
+            - a[1] * (b[0] * c[2] - b[2] * c[0])
+            + a[2] * (b[0] * c[1] - b[1] * c[0])
+        )
+        return abs(float(volume))
+    except (TypeError, ValueError, IndexError):
+        logger.warning('[_get_structure_info] 晶胞体积计算失败，返回0.0')
+        return 0.0
+
 
 from agents.matmaster_agent.constant import SKU_MAPPING
 from agents.matmaster_agent.services.structure import get_info_by_path
@@ -19,20 +39,32 @@ def _get_structure_format(structure_url: str) -> str:
     Returns:
         文件格式字符串 (cif, poscar, stru, xyz等)
     """
-    url_lower = structure_url.lower()
+    cleaned_url = structure_url.split('?')[0]
+    filename = os.path.basename(cleaned_url).lower()
 
-    if url_lower.endswith('.cif'):
-        return 'cif'
-    elif url_lower.endswith(('.poscar', '.vasp', '.contcar')):
-        return 'poscar'
-    elif url_lower.endswith(('.stru', '.abacus')):
-        return 'stru'
-    elif url_lower.endswith('.xyz'):
-        return 'xyz'
-    else:
-        # 默认尝试poscar格式
-        logger.warning(f"无法识别文件格式，默认使用poscar: {structure_url}")
-        return 'poscar'
+    # 先根据后缀判断
+    if filename.endswith('.cif'):
+        return 'CIF'
+    if filename.endswith(('.poscar', '.vasp', '.contcar')):
+        return 'POSCAR'
+    if filename.endswith(('.stru', '.abacus')):
+        return 'STRU'
+    if filename.endswith('.xyz'):
+        return 'XYZ'
+
+    # 再根据文件名关键词匹配
+    if 'poscar' in filename or 'contcar' in filename or 'vasp' in filename:
+        return 'POSCAR'
+    if 'stru' in filename or 'abacus' in filename:
+        return 'STRU'
+    if 'cif' in filename:
+        return 'CIF'
+    if 'xyz' in filename:
+        return 'XYZ'
+
+    # 默认尝试POSCAR格式
+    logger.warning(f"无法识别文件格式，默认使用POSCAR: {structure_url}")
+    return 'POSCAR'
 
 
 async def _get_structure_info(structure_url: str) -> Optional[Dict[str, Any]]:
@@ -66,14 +98,70 @@ async def _get_structure_info(structure_url: str) -> Optional[Dict[str, Any]]:
 
         if structure_info and 'data' in structure_info:
             data = structure_info['data']
+
+            # `get_info_by_path` 可能返回列表或字典，根据不同情况处理
+            if isinstance(data, list):
+                if not data:
+                    logger.error('[_get_structure_info] 返回的数据列表为空')
+                    return None
+                logger.info(
+                    f"[_get_structure_info] data 为列表，取第一个元素进行解析 (length={len(data)})"
+                )
+                data = data[0]
+
+            if not isinstance(data, dict):
+                logger.error(
+                    f"[_get_structure_info] 无法解析的 data 类型: {type(data)}"
+                )
+                return None
+
             logger.info('[_get_structure_info] 成功获取结构数据')
 
+            atoms: List[Dict[str, Any]] = data.get('atoms', []) or []
+
+            # 兼容接口未返回 elements/elementCount 的情况
+            atom_counts = data.get('elementCount') or {}
+            if not atom_counts and atoms:
+                for atom in atoms:
+                    element = atom.get('formula') or atom.get('element')
+                    if not element:
+                        continue
+                    atom_counts[element] = atom_counts.get(element, 0) + 1
+
+            atom_types = data.get('elements') or list(atom_counts.keys())
+            if not atom_types and atoms:
+                atom_types = sorted(
+                    {
+                        atom.get('formula') or atom.get('element')
+                        for atom in atoms
+                        if atom.get('formula') or atom.get('element')
+                    }
+                )
+
+            total_atoms = data.get('atomCount')
+            if not total_atoms:
+                if atom_counts:
+                    total_atoms = sum(atom_counts.values())
+                else:
+                    total_atoms = len(atoms)
+
+            lattice = data.get('lattice') or {
+                'length': data.get('length'),
+                'angle': data.get('angle'),
+                'matrix': data.get('matrix'),
+            }
+
+            lattice_volume = data.get('volume')
+            if lattice_volume is None:
+                matrix = data.get('matrix')
+                lattice_volume = _calculate_cell_volume(matrix)
+
             result = {
-                'atom_types': data.get('elements', []),  # 原子类型列表
-                'atom_counts': data.get('elementCount', {}),  # 各原子数量
-                'total_atoms': sum(data.get('elementCount', {}).values()),  # 总原子数
-                'lattice': data.get('lattice', {}),  # 晶胞参数
-                'lattice_volume': data.get('volume', 0.0),  # 晶胞体积
+                'atom_types': atom_types,
+                'atom_counts': atom_counts,
+                'total_atoms': total_atoms,
+                'lattice': lattice,
+                'lattice_volume': lattice_volume or 0.0,
             }
 
             logger.info('[_get_structure_info] 解析结果:')
@@ -126,13 +214,14 @@ def _get_default_cost(tool_name: str) -> int:
     # 基于Cu4的默认费用估算（单位：photon，100 photon = 1元）
     default_costs = {
         'apex_optimize_structure': 100,  # 5min
-        'apex_calculate_vacancy': 200,  # 15min (5+10)
-        'apex_calculate_eos': 1500,  # 245min (5+30*8)
-        'apex_calculate_phonon': 5000,  # 1085min (5+180*6)
+        'apex_calculate_vacancy': 400,  # 25min (5+25)
+        'apex_calculate_eos': 2500,  # 480min (5+60*8)
+        'apex_calculate_phonon': 5000,  # 1000min (5+180*6)
         'apex_calculate_surface': 1000,  # 95min (5+30*3)
-        'apex_calculate_gamma': 400,  # 45min (5+10*4)
+        'apex_calculate_gamma': 500,  # 105min (5+10*10)
         'apex_calculate_interstitial': 200,  # 25min (5+10*2)
         'apex_calculate_elastic': 5000,  # 965min (5+40*24)
+        'apex_show_and_modify_config': 0,  # 参数查询工具，免费
     }
 
     return default_costs.get(tool_name, 200)
@@ -145,7 +234,7 @@ async def apex_cost_func(tool, args) -> tuple[int, int]:
     收费标准：
     - 机器成本：原子数<200时2.56元/小时，>=200时5.12元/小时
     - 基准参考：Cu4结构（4个原子，3.6x3.6x3.6 Ų晶胞）
-    - 时间缩放：单元素按1:1.5，多元素按1:2
+    - 时间缩放：元素按1:1
     - 真空层处理：晶胞体积>原子占据体积130%时，有效原子数×2
 
     Args:
