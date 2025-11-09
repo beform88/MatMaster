@@ -7,6 +7,7 @@ from agents.matmaster_agent.services.structure import get_info_by_path
 
 from .structure_analyzer import StructureAnalyzer, calculate_apex_cost
 
+
 def _calculate_cell_volume(matrix: Optional[List[List[float]]]) -> float:
     """根据晶胞矩阵计算体积（Å³）"""
     if not matrix or len(matrix) != 3:
