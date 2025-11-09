@@ -2,6 +2,10 @@ import logging
 import os
 from typing import Any, Dict, List, Optional
 
+from agents.matmaster_agent.constant import SKU_MAPPING
+from agents.matmaster_agent.services.structure import get_info_by_path
+
+from .structure_analyzer import StructureAnalyzer, calculate_apex_cost
 
 def _calculate_cell_volume(matrix: Optional[List[List[float]]]) -> float:
     """根据晶胞矩阵计算体积（Å³）"""
@@ -20,11 +24,6 @@ def _calculate_cell_volume(matrix: Optional[List[List[float]]]) -> float:
         logger.warning('[_get_structure_info] 晶胞体积计算失败，返回0.0')
         return 0.0
 
-
-from agents.matmaster_agent.constant import SKU_MAPPING
-from agents.matmaster_agent.services.structure import get_info_by_path
-
-from .structure_analyzer import StructureAnalyzer, calculate_apex_cost
 
 logger = logging.getLogger(__name__)
 
