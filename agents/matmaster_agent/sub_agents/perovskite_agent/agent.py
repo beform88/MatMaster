@@ -1,49 +1,33 @@
-import logging
-import os
-
 import dotenv
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
-
-from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgent
+from google.adk.agents import BaseAgent
 from agents.matmaster_agent.constant import BohriumStorge
-from agents.matmaster_agent.llm_config import LLMConfig
-
+from agents.matmaster_agent.constant import LOCAL_EXECUTOR, BohriumStorge
+from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgentWithToolValidator
 from .constant import PEROVSKITE_PLOT_URL, PerovskiteAgentName
 from .prompt import PerovskiteAgentDescription, PerovskiteAgentInstruction
-
-logging.basicConfig(level=logging.INFO)
-
-
-logging.info(f"Perovskite Agent URL: {PEROVSKITE_PLOT_URL}")
-
-
 dotenv.load_dotenv()
 
-
-logging.info(f"Environment name: {os.getenv('OPIK_PROJECT_NAME')}")
-BOHRIUM_PROJECT_ID = os.getenv('BOHRIUM_PROJECT_ID')
-logging.info(f"Bohrium Project ID: {BOHRIUM_PROJECT_ID}")
-
-print(f"Perovskite Agent URL: {PEROVSKITE_PLOT_URL}")
-print(f"Environment name: {os.getenv('OPIK_PROJECT_NAME')}")
-print(f"Bohrium Project ID: {BOHRIUM_PROJECT_ID}")
-
+# Initialize MCP tools and agent
 perovskite_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=PEROVSKITE_PLOT_URL),
     storage=BohriumStorge,
+    executor=LOCAL_EXECUTOR,
 )
 
+class Perovskite_Agent(BaseSyncAgentWithToolValidator):
+    def __init__(self, llm_config):
+        super().__init__(
+            model=llm_config.gpt_5_chat,
+            name=PerovskiteAgentName,
+            description=PerovskiteAgentDescription,
+            instruction=PerovskiteAgentInstruction,
+            tools=[perovskite_toolset],
+            render_tool_response=True,
+            supervisor_agent=MATMASTER_AGENT_NAME,
+        )
 
-def init_perovskite_agent(llm_config: LLMConfig):
-    """Initialize Perovskite Solar Cell Data Analysis Agent using CalculationMCPLlmAgent."""
-    # Choose model per flag with sensible fallbacks
-    model = llm_config.default_litellm_model
-
-    return BaseSyncAgent(
-        model=model,
-        name=PerovskiteAgentName,
-        description=PerovskiteAgentDescription,
-        instruction=PerovskiteAgentInstruction,
-        tools=[perovskite_toolset],
-    )
+def init_perovskite_agent(llm_config) -> BaseAgent:
+    return Perovskite_Agent(llm_config)
