@@ -25,3 +25,5 @@ output.zip
 log
 *.log
 *.csv
+*.txt
+*log*
