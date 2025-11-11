@@ -199,14 +199,9 @@ class MatMasterFlowAgent(LlmAgent):
             scenes = list(set(ctx.session.state['scene']['type']))
 
             # 计划是否确认
-<<<<<<< HEAD
-            async for plan_confirm_event in self.plan_confirm_agent.run_async(ctx):
-                yield plan_confirm_event
-=======
             if not ctx.session.state['plan_confirm'].get('flag', False):
                 async for plan_confirm_event in self.plan_confirm_agent.run_async(ctx):
                     yield plan_confirm_event
->>>>>>> 8464c3b5593cc230b46e04acc49e94c83beead29
 
             plan_confirm = ctx.session.state['plan_confirm'].get('flag', False)
 
@@ -248,10 +243,7 @@ class MatMasterFlowAgent(LlmAgent):
                 update_plan['steps'] = actual_steps
                 yield update_state_event(ctx, state_delta={'plan': update_plan})
 
-<<<<<<< HEAD
-=======
                 # 询问用户是否确认计划
->>>>>>> 8464c3b5593cc230b46e04acc49e94c83beead29
                 for plan_ask_confirm_event in all_text_event(
                     ctx, self.name, plan_ask_confirm_card(), ModelRole
                 ):
