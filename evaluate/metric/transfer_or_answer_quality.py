@@ -6,7 +6,7 @@ from opik.evaluation.metrics import AnswerRelevance, base_metric, score_result
 from agents.matmaster_agent.utils.helper_func import is_same_function_call
 from evaluate.constant import TRANSFER_TO_AGENT_QUALITY
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 class TransferOrAnswerQuality(base_metric.BaseMetric):
