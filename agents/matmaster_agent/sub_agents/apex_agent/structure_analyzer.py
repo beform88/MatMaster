@@ -5,7 +5,7 @@ APEX结构分析模块
 
 import logging
 import math
-from typing import Dict, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -130,6 +130,317 @@ class StructureAnalyzer:
             f"元素种类: {self.get_element_count()} ({', '.join(self.atom_types)}), "
             f"晶胞体积: {self.lattice_volume:.2f} Ų"
         )
+
+
+SURFACE_STRUCTURE_BLOCK_MESSAGE = (
+    'The structure contains vacuum layers or adsorbates. Please run a geometry '
+    'optimization first; '
+    'Surface calculations work best with the minimal bulk unit cell.'
+)
+
+
+def _vector_length(vector: List[float]) -> float:
+    return (vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2) ** 0.5
+
+
+def _unit_vector(vector: List[float]) -> List[float]:
+    length = _vector_length(vector)
+    if length == 0:
+        return [0.0, 0.0, 0.0]
+    return [component / length for component in vector]
+
+
+def _project(u: List[float], point: List[float]) -> float:
+    return point[0] * u[0] + point[1] * u[1] + point[2] * u[2]
+
+
+_ATOMIC_RADIUS: Dict[str, float] = {
+    'H': 0.31,
+    'C': 0.76,
+    'N': 0.71,
+    'O': 0.66,
+    'F': 0.57,
+    'P': 1.07,
+    'S': 1.05,
+    'Cl': 1.02,
+    'Br': 1.20,
+    'I': 1.39,
+    'Cu': 1.28,
+    'Ag': 1.34,
+    'Au': 1.44,
+    'Ni': 1.24,
+    'Co': 1.25,
+    'Fe': 1.24,
+    'Mn': 1.21,
+    'Cr': 1.18,
+    'V': 1.22,
+    'Ti': 1.47,
+    'Zr': 1.60,
+    'Hf': 1.58,
+    'Nb': 1.64,
+    'Ta': 1.70,
+    'Mo': 1.54,
+    'W': 1.62,
+    'Pt': 1.36,
+    'Pd': 1.39,
+    'Rh': 1.34,
+    'Ru': 1.34,
+    'Re': 1.51,
+    'Al': 1.21,
+    'Ga': 1.22,
+    'In': 1.42,
+    'Sn': 1.39,
+    'Pb': 1.44,
+    'Si': 1.11,
+    'Ge': 1.20,
+    'Li': 1.28,
+    'Na': 1.66,
+    'K': 2.03,
+    'Rb': 2.16,
+    'Cs': 2.35,
+    'Mg': 1.30,
+    'Ca': 1.74,
+    'Sr': 1.91,
+    'Ba': 1.96,
+}
+
+
+def _normalize_symbol(symbol: str) -> str:
+    if not symbol:
+        return 'X'
+    symbol = symbol.strip()
+    if not symbol:
+        return 'X'
+    return symbol[0].upper() + symbol[1:].lower()
+
+
+def _pair_bond_cut(sym_i: str, sym_j: str, default: float = 1.9) -> float:
+    si = _normalize_symbol(sym_i)
+    sj = _normalize_symbol(sym_j)
+    ri = _ATOMIC_RADIUS.get(si)
+    rj = _ATOMIC_RADIUS.get(sj)
+    if ri and rj:
+        return max(default, 1.1 * (ri + rj))
+    if ri and not rj:
+        return max(default, 1.1 * (ri + 1.0))
+    if rj and not ri:
+        return max(default, 1.1 * (rj + 1.0))
+    return default
+
+
+def _build_components(
+    positions: List[List[float]],
+    species: Optional[List[str]] = None,
+    bond_cut: float = 1.9,
+) -> List[List[int]]:
+    n_atoms = len(positions)
+    if n_atoms == 0:
+        return []
+
+    adjacency: List[List[int]] = [[] for _ in range(n_atoms)]
+    for i in range(n_atoms):
+        xi, yi, zi = positions[i]
+        sym_i = species[i] if species and i < len(species) else 'X'
+        for j in range(i + 1, n_atoms):
+            xj, yj, zj = positions[j]
+            dx = xi - xj
+            dy = yi - yj
+            dz = zi - zj
+            d2 = dx * dx + dy * dy + dz * dz
+            cutoff = bond_cut
+            if species:
+                sym_j = species[j] if j < len(species) else 'X'
+                cutoff = _pair_bond_cut(sym_i, sym_j, bond_cut)
+            if d2 <= cutoff * cutoff:
+                adjacency[i].append(j)
+                adjacency[j].append(i)
+
+    visited = [False] * n_atoms
+    components: List[List[int]] = []
+    for atom_idx in range(n_atoms):
+        if not visited[atom_idx]:
+            stack = [atom_idx]
+            visited[atom_idx] = True
+            component: List[int] = []
+            while stack:
+                node = stack.pop()
+                component.append(node)
+                for neighbor in adjacency[node]:
+                    if not visited[neighbor]:
+                        visited[neighbor] = True
+                        stack.append(neighbor)
+            components.append(sorted(component))
+    return components
+
+
+def _component_composition(species: List[str], component: List[int]) -> Dict[str, int]:
+    composition: Dict[str, int] = {}
+    for idx in component:
+        symbol = species[idx] if 0 <= idx < len(species) else 'X'
+        composition[symbol] = composition.get(symbol, 0) + 1
+    return composition
+
+
+def _normalize_composition(composition: Dict[str, int]) -> Tuple[Tuple[str, int], ...]:
+    return tuple(
+        sorted((element, int(count)) for element, count in composition.items())
+    )
+
+
+def _known_adsorbate_set() -> set:
+    known: List[Tuple[Tuple[str, int], ...]] = []
+
+    def register(formula: Dict[str, int]) -> None:
+        known.append(_normalize_composition(formula))
+
+    register({'C': 1, 'O': 1})
+    register({'N': 1, 'O': 1})
+    register({'N': 1, 'H': 3})
+    register({'H': 2})
+    register({'O': 2})
+    register({'N': 2})
+    register({'H': 2, 'O': 1})
+    register({'C': 1, 'H': 4})
+    register({'C': 1, 'O': 2})
+    register({'S': 1, 'O': 2})
+    register({'N': 1, 'O': 2})
+    register({'C': 5, 'H': 5, 'N': 1})
+    return set(known)
+
+
+def _nearest_neighbor_average_distance(points: List[List[float]]) -> float:
+    if not points or len(points) == 1:
+        return 0.0
+    total = 0.0
+    for i, (xi, yi, zi) in enumerate(points):
+        nearest = None
+        for j, (xj, yj, zj) in enumerate(points):
+            if i == j:
+                continue
+            dx = xi - xj
+            dy = yi - yj
+            dz = zi - zj
+            d = (dx * dx + dy * dy + dz * dz) ** 0.5
+            if nearest is None or d < nearest:
+                nearest = d
+        total += nearest or 0.0
+    return total / float(len(points))
+
+
+def _detect_vacuum_and_adsorbate(
+    lattice: List[List[float]], cart_positions: List[List[float]], species: List[str]
+) -> Dict[str, Any]:
+    components = _build_components(cart_positions, species, bond_cut=1.9)
+    if not components:
+        return {'has_vacuum': False, 'has_adsorbate': False, 'num_adsorbate_atoms': 0}
+
+    main_component = max(components, key=len)
+    main_positions = [cart_positions[idx] for idx in main_component]
+    d_avg_main = _nearest_neighbor_average_distance(main_positions)
+
+    known_set = _known_adsorbate_set()
+    drop_components: List[List[int]] = []
+    for comp in components:
+        if comp is main_component:
+            continue
+        composition = _component_composition(species, comp)
+        if _normalize_composition(composition) in known_set and len(comp) <= 15:
+            drop_components.append(comp)
+
+    def min_distance_to_main(comp: List[int]) -> float:
+        min_dist = None
+        for idx in comp:
+            xi, yi, zi = cart_positions[idx]
+            for main_idx in main_component:
+                xj, yj, zj = cart_positions[main_idx]
+                dx = xi - xj
+                dy = yi - yj
+                dz = zi - zj
+                d = (dx * dx + dy * dy + dz * dz) ** 0.5
+                if min_dist is None or d < min_dist:
+                    min_dist = d
+        return min_dist or 0.0
+
+    for comp in components:
+        if comp is main_component or comp in drop_components:
+            continue
+        if d_avg_main > 0.0 and min_distance_to_main(comp) > d_avg_main:
+            drop_components.append(comp)
+
+    dropped_indices = {idx for comp in drop_components for idx in comp}
+    has_adsorbate = len(dropped_indices) > 0
+
+    remaining_positions = [
+        p for i, p in enumerate(cart_positions) if i not in dropped_indices
+    ]
+    remaining_species = [
+        species[i] for i in range(len(cart_positions)) if i not in dropped_indices
+    ]
+    if not remaining_positions:
+        return {
+            'has_vacuum': False,
+            'has_adsorbate': has_adsorbate,
+            'num_adsorbate_atoms': len(dropped_indices),
+        }
+
+    components_after = _build_components(
+        remaining_positions, remaining_species, bond_cut=1.9
+    )
+    if not components_after:
+        return {
+            'has_vacuum': False,
+            'has_adsorbate': has_adsorbate,
+            'num_adsorbate_atoms': len(dropped_indices),
+        }
+    main_component_after = max(components_after, key=len)
+    slab_positions = [remaining_positions[idx] for idx in main_component_after]
+
+    spans_fraction: List[float] = []
+    for lattice_vector in lattice:
+        length = _vector_length(lattice_vector)
+        unit_vec = _unit_vector(lattice_vector)
+        projections = [_project(unit_vec, pos) for pos in slab_positions]
+        if length <= 1e-8:
+            spans_fraction.append(1.0)
+            continue
+        span = max(projections) - min(projections)
+        spans_fraction.append(span / length if length > 0 else 1.0)
+
+    vacuum_threshold = 0.7
+    has_vacuum = any(frac < vacuum_threshold for frac in spans_fraction)
+
+    return {
+        'has_vacuum': has_vacuum,
+        'has_adsorbate': has_adsorbate,
+        'num_adsorbate_atoms': len(dropped_indices),
+    }
+
+
+def analyze_surface_structure(structure_info: Dict[str, Any]) -> Dict[str, Any]:
+    lattice = structure_info.get('lattice_matrix')
+    if not lattice and structure_info.get('lattice'):
+        lattice = structure_info['lattice'].get('matrix')
+
+    cart_positions = structure_info.get('cart_positions') or []
+    species = structure_info.get('species_per_atom') or []
+
+    if not lattice or len(lattice) != 3 or not cart_positions:
+        return {'has_vacuum': False, 'has_adsorbate': False, 'num_adsorbate_atoms': 0}
+
+    return _detect_vacuum_and_adsorbate(lattice, cart_positions, species)
+
+
+def should_block_surface_structure(
+    structure_info: Dict[str, Any],
+) -> Tuple[bool, Dict[str, Any]]:
+    try:
+        analysis = analyze_surface_structure(structure_info)
+    except Exception as error:  # pragma: no cover - 验证失败时仅记录日志
+        logger.error('Failed to analyze surface structure: %s', error, exc_info=True)
+        return False, {'error': str(error)}
+
+    has_issue = analysis.get('has_vacuum') or analysis.get('has_adsorbate')
+    return bool(has_issue), analysis
 
 
 class ApexTaskConfig:

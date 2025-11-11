@@ -10,7 +10,7 @@ from pydantic import BaseModel
 
 from evaluate.constant import MULTI_OPTION_QUALITY
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 class MultiOptionResponseFormat(BaseModel):

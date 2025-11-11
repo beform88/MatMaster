@@ -5,7 +5,12 @@ from typing import Any, Dict, List, Optional
 from agents.matmaster_agent.constant import SKU_MAPPING
 from agents.matmaster_agent.services.structure import get_info_by_path
 
-from .structure_analyzer import StructureAnalyzer, calculate_apex_cost
+from .structure_analyzer import (
+    SURFACE_STRUCTURE_BLOCK_MESSAGE,
+    StructureAnalyzer,
+    calculate_apex_cost,
+    should_block_surface_structure,
+)
 
 
 def _calculate_cell_volume(matrix: Optional[List[List[float]]]) -> float:
@@ -156,12 +161,36 @@ async def _get_structure_info(structure_url: str) -> Optional[Dict[str, Any]]:
                 matrix = data.get('matrix')
                 lattice_volume = _calculate_cell_volume(matrix)
 
+            cart_positions: List[List[float]] = []
+            species_per_atom: List[str] = []
+            for atom in atoms:
+                species_per_atom.append(
+                    atom.get('formula') or atom.get('element') or 'X'
+                )
+                if atom.get('cart_coord'):
+                    cart_positions.append(atom['cart_coord'])
+                elif atom.get('frac_coord') and data.get('matrix'):
+                    frac = atom['frac_coord']
+                    matrix = data.get('matrix') or []
+                    if len(matrix) == 3:
+                        a, b, c = matrix
+                        cart_positions.append(
+                            [
+                                frac[0] * a[0] + frac[1] * b[0] + frac[2] * c[0],
+                                frac[0] * a[1] + frac[1] * b[1] + frac[2] * c[1],
+                                frac[0] * a[2] + frac[1] * b[2] + frac[2] * c[2],
+                            ]
+                        )
+
             result = {
                 'atom_types': atom_types,
                 'atom_counts': atom_counts,
                 'total_atoms': total_atoms,
                 'lattice': lattice,
                 'lattice_volume': lattice_volume or 0.0,
+                'cart_positions': cart_positions,
+                'species_per_atom': species_per_atom,
+                'lattice_matrix': data.get('matrix'),
             }
 
             logger.info('[_get_structure_info] 解析结果:')
@@ -261,12 +290,35 @@ async def apex_cost_func(tool, args) -> tuple[int, int]:
             photon_cost = _get_default_cost(tool.name)
             logger.info(f"[apex_cost_func] 默认费用: {photon_cost} photon")
         else:
+            if tool.name == 'apex_show_and_modify_config':
+                if args.get('properties') and not args.get('property_type'):
+                    props = args['properties']
+                    if isinstance(props, list) and props:
+                        args.setdefault('property_type', props[0])
+                    elif isinstance(props, str):
+                        args.setdefault('property_type', props)
+                args.setdefault('modified_parameters', None)
+                args.setdefault('base_parameters', None)
+                logger.info('[apex_cost_func] 参数查询工具不计费，直接返回0 photon')
+                return 0, SKU_MAPPING['matmaster']
+
             logger.info('[apex_cost_func] 开始获取并分析结构信息...')
 
             # 获取结构信息
             structure_info = await _get_structure_info(structure_url)
 
             if structure_info:
+                if tool.name == 'apex_calculate_surface':
+                    should_block, surface_details = should_block_surface_structure(
+                        structure_info
+                    )
+                    if should_block:
+                        logger.warning(
+                            '[apex_cost_func] Surface structure validation failed: %s',
+                            surface_details,
+                        )
+                        raise ValueError(SURFACE_STRUCTURE_BLOCK_MESSAGE)
+
                 logger.info('[apex_cost_func] 结构信息获取成功，开始计算费用...')
 
                 # 使用结构分析器计算费用
@@ -301,6 +353,9 @@ async def apex_cost_func(tool, args) -> tuple[int, int]:
                 photon_cost = _get_default_cost(tool.name)
                 logger.info(f"[apex_cost_func] 默认费用: {photon_cost} photon")
 
+    except ValueError as e:
+        logger.error(f"[apex_cost_func] {tool.name} structure check failed: {e}")
+        raise
     except Exception as e:
         logger.error(f"[apex_cost_func] 计算费用时出错: {str(e)}", exc_info=True)
         # 发生错误时使用默认费用
