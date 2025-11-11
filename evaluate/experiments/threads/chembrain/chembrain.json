@@ -1,0 +1,127 @@
+[
+  {
+    "expected_outcomes": [
+      "识别用户意图为查询聚合物物性参数（杨氏模量、Tg）",
+      "生成并展示计划：调用 poly_database_agent 检索数据",
+      "在获得用户确认后调用 poly_database_agent 并返回数值与数据源信息"
+    ],
+    "initial_question": "请检索聚酰胺（polyamide）的杨氏模量与玻璃化转变温度。",
+    "success_criteria": [
+      "代理展示明确计划并等待用户确认后才执行",
+      "返回包含聚酰胺的杨氏模量和 Tg 数据",
+      "结果表中注明数据来源或文献引用"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "获取目标结构的介电常数"
+    ],
+    "initial_question": "帮我获取聚酰亚胺 (PI) 的介电常数。",
+    "success_criteria": [
+      "执行顺序正确（先从数据库检索，若数据库中没有就执行预测）"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别意图：获取并可视化 PPD 结构",
+      "第一步用 poly_database_agent 获取 PPD 的 SMILES",
+      "第二步用 smiles_conversion_agent 将 SMILES 转换为分子结构图像"
+    ],
+    "initial_question": "帮我绘制聚对苯二胺（PPD）的分子结构图。",
+    "success_criteria": [
+      "代理严格执行两步交互（先检索后绘制）",
+      "返回正确的结构图片文件或可视化链接",
+      "未擅自跳过确认流程"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别意图为根据物性筛选高分子材料",
+      "第一步调用 poly_database_agent 检索满足条件的聚合物",
+      "在获得结果后询问用户是否使用 poly_deep_research_agent 进行文献摘要整理"
+    ],
+    "initial_question": "请帮我查找高介电常数 (>5) 的聚合物体系，并返回文献摘要。",
+    "success_criteria": [
+      "代理先计划再执行，不直接多步运行",
+      "返回表格含材料名、介电常数、文献来源",
+      "若用户确认第二步，poly_deep_research_agent 输出摘要内容"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别用户提供的 SMILES 并计划调用 smiles_conversion_agent",
+      "生成图像文件或嵌入式分子图像",
+      "提示用户确认执行"
+    ],
+    "initial_question": "使用smiles_conversion_agent将 SMILES 'C1=CC=C(C=C1)C(=O)O' 转换为png格式分子图像。",
+    "success_criteria": [
+      "执行前展示参数并等待确认",
+      "成功输出清晰的分子结构图",
+      "无 SMILES 语法错误提示"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "确认输入来源为图像文件",
+      "调用 smiles_conversion_agent 进行图像→SMILES 转换",
+      "随后验证 SMILES 合法性"
+    ],
+    "initial_question": "请调用 smiles_conversion_agent，将我上传的分子图像转换为 SMILES。图像URL：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01K9BKQQ7H7VNN1QZW3020AR7X/Snipaste_2025-11-01_17-14-40.png",
+    "success_criteria": [
+      "输出合法的 SMILES 字符串",
+      "如检测到错误，提示用户重新上传图像或校正",
+      "执行过程分步且每步需确认"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别为属性对比任务",
+      "调用 poly_database_agent 检索 PE 与 PP 的密度与熔点",
+      "以表格或简洁文字比较输出"
+    ],
+    "initial_question": "请比较聚乙烯 (PE) 与聚丙烯 (PP) 的密度与熔点差异。",
+    "success_criteria": [
+      "输出包含两种聚合物的密度、熔点及数据来源",
+      "表格格式清晰，单位统一",
+      "未进行多余推测或主观分析"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "多步任务：先检索（poly_database_agent）→提取单体结构→确认后再使用 smiles_conversion_agent 可视化",
+      "等待用户逐步确认每一步执行"
+    ],
+    "initial_question": "检索具有高模量且可生物降解的聚合物体系，并在文献中找出其主要单体结构（SMILES）。",
+    "success_criteria": [
+      "database_agent 返回候选聚合物及单体",
+      "成功提取对应 SMILES 并生成图像",
+      "输出表格与图片对应关系正确"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别为预测 Tg（玻璃化转变温度）的多组分体系任务",
+      "确认 target_name 为 \"glass_transition_temperature\"",
+      "调用 unielf_inference 并输出预测的 top_10 配方组合"
+    ],
+    "initial_question": "帮我预测 [\"C1=CC=C(C=C1)O\", \"CCO\", \"CC(=O)O\"]等摩尔比组合均聚物的玻璃化转变温度 (Tg)。",
+    "success_criteria": [
+      "返回的结果文件包含 Tg_pred 列",
+      "top_10_results_dict 中配比总和≈1.0 且数值合理",
+      "提供 result_csv 下载路径及简要总结说明"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别为双组分体系预测任务，目标为 Elastic Modulus",
+      "调用 unielf_inference 并生成完整预测表",
+      "top_10 结果按预测值降序排列"
+    ],
+    "initial_question": "使用 UniELF 模型预测 [\"CCO\", \"CC(=O)O\"] 的力学模量（Elastic Modulus）。",
+    "success_criteria": [
+      "结果文件中包含 elastic_modulus_pred 字段",
+      "预测值按从高到低排列",
+      "top_10_results_dict 长度为 10 或少于组合总数"
+    ]
+  }
+]

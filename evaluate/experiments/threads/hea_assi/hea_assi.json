@@ -1,0 +1,89 @@
+[
+  {
+    "expected_outcomes": [
+      "调用 search_paper 工具以 'title' 模式检索关键词 'High Entropy Alloy'",
+      "获取并下载前 5 条匹配论文及其基本信息",
+      "输出包含标题、作者、年份、摘要的 info 文件路径"
+    ],
+    "initial_question": "在 arXiv 上搜索题目中包含 'High Entropy Alloy' 的论文，返回前 5 条结果并下载原文。",
+    "success_criteria": [
+      "成功返回 ≤5 条文献信息",
+      "结果包含 paper title、authors、year、abstract 字段",
+      "返回下载路径或 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用 HEA_params_calculator 工具计算 CoCrFeMnNi 的参数",
+      "输出 VEC、Δ、Hmix、Smix、Λ 等数值结果",
+      "格式化为表格或 JSON 输出"
+    ],
+    "initial_question": "计算化学式 CoCrFeMnNi 的 HEA 参数，包括 VEC、Δ、Hmix、Smix、Λ。",
+    "success_criteria": [
+      "返回的结果包含 5 个参数字段",
+      "数值范围物理合理（例如 Δ < 10, Smix > 1）",
+      "结果格式正确可解析"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用 HEA_predictor 工具并输入 ['AlCoCrFeNi']",
+      "模型输出该合金的固溶形成可能性与晶体结构类型（FCC/BCC）",
+      "生成预测结果文件（如 JSON 或 CSV）"
+    ],
+    "initial_question": "预测化学式 AlCoCrFeNi 是否能形成固溶体结构，并输出预测的晶体类型。",
+    "success_criteria": [
+      "返回 prediction 字段包含 solid-solution / non-solid-solution 信息",
+      "晶体结构类型字段为 FCC、BCC 或 Mixed",
+      "输出文件路径可下载"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "解析输入化学体系 Fe-Ni。",
+      "调用 generate_binary_phase_diagram 工具计算 Fe-Ni 的形成能与凸包数据。",
+      "返回 Fe-Ni 体系的组成点、形成能值及相图可视化。"
+    ],
+    "initial_question": "计算 Fe-Ni 二元体系的形成能并生成相图凸包数据。",
+    "success_criteria": [
+      "输出结果包含 'Fe-Ni' 键及相应的能量–组分数据。",
+      "返回的凸包数据可用于绘图（至少包含 3 个形成能点）。",
+      "生成相图图像可通过 URL 下载。"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别三元体系 Fe-Ni-Cr，并分解为 Fe-Ni、Fe-Cr、Ni-Cr 三个二元体系。",
+      "分别调用 generate_binary_phase_diagram 工具生成各体系的相图数据。"
+    ],
+    "initial_question": "请计算 Fe-Ni-Cr 体系的所有二元相图，并展示每个体系的凸包数据。",
+    "success_criteria": [
+      "输出字典包含三个键：Fe-Ni、Fe-Cr、Ni-Cr。",
+      "每个体系的结果包含形成能点与凸包结构。"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别输入模型头 deepmd3.1.0_dpa3_Alloy_tongqi。",
+      "解析体系 TiZrNb 并拆分为 Ti-Zr、Ti-Nb、Zr-Nb。",
+      "分别调用 generate_binary_phase_diagram 工具执行计算并生成凸包数据。"
+    ],
+    "initial_question": "使用 deepmd3.1.0_dpa3_Alloy_tongqi 模型头计算 TiZrNb 体系的形成能与相图。",
+    "success_criteria": [
+      "结果中包含三个二元体系的键及其相图数据。",
+      "返回结构中注明所用模型头。",
+      "若模型头无效，应返回清晰的错误信息。"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "对每个体系调用 generate_binary_phase_diagram 计算所有二元对的形成能。",
+      "计算每个体系的平均形成能并输出对比结果表。"
+    ],
+    "initial_question": "对 Fe-Ni-Cr 和 Ti-Zr-Nb 两个体系分别计算二元相图，并比较它们的平均形成能。",
+    "success_criteria": [
+      "每个体系至少返回三个二元相图结果。",
+      "结果中包含平均形成能对比表。"
+    ]
+  }
+]

@@ -1,9 +1,9 @@
 import asyncio
 import json
 import logging
-import os
 import re
 import time
+import os
 import uuid
 from typing import Any, Dict, List
 
@@ -135,11 +135,7 @@ def multi_turn_evaluation_task(dataset_item):
 
 
 async def _run_conversation(
-    dataset_item: Dict[str, Any],
-    max_turn_count: int,
-    item_id: int,
-    save_mode: str = 'w',
-    label_key: str = '',
+    dataset_item: Dict[str, Any], max_turn_count: int, item_id: int, save_mode: str = 'w', label_key: str = ''
 ) -> Dict[str, Any]:
     """
     执行一次对话测试，并返回结果
@@ -150,9 +146,9 @@ async def _run_conversation(
 
     if item_id is None:
         item_id = 0
-    if not os.path.exists(f'logs/job_{item_id}'):
-        os.makedirs(f'logs/job_{item_id}')
-
+    if not os.path.exists(f'{label_key}/logs/job_{item_id}'):
+        os.makedirs(f'{label_key}/logs/job_{item_id}')
+        
     session_service = InMemorySessionService()
     artifact_service = InMemoryArtifactService()
     session = await session_service.create_session(
@@ -254,13 +250,10 @@ async def _run_conversation(
                 events_list.append(dict(event))
 
             # 将事件保存到txt文件
-            with open(
-                f"{label_key}/logs/job_{item_id}/turn_{turn_count}.txt",
-                'w',
-                encoding='utf-8',
-            ) as f:
+            with open(f"{label_key}/logs/job_{item_id}/turn_{turn_count}.txt", "w", encoding="utf-8") as f:
                 f.write(str(events_list))
 
+                
         except asyncio.CancelledError:
             msg = '任务被取消，可能是超时或作用域取消导致'
             logger.error(msg)
@@ -297,10 +290,8 @@ async def _run_conversation(
                 all_finished = True
                 for job_id in job_ids:
                     try:
-                        bohrium_client = Bohrium(
-                            access_key=os.getenv('MATERIALS_ACCESS_KEY'),
-                            project_id=os.getenv('MATERIALS_PROJECT_ID'),
-                        )
+                        bohrium_client = Bohrium(access_key=os.getenv("MATERIALS_ACCESS_KEY"),
+                                                project_id=os.getenv("MATERIALS_PROJECT_ID"))
                         job_info = bohrium_client.job.detail(job_id)
                     except Exception as e:
                         logger.error(f"查询job状态失败: {e}")
@@ -342,7 +333,7 @@ async def _run_conversation(
     print(f"   - 耗时: {summary['duration_minutes']:.1f} 分钟")
 
     # 保存结果
-    with open('evaluation_results.json', save_mode, encoding='utf-8') as f:
+    with open(f'{label_key}/evaluation_results.json', save_mode, encoding='utf-8') as f:
         json.dump(eval_results, f, indent=4, ensure_ascii=False)
 
     if summary['final_state'] == 'satisfied':
@@ -375,10 +366,32 @@ async def evaluation_threads_task(file_path: str, max_turn_count: int = 10):
     return results
 
 
+# async def evaluation_threads_single_task(
+#     file_path: str, item_id: int, max_turn_count: int = 10,label_key: str=''
+# ):
+#     """测试单个数据"""
+#     print('=' * 80)
+#     print('🤖 与ADK Agent多轮对话测试')
+#     print('=' * 80)
+
+#     dataset_json = json.loads(load_dataset_json(file_path))
+#     dataset_item = dataset_json[item_id]
+#     time.sleep(10)  # 避免请求过于频繁
+
+#     # 加入失败重试机制
+#     result = await _run_conversation(dataset_item, max_turn_count, save_mode='a',item_id=item_id,label_key=label_key)
+
+#     print('\n' + '=' * 80)
+#     print('🎉 单条多轮对话测试完成！')
+#     print('=' * 80)
+
+#     return result
+
+
 async def evaluation_threads_single_task(
-    file_path: str, item_id: int, max_turn_count: int = 10, label_key: str = ''
+    file_path: str, item_id: int, max_turn_count: int = 10, label_key: str = '', max_retries: int = 3, base_backoff: float = 5.0
 ):
-    """测试单个数据"""
+    """测试单个数据（带重试）"""
     print('=' * 80)
     print('🤖 与ADK Agent多轮对话测试')
     print('=' * 80)
@@ -387,13 +400,33 @@ async def evaluation_threads_single_task(
     dataset_item = dataset_json[item_id]
     time.sleep(10)  # 避免请求过于频繁
 
-    result = await _run_conversation(
-        dataset_item,
-        max_turn_count,
-        save_mode='a',
-        item_id=item_id,
-        label_key=label_key,
-    )
+    attempt = 0
+    last_exc = None
+    while attempt < max_retries:
+        try:
+            result = await _run_conversation(
+                dataset_item,
+                max_turn_count,
+                save_mode='a',
+                item_id=item_id,
+                label_key=label_key,
+            )
+            # 成功则跳出重试循环
+            break
+        except asyncio.CancelledError:
+            # 取消应直接传播
+            logger.error("任务被取消，停止重试")
+            raise
+        except Exception as e:
+            attempt += 1
+            last_exc = e
+            logger.error(f"第 {attempt} 次执行失败: {e}")
+            if attempt >= max_retries:
+                logger.error("已达到最大重试次数，抛出异常")
+                raise
+            backoff = base_backoff * (2 ** (attempt - 1))
+            print(f"⚠️ 第 {attempt} 次执行失败，{backoff} 秒后重试...")
+            await asyncio.sleep(backoff)
 
     print('\n' + '=' * 80)
     print('🎉 单条多轮对话测试完成！')

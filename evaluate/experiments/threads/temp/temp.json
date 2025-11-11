@@ -1,0 +1,320 @@
+[
+  {
+    "expected_outcomes": [
+      "对给定结构执行优化，获取收敛后的晶格参数与总能量",
+      "输出优化后结构文件与能量结果的 URL"
+    ],
+    "initial_question": "使用ABACUS对Si立方晶体进行结构优化计算，获取收敛后的晶格参数与总能量。Si立方晶体结构url:https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif",
+    "success_criteria": [
+      "使用 ABACUS 计算",
+      "优化计算收敛并输出最终晶格参数",
+      "所有输出文件路径通过 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用 ABACUS 对指定结构进行计算",
+      "输出带隙值、能带图与态密度图"
+    ],
+    "initial_question": "使用ABACUS对 GaAs 晶体计算能带结构与 DOS。GaAs 晶体结构URL：https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif",
+    "success_criteria": [
+      "使用 ABACUS 计算",
+      "完成计算并输出带隙值、能带与态密度",
+      "所有输出文件路径通过 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "输出每个原子的 Bader 电荷及总电荷转移表"
+    ],
+    "initial_question": "使用ABACUS对 Al₂O₃ 体系进行 Bader 电荷分析，并展示每个原子的电荷转移量。 Al₂O₃初始结构URL：https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif",
+    "success_criteria": [
+      "使用 ABACUS 计算",
+      "计算完成且所有 Bader 电荷结果一致性检查通过",
+      "所有输出文件路径通过 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用ABACUS对指定结构进行结构优化",
+      "使用优化结果生成声子色散图"
+    ],
+    "initial_question": "使用ABACUS计算 Si 的声子色散曲线（需先进行结构优化）。Si立方晶体结构url:https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif",
+    "success_criteria": [
+      "使用 ABACUS 计算",
+      "计算完成并生成声子色散图",
+      "所有输出文件路径通过 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用 ABACUS 计算",
+      "计算完成并输出指定结构的弹性张量与推导的体模量、剪切模量、杨氏模量"
+    ],
+    "initial_question": "使用 ABACUS 计算 GaAs 晶体的弹性常数和体模量。GaAs 晶体结构URL：https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif",
+    "success_criteria": [
+      "使用 ABACUS 计算",
+      "计算完成并输出指定结构的弹性张量与推导的体模量、剪切模量、杨氏模量"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用apex计算指定结构的eos",
+      "使用apex_agent执行提交，且任务执行成功",
+      "返回体积-能量曲线、平衡体积、体模量、状态方程拟合参数"
+    ],
+    "initial_question": "我想用APEX算Si的状态方程，Si立方晶体结构url:https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif",
+    "success_criteria": [
+      "使用apex_agent计算指定结构的eos",
+      "返回体积-能量曲线、平衡体积、体模量、状态方程拟合参数"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用apex计算完成并生成声子谱",
+      "所有输出文件路径通过 URL 可访问"
+    ],
+    "initial_question": "用apex_agent对Si结构计算声子谱。Si立方晶体结构url:https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif，使用默认参数",
+    "success_criteria": [
+      "使用apex计算完成并生成声子谱",
+      "所有输出文件路径通过 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用apex对给定结构执行优化，获取收敛后的晶格参数与总能量",
+      "输出优化后结构文件与能量结果的 URL"
+    ],
+    "initial_question": "用apex_agent优化以下结构并返回最低能量构型：https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif",
+    "success_criteria": [
+      "使用apex对给定结构执行优化，获取收敛后的晶格参数与总能量",
+      "输出优化后结构文件与能量结果的 URL"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "多任务识别成功，工具调用正确",
+      "输出结构清晰区分两个任务"
+    ],
+    "initial_question": "用apex_agent计算Al2O3的弹性常数和声子谱，结构在https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif",
+    "success_criteria": [
+      "使用apex计算并返回指定结构的弹性常数",
+      "使用apex计算并返回指定结构的声子谱"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用dpa对给定结构执行优化，获取收敛后的晶格参数与总能量",
+      "输出优化后结构文件与能量结果的 URL"
+    ],
+    "initial_question": "请使用dpa对 https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif 进行结构优化，使用默认参数提交计算任务",
+    "success_criteria": [
+      "使用dpa对给定结构执行优化，获取收敛后的晶格参数与总能量",
+      "输出优化后结构文件与能量结果的 URL"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用dpa按指定条件进行分子动力学模拟",
+      "任务成功执行，并返回输出文件url"
+    ],
+    "initial_question": "请使用dpa在 300 K 下对 Li2O 进行 1 ps 分子动力学模拟，时间步长 1 fs。输入结构为 https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761029503_bohriumcrystal_65e5a9898d93f05838e25195_0.cif",
+    "success_criteria": [
+      "使用dpa按指定条件进行分子动力学模拟",
+      "任务成功执行，并返回输出文件url"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用时识别为高温 MD 任务,并发出温度警告，向用户确认是否执行",
+      "使用dpa按指定条件进行分子动力学模拟",
+      "任务成功执行，并返回输出文件url"
+    ],
+    "initial_question": "请使用dpa在 6000 K 下运行 1 ps 的分子动力学模拟，结构为 https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761029761_bohriumcrystal_65e5aa188d93f05838e33a1a_0.cif",
+    "success_criteria": [
+      "调用时识别为高温 MD 任务,并发出温度警告",
+      "使用dpa按指定条件进行分子动力学模拟",
+      "任务成功执行，并返回输出文件url"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用dpa计算完成并生成声子谱",
+      "所有输出文件路径通过 URL 可访问"
+    ],
+    "initial_question": "使用dpa计算 Si 结构的声子谱，输入文件为 https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif",
+    "success_criteria": [
+      "使用dpa计算完成并生成声子谱",
+      "所有输出文件路径通过 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用dpa计算完成并给出指定材料的弹性常数",
+      "所有输出文件路径通过 URL 可访问"
+    ],
+    "initial_question": "请使用 DPA 计算 MgO 的弹性常数，结构：https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761030016_bohriumcrystal_65e5a9a78d93f05838e28106_0.cif",
+    "success_criteria": [
+      "使用dpa计算完成并给出指定材料的弹性常数",
+      "所有输出文件路径通过 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别任务为电解液MD模拟",
+      "自行生成电解液结构",
+      "提交分子动力学模拟任务并成功执行",
+      "成功计算各组分的扩散系数"
+    ],
+    "initial_question": "对含有1M LiPF6 的 EC:DMC (1:1) 电解液体系进行分子动力学模拟，计算扩散系数。",
+    "success_criteria": [
+      "识别任务为电解液MD模拟",
+      "自行生成电解液结构",
+      "提交分子动力学模拟任务并成功执行",
+      "成功计算各组分的扩散系数"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "执行 piloteye_submit_agent 模拟提交 → 轨迹传递到 traj_analysis_agent",
+      "生成 RDF "
+    ],
+    "initial_question": "计算 LiTFSI 在 DME 溶剂中的离子对径向分布函数。",
+    "success_criteria": [
+      "跨代理调用成功",
+      "输出 RDF"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用piloteye_submit_agent依次执行计算",
+      "输出对比表格（电导率 + 扩散系数）"
+    ],
+    "initial_question": "比较 LiPF6 与 LiBF4 在 EC:DMC 溶剂中的电导率与扩散系数。",
+    "success_criteria": [
+      "包含两种盐结果",
+      "输出表格清晰带单位",
+      "结果合理排序"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "执行 piloteye_submit_agent 模拟任务",
+      "traj_analysis_agent 进行溶剂壳层结构计算",
+      "输出配位数与 RDF"
+    ],
+    "initial_question": "在 350 K 下模拟 LiFSI:DMC 电解液体系，并计算溶剂化结构。",
+    "success_criteria": [
+      "溶剂化结果包含配位数表格",
+      "输出 RDF"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "输出预测的 Tc 值"
+    ],
+    "initial_question": "计算 MgB₂ 在常压下的临界温度，并给出预测的 Tc 数值。初始结构文件：https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760680893_bohriumcrystal_65e5aa558d93f05838e399f4_0.cif",
+    "success_criteria": [
+      "正确识别材料 MgB₂",
+      "压力条件为常压",
+      "返回 Tc 数值"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别为高压下的 Tc 计算任务",
+      "在多个压力点下进行计算",
+      "返回 Tc 随压力变化的趋势或图像"
+    ],
+    "initial_question": "估算 MgB₂ 的临界温度在压力从 100 GPa 增加到 200 GPa 时的变化趋势。初始结构文件：https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760680893_bohriumcrystal_65e5aa558d93f05838e399f4_0.cif",
+    "success_criteria": [
+      "正确识别高压条件",
+      "进行多压力点计算",
+      "输出包含 Tc-压力关系的结果"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用thermoelectric_submit_agent执行计算",
+      "计算并输出包含功率因子与 Seebeck 值的表格或摘要"
+    ],
+    "initial_question": "计算 Bi₂Te₃ 的 n 型功率因子和塞贝克系数。结构URL：https://bohrium-agents.oss-cn-zhangjiakou.aliyuncs.com/agent/1761292922_mpddoptimade_phaseslab_org_mpdd-6074fd16b003796270e71b43_0.cif",
+    "success_criteria": [
+      "任务类型为 n 型热电计算",
+      "输出包含数值结果及单位"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用thermoelectric_submit_agent执行计算",
+      "对同一材料在 p/n 两种条件下计算功率因子",
+      "生成对比表格"
+    ],
+    "initial_question": "计算并比较 PbTe 在 p 型和 n 型条件下的功率因子。结构url：https://bohrium-agents.oss-cn-zhangjiakou.aliyuncs.com/agent/1761293488_alexandria_icams_rub_de_pbesol_agm003157743_0.cif",
+    "success_criteria": [
+      "使用thermoelectric_submit_agent执行计算",
+      "输出p 型和 n 型条件下的功率因子,生成清晰的对比结果"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用thermoelectric_submit_agent执行计算",
+      "自动展开为多子任务：电导率、热导率、Seebeck 计算",
+      "最终汇总为 ZT 值及组成表格"
+    ],
+    "initial_question": "计算 SnSe 在 300 K 下的热电优值（ZT），并给出各项贡献（电导率、热导率、Seebeck 系数）。结构url：https://bohrium-agents.oss-cn-zhangjiakou.aliyuncs.com/agent/1761293726_bohriumcrystal_65e5a7d68d93f05838dfa29d_0.cif",
+    "success_criteria": [
+      "识别温度为 300 K",
+      "各项贡献值齐全",
+      "输出包含 ZT 结果与单位"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用thermoelectric_submit_agent执行计算",
+      "在 3 个温度点上计算 Seebeck 系数",
+      "输出 Seebeck-温度 表格"
+    ],
+    "initial_question": "计算 CoSb₃ 在不同温度（300 K、500 K、700 K）下的 Seebeck 系数并绘制曲线。结构url:https://bohrium-agents.oss-cn-zhangjiakou.aliyuncs.com/agent/1761293785_bohriumcrystal_65e5a81e8d93f05838e01310_0.cif",
+    "success_criteria": [
+      "使用thermoelectric_submit_agent执行计算",
+      "在 3 个温度点上计算 Seebeck 系数",
+      "输出 Seebeck-温度 表格"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用dpa3描述符",
+      "训练任务成功执行"
+    ],
+    "initial_question": "请使用我上传的训练数据finetune一个势函数，选择dpa3描述符，训练100步即停止，其他参数默认。数据集：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01K8T6CFVKSCKE9EEC0AH0759Q/data.zip",
+    "success_criteria": [
+      "使用dpa3描述符",
+      "训练任务成功执行"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用dpa2描述符",
+      "训练任务成功执行"
+    ],
+    "initial_question": "请使用我上传的训练数据finetune一个势函数，选择dpa2描述符，训练100步即停止，其他参数默认。数据集：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01K8T6CFVKSCKE9EEC0AH0759Q/data.zip",
+    "success_criteria": [
+      "使用dpa2描述符",
+      "训练任务成功执行"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用dpa3描述符",
+      "采用multtask的形式训练",
+      "训练任务成功执行"
+    ],
+    "initial_question": "请使用我上传的训练数据以multtask的方式训练一个势函数，选择dpa3描述符，训练100步即停止，其他参数默认。数据集：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01K8T6CFVKSCKE9EEC0AH0759Q/data.zip",
+    "success_criteria": [
+      "使用dpa3描述符",
+      "采用multtask的形式训练",
+      "训练任务成功执行"
+    ]
+  }
+]

@@ -10,7 +10,7 @@ from litellm import completion
 
 logger = logging.getLogger(__name__)
 
-load_dotenv(find_dotenv(), override=True)
+load_dotenv(find_dotenv())
 
 
 class ConversationState(Enum):
@@ -157,6 +157,7 @@ class HumanSimulator:
    2.只有当 agent 给出 符合任务要求的最终输出（例如具体数值、结果表格、结论说明等），你才认为任务完成。
    3.任何时候都不要把“计划/步骤”误判为“结果”
    4.如果 agent 明确表示当前任务无法完成，你要礼貌地结束对话。
+   5.agent的第一轮回复只会是计划/步骤说明，绝不会包含最终结果。如果是第一轮回复，请要求 agent 继续。
 
 - 行为规范
     1.只围绕最初任务进行，不扩展。回答要尽可能简洁明了，避免冗长。
@@ -167,6 +168,7 @@ class HumanSimulator:
     6.agent只能以文本形式回复，要求agent返回的结果也必须是文本形式，不能是图片、文件，但可以是文件URL。
     7.不要提出超出agent能力范围的要求，agent没有将结果整理成csv等格式的能力，也没有运行python代码的能力。
     8.你是模拟用户，没有检索网页或获取API权限的能力，禁止向agent提供URL或是API-key等信息。
+    9.agent只能使用内置工具、初始问题中用户提供的数据、内置工具获取的数据来完成任务，不能使用或要求你使用任何外部工具。如果发现agent试图使用外部工具，或要求用户在本地运行/提供新数据，请拒绝并提醒agent只能使用内置工具完成任务。
 
 现在请给出合理的回答
 """

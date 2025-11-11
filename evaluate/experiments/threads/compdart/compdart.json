@@ -1,0 +1,53 @@
+[
+  {
+    "expected_outcomes": [
+      "调用 run_ga 工具以随机初始化模式优化 Fe-Ni-Co 体系成分",
+      "执行 10 代遗传算法迭代，输出最优成分及预测属性（TEC、密度）",
+      "生成优化日志文件（ga_output.log）"
+    ],
+    "initial_question": "使用 Fe-Ni-Co 三元体系进行随机初始化的成分优化，以最小化热膨胀系数并最大化密度，执行 10 代进化。TEC预测的代理模型：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/fa7871f5-df33-4fa8-9f50-5a76e11814a6/iter01_models_2models.zip",
+    "success_criteria": [
+      "返回 best_individual（最优成分比例）及其预测属性",
+      "输出包含 pred_tec_mean、pred_density_mean 等关键指标",
+      "生成 output 文件路径（或 URL）供下载"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "识别元素为 Al-Mg-Zn，并应用约束条件 Mg < 0.4",
+      "以降低热膨胀系数均值和标准差为目标执行遗传算法",
+      "生成包含优化轨迹的输出文件"
+    ],
+    "initial_question": "对 Al-Mg-Zn 合金进行成分优化，约束 Mg 含量 < 0.4，目标是降低 TEC 均值与标准差，迭代 15 代。TEC预测的代理模型：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/fa7871f5-df33-4fa8-9f50-5a76e11814a6/iter01_models_2models.zip",
+    "success_criteria": [
+      "输出参数包含约束条件 {\"Mg\": \"<0.4\"}",
+      "结果中返回最佳个体（best_individual）与对应 TEC 均值与方差",
+      "任务执行日志成功生成且无错误"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用用户提供的初始种群启动遗传算法优化",
+      "采用 tournament 选择与指定的交叉率和变异率参数",
+      "计算每代的 TEC 和密度并输出最佳结果"
+    ],
+    "initial_question": "以自定义初始成分  [0.4, 0.4, 0.2] 开始优化 Fe-Ni-Co 合金，采用锦标赛选择（tournament）和交叉率 0.9。TEC预测的代理模型：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/fa7871f5-df33-4fa8-9f50-5a76e11814a6/iter01_models_2models.zip",
+    "success_criteria": [
+      "输出参数正确显示 init_population、selection_mode、crossover_rate",
+      "返回 best_individual 及对应属性预测",
+      "输出日志文件路径可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "根据用户设定的多目标权重组合执行 run_ga",
+      "优化 8 元体系，输出预测的 TEC 与密度均值/方差",
+      "生成包含 fitness 演化趋势的日志"
+    ],
+    "initial_question": "在 Fe-Cr-Ni-Co-V-Al-Mg-Zn 体系中进行多目标优化，寻找 TEC 稳定且高密度的成分。TEC预测的代理模型：https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/fa7871f5-df33-4fa8-9f50-5a76e11814a6/iter01_models_2models.zip",
+    "success_criteria": [
+      "输出中包含 best_individual、pred_tec_mean、pred_density_mean 等",
+      "日志文件记录每代的适应度变化"
+    ]
+  }
+]

@@ -28,6 +28,7 @@ MODEL_MAPPING = {
     ('openai', 'gpt-5-mini'): 'openai/gpt-5-mini',
     ('openai', 'gpt-5-chat'): 'openai/gpt-5-chat',
     ('azure', 'gpt-4o'): 'azure/gpt-4o',
+    ('azure', 'gpt-5-chat'): 'azure/gpt-5-chat',
     ('azure', 'gpt-4o-mini'): 'azure/gpt-4o-mini',
     ('litellm_proxy', 'gemini-2.0-flash'): 'litellm_proxy/gemini-2.0-flash',
     ('litellm_proxy', 'gemini-2.5-flash'): 'litellm_proxy/gemini-2.5-flash',
@@ -49,7 +50,7 @@ MODEL_MAPPING = {
     ('volcengine', 'Doubao-Seed-1.6-thinking'): 'volcengine/ep-20250627141021-h4wch',
 }
 
-DEFAULT_MODEL = os.getenv('DEFAULT_MODEL', 'litellm_proxy/azure/gpt-5-chat')
+DEFAULT_MODEL = os.getenv('DEFAULT_MODEL', 'azure/gpt-5-chat')
 TOOL_SCHEMA_MODEL = os.getenv('TOOL_SCHEMA_MODEL', 'azure/gpt-4o')
 
 
@@ -115,7 +116,7 @@ class LLMConfig:
         self.gpt_5 = _init_model(MODEL_MAPPING.get((litellm_provider, gpt_5)))
         self.gpt_5_nano = _init_model(MODEL_MAPPING.get((litellm_provider, gpt_5_nano)))
         self.gpt_5_mini = _init_model(MODEL_MAPPING.get((litellm_provider, gpt_5_mini)))
-        self.gpt_5_chat = _init_model(MODEL_MAPPING.get((litellm_provider, gpt_5_chat)))
+        self.gpt_5_chat = _init_model(MODEL_MAPPING.get((azure_provider, gpt_5_chat)))
 
         # Default Model
         self.default_litellm_model = _init_model(DEFAULT_MODEL)

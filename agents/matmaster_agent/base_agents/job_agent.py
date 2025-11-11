@@ -320,11 +320,11 @@ class SubmitCoreMCPAgent(MCPAgent):
                     event=event,
                 )
                 # prompt user photon cost
-                cost_func = self.cost_func
-                async for future_consume_event in display_future_consume_event(
-                    event, cost_func, ctx, self.name
-                ):
-                    yield future_consume_event
+                # cost_func = self.cost_func
+                # async for future_consume_event in display_future_consume_event(
+                #     event, cost_func, ctx, self.name
+                # ):
+                #     yield future_consume_event
 
             if (
                 is_function_response(event)
@@ -403,11 +403,11 @@ class SubmitCoreMCPAgent(MCPAgent):
                 )
 
                 # prompt user tool-call cost
-                cost_func = self.cost_func
-                async for future_consume_event in display_future_consume_event(
-                    event, cost_func, ctx, self.name
-                ):
-                    yield future_consume_event
+                # cost_func = self.cost_func
+                # async for future_consume_event in display_future_consume_event(
+                #     event, cost_func, ctx, self.name
+                # ):
+                #     yield future_consume_event
 
             if event.content and event.content.parts:
                 for part in event.content.parts:

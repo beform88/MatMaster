@@ -1,0 +1,65 @@
+[
+  {
+    "expected_outcomes": [
+      "调用 semantic_search 工具，对关键词 'perovskite tandem solar cell high efficiency' 进行语义搜索。",
+      "使用 top_k=10 返回匹配度最高的论文结果。",
+      "结果以 Markdown 表格形式展示。"
+    ],
+    "initial_question": "搜索 2020 年后发表的 perovskite tandem solar cell 高效器件相关文献，返回前 10 条结果。",
+    "success_criteria": [
+      "输出中包含 10 条结果（若不足则说明原因）。",
+      "每行包含标题、作者、年份、链接等基本信息。",
+      "搜索关键词在结果摘要中出现或语义相关。"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用 semantic_search 工具，关键词为 'perovskite stability enhancement'。",
+      "展示与稳定性主题相关的论文摘要。"
+    ],
+    "initial_question": "搜索与稳定性提升（stability enhancement）相关的钙钛矿太阳能电池论文。",
+    "success_criteria": [
+      "结果以 Markdown 表格形式返回。",
+      "表格包含每篇文献的标题与链接。",
+      "至少有一篇涉及 'stability'、'lifetime' 或 'degradation' 主题。"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用 plot_pce_vs_time_from_excel 工具，输入 start_date='2020-01-01', end_date='2024-12-31'。",
+      "生成 PCE vs 时间的散点图，点按结构类型区分颜色。",
+      "输出平均与最高 PCE 的年度统计表。"
+    ],
+    "initial_question": "生成 2020 年至 2024 年钙钛矿太阳能电池效率随时间变化的散点图。",
+    "success_criteria": [
+      "输出中包含 plot 对象或可下载的图像链接。",
+      "total_records 字段大于 0。",
+      "structure_stats 包含至少三种结构类型（如 n-i-p, p-i-n, tandem）。"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用 plot_solar_cell_structure_vs_time 工具，输入 start_year=2018, end_year=2023。",
+      "输出堆叠柱状图显示各结构类型（n-i-p、p-i-n、tandem、other）的年度占比变化。"
+    ],
+    "initial_question": "分析 2018–2023 年钙钛矿太阳能电池结构随时间的变化趋势。",
+    "success_criteria": [
+      "生成堆叠柱状图并附带数据摘要。",
+      "yearly_analysis 中每年均有百分比分布，总和≈100%。",
+      "structure_types 列表包含四类结构。"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "分别调用 plot_solar_cell_structure_vs_time (2015,2020) 与 plot_pce_vs_time_from_excel ('2020-01-01','2025-12-31')。",
+      "生成两张图：结构趋势对比图与 PCE 时间演化图。",
+      "结合输出撰写简要趋势说明（如结构从 n-i-p 向 p-i-n 转变、PCE 提升趋势等）。"
+    ],
+    "initial_question": "比较 2015–2020 年和 2020–2025 年期间钙钛矿太阳能电池结构分布与效率变化趋势。",
+    "success_criteria": [
+      "输出包含两张图像或对应的下载链接。",
+      "结构类型比例变化有明显差异说明。",
+      "提供跨时间段平均 PCE 对比数据表。"
+    ]
+  }
+]

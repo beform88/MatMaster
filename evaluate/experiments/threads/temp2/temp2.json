@@ -1,0 +1,63 @@
+[
+  {
+    "expected_outcomes": [
+      "执行 piloteye_submit_agent 模拟提交 → 轨迹传递到 traj_analysis_agent",
+      "生成 RDF "
+    ],
+    "initial_question": "计算 LiTFSI 在 DME 溶剂中的离子对径向分布函数。",
+    "success_criteria": [
+      "跨代理调用成功",
+      "输出 RDF"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "使用piloteye_submit_agent依次执行计算",
+      "输出对比表格（电导率 + 扩散系数）"
+    ],
+    "initial_question": "比较 LiPF6 与 LiBF4 在 EC:DMC 溶剂中的电导率与扩散系数。",
+    "success_criteria": [
+      "包含两种盐结果",
+      "输出表格清晰带单位",
+      "结果合理排序"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "执行 piloteye_submit_agent 模拟任务",
+      "traj_analysis_agent 进行溶剂壳层结构计算",
+      "输出配位数与 RDF"
+    ],
+    "initial_question": "在 350 K 下模拟 LiFSI:DMC 电解液体系，并计算溶剂化结构。",
+    "success_criteria": [
+      "溶剂化结果包含配位数表格",
+      "输出 RDF"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用 search_paper 工具以 'title' 模式检索关键词 'High Entropy Alloy mechanical properties'",
+      "获取并下载前 5 条匹配论文及其基本信息",
+      "输出包含标题、作者、年份、摘要的 info 文件路径"
+    ],
+    "initial_question": "在 arXiv 上搜索题目中包含 'High Entropy Alloy mechanical properties' 的论文，返回前 5 条结果并下载原文。",
+    "success_criteria": [
+      "成功返回 ≤5 条文献信息",
+      "结果包含 paper title、authors、year、abstract 字段",
+      "返回下载路径或 URL 可访问"
+    ]
+  },
+  {
+    "expected_outcomes": [
+      "调用 HEA_predictor 工具并输入 ['AlCoCrFeNi']",
+      "模型输出该合金的固溶形成可能性与晶体结构类型（FCC/BCC）",
+      "生成预测结果文件（如 JSON 或 CSV）"
+    ],
+    "initial_question": "预测化学式 AlCoCrFeNi 是否能形成固溶体结构，并输出预测的晶体类型。",
+    "success_criteria": [
+      "返回 prediction 字段包含 solid-solution / non-solid-solution 信息",
+      "晶体结构类型字段为 FCC、BCC 或 Mixed",
+      "输出文件路径可下载"
+    ]
+  }
+]
