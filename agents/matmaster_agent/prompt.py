@@ -828,10 +828,12 @@ Your output MUST be a valid JSON object with the following structure:
     "analyzed_messages": List[<string>]  // *Quote the key messages that were analyzed to make this determination.*
 }}
 
-Return `flag: true` ONLY IF ALL of the following conditions are met:
+Return `flag: true` ONLY IF ALL of the following conditions are met (unless the special case below applies):
 1.  The context messages explicitly and finally list all parameters that user confirmed (e.g., element, structure type, dimensions).
 2.  The context messages's intent is to conclude the parameter collection phase and advance the conversation to the next step.
 3.  The context messages does not indicate that the parameter discussion is still ongoing (e.g., lacks phrases like "also need," "next, please provide," "what is the...").
+
+**Special case — viewing existing defaults:** If the user explicitly asks to “show/view the default parameters” (or similar wording) and the conversation already contains the inputs required to execute the default-parameter display (e.g., structure file, target property), treat the parameter collection phase as complete and return `flag: true`, even if the user has not replied with an additional “confirm”. In this scenario, the intent is to immediately view the defaults rather than to continue gathering parameters.
 
 Return `flag: false` in ANY of these cases:
 1.  The context messages don't mention any specific parameters to confirm.
