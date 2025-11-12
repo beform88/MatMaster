@@ -290,6 +290,7 @@ async def _run_conversation(
                 for job_id in job_ids:
                     try:
                         bohrium_client = Bohrium(
+                            base_url=os.getenv('BOHRIUM_API_URL', 'https://openapi.bohrium.dp.tech'),
                             access_key=os.getenv('MATERIALS_ACCESS_KEY'),
                             project_id=os.getenv('MATERIALS_PROJECT_ID'),
                         )
