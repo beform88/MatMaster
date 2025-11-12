@@ -24,7 +24,7 @@ from evaluate.utils import load_dataset_json
 
 logger = logging.getLogger(__name__)
 
-load_dotenv(find_dotenv())
+load_dotenv(find_dotenv(), override=True)
 
 
 def evaluation_task(dataset_item):
@@ -135,11 +135,7 @@ def multi_turn_evaluation_task(dataset_item):
 
 
 async def _run_conversation(
-    dataset_item: Dict[str, Any],
-    max_turn_count: int,
-    item_id: int,
-    save_mode: str = 'w',
-    label_key: str = '',
+    dataset_item: Dict[str, Any], max_turn_count: int, item_id: int, save_mode: str = 'w', label_key: str = ''
 ) -> Dict[str, Any]:
     """
     执行一次对话测试，并返回结果
@@ -254,11 +250,7 @@ async def _run_conversation(
                 events_list.append(dict(event))
 
             # 将事件保存到txt文件
-            with open(
-                f"{label_key}/logs/job_{item_id}/turn_{turn_count}.txt",
-                'w',
-                encoding='utf-8',
-            ) as f:
+            with open(f"{label_key}/logs/job_{item_id}/turn_{turn_count}.txt", "w", encoding="utf-8") as f:
                 f.write(str(events_list))
 
         except asyncio.CancelledError:
@@ -376,9 +368,9 @@ async def evaluation_threads_task(file_path: str, max_turn_count: int = 10):
 
 
 async def evaluation_threads_single_task(
-    file_path: str, item_id: int, max_turn_count: int = 10, label_key: str = ''
+    file_path: str, item_id: int, max_turn_count: int = 10, label_key: str = '', max_retries: int = 3, base_backoff: float = 5.0
 ):
-    """测试单个数据"""
+    """测试单个数据（带重试）"""
     print('=' * 80)
     print('🤖 与ADK Agent多轮对话测试')
     print('=' * 80)
@@ -387,13 +379,33 @@ async def evaluation_threads_single_task(
     dataset_item = dataset_json[item_id]
     time.sleep(10)  # 避免请求过于频繁
 
-    result = await _run_conversation(
-        dataset_item,
-        max_turn_count,
-        save_mode='a',
-        item_id=item_id,
-        label_key=label_key,
-    )
+    attempt = 0
+    last_exc = None
+    while attempt < max_retries:
+        try:
+            result = await _run_conversation(
+                dataset_item,
+                max_turn_count,
+                save_mode='a',
+                item_id=item_id,
+                label_key=label_key,
+            )
+            # 成功则跳出重试循环
+            break
+        except asyncio.CancelledError:
+            # 取消应直接传播
+            logger.error("任务被取消，停止重试")
+            raise
+        except Exception as e:
+            attempt += 1
+            last_exc = e
+            logger.error(f"第 {attempt} 次执行失败: {e}")
+            if attempt >= max_retries:
+                logger.error("已达到最大重试次数，抛出异常")
+                raise
+            backoff = base_backoff * (2 ** (attempt - 1))
+            print(f"⚠️ 第 {attempt} 次执行失败，{backoff} 秒后重试...")
+            await asyncio.sleep(backoff)
 
     print('\n' + '=' * 80)
     print('🎉 单条多轮对话测试完成！')
