@@ -41,7 +41,7 @@ class HumanSimulator:
     3. 生成上下文相关的响应
     """
 
-    def __init__(self, model: str = 'azure/gpt-5-chat', max_turn_count=10):
+    def __init__(self, model: str = 'litellm_proxy/azure/gpt-5', max_turn_count=10):
         self.model = model
         self.max_turn_count = max_turn_count
         self.conversation_history: List[Dict[str, Any]] = []
@@ -157,6 +157,7 @@ class HumanSimulator:
    2.只有当 agent 给出 符合任务要求的最终输出（例如具体数值、结果表格、结论说明等），你才认为任务完成。
    3.任何时候都不要把“计划/步骤”误判为“结果”
    4.如果 agent 明确表示当前任务无法完成，你要礼貌地结束对话。
+   5.agent的第一轮回复只会是计划/步骤说明,绝不会包含最终结果。如果是第一轮回复,请要求agent继续。
 
 - 行为规范
     1.只围绕最初任务进行，不扩展。回答要尽可能简洁明了，避免冗长。
