@@ -2,7 +2,6 @@ import copy
 
 from agents.matmaster_agent.constant import (
     CURRENT_ENV,
-    LOCAL_EXECUTOR,
     BohriumExecutor,
     BohriumStorge,
 )
