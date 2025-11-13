@@ -1,4 +1,3 @@
-import copy
 import logging
 from typing import AsyncGenerator, Optional, Union, override
 
@@ -28,6 +27,7 @@ from agents.matmaster_agent.base_agents.sync_agent import (
     ToolValidatorAgent,
 )
 from agents.matmaster_agent.base_callbacks.private_callback import (
+    default_before_model_callback,
     remove_function_call,
 )
 from agents.matmaster_agent.constant import (
@@ -39,6 +39,7 @@ from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.model import ToolCallInfo
 from agents.matmaster_agent.prompt import (
+    gen_auto_add_params_instruction,
     gen_params_check_info_agent_instruction,
     gen_result_agent_description,
     gen_result_agent_instruction,
@@ -49,7 +50,6 @@ from agents.matmaster_agent.prompt import (
 )
 from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
-    is_function_response,
     update_state_event,
 )
 from agents.matmaster_agent.utils.helper_func import (
@@ -207,8 +207,19 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             tools=self.mcp_tools,
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
+            before_model_callback=default_before_model_callback,
             after_model_callback=remove_function_call,
             output_schema=ToolCallInfo,
+            state_key='origin_tool_call_info',
+        )
+
+        self._auto_add_params_agent = SchemaAgent(
+            model=self.model,
+            name=f"{agent_prefix}_auto_add_params_agent",
+            disallow_transfer_to_parent=True,
+            disallow_transfer_to_peers=True,
+            output_schema=ToolCallInfo,
+            state_key='tool_call_info',
         )
 
         self.sub_agents = [
@@ -239,6 +250,11 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
     @property
     def tool_call_info_agent(self) -> SchemaAgent:
         return self._tool_call_info_agent
+
+    @computed_field
+    @property
+    def auto_add_params_agent(self) -> SchemaAgent:
+        return self._auto_add_params_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -278,36 +294,43 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             pass
         else:
             # 根据计划来
+            current_step = session_state['plan']['steps'][session_state['plan_index']]
             for materials_plan_function_call_event in context_function_event(
                 ctx,
                 self.name,
                 'materials_plan_function_call',
                 {
-                    'msg': f'According to the plan, I will call the `{session_state['plan']['steps'][session_state['plan_index']]['tool_name']}`'
+                    'msg': f'According to the plan, I will call the `{current_step['tool_name']}`: {current_step['description']}'
                 },
                 ModelRole,
             ):
                 yield materials_plan_function_call_event
 
-            tool_call_info = {}
             async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
-                if is_function_response(
-                    tool_call_info_event
-                ) and tool_call_info_event.content.parts[
-                    0
-                ].function_response.name.endswith(
-                    'schema'
-                ):
-                    tool_call_info = tool_call_info_event.content.parts[
-                        0
-                    ].function_response.response
                 yield tool_call_info_event
+            origin_tool_call_info = ctx.session.state['origin_tool_call_info']
 
             logger.info(
-                f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} tool_call_info = {tool_call_info}'
+                f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} origin_tool_call_info = {origin_tool_call_info}'
             )
-            if not tool_call_info:
+            if not origin_tool_call_info:
                 return
+
+            function_declaration = [
+                item
+                for item in ctx.session.state['function_declarations']
+                if item['name'] == origin_tool_call_info['tool_name']
+            ]
+            required_params = function_declaration[0].parameters.required
+
+            self.auto_add_params_agent.instruction = gen_auto_add_params_instruction(
+                origin_tool_call_info, required_params
+            )
+            async for auto_add_params_event in self.auto_add_params_agent.run_async(
+                ctx
+            ):
+                yield auto_add_params_event
+            tool_call_info = ctx.session.state['tool_call_info']
 
             missing_tool_args = tool_call_info.get('missing_tool_args', None)
 
@@ -317,19 +340,6 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
                 ) in self.params_check_info_agent.run_async(ctx):
                     yield params_check_info_event
             else:
-                # 先更新 tool_call_info
-                update_tool_call_info = copy.deepcopy(
-                    ctx.session.state['tool_call_info']
-                )
-                update_tool_call_info.append(tool_call_info)
-                yield update_state_event(
-                    ctx,
-                    state_delta={'tool_call_info': update_tool_call_info},
-                )
-                logger.info(
-                    f'[{MATMASTER_AGENT_NAME}] update_tool_call_info = {update_tool_call_info}'
-                )
-
                 # 前置 tool_hallucination 为 False
                 yield update_state_event(ctx, state_delta={'tool_hallucination': False})
                 for _ in range(2):
