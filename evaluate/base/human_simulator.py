@@ -41,7 +41,7 @@ class HumanSimulator:
     3. 生成上下文相关的响应
     """
 
-    def __init__(self, model: str = 'azure/gpt-5-chat', max_turn_count=10):
+    def __init__(self, model: str = 'azure/gpt-4o', max_turn_count=10):
         self.model = model
         self.max_turn_count = max_turn_count
         self.conversation_history: List[Dict[str, Any]] = []
@@ -87,7 +87,11 @@ class HumanSimulator:
             return f'我们已经聊了{self.max_turn_count}轮了，我想结束这个对话。', False
 
         # 生成用户响应
-        user_response, should_continue = self._generate_user_response(agent_message)
+        if self.turn_count == 1:
+            user_response = '好的，请按计划继续。'
+            should_continue = True
+        else:
+            user_response, should_continue = self._generate_user_response(agent_message)
 
         # 更新对话状态
         if not should_continue:
@@ -156,8 +160,8 @@ class HumanSimulator:
    1.如果 agent 只是给出 计划、思路、步骤、方法说明，你要认为 任务尚未完成，并要求 agent 继续。
    2.只有当 agent 给出 符合任务要求的最终输出（例如具体数值、结果表格、结论说明等），你才认为任务完成。
    3.任何时候都不要把“计划/步骤”误判为“结果”
-   4.如果 agent 明确表示当前任务无法完成，你要礼貌地结束对话。
-   5.agent的第一轮回复只会是计划/步骤说明，绝不会包含最终结果。如果是第一轮回复，请要求 agent 继续。
+   4.如果 agent 明确表示当前任务无法完成，你要礼貌地结束对话（"continue": false）。
+   5.如果是第一轮回复，请要求 agent 继续。
 
 - 行为规范
     1.只围绕最初任务进行，不扩展。回答要尽可能简洁明了，避免冗长。

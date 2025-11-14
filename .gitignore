@@ -27,3 +27,4 @@ log
 *.csv
 *.txt
 *log*
+*.ipynb
