@@ -19,6 +19,7 @@ dependencies = [
     "toolsy>=0.1.2",
     "deepmerge>=2.0",
     "deepdiff>=8.6.1",
+    "fastmcp>=2.13.0.2",
 ]
 
 [build-system]
