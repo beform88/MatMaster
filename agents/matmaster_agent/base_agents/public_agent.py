@@ -320,9 +320,6 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             #     for item in ctx.session.state['function_declarations']
             #     if item['name'] == tool_call_info['tool_name']
             # ]
-            # logger.info(
-            #     f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} function_declaration[0] = {function_declaration[0]}'
-            # )
             # required_params = function_declaration[0]['parameters']['required']
             #
             # update_tool_call_info = copy.deepcopy(tool_call_info)
@@ -334,7 +331,16 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             #         continue
             #     else:
             #         update_tool_call_info['missing_tool_args'].append(param)
-            #
+
+            # prompt = gen_params_check_completed_agent_instruction().format(
+            #     context_messages=context_messages
+            # )
+            # response = litellm.completion(
+            #     model='azure/gpt-4o',
+            #     messages=[{'role': 'user', 'content': prompt}],
+            #     response_format=ParamsCheckComplete,
+            # )
+
             # self.auto_add_params_agent.instruction = gen_auto_add_params_instruction(
             #     update_tool_call_info
             # )
