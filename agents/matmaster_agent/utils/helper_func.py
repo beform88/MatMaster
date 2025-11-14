@@ -129,6 +129,10 @@ def is_mcp_result(tool_response: Optional[dict[str, Any]]):
     )
 
 
+def is_validation_error(result: CallToolResult):
+    return 'validation errors' in result.content[0].text
+
+
 def is_algorithm_error(dict_result) -> bool:
     return dict_result.get('code') is not None and dict_result['code'] != 0
 
@@ -254,6 +258,14 @@ async def parse_result(result: dict) -> List[dict]:
                 }
             )
     return parsed_result
+
+
+def get_markdown_image_result(job_result: List[dict]) -> List[dict]:
+    return [
+        item
+        for item in job_result
+        if item.get('name') and item['name'].startswith('markdown_image')
+    ]
 
 
 def is_same_function_call(

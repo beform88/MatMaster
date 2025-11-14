@@ -53,8 +53,6 @@ cat > "$PYTHON_SCRIPT" <<EOF
 import os
 import sys
 import json
-if not os.path.exists(f'$THREADS_DIR/$1/logs'):
-    os.makedirs(f'$THREADS_DIR/$1/logs')
 try:
     # Use relative path to avoid Windows Git Bash path issues
     filepath = '$RELATIVE_JSON_PATH'
@@ -68,6 +66,9 @@ EOF
 
 # Change to THREADS_DIR directory to ensure relative paths work correctly
 cd "$THREADS_DIR"
+
+# Create logs directory if it doesn't exist
+mkdir -p "$1/logs"
 
 # Run Python script to get total count
 TOTAL_TEMP_FILE=$(mktemp)

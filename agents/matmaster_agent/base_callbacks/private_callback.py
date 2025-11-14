@@ -15,7 +15,7 @@ from google.adk.agents.llm_agent import (
     AfterToolCallback,
     BeforeToolCallback,
 )
-from google.adk.models import LlmResponse
+from google.adk.models import LlmRequest, LlmResponse
 from google.adk.tools import BaseTool, ToolContext
 from mcp.types import CallToolResult, TextContent
 
@@ -46,6 +46,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
+# before_model_callback
+async def default_before_model_callback(
+    callback_context: CallbackContext, llm_request: LlmRequest
+) -> Optional[LlmResponse]:
+    callback_context.state['function_declarations'] = llm_request.config.tools[
+        0
+    ].function_declarations
+
+
 # after_model_callback
 def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
     @wraps(func)
@@ -72,7 +81,7 @@ def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
                     )
                     return
 
-                last_tool_call_info = tool_call_info[-1]
+                last_tool_call_info = tool_call_info
                 if last_tool_call_info['tool_name'] != function_call_name:
                     logger.warning(
                         f'[{MATMASTER_AGENT_NAME}] not match, tool_call_info = {tool_call_info}, tool.name = {function_call_name}'

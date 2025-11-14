@@ -136,6 +136,13 @@ from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
 )
+from agents.matmaster_agent.sub_agents.visualizer_agent.agent import (
+    VisualizerAgent,
+    visualizer_toolset,
+)
+from agents.matmaster_agent.sub_agents.visualizer_agent.constant import (
+    VisualizerAgentName,
+)
 
 ALL_TOOLSET_DICT = {
     'abacus_toolset': abacus_toolset,
@@ -160,6 +167,7 @@ ALL_TOOLSET_DICT = {
     'superconductor_toolset': superconductor_toolset,
     'thermoelectric_toolset': thermoelectric_toolset,
     'traj_analysis_toolset': traj_analysis_toolset,
+    'visualizer_toolset': visualizer_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -182,98 +190,19 @@ AGENT_CLASS_MAPPING = {
     TASK_ORCHESTRATOR_AGENT_NAME: TaskOrchestratorAgent,
     ThermoelectricAgentName: ThermoAgent,
     TrajAnalysisAgentName: TrajAnalysisAgent,
+    VisualizerAgentName: VisualizerAgent,
 }
 
 ALL_TOOLS = {
-    'abacus_modify_input': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_modify_stru': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_collect_data': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_calculation_scf': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_badercharge_run': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_cal_band': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_cal_elf': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_cal_charge_density_difference': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_cal_spin_density': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_dos_run': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_cal_elastic': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_eos': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_phonon_dispersion': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_do_relax': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_vibration_analysis': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
-    'abacus_run_md': {
-        'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
-        'description': '',
-    },
     'run_abacus_calculation': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS],
-        'description': '',
+        'description': 'Use a structure file in cif/VASP-POSCAR/ABACUS-STRU format as input to calculate selected property at DFT level, **distinguished from** deep-learning potential (DPA). DFT parameters including DFT functional, spin polarization, DFT+U settings and initial magnetic moment and whether to do relax before property calculation can be setted. Supported properties including electronic band, (projected) density of state (DOS/PDOS), phonon dispersion curve, Bader charge, ab-initio molecular dynamics trajectories, electron localization function, elastic properties, equation of state, work function and vacancy formation energy. ',
     },
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
-        'scene': [SceneEnum.APEX],
-        'description': '',
+        'scene': [SceneEnum.APEX, SceneEnum.VACANCY_FORMATION_ENERGY],
+        'description': 'Evaluate vacancy formation energies by relaxing supercells with one atom removed',
     },
     'apex_optimize_structure': {
         'belonging_agent': ApexAgentName,
@@ -282,33 +211,33 @@ ALL_TOOLS = {
     },
     'apex_calculate_interstitial': {
         'belonging_agent': ApexAgentName,
-        'scene': [SceneEnum.APEX],
-        'description': '',
+        'scene': [SceneEnum.APEX, SceneEnum.INTERSTITIAL_FORMATION_ENERGY],
+        'description': 'Insert interstitial atoms into a host lattice to compute formation energies across candidate sites.',
     },
     'apex_calculate_elastic': {
         'belonging_agent': ApexAgentName,
-        'scene': [SceneEnum.APEX],
-        'description': '',
+        'scene': [SceneEnum.APEX, SceneEnum.ELASTIC_CONSTANT],
+        'description': 'Apply small strains to the lattice to extract elastic constants and derived moduli.',
     },
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
-        'scene': [SceneEnum.APEX],
-        'description': '',
+        'scene': [SceneEnum.APEX, SceneEnum.SURFACE_ENERGY],
+        'description': 'Generate slab models, relax surface layers, and report surface energies for selected Miller indices.',
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
-        'scene': [SceneEnum.APEX],
-        'description': '',
+        'scene': [SceneEnum.APEX, SceneEnum.EOS],
+        'description': 'Scan volumes around equilibrium, relax internal coordinates, and build an equation-of-state energy–volume curve.',
     },
     'apex_calculate_phonon': {
         'belonging_agent': ApexAgentName,
-        'scene': [SceneEnum.APEX],
-        'description': '',
+        'scene': [SceneEnum.APEX, SceneEnum.PHONON],
+        'description': 'Perform supercell finite-displacement calculations, relax configurations, and assemble phonon spectra',
     },
     'apex_calculate_gamma': {
         'belonging_agent': ApexAgentName,
-        'scene': [SceneEnum.APEX],
-        'description': '',
+        'scene': [SceneEnum.APEX, SceneEnum.STACKING_FAULT_ENERGY],
+        'description': 'Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths.',
     },
     'get_target_info': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
@@ -347,8 +276,8 @@ ALL_TOOLS = {
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.LITERATURE],
+        'description': 'Read and extract contents from PDF-formatted document files. Outputs information of materials involved and methodologies, supporting additional information required by users.',
     },
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -458,7 +387,7 @@ ALL_TOOLS = {
     'generate_calypso_structures': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Generate candidate crystal structures based on specified chemical species and number of configurations. Employs particle-swarm algorithms to produce stable crystal candidates. Requires valid element inputs and accessible CALYPSO environment',
     },
     'generate_crystalformer_structures': {
         'belonging_agent': StructureGenerateAgentName,
@@ -468,62 +397,62 @@ ALL_TOOLS = {
     'make_supercell_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Make supercell expansion based on structure file.',
     },
     'build_bulk_structure_by_template': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Build bulk crystal structures based on elemental or compound inputs using packing templates.',
     },
     'build_molecule_structure_from_g2database': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Build molecule structure from g2 database.',
     },
     'build_surface_slab': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Build surface slabs based on bulk structure file miller indices',
     },
     'build_surface_adsorbate': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Build a surface–adsorbate structure by placing a molecular adsorbate onto a given surface slab at a specified lateral position (fractional coordinates or site keyword) and height above the surface. Outputs a combined CIF file. Requires valid surface and adsorbate structure files',
     },
     'build_surface_interface': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Build a heterointerface by stacking two slab structures along a chosen axis with specified interlayer distance and lattice-matching tolerance. Performs basic in-plane strain checking and outputs the combined interface as a CIF file. Requires pre-constructed slab inputs.',
     },
     'add_cell_for_molecules': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Add a periodic simulation cell to a molecular structure for isolated-molecule calculations.',
     },
     'build_bulk_structure_by_wyckoff': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Build bulk crystal structures using lattice parameters, space group, and Wyckoff positions. Output as CIF or other structure files.',
     },
     'build_molecule_structures_from_smiles': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Build a 3D molecular structure from a SMILES string.',
     },
     'make_doped_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Generate doped crystal structures by randomly substituting selected atomic sites with specified dopant species at given concentrations.',
     },
     'make_amorphous_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': '',
+        'description': 'Generate amorphous molecular structures by randomly filling molecules into a periodic box based on specified box size, density, or molecule count. Supports automatic calculation of missing parameters and avoids overlaps during placement. Produces an initial amorphous configuration for further relaxation or molecular dynamics simulations.',
     },
     'get_structure_info': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [],
-        'description': '',
+        'description': 'Extract key structural descriptors from a given crystal or molecular structure file, including lattice parameters, chemical formula, atomic composition, cell volume, crystallographic density, and molar mass.',
     },
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
@@ -590,6 +519,11 @@ ALL_TOOLS = {
         'scene': [],
         'description': '',
     },
+    'visualize_data': {
+        'belonging_agent': VisualizerAgentName,
+        'scene': [SceneEnum.VISUALIZE_DATA],
+        'description': 'Automatically analyze materials science data files (CSV, Excel, JSON, TXT, DAT), identify the data structure with regular expression, and visualize the data with plots.',
+    },
 }
 
 
@@ -613,6 +547,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     TaskOrchestratorAgent = TASK_ORCHESTRATOR_AGENT_NAME
     TrajAnalysisAgent = TrajAnalysisAgentName
     FinetuneDPAAgent = FinetuneDPAAgentName
+    VisualizerAgent = VisualizerAgentName
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())

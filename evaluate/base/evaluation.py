@@ -24,7 +24,8 @@ from evaluate.utils import load_dataset_json
 
 logger = logging.getLogger(__name__)
 
-load_dotenv(find_dotenv())
+load_dotenv(find_dotenv(), override=True)
+print(os.getenv('BOHRIUM_API_URL'))
 
 
 def evaluation_task(dataset_item):
@@ -294,6 +295,9 @@ async def _run_conversation(
                                                 project_id=os.getenv("MATERIALS_PROJECT_ID"))
                         job_info = bohrium_client.job.detail(job_id)
                     except Exception as e:
+                        import traceback
+
+                        print(f"traceback, {traceback.print_exc()}")
                         logger.error(f"查询job状态失败: {e}")
                         all_finished = False
                         continue
