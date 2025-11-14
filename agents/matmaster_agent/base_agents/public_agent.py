@@ -202,7 +202,6 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
         self._tool_call_info_agent = SchemaAgent(
             model=self.model,
             name=f"{agent_prefix}_tool_call_info_agent",
-            instruction=gen_tool_call_info_instruction(),
             tools=self.mcp_tools,
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
@@ -305,6 +304,9 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             ):
                 yield materials_plan_function_call_event
 
+            self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
+                user_prompt=current_step['description']
+            )
             async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
                 yield tool_call_info_event
             tool_call_info = ctx.session.state['tool_call_info']
