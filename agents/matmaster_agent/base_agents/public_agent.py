@@ -1,3 +1,4 @@
+import copy
 import logging
 from typing import AsyncGenerator, Optional, Union, override
 
@@ -214,7 +215,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
         )
 
         self._auto_add_params_agent = SchemaAgent(
-            model=self.model,
+            model=MatMasterLlmConfig.tool_schema_model,
             name=f"{agent_prefix}_auto_add_params_agent",
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
@@ -321,10 +322,23 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
                 for item in ctx.session.state['function_declarations']
                 if item['name'] == origin_tool_call_info['tool_name']
             ]
-            required_params = function_declaration[0].parameters.required
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} function_declaration[0] = {function_declaration[0]}'
+            )
+            required_params = function_declaration[0]['parameters']['required']
+
+            update_tool_call_info = copy.deepcopy(origin_tool_call_info)
+            for param in required_params:
+                if (
+                    param in origin_tool_call_info['tool_args'].keys()
+                    or origin_tool_call_info['missing_tool_args'].keys()
+                ):
+                    continue
+                else:
+                    update_tool_call_info['missing_tool_args'].append(param)
 
             self.auto_add_params_agent.instruction = gen_auto_add_params_instruction(
-                origin_tool_call_info, required_params
+                update_tool_call_info
             )
             async for auto_add_params_event in self.auto_add_params_agent.run_async(
                 ctx
