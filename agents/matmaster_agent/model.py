@@ -59,7 +59,7 @@ class UserContent(BaseModel):
     language: str
 
 
-class ToolCallInfo(BaseModel):
+class ToolCallInfoSchema(BaseModel):
     tool_name: str
     tool_args: dict
     missing_tool_args: List[str]

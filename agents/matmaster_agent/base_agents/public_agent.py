@@ -1,4 +1,3 @@
-import copy
 import logging
 from typing import AsyncGenerator, Optional, Union, override
 
@@ -38,9 +37,8 @@ from agents.matmaster_agent.constant import (
 )
 from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
-from agents.matmaster_agent.model import ToolCallInfo
+from agents.matmaster_agent.model import ToolCallInfoSchema
 from agents.matmaster_agent.prompt import (
-    gen_auto_add_params_instruction,
     gen_params_check_info_agent_instruction,
     gen_result_agent_description,
     gen_result_agent_instruction,
@@ -210,8 +208,8 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             disallow_transfer_to_peers=True,
             before_model_callback=default_before_model_callback,
             after_model_callback=remove_function_call,
-            output_schema=ToolCallInfo,
-            state_key='origin_tool_call_info',
+            output_schema=ToolCallInfoSchema,
+            state_key='tool_call_info',
         )
 
         self._auto_add_params_agent = SchemaAgent(
@@ -219,7 +217,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             name=f"{agent_prefix}_auto_add_params_agent",
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
-            output_schema=ToolCallInfo,
+            output_schema=ToolCallInfoSchema,
             state_key='tool_call_info',
         )
 
@@ -309,42 +307,42 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
 
             async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
                 yield tool_call_info_event
-            origin_tool_call_info = ctx.session.state['origin_tool_call_info']
+            tool_call_info = ctx.session.state['tool_call_info']
 
             logger.info(
-                f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} origin_tool_call_info = {origin_tool_call_info}'
+                f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} tool_call_info = {tool_call_info}'
             )
-            if not origin_tool_call_info:
+            if not tool_call_info:
                 return
 
-            function_declaration = [
-                item
-                for item in ctx.session.state['function_declarations']
-                if item['name'] == origin_tool_call_info['tool_name']
-            ]
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} function_declaration[0] = {function_declaration[0]}'
-            )
-            required_params = function_declaration[0]['parameters']['required']
-
-            update_tool_call_info = copy.deepcopy(origin_tool_call_info)
-            for param in required_params:
-                if (
-                    param in origin_tool_call_info['tool_args'].keys()
-                    or origin_tool_call_info['missing_tool_args'].keys()
-                ):
-                    continue
-                else:
-                    update_tool_call_info['missing_tool_args'].append(param)
-
-            self.auto_add_params_agent.instruction = gen_auto_add_params_instruction(
-                update_tool_call_info
-            )
-            async for auto_add_params_event in self.auto_add_params_agent.run_async(
-                ctx
-            ):
-                yield auto_add_params_event
-            tool_call_info = ctx.session.state['tool_call_info']
+            # function_declaration = [
+            #     item
+            #     for item in ctx.session.state['function_declarations']
+            #     if item['name'] == tool_call_info['tool_name']
+            # ]
+            # logger.info(
+            #     f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} function_declaration[0] = {function_declaration[0]}'
+            # )
+            # required_params = function_declaration[0]['parameters']['required']
+            #
+            # update_tool_call_info = copy.deepcopy(tool_call_info)
+            # for param in required_params:
+            #     if (
+            #         param in tool_call_info['tool_args'].keys()
+            #         or param in tool_call_info['missing_tool_args']
+            #     ):
+            #         continue
+            #     else:
+            #         update_tool_call_info['missing_tool_args'].append(param)
+            #
+            # self.auto_add_params_agent.instruction = gen_auto_add_params_instruction(
+            #     update_tool_call_info
+            # )
+            # async for auto_add_params_event in self.auto_add_params_agent.run_async(
+            #     ctx
+            # ):
+            #     yield auto_add_params_event
+            # tool_call_info = ctx.session.state['tool_call_info']
 
             missing_tool_args = tool_call_info.get('missing_tool_args', None)
 
