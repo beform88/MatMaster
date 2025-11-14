@@ -314,6 +314,13 @@ class MatMasterFlowAgent(LlmAgent):
                         ctx, self.name, plan_ask_confirm_card(), ModelRole
                     ):
                         yield plan_ask_confirm_event
+                    if plan_confirm:
+                        yield update_state_event(
+                            ctx,
+                            state_delta={
+                                'plan_confirm': {'flag': False, 'reason': ' New Plan'}
+                            },
+                        )
 
                 # 计划未确认，暂停往下执行
                 if not plan_confirm:
@@ -321,8 +328,16 @@ class MatMasterFlowAgent(LlmAgent):
 
                 # 执行计划
                 if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
-                    async for execution_event in self.execution_agent.run_async(ctx):
-                        yield execution_event
+                    yield update_state_event(
+                        ctx, state_delta={'validation_error': False}
+                    )
+                    for _ in range(2):
+                        async for execution_event in self.execution_agent.run_async(
+                            ctx
+                        ):
+                            yield execution_event
+                        if not ctx.session.state['validation_error']:
+                            break
 
                 # 全部执行完毕，总结执行情况
                 if (

@@ -64,6 +64,7 @@ from agents.matmaster_agent.utils.event_utils import (
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
     is_mcp_result,
+    is_validation_error,
     load_tool_response,
     parse_result,
 )
@@ -338,6 +339,12 @@ class SubmitCoreMCPAgent(MCPAgent):
                     if (
                         is_mcp_result(tool_response) and tool_response['result'].isError
                     ):  # Original MCPResult & Error
+
+                        if is_validation_error(tool_response['result']):
+                            yield update_state_event(
+                                ctx, state_delta={'validation_error': True}
+                            )
+
                         for tool_response_failed_event in all_text_event(
                             ctx,
                             self.name,

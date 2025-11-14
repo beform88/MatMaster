@@ -129,6 +129,10 @@ def is_mcp_result(tool_response: Optional[dict[str, Any]]):
     )
 
 
+def is_validation_error(result: CallToolResult):
+    return 'validation errors' in result.content[0].text
+
+
 def is_algorithm_error(dict_result) -> bool:
     return dict_result.get('code') is not None and dict_result['code'] != 0
 
