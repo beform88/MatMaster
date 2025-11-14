@@ -615,7 +615,6 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
         - Molecule dynamics using DFT (very expensive!)
         - Work function
         - Vacancy formation energy
-      - Whether to do relax before calculating selected property
       - Collinear magnetic materials are supported, and setting initial magnetic moments and DFT+U parameters are supported
     - Example Queries:
       - "请帮我计算CsPbI3的能带"
