@@ -56,61 +56,25 @@ async def default_before_model_callback(
 
 
 # after_model_callback
-def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
+async def default_after_model_callback(
+    callback_context: CallbackContext, llm_response: LlmResponse
+) -> Optional[LlmResponse]:
+    return
+
+
+def filter_function_calls(
+    func: AfterModelCallback, enforce_single_function_call: bool = False
+) -> AfterModelCallback:
     @wraps(func)
     async def wrapper(
         callback_context: CallbackContext, llm_response: LlmResponse
     ) -> Optional[LlmResponse]:
-        # 检查响应是否有效
-        if not (
-            llm_response
-            and llm_response.content
-            and llm_response.content.parts
-            and len(llm_response.content.parts)
-        ):
-            return None
+        # 先调用被装饰的 after_model_callback
+        if (
+            after_model_result := await func(callback_context, llm_response)
+        ) is not None:
+            return after_model_result
 
-        for part in llm_response.content.parts:
-            if part.function_call:
-                function_call_name = part.function_call.name
-                function_call_args = part.function_call.args
-                tool_call_info = callback_context.state['tool_call_info']
-                if not tool_call_info:
-                    logger.warning(
-                        f'[{MATMASTER_AGENT_NAME}] empty, tool_call_info = {tool_call_info}'
-                    )
-                    return
-
-                last_tool_call_info = tool_call_info
-                if last_tool_call_info['tool_name'] != function_call_name:
-                    logger.warning(
-                        f'[{MATMASTER_AGENT_NAME}] not match, tool_call_info = {tool_call_info}, tool.name = {function_call_name}'
-                    )
-                    return
-
-                logger.info(
-                    f'[{MATMASTER_AGENT_NAME}] before args = {function_call_args}'
-                )
-                diff = DeepDiff(function_call_args, last_tool_call_info['tool_args'])
-                if diff:
-                    part.function_call.args = last_tool_call_info['tool_args']
-                    logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] args updated with differences: {diff}'
-                    )
-                    logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] after args = {part.function_call.args}'
-                    )
-                else:
-                    logger.info(f'[{MATMASTER_AGENT_NAME}] args unchanged')
-
-    return wrapper
-
-
-def default_after_model_callback(func: AfterModelCallback) -> AfterModelCallback:
-    @wraps(func)
-    async def wrapper(
-        callback_context: CallbackContext, llm_response: LlmResponse
-    ) -> Optional[LlmResponse]:
         # 检查响应是否有效
         if not (
             llm_response
@@ -130,6 +94,9 @@ def default_after_model_callback(func: AfterModelCallback) -> AfterModelCallback
         # 如果没有函数调用，直接返回
         if not current_function_calls:
             return None
+
+        if enforce_single_function_call:
+            current_function_calls = [current_function_calls[0]]
 
         if (
             callback_context.state.get('invocation_id_with_tool_call', None) is None
@@ -173,6 +140,7 @@ def default_after_model_callback(func: AfterModelCallback) -> AfterModelCallback
             logger.warning(
                 f'[{MATMASTER_AGENT_NAME}] Same InvocationId with Function Calls'
             )
+
             before_function_calls = callback_context.state[
                 'invocation_id_with_tool_call'
             ][callback_context.invocation_id]
@@ -193,6 +161,62 @@ def default_after_model_callback(func: AfterModelCallback) -> AfterModelCallback
             )
 
         return None
+
+    return wrapper
+
+
+def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
+    @wraps(func)
+    async def wrapper(
+        callback_context: CallbackContext, llm_response: LlmResponse
+    ) -> Optional[LlmResponse]:
+        # 先调用被装饰的 after_model_callback
+        if (
+            after_model_result := await func(callback_context, llm_response)
+        ) is not None:
+            return after_model_result
+
+        # 检查响应是否有效
+        if not (
+            llm_response
+            and llm_response.content
+            and llm_response.content.parts
+            and len(llm_response.content.parts)
+        ):
+            return None
+
+        for part in llm_response.content.parts:
+            if part.function_call:
+                function_call_name = part.function_call.name
+                function_call_args = part.function_call.args
+                tool_call_info = callback_context.state['tool_call_info']
+                if not tool_call_info:
+                    logger.warning(
+                        f'[{MATMASTER_AGENT_NAME}] empty, tool_call_info = {tool_call_info}'
+                    )
+                    return
+
+                last_tool_call_info = tool_call_info
+                if last_tool_call_info['tool_name'] != function_call_name:
+                    logger.warning(
+                        f'[{MATMASTER_AGENT_NAME}] not match, tool_call_info = {tool_call_info}, tool.name = {function_call_name}'
+                    )
+                    return
+
+                logger.info(
+                    f'[{MATMASTER_AGENT_NAME}] before args = {function_call_args}'
+                )
+                diff = DeepDiff(function_call_args, last_tool_call_info['tool_args'])
+                if diff:
+                    part.function_call.args = last_tool_call_info['tool_args']
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}] args updated with differences: {diff}'
+                    )
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}] after args = {part.function_call.args}'
+                    )
+                else:
+                    logger.info(f'[{MATMASTER_AGENT_NAME}] args unchanged')
 
     return wrapper
 

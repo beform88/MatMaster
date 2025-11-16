@@ -103,6 +103,7 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             disallow_transfer_to_parent=True,
             enable_tgz_unpack=self.enable_tgz_unpack,
             cost_func=self.cost_func,
+            enforce_single_function_call=True,
         )
 
         submit_render_agent = SubmitRenderAgent(

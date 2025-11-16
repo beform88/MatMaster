@@ -9,11 +9,13 @@ from agents.matmaster_agent.flow_agents.agent import MatMasterFlowAgent
 from agents.matmaster_agent.llm_config import (
     MatMasterLlmConfig,
 )
+from agents.matmaster_agent.logger import setup_global_logger
 
 logging.getLogger('google_adk.google.adk.tools.base_authenticated_tool').setLevel(
     logging.ERROR
 )
 
+setup_global_logger()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
