@@ -14,11 +14,7 @@ async def get_tool_function_declaration(url: str, tool_name: str):
             # 调用 tools/list 方法（对应 get_tools）
             result = await session.list_tools()
             target_tool = [tool for tool in result.tools if tool.name == tool_name][0]
-            function_declaration = _to_gemini_schema(
-                target_tool.inputSchema
-            ).to_json_dict()
-
-            return function_declaration
+            _ = _to_gemini_schema(target_tool.inputSchema).to_json_dict()
 
 
 if __name__ == '__main__':
