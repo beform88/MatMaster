@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -40,6 +41,8 @@ def setup_global_logger():
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
     log_filename = datetime.now().strftime('%Y-%m-%d') + '.log'
+    if Path(LOG_DIR / log_filename).exists():
+        os.remove(Path(LOG_DIR / log_filename))
     file_handler = logging.FileHandler(LOG_DIR / log_filename)  # 文件名可以自定义
     file_handler.setLevel(logging.INFO)
 
