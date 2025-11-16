@@ -70,10 +70,7 @@ def filter_function_calls(
         callback_context: CallbackContext, llm_response: LlmResponse
     ) -> Optional[LlmResponse]:
         # 先调用被装饰的 after_model_callback
-        if (
-            after_model_result := await func(callback_context, llm_response)
-        ) is not None:
-            return after_model_result
+        await func(callback_context, llm_response)
 
         # 检查响应是否有效
         if not (
@@ -171,10 +168,7 @@ def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
         callback_context: CallbackContext, llm_response: LlmResponse
     ) -> Optional[LlmResponse]:
         # 先调用被装饰的 after_model_callback
-        if (
-            after_model_result := await func(callback_context, llm_response)
-        ) is not None:
-            return after_model_result
+        await func(callback_context, llm_response)
 
         # 检查响应是否有效
         if not (
