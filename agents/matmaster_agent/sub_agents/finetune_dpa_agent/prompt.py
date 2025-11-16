@@ -1,5 +1,3 @@
-from agents.matmaster_agent.prompt import TransferAgentDescription
-
 description = 'FinetuneDPA is a tool to calculate finetune_dpa_agent materials related properties with Deep Potential Models'
 
 instruction_en = (
@@ -10,8 +8,6 @@ instruction_en = (
 
 # from finetune_dpa_agent
 
-
-TransferAgentDescription
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 TrajAnalysisAgentName = 'traj_analysis_agent'

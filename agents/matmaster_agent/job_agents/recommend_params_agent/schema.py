@@ -106,7 +106,7 @@ if __name__ == '__main__':
         'wyckoff_positions',
     ]
     with open(
-        '/Users/hui_zhou/Project/AtomSmith/MatMaster/agents/matmaster_agent/function_declaration',
+        '/agents/matmaster_agent/function_declaration',
         'rb',
     ) as f:
         function_declaration = pickle.load(f)
