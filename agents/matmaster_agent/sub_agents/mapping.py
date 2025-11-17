@@ -194,10 +194,65 @@ AGENT_CLASS_MAPPING = {
 }
 
 ALL_TOOLS = {
-    'run_abacus_calculation': {
+    'abacus_vacancy_formation_energy': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.VACANCY_FORMATION_ENERGY],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate formation energy of non-charged vacancy. Only vacancy of metal atoms are supported. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate vacancy formation energy, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Supercell can be used. The calculated vacancy formation energy will be returned.',
+    },
+    'abacus_phonon_dispersion': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.PHONON],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate phonon dispersion curve. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate band, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Used supercell can be setted manually. Support provide high-symmetry points and k-point path. A plot of phonon dispersion band structure and related thermal corrections from vibration will be returned.',
+    },
+    'abacus_cal_band': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.BAND],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate band. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate band, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. PYATB and ABACUS nscf can be selected to plot the band. Support provide high-symmetry points and k-point path. A plot of band structure and band gap will be returned.',
+    },
+    'abacus_calculation_scf': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS],
-        'description': 'Use a structure file in cif/VASP-POSCAR/ABACUS-STRU format as input to calculate selected property at DFT level, **distinguished from** deep-learning potential (DPA). DFT parameters including DFT functional, spin polarization, DFT+U settings and initial magnetic moment and whether to do relax before property calculation can be setted. Supported properties including electronic band, (projected) density of state (DOS/PDOS), phonon dispersion curve, Bader charge, ab-initio molecular dynamics trajectories, electron localization function, elastic properties, equation of state, work function and vacancy formation energy. ',
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate energy. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment can be setted. ',
+    },
+    'abacus_dos_run': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.DENSITY_OF_STATES],
+        'description': "Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate DOS and PDOS. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate DOS and PDOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. PDOS mode can be 'species' (PDOS for a element like 'Pd'), 'species+shell' (PDOS for shell of a element like d shell of 'Pd'), 'species+orbital' (PDOS for orbitals of a element like d_xy of 'Pd'). Two plots for DOS and PDOS will be returned.",
+    },
+    'abacus_badercharge_run': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate Bader charge. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate Bader charge, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Bader charge for each atom is returned.',
+    },
+    'abacus_do_relax': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.OPTIMIZE_STRUCTURE],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to do relax calculation. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment can be setted. Whether to relax cell, max relaxation steps, relax method and fixed axes during the relaxation can be setted. A file of relaxed structure will be returned.',
+    },
+    'abacus_cal_work_function': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate work function of slabs and 2D materials. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. The direction of vacuum, and whether to do dipole correction can be setted. A plot of the average electrostat potential and calculated work function can be returned. For polar slabs, two work function for each of the surface will be calculated.',
+    },
+    'abacus_run_md': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.MOLECULAR_DYNAMICS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to do ab-initio molecule dynamics calculation. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Used ensemble, steps of AIMD, timestep, temperature can be setted. An ASE trajectory file will be returned.',
+    },
+    'abacus_cal_elf': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate electron localization function. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. A cube file of ELF will be returned.',
+    },
+    'abacus_eos': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate equation of state fitting curve for materials. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. A plot of fitted EOS and fitting parameters will be returned.',
+    },
+    'abacus_cal_elastic': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': "Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate elastic properties of materials. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate band, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Full elastic tensor (in Voigt notation), bulk modulus, shear modulus, Young's modulus and possion ratio will be returned.",
     },
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
@@ -281,7 +336,7 @@ ALL_TOOLS = {
     },
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
-        'scene': [SceneEnum.OPTIMIZE_STRUCTURE, SceneEnum.DPA],
+        'scene': [SceneEnum.DPA, SceneEnum.OPTIMIZE_STRUCTURE],
         'description': 'Perform geometry optimization of a crystal or molecular structure. Supports relaxation of atomic positions and optionally the unit cell.',
     },
     'run_molecular_dynamics': {
@@ -296,7 +351,7 @@ ALL_TOOLS = {
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
-        'scene': [SceneEnum.DPA],
+        'scene': [SceneEnum.DPA, SceneEnum.ELASTIC_CONSTANT],
         'description': '',
     },
     'run_neb': {
