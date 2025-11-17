@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from typing import AsyncGenerator, Optional, override
 
 from google.adk.agents import InvocationContext
@@ -31,6 +32,9 @@ class SchemaAgent(ErrorHandleLlmAgent):
                     if not event.partial:
                         raw_text = part.text
                         repaired_raw_text = extract_json_from_string(raw_text)
+                        repaired_raw_text = re.sub(
+                            r',(\s*[}\]])', r'\1', repaired_raw_text
+                        )  # 移除尾随逗号
                         logger.info(
                             f'[{MATMASTER_AGENT_NAME}]:[{ctx.session.id}] repaired_raw_text = {repaired_raw_text}'
                         )
