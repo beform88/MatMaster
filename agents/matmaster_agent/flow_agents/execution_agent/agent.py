@@ -10,7 +10,7 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum
@@ -24,7 +24,10 @@ from agents.matmaster_agent.prompt import MatMasterCheckTransferPrompt
 from agents.matmaster_agent.sub_agents.mapping import (
     MatMasterSubAgentsEnum,
 )
-from agents.matmaster_agent.utils.event_utils import update_state_event
+from agents.matmaster_agent.utils.event_utils import (
+    context_function_event,
+    update_state_event,
+)
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -74,6 +77,18 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                     logger.info(
                         f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                     )
+
+                    for materials_plan_function_call_event in context_function_event(
+                        ctx,
+                        self.name,
+                        'materials_plan_function_call',
+                        {
+                            'msg': f'According to the plan, I will call the `{step['tool_name']}`: {step['description']}'
+                        },
+                        ModelRole,
+                    ):
+                        yield materials_plan_function_call_event
+
                     async for event in target_agent.run_async(ctx):
                         yield event
 
