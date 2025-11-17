@@ -28,6 +28,7 @@ from agents.matmaster_agent.constant import (
     SKU_MAPPING,
     Transfer2Agent,
 )
+from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import CostFuncType
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
@@ -65,7 +66,7 @@ async def default_after_model_callback(
 
 
 def filter_function_calls(
-    func: AfterModelCallback, enforce_single_function_call: bool = False
+    func: AfterModelCallback, enforce_single_function_call: bool = True
 ) -> AfterModelCallback:
     @wraps(func)
     async def wrapper(
@@ -102,10 +103,12 @@ def filter_function_calls(
                 callback_context.state['plan_index']
             ]
             current_tool_name = current_step['tool_name']
+            current_step_satus = current_step['status']
             current_function_calls = [
                 item
                 for item in current_function_calls
                 if item['name'] == current_tool_name
+                and current_step_satus == PlanStepStatusEnum.PROCESS
             ]
             logger.info(
                 f'{callback_context.session.id} current_function_calls_after_single = {function_calls_to_str(current_function_calls)}'

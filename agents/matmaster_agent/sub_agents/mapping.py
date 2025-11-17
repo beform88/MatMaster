@@ -63,9 +63,12 @@ from agents.matmaster_agent.sub_agents.HEACalculator_agent.agent import (
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.MrDice_agent.agent import MrDice_Agent
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.agent import (
+    Bohriumpublic_AgentBase,
     bohriumpublic_toolset,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
+    BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.agent import (
@@ -75,7 +78,11 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.agent import (
     openlam_toolset,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.agent import (
+    Optimade_AgentBase,
     optimade_toolset,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant import (
+    OPTIMADE_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.organic_reaction_agent.agent import (
     OragnicReactionAgent,
@@ -180,7 +187,8 @@ AGENT_CLASS_MAPPING = {
     FinetuneDPAAgentName: FinetuneDPAAgent,
     HEA_assistant_AgentName: HEA_assistant_AgentBase,
     HEACALCULATOR_AGENT_NAME: HEACalculatorAgentBase,
-    MrDice_Agent_Name: MrDice_Agent,
+    OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
+    BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
     ORGANIC_REACTION_AGENT_NAME: OragnicReactionAgent,
     PerovskiteAgentName: PerovskiteAgent,
     PILOTEYE_ELECTRO_AGENT_NAME: PiloteyeElectroAgent,
@@ -380,7 +388,7 @@ ALL_TOOLS = {
         'description': '',
     },
     'fetch_structures_with_filter': {
-        'belonging_agent': MrDice_Agent_Name,
+        'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures from multiple OPTIMADE-compatible databases using raw OPTIMADE filter strings (elements, chemical formulas, logical combinations) across providers like alexandria, cod, mp, oqmd, tcod.',
     },
@@ -395,7 +403,7 @@ ALL_TOOLS = {
         'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) combined with base filters (elements, formulas) from OPTIMADE-compatible databases that provide band gap data.',
     },
     'fetch_bohrium_crystals': {
-        'belonging_agent': MrDice_Agent_Name,
+        'belonging_agent': BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures from the Bohrium Public database (includes Materials Project data) with flexible filtering by formula, elements, space group, atom counts, predicted formation energy range, and band gap range, supporting exact or contains match modes.',
     },
@@ -591,7 +599,8 @@ class MatMasterSubAgentsEnum(str, Enum):
     HEAAssistantAgent = HEA_assistant_AgentName
     HEACalculatorAgent = HEACALCULATOR_AGENT_NAME
     CompDARTAgent = COMPDART_AGENT_NAME
-    MrDiceAgent = MrDice_Agent_Name
+    OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
+    BohriumPublicDatabaseAgent = BOHRIUMPUBLIC_DATABASE_AGENT_NAME
     OrganicReactionAgent = ORGANIC_REACTION_AGENT_NAME
     PerovskiteAgent = PerovskiteAgentName
     PiloteyeElectroAgent = PILOTEYE_ELECTRO_AGENT_NAME
