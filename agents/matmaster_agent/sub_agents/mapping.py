@@ -246,7 +246,7 @@ ALL_TOOLS = {
     },
     'unielf_inference': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.POLYMER],
         'description': '',
     },
     'plan_and_visualize_reaction': {
@@ -311,17 +311,17 @@ ALL_TOOLS = {
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
-        'scene': [],
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
     },
     'HEA_predictor': {
         'belonging_agent': HEA_assistant_AgentName,
-        'scene': [],
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
     },
     'generate_binary_phase_diagram': {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
     },
     'fetch_structures_with_filter': {

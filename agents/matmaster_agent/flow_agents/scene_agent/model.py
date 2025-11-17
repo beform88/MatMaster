@@ -15,11 +15,16 @@ class SceneEnum(str, Enum):
     EOS = 'eos'
     PHONON = 'phonon'
     CompositionOptimization = 'composition_optimization'
+    VISUALIZE_DATA = 'visualize_data'
+    REACTION = 'reaction'
+
     SMILES = 'smiles'
     LITERATURE = 'literature'
     JobResultRetrieval = 'job_result_retrieval'
+
     DPA = 'DPA'
     APEX = 'APEX'
     ABACUS = 'ABACUS'
-    VISUALIZE_DATA = 'visualize_data'
-    REACTION = 'reaction'
+
+    HIGH_ENTROPY_ALLOY = 'high_entropy_alloy'
+    POLYMER = 'polymer'
