@@ -391,7 +391,7 @@ ALL_TOOLS = {
     },
     'generate_crystalformer_structures': {
         'belonging_agent': StructureGenerateAgentName,
-        'scene': [SceneEnum.STRUCTURE_GENERATE],
+        'scene': [SceneEnum.STRUCTURE_GENERATE, SceneEnum.CONDITIONAL_GENERATE],
         'description': 'Generate crystal structures based on specified conditional attributes (bandgap, shear_modulus, bulk_modulus, superconducting critical temperature, sound) and user-provided space groups.',
     },
     'make_supercell_structure': {
