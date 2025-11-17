@@ -1,3 +1,4 @@
+import copy
 import logging
 from typing import AsyncGenerator, Optional, Union, override
 
@@ -253,6 +254,15 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
 
             if ctx.session.state['error_occurred']:
                 return
+
+            if not ctx.session.state['tool_call_info']:
+                update_tool_call_info = copy.deepcopy(
+                    ctx.session.state['tool_call_info']
+                )
+                update_tool_call_info['tool_name'] = current_step['tool_name']
+                yield update_state_event(
+                    ctx, state_delta={'tool_call_info': update_tool_call_info}
+                )
 
             tool_call_info = ctx.session.state['tool_call_info']
             function_declarations = ctx.session.state['function_declarations']
