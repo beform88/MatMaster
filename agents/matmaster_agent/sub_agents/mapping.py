@@ -221,7 +221,7 @@ ALL_TOOLS = {
     },
     'abacus_badercharge_run': {
         'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
+        'scene': [SceneEnum.ABACUS, SceneEnum.BADER_CHARGE_ANALYSIS],
         'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate Bader charge. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate Bader charge, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Bader charge for each atom is returned.',
     },
     'abacus_do_relax': {
