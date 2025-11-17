@@ -341,24 +341,6 @@ def tool_response_failed_card(i18n: I18N):
 """
 
 
-def plan_ask_confirm_card():
-    return """
-<div style="
-    background-color: #e7f3ff;
-    border: 1px solid #b3d9ff;
-    border-left: 4px solid #0066cc;
-    border-radius: 4px;
-    padding: 16px 20px;
-    margin: 16px 0;
-    font-family: sans-serif;
-    text-align: left;
-    color: #004085;
-">
-    <strong>请确认是否执行上述计划？</strong>
-</div>
-"""
-
-
 def running_job_card():
     return """
 <div style="
