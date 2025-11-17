@@ -1,13 +1,21 @@
+import logging
 from typing import Any, Dict, List, Union
 
 from google.genai import types
 from pydantic import BaseModel, Field, create_model
+
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.logger import PrefixFilter
 
 GENAI_TYPE_TO_PYDANTIC_MAPPING = {
     types.Type.NUMBER: float,
     types.Type.STRING: str,
     types.Type.INTEGER: int,
 }
+
+logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
 
 
 def get_field_kwargs(field):
@@ -66,6 +74,7 @@ def get_field_type(field: Dict[str, Any]) -> Any:
                     any_of_types.append(get_field_type(any_of_type))
             return Union[tuple(any_of_types)]
         else:
+            logger.error(f'field = {field}')
             raise NotImplementedError
 
     else:
