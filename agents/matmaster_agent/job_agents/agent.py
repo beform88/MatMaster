@@ -264,6 +264,22 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
                     ctx, state_delta={'tool_call_info': update_tool_call_info}
                 )
 
+            if ctx.session.state['tool_call_info']['tool_name'].startswith(
+                'functions.'
+            ):
+                logger.warning(
+                    f'{ctx.session.id} Detect wrong tool_name: {ctx.session.state['tool_call_info']['tool_name']}'
+                )
+                update_tool_call_info = copy.deepcopy(
+                    ctx.session.state['tool_call_info']
+                )
+                update_tool_call_info['tool_name'] = update_tool_call_info[
+                    'tool_name'
+                ].replace('functions.', '')
+                yield update_state_event(
+                    ctx, state_delta={'tool_call_info': update_tool_call_info}
+                )
+
             tool_call_info = ctx.session.state['tool_call_info']
             function_declarations = ctx.session.state['function_declarations']
             tool_call_info, current_function_declaration = (
