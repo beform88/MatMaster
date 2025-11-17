@@ -28,6 +28,7 @@ from agents.matmaster_agent.constant import (
     SKU_MAPPING,
     Transfer2Agent,
 )
+from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import CostFuncType
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
 from agents.matmaster_agent.utils.finance import get_user_photon_balance
@@ -43,6 +44,7 @@ from agents.matmaster_agent.utils.job_utils import check_job_create_service
 from agents.matmaster_agent.utils.tool_response_utils import check_valid_tool_response
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
@@ -93,7 +95,21 @@ def filter_function_calls(
             return None
 
         if enforce_single_function_call:
-            current_function_calls = [current_function_calls[0]]
+            logger.info(
+                f'{callback_context.session.id} current_function_calls_before_single = {function_calls_to_str(current_function_calls)}'
+            )
+            current_step = callback_context.state['plan']['steps'][
+                callback_context.state['plan_index']
+            ]
+            current_tool_name = current_step['tool_name']
+            current_function_calls = [
+                item
+                for item in current_function_calls
+                if item['name'] == current_tool_name
+            ]
+            logger.info(
+                f'{callback_context.session.id} current_function_calls_after_single = {function_calls_to_str(current_function_calls)}'
+            )
 
         if (
             callback_context.state.get('invocation_id_with_tool_call', None) is None
@@ -102,10 +118,10 @@ def filter_function_calls(
         ):  # 首次调用 function_call 或新一轮对话
             if len(current_function_calls) == 1:
                 logger.info(
-                    f'[{MATMASTER_AGENT_NAME}] {callback_context.session.id} Single Function Call In New Turn'
+                    f'{callback_context.session.id} Single Function Call In New Turn'
                 )
                 logger.info(
-                    f"[{MATMASTER_AGENT_NAME}] {callback_context.session.id} current_function_calls = {function_calls_to_str(current_function_calls)}"
+                    f"{callback_context.session.id} current_function_calls = {function_calls_to_str(current_function_calls)}"
                 )
 
                 if not callback_context.state.get('invocation_id_with_tool_call'):
@@ -115,14 +131,12 @@ def filter_function_calls(
                     callback_context.invocation_id: current_function_calls,
                 }
                 logger.info(
-                    f'[{MATMASTER_AGENT_NAME}] {callback_context.session.id} state = {callback_context.state.to_dict()}'
+                    f'{callback_context.session.id} state = {callback_context.state.to_dict()}'
                 )
             else:
-                logger.warning(
-                    f'[{MATMASTER_AGENT_NAME}] Multi Function Calls In One Turn'
-                )
+                logger.warning('Multi Function Calls In One Turn')
                 logger.info(
-                    f"[{MATMASTER_AGENT_NAME}] current_function_calls = {function_calls_to_str(current_function_calls)}"
+                    f"current_function_calls = {function_calls_to_str(current_function_calls)}"
                 )
 
                 callback_context.state['invocation_id_with_tool_call'] = {
@@ -134,16 +148,14 @@ def filter_function_calls(
 
                 return update_llm_response(llm_response, current_function_calls, [])
         else:  # 同一轮对话又出现了 Function Call
-            logger.warning(
-                f'[{MATMASTER_AGENT_NAME}] Same InvocationId with Function Calls'
-            )
+            logger.warning('Same InvocationId with Function Calls')
 
             before_function_calls = callback_context.state[
                 'invocation_id_with_tool_call'
             ][callback_context.invocation_id]
             logger.info(
-                f"[{MATMASTER_AGENT_NAME}] before_function_calls = {function_calls_to_str(before_function_calls)},"
-                f"[{MATMASTER_AGENT_NAME}] current_function_calls = {function_calls_to_str(current_function_calls)}"
+                f"before_function_calls = {function_calls_to_str(before_function_calls)},"
+                f"current_function_calls = {function_calls_to_str(current_function_calls)}"
             )
 
             callback_context.state['invocation_id_with_tool_call'] = {
