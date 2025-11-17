@@ -7,13 +7,6 @@ STRUCTURE ACQUISITION PROTOCOL:
 2. For structure generation requests:
    - SIMPLE STRUCTURES (elements, binary compounds, common crystals):
      * Build from crystallographic parameters
-     * **WYCKOFF AUTOMATION**: For common crystal structures, automatically include specific Wyckoff positions in the enhanced query
-     * Standard Wyckoff references:
-       - Diamond/Si: space group Fd-3m, Si at 8a (0,0,0)
-       - NaCl: space group Fm-3m, Na at 4a (0,0,0), Cl at 4b (0.5,0.5,0.5)
-       - CsCl: space group Pm-3m, Cs at 1a (0,0,0), Cl at 1b (0.5,0.5,0.5)
-       - Zinc blende: space group F-43m, Zn at 4a (0,0,0), S at 4c (0.25,0.25,0.25)
-       - Perovskite: space group Pm-3m, A at 1a (0,0,0), B at 1b (0.5,0.5,0.5), O at 3c (0.5,0.5,0)
      * References: ICSD, CRC Handbook, Springer Materials
 
    - COMPLEX STRUCTURES (ternary+ compounds, MOFs, specific materials):
@@ -24,7 +17,6 @@ STRUCTURE ACQUISITION PROTOCOL:
    - Expand user requests to explicitly include initial structure preparation
    - Preserve all original specifications and requirements
    - Add clear structure acquisition step before the requested operations
-   - **WYCKOFF INTEGRATION**: For simple structure generation, explicitly include specific Wyckoff positions in the enhanced query
    - **CRITICAL EXCEPTION 1**: If user explicitly provides an input structure file (e.g., .cif, .vasp, .xyz files via URL or direct upload), skip structure generation steps and proceed directly with the requested calculations
    - **CRITICAL EXCEPTION 2**: If user query is explicitly requesting structure generation with complete specifications (contains space group, composition, or other crystal structure parameters), do not add additional structure acquisition steps
    - **LANGUAGE CONSISTENCY RULE**: update_user_content must use the same language as origin_user_content (if origin is Chinese, update must be Chinese; if origin is English, update must be English)
@@ -42,7 +34,7 @@ Input: "Generate Si(111) slab with 10Å thickness"
 Output:
 {{
   "origin_user_content": "Generate Si(111) slab with 10Å thickness",
-  "update_user_content": "First build Si bulk structure (Fd-3m, a=5.43Å, Wyckoff position 8a (0,0,0)), then generate Si(111) slab with 10Å thickness"
+  "update_user_content": "First build Si bulk structure (Fd-3m, a=5.43Å), then generate Si(111) slab with 10Å thickness"
 }}
 
 EXAMPLE 2:
@@ -50,7 +42,7 @@ Input: "计算NaCl的能带结构"
 Output:
 {{
   "origin_user_content": "计算NaCl的能带结构",
-  "update_user_content": "首先构建NaCl体相结构（空间群Fm-3m，a=5.64Å，Wyckoff位置：Na在4a (0,0,0)，Cl在4b (0.5,0.5,0.5)），然后计算能带结构"
+  "update_user_content": "首先构建NaCl体相结构（空间群Fm-3m，a=5.64Å），然后计算能带结构"
 }}
 
 EXAMPLE 3:
@@ -58,7 +50,7 @@ Input: "Calculate phonons for zinc blende ZnS"
 Output:
 {{
   "origin_user_content": "Calculate phonons for zinc blende ZnS",
-  "update_user_content": "First construct zinc blende ZnS bulk structure (F-43m, a=5.41Å, Wyckoff positions: Zn at 4a (0,0,0), S at 4c (0.25,0.25,0.25)), then calculate phonon spectrum"
+  "update_user_content": "First construct zinc blende ZnS bulk structure (F-43m, a=5.41Å), then calculate phonon spectrum"
 }}
 
 EXAMPLE 4:
@@ -66,6 +58,6 @@ Input: "生成钙钛矿BaTiO3的结构"
 Output:
 {{
   "origin_user_content": "生成钙钛矿BaTiO3的结构",
-  "update_user_content": "首先构建钙钛矿BaTiO3体相结构（空间群Pm-3m，a=4.00Å，Wyckoff位置：Ba在1a (0,0,0)，Ti在1b (0.5,0.5,0.5)，O在3c (0.5,0.5,0)），然后进行结构优化"
+  "update_user_content": "首先构建钙钛矿BaTiO3体相结构（空间群Pm-3m，a=4.00Å），然后进行结构优化"
 }}
 """
