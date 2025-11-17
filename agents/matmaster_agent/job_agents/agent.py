@@ -23,7 +23,6 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
 from agents.matmaster_agent.constant import (
     FRONTEND_STATE_KEY,
     MATMASTER_AGENT_NAME,
-    ModelRole,
 )
 from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.job_agents.recommend_params_agent.prompt import (
@@ -58,10 +57,10 @@ from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
 from agents.matmaster_agent.utils.event_utils import (
-    context_function_event,
     update_state_event,
 )
 from agents.matmaster_agent.utils.helper_func import get_session_state
+from agents.matmaster_agent.utils.job_utils import has_job_running
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -225,27 +224,27 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             f'{ctx.session.id} has_origin_job_id = {has_origin_job_id}, has_matching_job = {has_matching_job}, {ctx.invocation_id}, {session_state['long_running_jobs']}'
         )
 
+        # 如果没有运行中的任务，则移除 JobResultRetrieval 场景
+        if not (
+            jobs_dict := ctx.session.state['long_running_jobs']
+        ) or not has_job_running(jobs_dict):
+            if SceneEnum.JobResultRetrieval in ctx.session.state['scene']['type']:
+                update_scene = ctx.session.state['scene'].copy()
+                update_scene['type'].remove(SceneEnum.JobResultRetrieval)
+                yield update_state_event(ctx, state_delta={'scene': update_scene})
+
         if (
             has_origin_job_id
             or has_matching_job
-            or ctx.session.state['scene']['type'][0] == SceneEnum.JobResultRetrieval
+            or (scene_types := ctx.session.state['scene']['type'])
+            and scene_types
+            and scene_types[0] == SceneEnum.JobResultRetrieval
         ):
             # Only Query Job Result
             pass
         else:
             # 根据计划来
             current_step = session_state['plan']['steps'][session_state['plan_index']]
-            for materials_plan_function_call_event in context_function_event(
-                ctx,
-                self.name,
-                'materials_plan_function_call',
-                {
-                    'msg': f'According to the plan, I will call the `{current_step['tool_name']}`: {current_step['description']}'
-                },
-                ModelRole,
-            ):
-                yield materials_plan_function_call_event
-
             self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
                 user_prompt=current_step['description']
             )
