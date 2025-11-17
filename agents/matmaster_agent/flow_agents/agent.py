@@ -11,7 +11,7 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
 from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent
-from agents.matmaster_agent.constant import ModelRole
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
     get_analysis_instruction,
 )
@@ -50,6 +50,7 @@ from agents.matmaster_agent.flow_agents.utils import (
     get_tools_list,
 )
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
+from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.style import plan_ask_confirm_card, running_job_card
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
@@ -58,6 +59,7 @@ from agents.matmaster_agent.sub_agents.mapping import (
 )
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
+    context_function_event,
     send_error_event,
     update_state_event,
 )
@@ -66,6 +68,7 @@ from agents.matmaster_agent.utils.job_utils import (
 )
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
@@ -333,24 +336,24 @@ class MatMasterFlowAgent(LlmAgent):
                         )
 
                 # 计划未确认，暂停往下执行
-                if not ctx.session.state['plan_confirm']['flag']:
-                    return
+                if ctx.session.state['plan_confirm']['flag']:
+                    # 执行计划
+                    if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
+                        async for execution_event in self.execution_agent.run_async(
+                            ctx
+                        ):
+                            yield execution_event
 
-                # 执行计划
-                if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
-                    async for execution_event in self.execution_agent.run_async(ctx):
-                        yield execution_event
-
-                # 全部执行完毕，总结执行情况
-                if (
-                    check_plan(ctx) == FlowStatusEnum.COMPLETE
-                    or ctx.session.state['plan']['feasibility'] == 'null'
-                ):
-                    self._analysis_agent.instruction = get_analysis_instruction(
-                        ctx.session.state['plan']
-                    )
-                    async for analysis_event in self.analysis_agent.run_async(ctx):
-                        yield analysis_event
+                    # 全部执行完毕，总结执行情况
+                    if (
+                        check_plan(ctx) == FlowStatusEnum.COMPLETE
+                        or ctx.session.state['plan']['feasibility'] == 'null'
+                    ):
+                        self._analysis_agent.instruction = get_analysis_instruction(
+                            ctx.session.state['plan']
+                        )
+                        async for analysis_event in self.analysis_agent.run_async(ctx):
+                            yield analysis_event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
@@ -362,3 +365,14 @@ class MatMasterFlowAgent(LlmAgent):
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
+
+        # 评分组件
+        for generate_nps_event in context_function_event(
+            ctx,
+            self.name,
+            'matmaster_generate_nps',
+            {},
+            ModelRole,
+            {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},
+        ):
+            yield generate_nps_event
