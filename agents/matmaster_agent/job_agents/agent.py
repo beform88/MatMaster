@@ -250,6 +250,10 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             )
             async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
                 yield tool_call_info_event
+
+            if ctx.session.state['error_occurred']:
+                return
+
             tool_call_info = ctx.session.state['tool_call_info']
             function_declarations = ctx.session.state['function_declarations']
             tool_call_info, current_function_declaration = (
