@@ -356,7 +356,7 @@ ALL_TOOLS = {
     },
     'calculate_reaction_profile': {
         'belonging_agent': ORGANIC_REACTION_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.REACTION],
         'description': '',
     },
     'semantic_search': {

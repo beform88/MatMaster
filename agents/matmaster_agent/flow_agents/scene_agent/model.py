@@ -22,3 +22,4 @@ class SceneEnum(str, Enum):
     APEX = 'APEX'
     ABACUS = 'ABACUS'
     VISUALIZE_DATA = 'visualize_data'
+    REACTION = 'reaction'
