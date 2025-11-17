@@ -1,4 +1,3 @@
-import logging
 from typing import AsyncGenerator, Union, override
 
 from google.adk.agents import InvocationContext
@@ -17,17 +16,9 @@ from agents.matmaster_agent.base_agents.sync_agent import (
     SyncMCPAgent,
     ToolValidatorAgent,
 )
-from agents.matmaster_agent.constant import (
-    MATMASTER_AGENT_NAME,
-)
-from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.utils.event_utils import (
     update_state_event,
 )
-
-logger = logging.getLogger(__name__)
-logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
-logger.setLevel(logging.INFO)
 
 
 # 同步计算 Agent，可自动 transfer 回主 Agent
