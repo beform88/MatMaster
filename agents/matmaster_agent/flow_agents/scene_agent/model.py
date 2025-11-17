@@ -3,6 +3,7 @@ from enum import Enum
 
 class SceneEnum(str, Enum):
     STRUCTURE_GENERATE = 'structure_generate'
+    CONDITIONAL_GENERATE = 'conditional_generate'
     DATABASE_SEARCH = 'database_search'
     OPTIMIZE_STRUCTURE = 'optimize_structure'
     VACANCY_FORMATION_ENERGY = 'vacancy_formation_energy'
