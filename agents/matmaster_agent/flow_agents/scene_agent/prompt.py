@@ -11,7 +11,6 @@ Classification Guidelines:
    - Use multiple scenes when the request contains genuinely distinct operational goals, even if they are part of the same project.
 5. **Scope Clarification**:
    - `structure_generate` should be strictly limited to tasks involving the creation or generation of new structures (e.g., molecule generation, surface construction, interface building).
-   - `calculation` encompasses structure optimization, energy calculations, property prediction, and other computational analysis tasks.
 
 Return a valid, parseable JSON string using this exact structure:
 {{
