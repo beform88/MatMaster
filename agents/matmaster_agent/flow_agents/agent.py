@@ -44,6 +44,7 @@ from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
+from agents.matmaster_agent.flow_agents.style import plan_ask_confirm_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     create_dynamic_plan_schema,
@@ -51,7 +52,7 @@ from agents.matmaster_agent.flow_agents.utils import (
 )
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
-from agents.matmaster_agent.style import plan_ask_confirm_card, running_job_card
+from agents.matmaster_agent.style import running_job_card
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,

@@ -1,0 +1,16 @@
+def plan_ask_confirm_card():
+    return """
+<div style="
+  background-color: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-left: 4px solid #0066cc;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-family: sans-serif;
+  color: #004085;
+  line-height: 1.4;
+">
+  <strong>请确认是否执行上述计划？</strong>
+</div>
+"""
