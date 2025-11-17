@@ -19,6 +19,7 @@ from agents.matmaster_agent.flow_agents.utils import (
     get_agent_name,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import MatMasterCheckTransferPrompt
 from agents.matmaster_agent.sub_agents.mapping import (
     MatMasterSubAgentsEnum,
@@ -26,6 +27,7 @@ from agents.matmaster_agent.sub_agents.mapping import (
 from agents.matmaster_agent.utils.event_utils import update_state_event
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
@@ -52,10 +54,13 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         plan = ctx.session.state['plan']
-        logger.info(f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} plan = {plan}')
+        logger.info(f'{ctx.session.id} plan = {plan}')
         for index, step in enumerate(plan['steps']):
             if step.get('tool_name'):
                 target_agent = get_agent_name(step['tool_name'], self.sub_agents)
+                logger.info(
+                    f'{ctx.session.id} tool_name = {step['tool_name']}, target_agent = {target_agent.name}'
+                )
                 if step['status'] in [
                     PlanStepStatusEnum.PLAN,
                     PlanStepStatusEnum.PROCESS,
@@ -65,7 +70,7 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                         ctx, state_delta={'plan_index': index}
                     )  # TODO: One Agent Many Tools Call
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} plan_index = {ctx.session.state["plan_index"]}'
+                        f'{ctx.session.id} plan_index = {ctx.session.state["plan_index"]}'
                     )
                     async for event in target_agent.run_async(ctx):
                         if (
@@ -82,9 +87,7 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                         yield event
 
                     plan = ctx.session.state['plan']
-                    logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} plan = {plan}, {check_plan(ctx)}'
-                    )
+                    logger.info(f'{ctx.session.id} plan = {plan}, {check_plan(ctx)}')
                     if check_plan(ctx) not in [
                         FlowStatusEnum.NO_PLAN,
                         FlowStatusEnum.NEW_PLAN,
