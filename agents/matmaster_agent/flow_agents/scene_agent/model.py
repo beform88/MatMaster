@@ -14,6 +14,8 @@ class SceneEnum(str, Enum):
     STACKING_FAULT_ENERGY = 'stacking_fault_energy'
     EOS = 'eos'
     PHONON = 'phonon'
+    BAND = 'band'
+    DENSITY_OF_STATES = 'density_of_states'
     CompositionOptimization = 'composition_optimization'
     VISUALIZE_DATA = 'visualize_data'
     REACTION = 'reaction'
