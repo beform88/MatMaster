@@ -68,7 +68,7 @@ class MCPInitMixin(BaseMixin):
     render_tool_response: bool = False  # Whether render tool response in frontend
     enable_tgz_unpack: bool = True  # Whether unpack tgz files for tool_results
     cost_func: Optional[CostFuncType] = None
-    enforce_single_function_call: bool = False  # 是否只允许单个 function_call
+    enforce_single_function_call: bool = True  # 是否只允许单个 function_call
 
 
 class MCPCallbackMixin(BaseMixin):
@@ -94,7 +94,7 @@ class MCPCallbackMixin(BaseMixin):
             data['enable_tgz_unpack'] = True
 
         if data.get('enforce_single_function_call') is None:
-            data['enforce_single_function_call'] = False
+            data['enforce_single_function_call'] = True
 
         data['after_model_callback'] = update_tool_args(
             filter_function_calls(

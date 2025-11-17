@@ -66,28 +66,20 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                     PlanStepStatusEnum.PROCESS,
                     PlanStepStatusEnum.FAILED,
                 ]:
+                    update_plan = copy.deepcopy(ctx.session.state['plan'])
+                    update_plan['steps'][index]['status'] = PlanStepStatusEnum.PROCESS
                     yield update_state_event(
-                        ctx, state_delta={'plan_index': index}
-                    )  # TODO: One Agent Many Tools Call
+                        ctx, state_delta={'plan': update_plan, 'plan_index': index}
+                    )
                     logger.info(
-                        f'{ctx.session.id} plan_index = {ctx.session.state["plan_index"]}'
+                        f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                     )
                     async for event in target_agent.run_async(ctx):
-                        if (
-                            ctx.session.state['plan']['steps'][index]['status']
-                            == PlanStepStatusEnum.PLAN
-                        ):
-                            update_plan = copy.deepcopy(ctx.session.state['plan'])
-                            update_plan['steps'][index][
-                                'status'
-                            ] = PlanStepStatusEnum.PROCESS
-                            yield update_state_event(
-                                ctx, state_delta={'plan': update_plan}
-                            )
                         yield event
 
-                    plan = ctx.session.state['plan']
-                    logger.info(f'{ctx.session.id} plan = {plan}, {check_plan(ctx)}')
+                    logger.info(
+                        f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
+                    )
                     if check_plan(ctx) not in [
                         FlowStatusEnum.NO_PLAN,
                         FlowStatusEnum.NEW_PLAN,
