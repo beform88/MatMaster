@@ -72,7 +72,11 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.agent import (
+    Mofdb_AgentBase,
     mofdb_toolset,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.constant import (
+    MOFDB_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.agent import (
     openlam_toolset,
@@ -189,6 +193,7 @@ AGENT_CLASS_MAPPING = {
     HEACALCULATOR_AGENT_NAME: HEACalculatorAgentBase,
     OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
+    MOFDB_DATABASE_AGENT_NAME: Mofdb_AgentBase,
     ORGANIC_REACTION_AGENT_NAME: OragnicReactionAgent,
     PerovskiteAgentName: PerovskiteAgent,
     PILOTEYE_ELECTRO_AGENT_NAME: PiloteyeElectroAgent,
@@ -398,7 +403,7 @@ ALL_TOOLS = {
         'description': 'Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) combined with base filters from OPTIMADE-compatible databases.',
     },
     'fetch_structures_with_bandgap': {
-        'belonging_agent': MrDice_Agent_Name,
+        'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) combined with base filters (elements, formulas) from OPTIMADE-compatible databases that provide band gap data.',
     },
@@ -413,7 +418,7 @@ ALL_TOOLS = {
         'description': 'Retrieve crystal structures from the OpenLAM database filtered by chemical formula, energy range, and submission time, with output in CIF or JSON format.',
     },
     'fetch_mofs_sql': {
-        'belonging_agent': MrDice_Agent_Name,
+        'belonging_agent': MOFDB_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Execute SQL queries against the MOF database with support for complex multi-table joins, window functions, CTEs, and statistical analysis for advanced MOF property queries and composition analysis.',
     },
@@ -601,6 +606,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     CompDARTAgent = COMPDART_AGENT_NAME
     OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
     BohriumPublicDatabaseAgent = BOHRIUMPUBLIC_DATABASE_AGENT_NAME
+    MOFDBDatabaseAgent = MOFDB_DATABASE_AGENT_NAME
     OrganicReactionAgent = ORGANIC_REACTION_AGENT_NAME
     PerovskiteAgent = PerovskiteAgentName
     PiloteyeElectroAgent = PILOTEYE_ELECTRO_AGENT_NAME

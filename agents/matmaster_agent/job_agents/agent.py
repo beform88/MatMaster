@@ -233,6 +233,8 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
                     ctx.session.state['tool_call_info']
                 )
                 update_tool_call_info['tool_name'] = current_step['tool_name']
+                update_tool_call_info['tool_args'] = {}
+                update_tool_call_info['missing_tool_args'] = []
                 yield update_state_event(
                     ctx, state_delta={'tool_call_info': update_tool_call_info}
                 )

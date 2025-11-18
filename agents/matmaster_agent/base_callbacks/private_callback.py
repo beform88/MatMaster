@@ -110,12 +110,19 @@ def filter_function_calls(
                 if item['name'] == current_tool_name
                 and current_step_satus == PlanStepStatusEnum.PROCESS
             ]
+
+            if not current_function_calls:
+                logger.warning(
+                    f'{callback_context.session.id} current_function_calls empty, manual build one'
+                )
+                current_function_calls = [{'name': current_tool_name, 'args': {}}]
+
             logger.info(
                 f'{callback_context.session.id} current_function_calls_after_single = {function_calls_to_str(current_function_calls)}'
             )
 
         if (
-            callback_context.state.get('invocation_id_with_tool_call', None) is None
+            not callback_context.state.get('invocation_id_with_tool_call')
             or callback_context.invocation_id
             != list(callback_context.state['invocation_id_with_tool_call'].keys())[-1]
         ):  # 首次调用 function_call 或新一轮对话
