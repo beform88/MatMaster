@@ -11,6 +11,7 @@ GENAI_TYPE_TO_PYDANTIC_MAPPING = {
     types.Type.NUMBER: float,
     types.Type.STRING: str,
     types.Type.INTEGER: int,
+    types.Type.BOOLEAN: bool,
 }
 
 logger = logging.getLogger(__name__)
