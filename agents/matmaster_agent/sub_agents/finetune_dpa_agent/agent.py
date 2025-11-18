@@ -45,10 +45,10 @@ class FinetuneDPAAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[finetune_dpa_toolset],
+            tools=[finetune_dpa_toolset],
             name=FinetuneDPAAgentName,
             description=FinetuneDPAAgentDescription,
-            agent_instruction=FinetuneDPAAgentInstruction,
+            instruction=FinetuneDPAAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )

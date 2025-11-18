@@ -1,4 +1,13 @@
+import logging
+
 from deepmerge import always_merger
+
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.logger import PrefixFilter
+
+logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
 
 
 def update_tool_call_info_with_function_declarations(
@@ -12,6 +21,7 @@ def update_tool_call_info_with_function_declarations(
     required_params = []
     if current_function_declaration[0]['parameters'].get('required'):
         required_params = current_function_declaration[0]['parameters']['required']
+    logger.info(f'required_params = {required_params}')
 
     for param in required_params:
         if (
