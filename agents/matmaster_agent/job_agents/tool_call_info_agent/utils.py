@@ -9,7 +9,9 @@ def update_tool_call_info_with_function_declarations(
         for item in function_declarations
         if item['name'] == tool_call_info['tool_name']
     ]
-    required_params = current_function_declaration[0]['parameters']['required']
+    required_params = []
+    if current_function_declaration[0]['parameters'].get('required'):
+        required_params = current_function_declaration[0]['parameters']['required']
 
     for param in required_params:
         if (

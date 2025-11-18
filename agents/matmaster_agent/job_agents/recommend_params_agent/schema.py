@@ -78,6 +78,7 @@ def get_field_type(field: Dict[str, Any]) -> Any:
             raise NotImplementedError
 
     else:
+        logger.error(f'field = {field}')
         raise NotImplementedError
 
 
