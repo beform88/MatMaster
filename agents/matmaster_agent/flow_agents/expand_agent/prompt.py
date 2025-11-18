@@ -13,10 +13,15 @@ STRUCTURE ACQUISITION PROTOCOL:
      * Search established databases using material identifiers
      * Primary databases: Materials Project, Crystallography Open Database (COD), ICSD
 
+   - MOLECULAR SYSTEMS (molecular crystals, clusters, gas phase systems):
+     * First build individual molecules with appropriate bond lengths and angles
+     * Then assemble molecules into the final structure configuration
+
 3. REQUEST ENHANCEMENT RULE:
    - Expand user requests to explicitly include initial structure preparation
    - Preserve all original specifications and requirements
    - Add clear structure acquisition step before the requested operations
+   - **MOLECULAR SYSTEMS**: For molecular crystals, clusters, or gas phase systems requiring specific molecular geometries, first build individual molecules with appropriate bond lengths and angles before assembling the final structure
    - **CRITICAL EXCEPTION 1**: If user explicitly provides an input structure file (e.g., .cif, .vasp, .xyz files via URL or direct upload), skip structure generation steps and proceed directly with the requested calculations
    - **CRITICAL EXCEPTION 2**: If user query is explicitly requesting structure generation with complete specifications (contains space group, composition, or other crystal structure parameters), do not add additional structure acquisition steps
    - **LANGUAGE CONSISTENCY RULE**: update_user_content must use the same language as origin_user_content (if origin is Chinese, update must be Chinese; if origin is English, update must be English)
@@ -59,5 +64,13 @@ Output:
 {{
   "origin_user_content": "生成钙钛矿BaTiO3的结构",
   "update_user_content": "首先构建钙钛矿BaTiO3体相结构（空间群Pm-3m，a=4.00Å），然后进行结构优化"
+}}
+
+EXAMPLE 5:
+Input: "在 15×15×15 Å³ 晶胞中生成混合气体盒子，包含 N₂ 分子和 O₂ 分子，比例为2:1, 返回结构文件 URL"
+Output:
+{{
+  "origin_user_content": "在 15×15×15 Å³ 晶胞中生成混合气体盒子，包含 N₂ 分子和 O₂ 分子，比例为2:1, 返回结构文件 URL",
+  "update_user_content": "首先构建N₂分子结构（键长1.10Å）和O₂分子结构（键长1.21Å），然后在15×15×15 Å³晶胞中按2:1比例生成混合气体盒子，返回结构文件URL"
 }}
 """
