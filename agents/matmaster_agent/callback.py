@@ -127,6 +127,8 @@ async def matmaster_prepare_state(
     callback_context.state['function_declarations'] = callback_context.state.get(
         'function_declarations', {}
     )
+    # 单次计划涉及的所有场景
+    callback_context.state['scenes'] = callback_context.state.get('scenes', [])
 
 
 async def matmaster_set_lang(
