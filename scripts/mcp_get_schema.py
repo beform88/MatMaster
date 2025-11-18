@@ -19,5 +19,5 @@ async def get_tool_function_declaration(url: str, tool_name: str):
 
 
 if __name__ == '__main__':
-    url = 'http://qpus1389933.bohrium.tech:50001/sse'
-    asyncio.run(get_tool_function_declaration(url, tool_name='run_molecular_dynamics'))
+    url = 'http://qpus1389933.bohrium.tech:50003/sse'
+    asyncio.run(get_tool_function_declaration(url, tool_name='build_surface_slab'))
