@@ -68,30 +68,34 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                     PlanStepStatusEnum.PLAN,
                     PlanStepStatusEnum.PROCESS,
                     PlanStepStatusEnum.FAILED,
+                    PlanStepStatusEnum.SUBMITTED,
                 ]:
-                    update_plan = copy.deepcopy(ctx.session.state['plan'])
-                    update_plan['steps'][index]['status'] = PlanStepStatusEnum.PROCESS
-                    yield update_state_event(
-                        ctx, state_delta={'plan': update_plan, 'plan_index': index}
-                    )
+                    if step['status'] != PlanStepStatusEnum.SUBMITTED:
+                        update_plan = copy.deepcopy(ctx.session.state['plan'])
+                        update_plan['steps'][index][
+                            'status'
+                        ] = PlanStepStatusEnum.PROCESS
+                        yield update_state_event(
+                            ctx, state_delta={'plan': update_plan, 'plan_index': index}
+                        )
+                        for (
+                            materials_plan_function_call_event
+                        ) in context_function_event(
+                            ctx,
+                            self.name,
+                            'materials_plan_function_call',
+                            {
+                                'msg': f'According to the plan, I will call the `{step['tool_name']}`: {step['description']}'
+                            },
+                            ModelRole,
+                        ):
+                            yield materials_plan_function_call_event
+
                     logger.info(
                         f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                     )
-
-                    for materials_plan_function_call_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'materials_plan_function_call',
-                        {
-                            'msg': f'According to the plan, I will call the `{step['tool_name']}`: {step['description']}'
-                        },
-                        ModelRole,
-                    ):
-                        yield materials_plan_function_call_event
-
                     async for event in target_agent.run_async(ctx):
                         yield event
-
                     logger.info(
                         f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
                     )

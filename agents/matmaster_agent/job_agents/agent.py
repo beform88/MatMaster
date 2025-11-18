@@ -21,10 +21,9 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_function_call,
 )
 from agents.matmaster_agent.constant import (
-    FRONTEND_STATE_KEY,
     MATMASTER_AGENT_NAME,
 )
-from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
+from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.job_agents.recommend_params_agent.prompt import (
     gen_recommend_params_agent_instruction,
 )
@@ -59,8 +58,6 @@ from agents.matmaster_agent.model import ToolCallInfoSchema
 from agents.matmaster_agent.utils.event_utils import (
     update_state_event,
 )
-from agents.matmaster_agent.utils.helper_func import get_session_state
-from agents.matmaster_agent.utils.job_utils import has_job_running
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -205,46 +202,23 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
             },
         )
 
+        # 更新任务状态
         async for result_event in self.result_agent.run_async(ctx):
             yield result_event
 
-        session_state = get_session_state(ctx)
-        frontend_origin_id = session_state[FRONTEND_STATE_KEY]['biz'].get('origin_id')
-        # 检查是否需要查询任务结果
-        has_origin_job_id = session_state.get('origin_job_id') is not None
-        has_matching_job = (
-            frontend_origin_id is not None
-            and frontend_origin_id in session_state.get('long_running_jobs', {})
-            and ctx.invocation_id
-            == session_state['long_running_jobs'][frontend_origin_id][
-                'last_invocation_id'
-            ]
-        )
-        logger.info(
-            f'{ctx.session.id} has_origin_job_id = {has_origin_job_id}, has_matching_job = {has_matching_job}, {ctx.invocation_id}, {session_state['long_running_jobs']}'
-        )
-
-        # 如果没有运行中的任务，则移除 JobResultRetrieval 场景
-        if not (
-            jobs_dict := ctx.session.state['long_running_jobs']
-        ) or not has_job_running(jobs_dict):
-            if SceneEnum.JobResultRetrieval in ctx.session.state['scene']['type']:
-                update_scene = ctx.session.state['scene'].copy()
-                update_scene['type'].remove(SceneEnum.JobResultRetrieval)
-                yield update_state_event(ctx, state_delta={'scene': update_scene})
-
-        if (
-            has_origin_job_id
-            or has_matching_job
-            or (scene_types := ctx.session.state['scene']['type'])
-            and scene_types
-            and scene_types[0] == SceneEnum.JobResultRetrieval
-        ):
+        current_step = ctx.session.state['plan']['steps'][
+            ctx.session.state['plan_index']
+        ]
+        current_step_status = current_step['status']
+        if current_step_status in [
+            PlanStepStatusEnum.SUBMITTED,
+            PlanStepStatusEnum.SUCCESS,
+            PlanStepStatusEnum.FAILED,
+        ]:
             # Only Query Job Result
             pass
         else:
             # 根据计划来
-            current_step = session_state['plan']['steps'][session_state['plan_index']]
             self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
                 user_prompt=current_step['description']
             )
