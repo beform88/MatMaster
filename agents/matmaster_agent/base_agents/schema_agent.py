@@ -6,6 +6,9 @@ from typing import AsyncGenerator, Optional, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
+from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
+    DisallowTransferMixin,
+)
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.utils.event_utils import (
@@ -69,3 +72,7 @@ class SchemaAgent(ErrorHandleLlmAgent):
             logger.warning(
                 f'[{MATMASTER_AGENT_NAME}]:[{ctx.session.id}] No event after remove_function_call'
             )
+
+
+class DisallowTransferSchemaAgent(DisallowTransferMixin, SchemaAgent):
+    pass

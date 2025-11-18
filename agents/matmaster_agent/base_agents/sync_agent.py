@@ -4,6 +4,9 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
+from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
+    DisallowTransferMixin,
+)
 from agents.matmaster_agent.base_agents.error_agent import (
     ErrorHandleBaseAgent,
 )
@@ -26,6 +29,10 @@ logger = logging.getLogger(__name__)
 
 
 class SyncMCPAgent(MCPRunEventsMixin, MCPAgent):
+    pass
+
+
+class DisallowTransferSyncMCPAgent(DisallowTransferMixin, SyncMCPAgent):
     pass
 
 
