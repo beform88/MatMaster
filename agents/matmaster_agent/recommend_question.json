@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "fee": "限时免费",
+        "question": "请生成空间群为 225 的晶体结构，要求带隙（bandgap）小于 0.5 eV，生成 2 个样本",
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "fee": "光子付费",
+        "question": "请根据给定的空间群和 Wyckoff 位置信息生成一个晶体结构：Pm-3m空间群（编号221），a=b=c=3.90 Angstrom，α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据检索",
+        "fee": "光子付费",
+        "question": "在 Materials Project 中检索并返回3个带隙大于 2 eV 的氧化物结构",
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "DPA性质预测",
+        "fee": "光子付费",
+        "question": "帮我用 DPA 对上传结构进行优化",
+        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1758895146_POSCAR_1"
+      }
+    }
+  ]
+}
