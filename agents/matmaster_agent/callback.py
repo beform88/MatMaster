@@ -78,7 +78,7 @@ async def matmaster_prepare_state(
         'sync_tools', None
     )
     callback_context.state['invocation_id_with_tool_call'] = callback_context.state.get(
-        'invocation_id_with_tool_call', None
+        'invocation_id_with_tool_call', {}
     )
     callback_context.state['last_llm_response_partial'] = callback_context.state.get(
         'last_llm_response_partial', None
