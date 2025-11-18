@@ -18,6 +18,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     default_after_tool_callback,
     default_before_tool_callback,
     default_cost_func,
+    filter_function_calls,
     inject_current_env,
     inject_userId_sessionId,
     inject_username_ticket,
@@ -67,6 +68,7 @@ class MCPInitMixin(BaseMixin):
     render_tool_response: bool = False  # Whether render tool response in frontend
     enable_tgz_unpack: bool = True  # Whether unpack tgz files for tool_results
     cost_func: Optional[CostFuncType] = None
+    enforce_single_function_call: bool = True  # 是否只允许单个 function_call
 
 
 class MCPCallbackMixin(BaseMixin):
@@ -91,7 +93,15 @@ class MCPCallbackMixin(BaseMixin):
         if data.get('enable_tgz_unpack') is None:
             data['enable_tgz_unpack'] = True
 
-        data['after_model_callback'] = update_tool_args(data['after_model_callback'])
+        if data.get('enforce_single_function_call') is None:
+            data['enforce_single_function_call'] = True
+
+        data['after_model_callback'] = update_tool_args(
+            filter_function_calls(
+                data['after_model_callback'],
+                enforce_single_function_call=data['enforce_single_function_call'],
+            )
+        )
 
         data['before_tool_callback'] = catch_before_tool_callback_error(
             inject_current_env(

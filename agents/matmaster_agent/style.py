@@ -293,11 +293,15 @@ def tool_retry_failed_card(i18n: I18N):
     return (
         f"""
 <div style="
+<<<<<<< HEAD
     background: linear-gradient(135deg, #ffa502 0%, #ff7f50 100%);
+=======
+    background: #ff6b6b;
+>>>>>>> 6e2d8096dcc7fa7464982e8b95bcc6211313f659
     color: white;
     padding: 10px 18px;
     border-radius: 6px;
-    box-shadow: 0 3px 10px rgba(255, 165, 2, 0.2);
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
     width: 100%;
     text-align: center;
     box-sizing: border-box;
@@ -337,24 +341,6 @@ def tool_response_failed_card(i18n: I18N):
     ">
         ⚡ {i18n.t('ToolResponseFailed')}
     </p>
-</div>
-"""
-
-
-def plan_ask_confirm_card():
-    return """
-<div style="
-    background-color: #e7f3ff;
-    border: 1px solid #b3d9ff;
-    border-left: 4px solid #0066cc;
-    border-radius: 4px;
-    padding: 16px 20px;
-    margin: 16px 0;
-    font-family: sans-serif;
-    text-align: left;
-    color: #004085;
-">
-    <strong>请确认是否执行上述计划？</strong>
 </div>
 """
 

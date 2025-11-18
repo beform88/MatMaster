@@ -3,7 +3,10 @@ from enum import Enum
 
 class SceneEnum(str, Enum):
     STRUCTURE_GENERATE = 'structure_generate'
+    CONDITIONAL_GENERATE = 'conditional_generate'
+
     DATABASE_SEARCH = 'database_search'
+
     OPTIMIZE_STRUCTURE = 'optimize_structure'
     VACANCY_FORMATION_ENERGY = 'vacancy_formation_energy'
     INTERSTITIAL_FORMATION_ENERGY = 'interstitial_formation_energy'
@@ -13,11 +16,24 @@ class SceneEnum(str, Enum):
     STACKING_FAULT_ENERGY = 'stacking_fault_energy'
     EOS = 'eos'
     PHONON = 'phonon'
+    BAND = 'band'
+    DENSITY_OF_STATES = 'density_of_states'
+    REACTION = 'reaction'
+    BADER_CHARGE_ANALYSIS = 'bader_charge_analysis'
+
     CompositionOptimization = 'composition_optimization'
+
+    VISUALIZE_DATA = 'visualize_data'
+
     SMILES = 'smiles'
+
     LITERATURE = 'literature'
+
     JobResultRetrieval = 'job_result_retrieval'
+
     DPA = 'DPA'
     APEX = 'APEX'
     ABACUS = 'ABACUS'
-    VISUALIZE_DATA = 'visualize_data'
+
+    HIGH_ENTROPY_ALLOY = 'high_entropy_alloy'
+    POLYMER = 'polymer'

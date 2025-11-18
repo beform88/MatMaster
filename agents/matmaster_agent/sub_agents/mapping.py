@@ -63,9 +63,12 @@ from agents.matmaster_agent.sub_agents.HEACalculator_agent.agent import (
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.MrDice_agent.agent import MrDice_Agent
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.agent import (
+    Bohriumpublic_AgentBase,
     bohriumpublic_toolset,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
+    BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.agent import (
@@ -75,7 +78,11 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.agent import (
     openlam_toolset,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.agent import (
+    Optimade_AgentBase,
     optimade_toolset,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant import (
+    OPTIMADE_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.organic_reaction_agent.agent import (
     OragnicReactionAgent,
@@ -180,7 +187,8 @@ AGENT_CLASS_MAPPING = {
     FinetuneDPAAgentName: FinetuneDPAAgent,
     HEA_assistant_AgentName: HEA_assistant_AgentBase,
     HEACALCULATOR_AGENT_NAME: HEACalculatorAgentBase,
-    MrDice_Agent_Name: MrDice_Agent,
+    OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
+    BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
     ORGANIC_REACTION_AGENT_NAME: OragnicReactionAgent,
     PerovskiteAgentName: PerovskiteAgent,
     PILOTEYE_ELECTRO_AGENT_NAME: PiloteyeElectroAgent,
@@ -194,10 +202,65 @@ AGENT_CLASS_MAPPING = {
 }
 
 ALL_TOOLS = {
-    'run_abacus_calculation': {
+    'abacus_vacancy_formation_energy': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.VACANCY_FORMATION_ENERGY],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate formation energy of non-charged vacancy. Only vacancy of metal atoms are supported. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate vacancy formation energy, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Supercell can be used. The calculated vacancy formation energy will be returned.',
+    },
+    'abacus_phonon_dispersion': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.PHONON],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate phonon dispersion curve. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate band, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Used supercell can be setted manually. Support provide high-symmetry points and k-point path. A plot of phonon dispersion band structure and related thermal corrections from vibration will be returned.',
+    },
+    'abacus_cal_band': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.BAND],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate band. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate band, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. PYATB and ABACUS nscf can be selected to plot the band. Support provide high-symmetry points and k-point path. A plot of band structure and band gap will be returned.',
+    },
+    'abacus_calculation_scf': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS],
-        'description': 'Use a structure file in cif/VASP-POSCAR/ABACUS-STRU format as input to calculate selected property at DFT level, **distinguished from** deep-learning potential (DPA). DFT parameters including DFT functional, spin polarization, DFT+U settings and initial magnetic moment and whether to do relax before property calculation can be setted. Supported properties including electronic band, (projected) density of state (DOS/PDOS), phonon dispersion curve, Bader charge, ab-initio molecular dynamics trajectories, electron localization function, elastic properties, equation of state, work function and vacancy formation energy. ',
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate energy. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment can be setted. ',
+    },
+    'abacus_dos_run': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.DENSITY_OF_STATES],
+        'description': "Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate DOS and PDOS. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate DOS and PDOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. PDOS mode can be 'species' (PDOS for a element like 'Pd'), 'species+shell' (PDOS for shell of a element like d shell of 'Pd'), 'species+orbital' (PDOS for orbitals of a element like d_xy of 'Pd'). Two plots for DOS and PDOS will be returned.",
+    },
+    'abacus_badercharge_run': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.BADER_CHARGE_ANALYSIS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate Bader charge. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate Bader charge, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Bader charge for each atom is returned.',
+    },
+    'abacus_do_relax': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.OPTIMIZE_STRUCTURE],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to do relax calculation. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment can be setted. Whether to relax cell, max relaxation steps, relax method and fixed axes during the relaxation can be setted. A file of relaxed structure will be returned.',
+    },
+    'abacus_cal_work_function': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate work function of slabs and 2D materials. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. The direction of vacuum, and whether to do dipole correction can be setted. A plot of the average electrostat potential and calculated work function can be returned. For polar slabs, two work function for each of the surface will be calculated.',
+    },
+    'abacus_run_md': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS, SceneEnum.MOLECULAR_DYNAMICS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to do ab-initio molecule dynamics calculation. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Used ensemble, steps of AIMD, timestep, temperature can be setted. An ASE trajectory file will be returned.',
+    },
+    'abacus_cal_elf': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate electron localization function. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. A cube file of ELF will be returned.',
+    },
+    'abacus_eos': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate equation of state fitting curve for materials. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. A plot of fitted EOS and fitting parameters will be returned.',
+    },
+    'abacus_cal_elastic': {
+        'belonging_agent': ABACUS_AGENT_NAME,
+        'scene': [SceneEnum.ABACUS],
+        'description': "Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate elastic properties of materials. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate band, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Full elastic tensor (in Voigt notation), bulk modulus, shear modulus, Young's modulus and possion ratio will be returned.",
     },
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
@@ -246,7 +309,7 @@ ALL_TOOLS = {
     },
     'unielf_inference': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.POLYMER],
         'description': '',
     },
     'plan_and_visualize_reaction': {
@@ -281,7 +344,7 @@ ALL_TOOLS = {
     },
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
-        'scene': [SceneEnum.OPTIMIZE_STRUCTURE, SceneEnum.DPA],
+        'scene': [SceneEnum.DPA, SceneEnum.OPTIMIZE_STRUCTURE],
         'description': 'Perform geometry optimization of a crystal or molecular structure. Supports relaxation of atomic positions and optionally the unit cell.',
     },
     'run_molecular_dynamics': {
@@ -296,7 +359,7 @@ ALL_TOOLS = {
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
-        'scene': [SceneEnum.DPA],
+        'scene': [SceneEnum.DPA, SceneEnum.ELASTIC_CONSTANT],
         'description': '',
     },
     'run_neb': {
@@ -311,21 +374,21 @@ ALL_TOOLS = {
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
-        'scene': [],
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
     },
     'HEA_predictor': {
         'belonging_agent': HEA_assistant_AgentName,
-        'scene': [],
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
     },
     'generate_binary_phase_diagram': {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
     },
     'fetch_structures_with_filter': {
-        'belonging_agent': MrDice_Agent_Name,
+        'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures from multiple OPTIMADE-compatible databases using raw OPTIMADE filter strings (elements, chemical formulas, logical combinations) across providers like alexandria, cod, mp, oqmd, tcod.',
     },
@@ -340,7 +403,7 @@ ALL_TOOLS = {
         'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) combined with base filters (elements, formulas) from OPTIMADE-compatible databases that provide band gap data.',
     },
     'fetch_bohrium_crystals': {
-        'belonging_agent': MrDice_Agent_Name,
+        'belonging_agent': BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures from the Bohrium Public database (includes Materials Project data) with flexible filtering by formula, elements, space group, atom counts, predicted formation energy range, and band gap range, supporting exact or contains match modes.',
     },
@@ -356,7 +419,7 @@ ALL_TOOLS = {
     },
     'calculate_reaction_profile': {
         'belonging_agent': ORGANIC_REACTION_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.REACTION],
         'description': '',
     },
     'semantic_search': {
@@ -391,7 +454,7 @@ ALL_TOOLS = {
     },
     'generate_crystalformer_structures': {
         'belonging_agent': StructureGenerateAgentName,
-        'scene': [SceneEnum.STRUCTURE_GENERATE],
+        'scene': [SceneEnum.STRUCTURE_GENERATE, SceneEnum.CONDITIONAL_GENERATE],
         'description': 'Generate crystal structures based on specified conditional attributes (bandgap, shear_modulus, bulk_modulus, superconducting critical temperature, sound) and user-provided space groups.',
     },
     'make_supercell_structure': {
@@ -536,7 +599,8 @@ class MatMasterSubAgentsEnum(str, Enum):
     HEAAssistantAgent = HEA_assistant_AgentName
     HEACalculatorAgent = HEACALCULATOR_AGENT_NAME
     CompDARTAgent = COMPDART_AGENT_NAME
-    MrDiceAgent = MrDice_Agent_Name
+    OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
+    BohriumPublicDatabaseAgent = BOHRIUMPUBLIC_DATABASE_AGENT_NAME
     OrganicReactionAgent = ORGANIC_REACTION_AGENT_NAME
     PerovskiteAgent = PerovskiteAgentName
     PiloteyeElectroAgent = PILOTEYE_ELECTRO_AGENT_NAME

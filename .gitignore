@@ -28,3 +28,4 @@ log
 *.txt
 *log*
 *.ipynb
+function_declaration

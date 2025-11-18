@@ -10,7 +10,7 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum
@@ -19,13 +19,18 @@ from agents.matmaster_agent.flow_agents.utils import (
     get_agent_name,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import MatMasterCheckTransferPrompt
 from agents.matmaster_agent.sub_agents.mapping import (
     MatMasterSubAgentsEnum,
 )
-from agents.matmaster_agent.utils.event_utils import update_state_event
+from agents.matmaster_agent.utils.event_utils import (
+    context_function_event,
+    update_state_event,
+)
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
@@ -52,38 +57,47 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         plan = ctx.session.state['plan']
-        logger.info(f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} plan = {plan}')
+        logger.info(f'{ctx.session.id} plan = {plan}')
         for index, step in enumerate(plan['steps']):
             if step.get('tool_name'):
                 target_agent = get_agent_name(step['tool_name'], self.sub_agents)
+                logger.info(
+                    f'{ctx.session.id} tool_name = {step['tool_name']}, target_agent = {target_agent.name}'
+                )
                 if step['status'] in [
                     PlanStepStatusEnum.PLAN,
                     PlanStepStatusEnum.PROCESS,
                     PlanStepStatusEnum.FAILED,
+                    PlanStepStatusEnum.SUBMITTED,
                 ]:
-                    yield update_state_event(
-                        ctx, state_delta={'plan_index': index}
-                    )  # TODO: One Agent Many Tools Call
+                    if step['status'] != PlanStepStatusEnum.SUBMITTED:
+                        update_plan = copy.deepcopy(ctx.session.state['plan'])
+                        update_plan['steps'][index][
+                            'status'
+                        ] = PlanStepStatusEnum.PROCESS
+                        yield update_state_event(
+                            ctx, state_delta={'plan': update_plan, 'plan_index': index}
+                        )
+                        for (
+                            materials_plan_function_call_event
+                        ) in context_function_event(
+                            ctx,
+                            self.name,
+                            'materials_plan_function_call',
+                            {
+                                'msg': f'According to the plan, I will call the `{step['tool_name']}`: {step['description']}'
+                            },
+                            ModelRole,
+                        ):
+                            yield materials_plan_function_call_event
+
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} plan_index = {ctx.session.state["plan_index"]}'
+                        f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                     )
                     async for event in target_agent.run_async(ctx):
-                        if (
-                            ctx.session.state['plan']['steps'][index]['status']
-                            == PlanStepStatusEnum.PLAN
-                        ):
-                            update_plan = copy.deepcopy(ctx.session.state['plan'])
-                            update_plan['steps'][index][
-                                'status'
-                            ] = PlanStepStatusEnum.PROCESS
-                            yield update_state_event(
-                                ctx, state_delta={'plan': update_plan}
-                            )
                         yield event
-
-                    plan = ctx.session.state['plan']
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} plan = {plan}, {check_plan(ctx)}'
+                        f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
                     )
                     if check_plan(ctx) not in [
                         FlowStatusEnum.NO_PLAN,

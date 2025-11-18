@@ -49,7 +49,10 @@ def check_plan(ctx: InvocationContext):
     for step in plan_json['steps']:
         if step['status'] == PlanStepStatusEnum.PLAN:
             plan_step_count += 1
-        elif step['status'] == PlanStepStatusEnum.PROCESS:
+        elif step['status'] in [
+            PlanStepStatusEnum.PROCESS,
+            PlanStepStatusEnum.SUBMITTED,
+        ]:
             process_step_count += 1
         elif step['status'] == PlanStepStatusEnum.FAILED:
             failed_step_count += 1

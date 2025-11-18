@@ -41,7 +41,10 @@ async def get_info_by_path(file_url, format) -> dict:
     info_by_path_url = (
         f"{BOHRIUM_COM}/api/materials_db/public/v1/material_visualization/info_by_str"
     )
-    body_json = {'fileContent': await fetch_file_content(file_url), 'format': format}
+    file_content = await fetch_file_content(file_url)
+    # 统一使用小写格式，避免后端对大小写敏感导致 format is invalid
+    normalized_format = (format or '').lower()
+    body_json = {'fileContent': file_content, 'format': normalized_format}
     async with aiohttp.ClientSession() as session:
         async with session.post(info_by_path_url, json=body_json) as response:
             raw_res = await response.text()

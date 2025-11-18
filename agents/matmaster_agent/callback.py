@@ -119,9 +119,13 @@ async def matmaster_prepare_state(
     )
     # 用户意图
     callback_context.state['intent'] = callback_context.state.get('intent', {})
-    # 缺参数
+    # 参数验证错误
     callback_context.state['validation_error'] = callback_context.state.get(
         'validation_error', False
+    )
+    # 函数签名 From Server
+    callback_context.state['function_declarations'] = callback_context.state.get(
+        'function_declarations', {}
     )
 
 

@@ -11,7 +11,7 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
 from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent
-from agents.matmaster_agent.constant import ModelRole
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
     get_analysis_instruction,
 )
@@ -44,16 +44,23 @@ from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
+from agents.matmaster_agent.flow_agents.style import plan_ask_confirm_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     create_dynamic_plan_schema,
     get_tools_list,
 )
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
-from agents.matmaster_agent.style import plan_ask_confirm_card, running_job_card
-from agents.matmaster_agent.sub_agents.mapping import AGENT_CLASS_MAPPING, ALL_TOOLS
+from agents.matmaster_agent.logger import PrefixFilter
+from agents.matmaster_agent.style import running_job_card
+from agents.matmaster_agent.sub_agents.mapping import (
+    AGENT_CLASS_MAPPING,
+    ALL_AGENT_TOOLS_LIST,
+    ALL_TOOLS,
+)
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
+    context_function_event,
     send_error_event,
     update_state_event,
 )
@@ -62,6 +69,7 @@ from agents.matmaster_agent.utils.job_utils import (
 )
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
@@ -275,17 +283,23 @@ class MatMasterFlowAgent(LlmAgent):
                 ):
                     # 制定计划
                     available_tools = get_tools_list(scenes)
-                    available_tools_with_description = {
-                        item: ALL_TOOLS[item]['description'] for item in available_tools
+                    if not available_tools:
+                        available_tools = ALL_AGENT_TOOLS_LIST
+                    available_tools_with_info = {
+                        item: {
+                            'scene': ALL_TOOLS[item]['scene'],
+                            'description': ALL_TOOLS[item]['description'],
+                        }
+                        for item in available_tools
                     }
-                    available_tools_with_description_str = '\n'.join(
+                    available_tools_with_info_str = '\n'.join(
                         [
-                            f"{key}:{value}"
-                            for key, value in available_tools_with_description.items()
+                            f"{key}\n    scene: {', '.join(value['scene'])}\n    description: {value['description']}"
+                            for key, value in available_tools_with_info.items()
                         ]
                     )
                     self.plan_make_agent.instruction = get_plan_make_instruction(
-                        available_tools_with_description_str
+                        available_tools_with_info_str
                     )
                     self.plan_make_agent.output_schema = create_dynamic_plan_schema(
                         available_tools
@@ -323,32 +337,24 @@ class MatMasterFlowAgent(LlmAgent):
                         )
 
                 # 计划未确认，暂停往下执行
-                if not plan_confirm:
-                    return
-
-                # 执行计划
-                if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
-                    yield update_state_event(
-                        ctx, state_delta={'validation_error': False}
-                    )
-                    for _ in range(2):
+                if ctx.session.state['plan_confirm']['flag']:
+                    # 执行计划
+                    if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
                         async for execution_event in self.execution_agent.run_async(
                             ctx
                         ):
                             yield execution_event
-                        if not ctx.session.state['validation_error']:
-                            break
 
-                # 全部执行完毕，总结执行情况
-                if (
-                    check_plan(ctx) == FlowStatusEnum.COMPLETE
-                    or ctx.session.state['plan']['feasibility'] == 'null'
-                ):
-                    self._analysis_agent.instruction = get_analysis_instruction(
-                        ctx.session.state['plan']
-                    )
-                    async for analysis_event in self.analysis_agent.run_async(ctx):
-                        yield analysis_event
+                    # 全部执行完毕，总结执行情况
+                    if (
+                        check_plan(ctx) == FlowStatusEnum.COMPLETE
+                        or ctx.session.state['plan']['feasibility'] == 'null'
+                    ):
+                        self._analysis_agent.instruction = get_analysis_instruction(
+                            ctx.session.state['plan']
+                        )
+                        async for analysis_event in self.analysis_agent.run_async(ctx):
+                            yield analysis_event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
@@ -360,3 +366,14 @@ class MatMasterFlowAgent(LlmAgent):
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
+
+        # 评分组件
+        for generate_nps_event in context_function_event(
+            ctx,
+            self.name,
+            'matmaster_generate_nps',
+            {},
+            ModelRole,
+            {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},
+        ):
+            yield generate_nps_event
