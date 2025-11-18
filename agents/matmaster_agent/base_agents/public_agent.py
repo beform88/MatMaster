@@ -2,7 +2,7 @@ import copy
 import logging
 from typing import AsyncGenerator, Union, override
 
-from google.adk.agents import InvocationContext
+from google.adk.agents import InvocationContext, SequentialAgent
 from google.adk.events import Event
 from google.adk.models import BaseLlm
 from pydantic import computed_field, model_validator
@@ -94,7 +94,7 @@ class BaseSyncAgentWithToolValidator(
             state_key='recommend_params',
         )
 
-        self._sync_mcp_agent = SyncMCPAgent(
+        sync_mcp_agent = SyncMCPAgent(
             model=self.model,
             name=f"{agent_prefix}_sync_mcp_agent",
             description=self.description,
@@ -108,15 +108,19 @@ class BaseSyncAgentWithToolValidator(
             render_tool_response=self.render_tool_response,
         )
 
-        self._tool_validator_agent = ToolValidatorAgent(
+        tool_validator_agent = ToolValidatorAgent(
             name=f"{agent_prefix}_tool_validator_agent",
+        )
+
+        self._submit_agent = SequentialAgent(
+            name=f"{agent_prefix}_submit_agent",
+            sub_agents=[sync_mcp_agent, tool_validator_agent],
         )
 
         self.sub_agents = [
             self.tool_call_info_agent,
             self.recommend_params_agent,
-            self.sync_mcp_agent,
-            self.tool_validator_agent,
+            self.submit_agent,
         ]
 
         return self
@@ -138,13 +142,8 @@ class BaseSyncAgentWithToolValidator(
 
     @computed_field
     @property
-    def sync_mcp_agent(self) -> SyncMCPAgent:
-        return self._sync_mcp_agent
-
-    @computed_field
-    @property
-    def tool_validator_agent(self) -> ToolValidatorAgent:
-        return self._tool_validator_agent
+    def submit_agent(self) -> SequentialAgent:
+        return self._submit_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -225,11 +224,8 @@ class BaseSyncAgentWithToolValidator(
         # 前置 tool_hallucination 为 False
         yield update_state_event(ctx, state_delta={'tool_hallucination': False})
         for _ in range(2):
-            async for sync_mcp_event in self.sync_mcp_agent.run_async(ctx):
-                yield sync_mcp_event
-
-            async for tool_validator_event in self.tool_validator_agent.run_async(ctx):
-                yield tool_validator_event
+            async for submit_event in self.submit_agent.run_async(ctx):
+                yield submit_event
 
             if not ctx.session.state['tool_hallucination']:
                 break
