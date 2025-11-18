@@ -340,7 +340,7 @@ ALL_TOOLS = {
     'run_ga': {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.CompositionOptimization],
-        'description': '',
+        'description': 'CAN DO: composition optimization targeting specific properties; CANNOT DO: build doping structures based on given composition',
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
@@ -470,7 +470,7 @@ ALL_TOOLS = {
     'build_bulk_structure_by_template': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Build bulk crystal structures based on elemental or compound inputs using packing templates.',
+        'description': 'CAN ONLY: build structures for elements with packing of sc (simple cubic), fcc (face-centered cubic), bcc (body-centered cubic), hcp (hexagonal close-packed); and compounds like rhombohedral, orthorhombic, monoclinic, diamond, zincblende, rocksalt, cesiumchloride, fluorite, and wurtzite. CANNOT DO: build structures for complex structures with elements more than two or molecular crystals.',
     },
     'build_molecule_structure_from_g2database': {
         'belonging_agent': StructureGenerateAgentName,
