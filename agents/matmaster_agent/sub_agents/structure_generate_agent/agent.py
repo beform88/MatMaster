@@ -45,10 +45,10 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig, name_suffix=''):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[structure_generate_toolset],
+            tools=[structure_generate_toolset],
             name=StructureGenerateAgentName + name_suffix,
             description=StructureGenerateAgentDescription,
-            agent_instruction=StructureGenerateAgentInstruction,
+            instruction=StructureGenerateAgentInstruction,
             dflow_flag=False,
             sync_tools=[
                 'build_bulk_structure_by_template',

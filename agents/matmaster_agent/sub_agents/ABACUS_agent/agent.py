@@ -34,10 +34,10 @@ class ABACUSCalculatorAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[abacus_toolset],
+            tools=[abacus_toolset],
             name=ABACUS_AGENT_NAME,
             description=ABACUS_AGENT_DESCRIPTION,
-            agent_instruction=ABACUS_AGENT_INSTRUCTION,
+            instruction=ABACUS_AGENT_INSTRUCTION,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             sync_tools=[

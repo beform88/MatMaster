@@ -32,10 +32,10 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=DPACalulator_AGENT_NAME,
-            mcp_tools=[dpa_toolset],
+            tools=[dpa_toolset],
             model=llm_config.default_litellm_model,
             description=DPAAgentDescription,
-            agent_instruction=DPAAgentInstruction,
+            instruction=DPAAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             cost_func=dpa_cost_func,

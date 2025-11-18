@@ -35,8 +35,8 @@ class OragnicReactionAgent(BaseAsyncJobAgent):
             name=ORGANIC_REACTION_AGENT_NAME,
             model=llm_config.default_litellm_model,
             description=description,
-            agent_instruction=instruction_en,
-            mcp_tools=tools,
+            instruction=instruction_en,
+            tools=tools,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )
