@@ -290,7 +290,7 @@ ALL_TOOLS = {
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.SURFACE_ENERGY],
-        'description': 'Generate slab models, relax surface layers, and report surface energies for selected Miller indices.',
+        'description': 'Execute a workflow of surfacce energy calculation. CANNOT build slab structures',
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
