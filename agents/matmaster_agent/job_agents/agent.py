@@ -301,7 +301,6 @@ class BaseAsyncJobAgent(SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseA
 
             # 前置 tool_hallucination 为 False
             yield update_state_event(ctx, state_delta={'tool_hallucination': False})
-            yield update_state_event(ctx, state_delta={'validation_error': False})
             for _ in range(2):
                 async for submit_event in self.submit_agent.run_async(ctx):
                     yield submit_event
