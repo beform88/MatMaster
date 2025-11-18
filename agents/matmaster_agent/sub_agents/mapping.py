@@ -480,7 +480,7 @@ ALL_TOOLS = {
     'build_surface_slab': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Build surface slabs based on bulk structure file miller indices',
+        'description': 'Build surface slab structures based on bulk structure file miller indices',
     },
     'build_surface_adsorbate': {
         'belonging_agent': StructureGenerateAgentName,
