@@ -20,4 +20,4 @@ async def get_tool_function_declaration(url: str, tool_name: str):
 
 if __name__ == '__main__':
     url = 'http://rtvq1394775.bohrium.tech:50001/sse'
-    asyncio.run(get_tool_function_declaration(url, tool_name='apex_optimize_structure'))
+    asyncio.run(get_tool_function_declaration(url, tool_name='apex_calculate_vacancy'))

@@ -34,7 +34,7 @@ def get_field_type(field: Dict[str, Any]) -> Any:
     field_type = field['type']
 
     # 基本类型
-    if field_type in [types.Type.NUMBER, types.Type.STRING, types.Type.INTEGER]:
+    if field_type in GENAI_TYPE_TO_PYDANTIC_MAPPING:
         return GENAI_TYPE_TO_PYDANTIC_MAPPING.get(field_type)
 
     # 处理数组类型
