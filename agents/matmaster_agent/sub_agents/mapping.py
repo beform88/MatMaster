@@ -70,19 +70,12 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.agent im
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.agent import (
-    Mofdb_AgentBase,
     mofdb_toolset,
 )
-from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.constant import (
-    MOFDB_DATABASE_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.agent import (
-    Openlam_AgentBase,
     openlam_toolset,
-)
-from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.constant import (
-    OPENLAM_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.agent import (
     Optimade_AgentBase,
@@ -196,8 +189,6 @@ AGENT_CLASS_MAPPING = {
     HEACALCULATOR_AGENT_NAME: HEACalculatorAgentBase,
     OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
-    MOFDB_DATABASE_AGENT_NAME: Mofdb_AgentBase,
-    OPENLAM_DATABASE_AGENT_NAME: Openlam_AgentBase,
     ORGANIC_REACTION_AGENT_NAME: OragnicReactionAgent,
     PerovskiteAgentName: PerovskiteAgent,
     PILOTEYE_ELECTRO_AGENT_NAME: PiloteyeElectroAgent,
@@ -294,7 +285,7 @@ ALL_TOOLS = {
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.SURFACE_ENERGY],
-        'description': 'Execute a workflow of surfacce energy calculation. CANNOT build slab structures',
+        'description': 'Generate slab models, relax surface layers, and report surface energies for selected Miller indices.',
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
@@ -344,7 +335,7 @@ ALL_TOOLS = {
     'run_ga': {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.CompositionOptimization],
-        'description': 'CAN DO: composition optimization targeting specific properties; CANNOT DO: build doping structures based on given composition',
+        'description': '',
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
@@ -407,7 +398,7 @@ ALL_TOOLS = {
         'description': 'Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) combined with base filters from OPTIMADE-compatible databases.',
     },
     'fetch_structures_with_bandgap': {
-        'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
+        'belonging_agent': MrDice_Agent_Name,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) combined with base filters (elements, formulas) from OPTIMADE-compatible databases that provide band gap data.',
     },
@@ -417,12 +408,12 @@ ALL_TOOLS = {
         'description': 'Retrieve crystal structures from the Bohrium Public database (includes Materials Project data) with flexible filtering by formula, elements, space group, atom counts, predicted formation energy range, and band gap range, supporting exact or contains match modes.',
     },
     'fetch_openlam_structures': {
-        'belonging_agent': OPENLAM_DATABASE_AGENT_NAME,
+        'belonging_agent': MrDice_Agent_Name,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures from the OpenLAM database filtered by chemical formula, energy range, and submission time, with output in CIF or JSON format.',
     },
     'fetch_mofs_sql': {
-        'belonging_agent': MOFDB_DATABASE_AGENT_NAME,
+        'belonging_agent': MrDice_Agent_Name,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Execute SQL queries against the MOF database with support for complex multi-table joins, window functions, CTEs, and statistical analysis for advanced MOF property queries and composition analysis.',
     },
@@ -469,12 +460,12 @@ ALL_TOOLS = {
     'make_supercell_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Make supercell expansion based on structure file.',
+        'description': 'Make supercell expansion based on structure file.Requires valid structure file input.',
     },
     'build_bulk_structure_by_template': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'CAN ONLY: build structures for elements with packing of sc (simple cubic), fcc (face-centered cubic), bcc (body-centered cubic), hcp (hexagonal close-packed); and compounds like rhombohedral, orthorhombic, monoclinic, diamond, zincblende, rocksalt, cesiumchloride, fluorite, and wurtzite. CANNOT DO: build structures for complex structures with elements more than two or molecular crystals.',
+        'description': 'Build bulk crystal structures based on elemental or compound inputs using packing templates.',
     },
     'build_molecule_structure_from_g2database': {
         'belonging_agent': StructureGenerateAgentName,
@@ -514,12 +505,12 @@ ALL_TOOLS = {
     'make_doped_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Generate doped crystal structures by randomly substituting selected atomic sites with specified dopant species at given concentrations.',
+        'description': 'Generate doped crystal structures by randomly substituting selected atomic sites with specified dopant species at given concentrations. Needs valid host structure input.',
     },
     'make_amorphous_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Generate amorphous molecular structures by randomly filling molecules into a periodic box based on specified box size, density, or molecule count. Supports automatic calculation of missing parameters and avoids overlaps during placement. Produces an initial amorphous configuration for further relaxation or molecular dynamics simulations.',
+        'description': 'Generate amorphous molecular structures by randomly filling molecules into a periodic box based on specified box size, density, or molecule count. Supports automatic calculation of missing parameters and avoids overlaps during placement. Produces an initial amorphous configuration for further relaxation or molecular dynamics simulations. Needs valid molecule structure input.',
     },
     'get_structure_info': {
         'belonging_agent': StructureGenerateAgentName,
@@ -610,8 +601,6 @@ class MatMasterSubAgentsEnum(str, Enum):
     CompDARTAgent = COMPDART_AGENT_NAME
     OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
     BohriumPublicDatabaseAgent = BOHRIUMPUBLIC_DATABASE_AGENT_NAME
-    MOFDBDatabaseAgent = MOFDB_DATABASE_AGENT_NAME
-    OpenLAMDatabaseAgent = OPENLAM_DATABASE_AGENT_NAME
     OrganicReactionAgent = ORGANIC_REACTION_AGENT_NAME
     PerovskiteAgent = PerovskiteAgentName
     PiloteyeElectroAgent = PILOTEYE_ELECTRO_AGENT_NAME
