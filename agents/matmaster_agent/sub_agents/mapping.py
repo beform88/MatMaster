@@ -469,7 +469,7 @@ ALL_TOOLS = {
     'make_supercell_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Make supercell expansion based on structure file.',
+        'description': 'Make supercell expansion based on structure file. Requires valid structure file input.',
     },
     'build_bulk_structure_by_template': {
         'belonging_agent': StructureGenerateAgentName,
@@ -484,7 +484,7 @@ ALL_TOOLS = {
     'build_surface_slab': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Build surface slab structures based on bulk structure file miller indices',
+        'description': 'Build surface slab structures based on bulk structure file miller indices. Needs to provide bulk structure file.',
     },
     'build_surface_adsorbate': {
         'belonging_agent': StructureGenerateAgentName,
@@ -514,12 +514,12 @@ ALL_TOOLS = {
     'make_doped_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Generate doped crystal structures by randomly substituting selected atomic sites with specified dopant species at given concentrations.',
+        'description': 'Generate doped crystal structures by randomly substituting selected atomic sites with specified dopant species at given concentrations. Needs valid host structure input.',
     },
     'make_amorphous_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Generate amorphous molecular structures by randomly filling molecules into a periodic box based on specified box size, density, or molecule count. Supports automatic calculation of missing parameters and avoids overlaps during placement. Produces an initial amorphous configuration for further relaxation or molecular dynamics simulations.',
+        'description': 'Generate amorphous molecular structures by randomly filling molecules into a periodic box based on specified box size, density, or molecule count. Supports automatic calculation of missing parameters and avoids overlaps during placement. Produces an initial amorphous configuration for further relaxation or molecular dynamics simulations. Needs valid molecule structure input.',
     },
     'get_structure_info': {
         'belonging_agent': StructureGenerateAgentName,
