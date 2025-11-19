@@ -19,5 +19,5 @@ async def get_tool_function_declaration(url: str, tool_name: str):
 
 
 if __name__ == '__main__':
-    url = 'http://cmaz1395916.bohrium.tech:50001/sse'
-    asyncio.run(get_tool_function_declaration(url, tool_name='fetch_bohrium_crystals'))
+    url = 'http://rtvq1394775.bohrium.tech:50001/sse'
+    asyncio.run(get_tool_function_declaration(url, tool_name='apex_calculate_vacancy'))
