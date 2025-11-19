@@ -63,6 +63,11 @@ from agents.matmaster_agent.sub_agents.HEACalculator_agent.agent import (
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.LAMMPS_agent.agent import (
+    LAMMPSAgent,
+    lammps_toolset,
+)
+from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import LAMMPS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.agent import (
     Bohriumpublic_AgentBase,
     bohriumpublic_toolset,
@@ -182,6 +187,7 @@ ALL_TOOLSET_DICT = {
     'thermoelectric_toolset': thermoelectric_toolset,
     'traj_analysis_toolset': traj_analysis_toolset,
     'visualizer_toolset': visualizer_toolset,
+    'lammps_toolset': lammps_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -194,6 +200,7 @@ AGENT_CLASS_MAPPING = {
     FinetuneDPAAgentName: FinetuneDPAAgent,
     HEA_assistant_AgentName: HEA_assistant_AgentBase,
     HEACALCULATOR_AGENT_NAME: HEACalculatorAgentBase,
+    LAMMPS_AGENT_NAME: LAMMPSAgent,
     OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
     MOFDB_DATABASE_AGENT_NAME: Mofdb_AgentBase,
@@ -596,8 +603,22 @@ ALL_TOOLS = {
         'scene': [SceneEnum.VISUALIZE_DATA],
         'description': 'Automatically analyze materials science data files (CSV, Excel, JSON, TXT, DAT), identify the data structure with regular expression, and visualize the data with plots.',
     },
+    'convert_lammps_structural_format': {
+        'belonging_agent': LAMMPS_AGENT_NAME,
+        'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
+        'description': 'Convert structure file to LAMMPS format using pymatgen and dpdata.',
+    },
+    'run_lammps': {
+        'belonging_agent': LAMMPS_AGENT_NAME,
+        'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
+        'description': 'Run LAMMPS simulation.',
+    },
+    'orchestrate_lammps_input': {
+        'belonging_agent': LAMMPS_AGENT_NAME,
+        'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
+        'description': 'Automatically generate LAMMPS input script based on natural language description using LLM.',
+    },
 }
-
 
 class MatMasterSubAgentsEnum(str, Enum):
     ABACUSAgent = ABACUS_AGENT_NAME
@@ -607,6 +628,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     DPACalculatorAgent = DPACalulator_AGENT_NAME
     HEAAssistantAgent = HEA_assistant_AgentName
     HEACalculatorAgent = HEACALCULATOR_AGENT_NAME
+    LAMMPSAgent = LAMMPS_AGENT_NAME
     CompDARTAgent = COMPDART_AGENT_NAME
     OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
     BohriumPublicDatabaseAgent = BOHRIUMPUBLIC_DATABASE_AGENT_NAME
