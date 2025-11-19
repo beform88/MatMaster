@@ -205,7 +205,7 @@ ALL_TOOLS = {
     'abacus_vacancy_formation_energy': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.VACANCY_FORMATION_ENERGY],
-        'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate formation energy of non-charged vacancy. Only vacancy of metal atoms are supported. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate vacancy formation energy, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Supercell can be used. The calculated vacancy formation energy will be returned.',
+        'description': 'Only vacancy of metal atoms are supported.Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate formation energy of non-charged vacancy. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate vacancy formation energy, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. Supercell can be used. The calculated vacancy formation energy will be returned.',
     },
     'abacus_phonon_dispersion': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -265,42 +265,42 @@ ALL_TOOLS = {
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.VACANCY_FORMATION_ENERGY],
-        'description': 'Evaluate vacancy formation energies by relaxing supercells with one atom removed',
+        'description': 'Evaluate vacancy formation energies by relaxing supercells with one atom removed. Requires valid bulk structure file.',
     },
     'apex_optimize_structure': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.OPTIMIZE_STRUCTURE, SceneEnum.APEX],
-        'description': 'Perform geometry optimization of a crystal(recommend alloy system), relaxing atomic positions and optionally the unit cell.',
+        'description': 'Perform geometry optimization of a crystal(recommend alloy system), relaxing atomic positions and optionally the unit cell. Requires valid bulk structure file.',
     },
     'apex_calculate_interstitial': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.INTERSTITIAL_FORMATION_ENERGY],
-        'description': 'Insert interstitial atoms into a host lattice to compute formation energies across candidate sites.',
+        'description': 'Insert interstitial atoms into a host lattice to compute formation energies across candidate sites. Requires valid bulk structure file.',
     },
     'apex_calculate_elastic': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.ELASTIC_CONSTANT],
-        'description': 'Apply small strains to the lattice to extract elastic constants and derived moduli.',
+        'description': 'Apply small strains to the lattice to extract elastic constants and derived moduli. Requires valid bulk structure file.',
     },
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.SURFACE_ENERGY],
-        'description': 'Generate slab models, relax surface layers, and report surface energies for selected Miller indices.',
+        'description': 'Generate slab models, relax surface layers, and report surface energies for selected Miller indices. Requires valid bulk structure file.',
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.EOS],
-        'description': 'Scan volumes around equilibrium, relax internal coordinates, and build an equation-of-state energy–volume curve.',
+        'description': 'Scan volumes around equilibrium, relax internal coordinates, and build an equation-of-state energy–volume curve. Requires valid bulk structure file.',
     },
     'apex_calculate_phonon': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.PHONON],
-        'description': 'Perform supercell finite-displacement calculations, relax configurations, and assemble phonon spectra',
+        'description': 'Perform supercell finite-displacement calculations, relax configurations, and assemble phonon spectra. Requires valid bulk structure file.',
     },
     'apex_calculate_gamma': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.STACKING_FAULT_ENERGY],
-        'description': 'Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths.',
+        'description': 'Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths. Requires valid bulk structure file.',
     },
     'get_target_info': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
