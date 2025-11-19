@@ -78,7 +78,7 @@ async def matmaster_prepare_state(
         'sync_tools', None
     )
     callback_context.state['invocation_id_with_tool_call'] = callback_context.state.get(
-        'invocation_id_with_tool_call', None
+        'invocation_id_with_tool_call', {}
     )
     callback_context.state['last_llm_response_partial'] = callback_context.state.get(
         'last_llm_response_partial', None
@@ -119,14 +119,12 @@ async def matmaster_prepare_state(
     )
     # 用户意图
     callback_context.state['intent'] = callback_context.state.get('intent', {})
-    # 参数验证错误
-    callback_context.state['validation_error'] = callback_context.state.get(
-        'validation_error', False
-    )
     # 函数签名 From Server
     callback_context.state['function_declarations'] = callback_context.state.get(
         'function_declarations', {}
     )
+    # 单次计划涉及的所有场景
+    callback_context.state['scenes'] = callback_context.state.get('scenes', [])
 
 
 async def matmaster_set_lang(

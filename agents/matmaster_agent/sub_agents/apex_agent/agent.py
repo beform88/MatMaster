@@ -48,8 +48,8 @@ class ApexAgent(BaseAsyncJobAgent):
             model=llm_config.default_litellm_model,
             name=ApexAgentName,
             description=ApexAgentDescription,
-            agent_instruction=ApexAgentInstruction,
-            mcp_tools=[apex_toolset],
+            instruction=ApexAgentInstruction,
+            tools=[apex_toolset],
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             sync_tools=[

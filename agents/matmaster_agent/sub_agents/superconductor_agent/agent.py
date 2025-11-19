@@ -45,10 +45,10 @@ class SuperconductorAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[superconductor_toolset],
+            tools=[superconductor_toolset],
             name=SuperconductorAgentName,
             description=SuperconductorAgentDescription,
-            agent_instruction=SuperconductorAgentInstruction,
+            instruction=SuperconductorAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )

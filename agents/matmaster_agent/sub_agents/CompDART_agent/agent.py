@@ -31,10 +31,10 @@ class CompDARTAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=COMPDART_AGENT_NAME,
-            mcp_tools=[compdart_toolset],
+            tools=[compdart_toolset],
             model=llm_config.default_litellm_model,
             description=CompDARTAgentDescription,
-            agent_instruction=CompDARTAgentInstruction,
+            instruction=CompDARTAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )

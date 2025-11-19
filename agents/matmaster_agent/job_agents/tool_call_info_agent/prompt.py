@@ -1,9 +1,12 @@
-def gen_tool_call_info_instruction(user_prompt):
+def gen_tool_call_info_instruction(user_prompt, agent_prompt):
     return f"""
 You are an AI agent that matches user requests to available tools. Your task is to analyze the user's query against the complete parameter schema.
 
 <User Request>
 {user_prompt}
+
+<Parameters Recommendation Instruction>
+{agent_prompt}
 
 Return a JSON object with the following structure:
 {{

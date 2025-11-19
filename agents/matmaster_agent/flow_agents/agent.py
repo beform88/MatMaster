@@ -40,7 +40,6 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.agent import PlanMakeAge
 from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
     get_plan_make_instruction,
 )
-from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
@@ -52,7 +51,6 @@ from agents.matmaster_agent.flow_agents.utils import (
 )
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
-from agents.matmaster_agent.style import running_job_card
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -63,9 +61,6 @@ from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     send_error_event,
     update_state_event,
-)
-from agents.matmaster_agent.utils.job_utils import (
-    has_job_running,
 )
 
 logger = logging.getLogger(__name__)
@@ -110,7 +105,7 @@ class MatMasterFlowAgent(LlmAgent):
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
             output_schema=SceneSchema,
-            state_key='scene',
+            state_key='single_scenes',
         )
 
         self._plan_make_agent = PlanMakeAgent(
@@ -250,20 +245,13 @@ class MatMasterFlowAgent(LlmAgent):
                 async for scene_event in self.scene_agent.run_async(ctx):
                     yield scene_event
 
-                scenes = list(set(ctx.session.state['scene']['type']))
-                if (
-                    jobs_dict := ctx.session.state['long_running_jobs']
-                ) and has_job_running(
-                    jobs_dict
-                ):  # 确认当前有在运行中的任务
-                    for job_running_event in all_text_event(
-                        ctx, self.name, running_job_card(), ModelRole
-                    ):
-                        yield job_running_event
-
-                    update_scenes = copy.deepcopy(ctx.session.state['scene'])
-                    update_scenes['type'].insert(0, SceneEnum.JobResultRetrieval)
-                    yield update_state_event(ctx, state_delta={'scene': update_scenes})
+                before_scenes = ctx.session.state['scenes']
+                single_scene = ctx.session.state['single_scenes']['type']
+                scenes = list(set(before_scenes + single_scene))
+                logger.info(f'{ctx.session.id} scenes = {scenes}')
+                yield update_state_event(
+                    ctx, state_delta={'scenes': copy.deepcopy(scenes)}
+                )
 
                 # 计划是否确认（1. 上一步计划完成；2. 用户未确认计划）
                 if check_plan(ctx) == FlowStatusEnum.COMPLETE or not ctx.session.state[
@@ -338,6 +326,8 @@ class MatMasterFlowAgent(LlmAgent):
 
                 # 计划未确认，暂停往下执行
                 if ctx.session.state['plan_confirm']['flag']:
+                    # 重置 scenes
+                    yield update_state_event(ctx, state_delta={'scenes': []})
                     # 执行计划
                     if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
                         async for execution_event in self.execution_agent.run_async(

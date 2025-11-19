@@ -48,10 +48,10 @@ class PiloteyeElectroAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[piloteye_electro_toolset],
+            tools=[piloteye_electro_toolset],
             name=PiloteyeElectroAgentName,
             description=PiloteyeElectroAgentDescription,
-            agent_instruction=PiloteyeElectroAgentInstruction,
+            instruction=PiloteyeElectroAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )

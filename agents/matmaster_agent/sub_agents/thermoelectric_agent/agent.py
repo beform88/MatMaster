@@ -45,10 +45,10 @@ class ThermoAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[thermoelectric_toolset],
+            tools=[thermoelectric_toolset],
             name=ThermoAgentName,
             description=ThermoAgentDescription,
-            agent_instruction=ThermoAgentInstruction,
+            instruction=ThermoAgentInstruction,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )
