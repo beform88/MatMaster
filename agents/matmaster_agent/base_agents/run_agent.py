@@ -115,7 +115,11 @@ class BaseAgentWithParamsRecommendation(
         if ctx.session.state['error_occurred']:
             return
 
-        if not ctx.session.state['tool_call_info']:
+        if (
+            not ctx.session.state['tool_call_info']
+            or ctx.session.state['tool_call_info']['tool_name']
+            != current_step['tool_name']
+        ):
             update_tool_call_info = copy.deepcopy(ctx.session.state['tool_call_info'])
             update_tool_call_info['tool_name'] = current_step['tool_name']
             update_tool_call_info['tool_args'] = {}

@@ -70,7 +70,6 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.agent im
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.agent import (
     Mofdb_AgentBase,
     mofdb_toolset,
@@ -79,7 +78,11 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.constant import 
     MOFDB_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.agent import (
+    Openlam_AgentBase,
     openlam_toolset,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.constant import (
+    OPENLAM_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.agent import (
     Optimade_AgentBase,
@@ -194,6 +197,7 @@ AGENT_CLASS_MAPPING = {
     OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
     MOFDB_DATABASE_AGENT_NAME: Mofdb_AgentBase,
+    OPENLAM_DATABASE_AGENT_NAME: Openlam_AgentBase,
     ORGANIC_REACTION_AGENT_NAME: OragnicReactionAgent,
     PerovskiteAgentName: PerovskiteAgent,
     PILOTEYE_ELECTRO_AGENT_NAME: PiloteyeElectroAgent,
@@ -413,7 +417,7 @@ ALL_TOOLS = {
         'description': 'Retrieve crystal structures from the Bohrium Public database (includes Materials Project data) with flexible filtering by formula, elements, space group, atom counts, predicted formation energy range, and band gap range, supporting exact or contains match modes.',
     },
     'fetch_openlam_structures': {
-        'belonging_agent': MrDice_Agent_Name,
+        'belonging_agent': OPENLAM_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures from the OpenLAM database filtered by chemical formula, energy range, and submission time, with output in CIF or JSON format.',
     },
@@ -607,6 +611,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
     BohriumPublicDatabaseAgent = BOHRIUMPUBLIC_DATABASE_AGENT_NAME
     MOFDBDatabaseAgent = MOFDB_DATABASE_AGENT_NAME
+    OpenLAMDatabaseAgent = OPENLAM_DATABASE_AGENT_NAME
     OrganicReactionAgent = ORGANIC_REACTION_AGENT_NAME
     PerovskiteAgent = PerovskiteAgentName
     PiloteyeElectroAgent = PILOTEYE_ELECTRO_AGENT_NAME
