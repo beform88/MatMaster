@@ -8,7 +8,9 @@ LAMMPS_SUBMIT_AGENT_NAME = """LAMMPS_submit_agent"""
 LAMMPS_RESULT_AGENT_NAME = """LAMMPS_result_agent"""
 
 
-LAMMPS_AGENT_DESCRIPTION = 'An agent specialized in running LAMMPS molecular dynamics simulations'
+LAMMPS_AGENT_DESCRIPTION = (
+    'An agent specialized in running LAMMPS molecular dynamics simulations'
+)
 
 LAMMPS_AGENT_INSTRUCTION = """
 You are an expert in molecular dynamics simulations using LAMMPS.

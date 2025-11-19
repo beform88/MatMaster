@@ -13,7 +13,6 @@ from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import (
     LAMMPS_URL,
 )
 
-
 lammps_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=LAMMPS_URL,
@@ -33,7 +32,7 @@ class LAMMPSAgent(BaseAsyncJobAgent):
             model=llm_config.default_litellm_model,
             tools=[lammps_toolset],
             name=LAMMPS_AGENT_NAME,
-            description="An agent specialized in running LAMMPS simulations",
+            description='An agent specialized in running LAMMPS simulations',
             instruction="""
 You are an expert in molecular dynamics simulations using LAMMPS.
 
