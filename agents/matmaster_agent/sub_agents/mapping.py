@@ -512,8 +512,8 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': 'Build bulk crystal by specifying space group and, for each *distinct* atomic species, exactly one Wyckoff position (e.g., "4a") with its representative coordinates (x, y, z). '
-                       'CRITICAL RULE: A single Wyckoff position (e.g., "4a") defines a full, closed set of symmetry-equivalent points (an orbit); DO NOT assign multiple atoms to different points *within the same Wyckoff position*, and DO NOT assign atoms to Wyckoff positions that are symmetry-equivalent under the space group. '
-                       'The multiplicity of each Wyckoff position (the number prefix) gives the count of atoms generated for that species; the total atom count is the sum of all multiplicities.',
+        'CRITICAL RULE: A single Wyckoff position (e.g., "4a") defines a full, closed set of symmetry-equivalent points (an orbit); DO NOT assign multiple atoms to different points *within the same Wyckoff position*, and DO NOT assign atoms to Wyckoff positions that are symmetry-equivalent under the space group. '
+        'The multiplicity of each Wyckoff position (the number prefix) gives the count of atoms generated for that species; the total atom count is the sum of all multiplicities.',
     },
     'build_molecule_structures_from_smiles': {
         'belonging_agent': StructureGenerateAgentName,
