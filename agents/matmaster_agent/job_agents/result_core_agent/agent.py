@@ -1,0 +1,262 @@
+import copy
+import json
+import logging
+import os
+from typing import Any, AsyncGenerator, override
+
+import jsonpickle
+from google.adk.agents import InvocationContext
+from google.adk.events import Event
+from pydantic import model_validator
+
+from agents.matmaster_agent.base_agents.mcp_agent import MCPAgent
+from agents.matmaster_agent.base_callbacks.private_callback import (
+    _inject_ak,
+    _inject_projectId,
+)
+from agents.matmaster_agent.constant import (
+    FRONTEND_STATE_KEY,
+    JOB_RESULT_KEY,
+    MATERIALS_ACCESS_KEY,
+    MATERIALS_PROJECT_ID,
+    MATMASTER_AGENT_NAME,
+    ModelRole,
+    get_BohriumExecutor,
+    get_BohriumStorage,
+    get_DFlowExecutor,
+)
+from agents.matmaster_agent.job_agents.result_core_agent.prompt import (
+    ResultCoreAgentDescription,
+)
+from agents.matmaster_agent.logger import PrefixFilter
+from agents.matmaster_agent.utils.event_utils import (
+    all_text_event,
+    context_function_event,
+    context_text_event,
+    frontend_text_event,
+    update_state_event,
+)
+from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
+from agents.matmaster_agent.utils.helper_func import (
+    get_markdown_image_result,
+    parse_result,
+)
+from agents.matmaster_agent.utils.io_oss import update_tgz_dict
+
+logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
+
+
+class ResultMCPAgent(MCPAgent):
+    @model_validator(mode='before')
+    @classmethod
+    def modify_description(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+
+        if data.get('description') is None:
+            data['description'] = ResultCoreAgentDescription
+
+        return data
+
+    @override
+    async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
+        logger.info(
+            f"[{MATMASTER_AGENT_NAME}]:[{self.name}] state: {ctx.session.state}"
+        )
+        await self.tools[0].get_tools()
+        if not ctx.session.state['dflow']:
+            access_key, Executor, BohriumStorge = (
+                MATERIALS_ACCESS_KEY,
+                get_BohriumExecutor(),
+                get_BohriumStorage(),
+            )
+            project_id, Executor, BohriumStorge = (
+                MATERIALS_PROJECT_ID,
+                Executor,
+                BohriumStorge,
+            )
+        else:
+            access_key, Executor, BohriumStorge = _inject_ak(
+                ctx, get_DFlowExecutor(), get_BohriumStorage()
+            )
+            project_id, Executor, BohriumStorge = _inject_projectId(
+                ctx, Executor, BohriumStorge
+            )
+
+        for origin_job_id in list(ctx.session.state['long_running_jobs'].keys()):
+            # 检查是否需要跳过当前长运行任务的处理
+            if ctx.session.state['long_running_jobs'][origin_job_id]['job_in_ctx']:
+                # 获取前端业务状态中的原始ID
+                frontend_origin_id = ctx.session.state[FRONTEND_STATE_KEY]['biz'].get(
+                    'origin_id'
+                )
+
+                # 如果当前任务ID与前端状态中的原始ID不匹配，跳过处理
+                if origin_job_id != frontend_origin_id:
+                    continue
+
+                # 如果当前调用ID与该任务的上次调用ID相同，跳过重复处理
+                if (
+                    ctx.session.state['long_running_jobs'][origin_job_id][
+                        'last_invocation_id'
+                    ]
+                    == ctx.invocation_id
+                ):
+                    continue
+
+            if self.tools[0].query_tool is None:
+                yield context_text_event(
+                    ctx, self.name, 'Query Tool is None, Failed', ModelRole
+                )
+                break
+
+            query_res = await self.tools[0].query_tool.run_async(
+                args={'job_id': origin_job_id, 'executor': Executor},
+                tool_context=None,
+            )
+            if query_res.isError:
+                logger.error(f'[{MATMASTER_AGENT_NAME}] {query_res.content[0].text}')
+                raise RuntimeError(query_res.content[0].text)
+            status = query_res.content[0].text
+            logger.info(
+                f'[{MATMASTER_AGENT_NAME}]:[{self.name}] origin_job_id = {origin_job_id}, executor = {Executor}, '
+                f'status = {status}'
+            )
+            if status != 'Running':
+                update_plan = copy.deepcopy(ctx.session.state['plan'])
+                if status == 'Succeeded':
+                    plan_status = 'success'
+                else:
+                    plan_status = 'failed'
+                update_plan['steps'][ctx.session.state['plan_index']][
+                    'status'
+                ] = plan_status
+
+                update_long_running_jobs = copy.deepcopy(
+                    ctx.session.state['long_running_jobs']
+                )
+                update_long_running_jobs[origin_job_id]['job_status'] = status
+                yield update_state_event(
+                    ctx,
+                    state_delta={
+                        'long_running_jobs': update_long_running_jobs,
+                        'plan': update_plan,
+                    },
+                )
+                results_res = await self.tools[0].results_tool.run_async(
+                    args={
+                        'job_id': origin_job_id,
+                        'executor': Executor,
+                        'storage': BohriumStorge,
+                    },
+                    tool_context=None,
+                )
+                if results_res.isError:  # Job Result Retrival Failed
+                    err_msg = results_res.content[0].text
+                    if err_msg.startswith('Error executing tool'):
+                        err_msg = err_msg[err_msg.find(':') + 2 :]
+                    yield frontend_text_event(
+                        ctx,
+                        self.name,
+                        f"Job {origin_job_id} failed: {err_msg}",
+                        ModelRole,
+                    )
+                elif status == 'Failed':  # Job Failed
+                    pass
+                else:  # Job Success
+                    raw_result = results_res.content[0].text
+                    dict_result = jsonpickle.loads(raw_result)
+                    logger.info(
+                        f"[{MATMASTER_AGENT_NAME}]:[{self.name}] dict_result = {dict_result}"
+                    )
+
+                    if self.enable_tgz_unpack:
+                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+                    else:
+                        new_tool_result = dict_result
+                    update_long_running_jobs = copy.deepcopy(
+                        ctx.session.state['long_running_jobs']
+                    )
+                    parsed_result = await parse_result(new_tool_result)
+                    update_long_running_jobs[origin_job_id][
+                        'job_result'
+                    ] = parsed_result
+                    yield update_state_event(
+                        ctx,
+                        state_delta={'long_running_jobs': update_long_running_jobs},
+                    )
+                    markdown_image_result = get_markdown_image_result(parsed_result)
+                    job_result_comp_data = get_frontend_job_result_data(
+                        ctx.session.state['long_running_jobs'][origin_job_id][
+                            'job_result'
+                        ]
+                    )
+
+                    # Only for debug
+                    if os.getenv('MODE', None) == 'debug':
+                        ctx.session.state[FRONTEND_STATE_KEY]['biz'][
+                            'origin_id'
+                        ] = origin_job_id
+
+                    # 如果用户请求这个id的任务结果，渲染前端组件
+                    if origin_job_id == ctx.session.state[FRONTEND_STATE_KEY][
+                        'biz'
+                    ].get('origin_id', None):
+                        for event in all_text_event(
+                            ctx,
+                            self.name,
+                            f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
+                            ModelRole,
+                        ):
+                            yield event
+
+                        if markdown_image_result:
+                            for item in markdown_image_result:
+                                for markdown_image_event in all_text_event(
+                                    ctx, self.name, item['data'], ModelRole
+                                ):
+                                    yield markdown_image_event
+
+                        # Only for debug
+                        if os.getenv('MODE', None) == 'debug':
+                            ctx.session.state[FRONTEND_STATE_KEY]['biz'][
+                                'origin_id'
+                            ] = None
+
+                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+                    for event in context_function_event(
+                        ctx,
+                        self.name,
+                        'system_job_result',
+                        {
+                            JOB_RESULT_KEY: ctx.session.state['long_running_jobs'][
+                                origin_job_id
+                            ]['job_result']
+                        },
+                        ModelRole,
+                    ):
+                        yield event
+
+                update_long_running_jobs = copy.deepcopy(
+                    ctx.session.state['long_running_jobs']
+                )
+                update_long_running_jobs[origin_job_id]['job_in_ctx'] = True
+                update_long_running_jobs[origin_job_id][
+                    'last_invocation_id'
+                ] = ctx.invocation_id
+                yield update_state_event(
+                    ctx,
+                    state_delta={'long_running_jobs': update_long_running_jobs},
+                )
+            # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
+            for event in context_function_event(
+                ctx,
+                self.name,
+                'system_job_status',
+                {'msg': f"Job {origin_job_id} status is {status}"},
+                ModelRole,
+            ):
+                yield event
+        yield Event(author=self.name, invocation_id=ctx.invocation_id)

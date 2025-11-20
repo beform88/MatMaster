@@ -2,8 +2,8 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import LlmAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.public_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.sub_agents.organic_reaction_agent.constant import (
@@ -35,8 +35,8 @@ class OragnicReactionAgent(BaseAsyncJobAgent):
             name=ORGANIC_REACTION_AGENT_NAME,
             model=llm_config.default_litellm_model,
             description=description,
-            agent_instruction=instruction_en,
-            mcp_tools=tools,
+            instruction=instruction_en,
+            tools=tools,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )

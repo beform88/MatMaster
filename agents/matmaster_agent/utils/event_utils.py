@@ -1,3 +1,4 @@
+import copy
 import inspect
 import logging
 import os
@@ -13,6 +14,7 @@ from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.style import (
     photon_consume_free_card,
@@ -44,7 +46,7 @@ def update_state_event(
 
     final_state_delta = always_merger.merge(state_delta, origin_event_state_delta)
     logger.info(
-        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} final_state_delta = {final_state_delta}'
+        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} {filename}:{lineno} final_state_delta = {final_state_delta}'
     )
     actions_with_update = EventActions(state_delta=final_state_delta)
     return Event(
@@ -401,7 +403,46 @@ async def display_failed_result_or_consume(
             ModelRole,
         ):
             yield tool_response_failed_event
+
+        # 更新 plan 为失败
+        update_plan = copy.deepcopy(ctx.session.state['plan'])
+        update_plan['steps'][ctx.session.state['plan_index']][
+            'status'
+        ] = PlanStepStatusEnum.FAILED
+        yield update_state_event(ctx, state_delta={'plan': update_plan})
+
         raise RuntimeError('Tool Execution Error')
     else:
+        # 更新 plan 为成功
+        update_plan = copy.deepcopy(ctx.session.state['plan'])
+        if not dict_result.get('job_id'):
+            status = PlanStepStatusEnum.SUCCESS  # real-time
+        else:
+            status = PlanStepStatusEnum.SUBMITTED  # job-type
+        update_plan['steps'][ctx.session.state['plan_index']]['status'] = status
+        yield update_state_event(ctx, state_delta={'plan': update_plan})
+
         async for consume_event in photon_consume_event(ctx, event, author):
             yield consume_event
+
+
+async def handle_upload_file_event(ctx: InvocationContext, author):
+    prompt = ''
+    if ctx.user_content and ctx.user_content.parts:
+        for part in ctx.user_content.parts:
+            if part.text:
+                prompt += part.text
+            elif part.inline_data:
+                pass  # Inline data is currently not processed
+            elif part.file_data:
+                prompt += f", file_url = {part.file_data.file_uri}"
+
+                # 包装成function_call，来避免在历史记录中展示
+                for event in context_function_event(
+                    ctx,
+                    author,
+                    'system_upload_file',
+                    {'prompt': prompt},
+                    ModelRole,
+                ):
+                    yield event

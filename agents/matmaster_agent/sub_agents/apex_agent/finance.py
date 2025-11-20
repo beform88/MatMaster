@@ -242,15 +242,14 @@ def _get_default_cost(tool_name: str) -> int:
     """
     # 基于Cu4的默认费用估算（单位：photon，100 photon = 1元）
     default_costs = {
-        'apex_optimize_structure': 100,  # 5min
-        'apex_calculate_vacancy': 400,  # 25min (5+25)
-        'apex_calculate_eos': 2500,  # 480min (5+60*8)
-        'apex_calculate_phonon': 5000,  # 1000min (5+180*6)
-        'apex_calculate_surface': 1000,  # 95min (5+30*3)
-        'apex_calculate_gamma': 500,  # 105min (5+10*10)
-        'apex_calculate_interstitial': 200,  # 25min (5+10*2)
-        'apex_calculate_elastic': 5000,  # 965min (5+40*24)
-        'apex_show_and_modify_config': 0,  # 参数查询工具，免费
+        'apex_optimize_structure': 100,  # 10min
+        'apex_calculate_vacancy': 400,  # 35min (10+25)
+        'apex_calculate_eos': 2500,  # 500min (10+60*8.5)
+        'apex_calculate_phonon': 5000,  # 1100min (10+180*6)
+        'apex_calculate_surface': 1000,  # 100min (10+30*3)
+        'apex_calculate_gamma': 500,  # 110min (10+10*10)
+        'apex_calculate_interstitial': 200,  # 30min (10+10*2)
+        'apex_calculate_elastic': 5000,  # 1000min (10+40*24)
     }
 
     return default_costs.get(tool_name, 200)
@@ -290,18 +289,6 @@ async def apex_cost_func(tool, args) -> tuple[int, int]:
             photon_cost = _get_default_cost(tool.name)
             logger.info(f"[apex_cost_func] 默认费用: {photon_cost} photon")
         else:
-            if tool.name == 'apex_show_and_modify_config':
-                if args.get('properties') and not args.get('property_type'):
-                    props = args['properties']
-                    if isinstance(props, list) and props:
-                        args.setdefault('property_type', props[0])
-                    elif isinstance(props, str):
-                        args.setdefault('property_type', props)
-                args.setdefault('modified_parameters', None)
-                args.setdefault('base_parameters', None)
-                logger.info('[apex_cost_func] 参数查询工具不计费，直接返回0 photon')
-                return 0, SKU_MAPPING['matmaster']
-
             logger.info('[apex_cost_func] 开始获取并分析结构信息...')
 
             # 获取结构信息

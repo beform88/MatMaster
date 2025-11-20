@@ -78,7 +78,7 @@ async def matmaster_prepare_state(
         'sync_tools', None
     )
     callback_context.state['invocation_id_with_tool_call'] = callback_context.state.get(
-        'invocation_id_with_tool_call', None
+        'invocation_id_with_tool_call', {}
     )
     callback_context.state['last_llm_response_partial'] = callback_context.state.get(
         'last_llm_response_partial', None
@@ -103,6 +103,28 @@ async def matmaster_prepare_state(
     callback_context.state['tool_hallucination_agent'] = callback_context.state.get(
         'tool_hallucination_agent', None
     )
+    callback_context.state['plan'] = callback_context.state.get('plan', None)
+    callback_context.state['plan_index'] = callback_context.state.get(
+        'plan_index', None
+    )
+    callback_context.state['tool_call_info'] = callback_context.state.get(
+        'tool_call_info', []
+    )
+    callback_context.state['update_tool_args'] = callback_context.state.get(
+        'update_tool_args', {}
+    )
+    # 用户是否确认计划方案
+    callback_context.state['plan_confirm'] = callback_context.state.get(
+        'plan_confirm', {}
+    )
+    # 用户意图
+    callback_context.state['intent'] = callback_context.state.get('intent', {})
+    # 函数签名 From Server
+    callback_context.state['function_declarations'] = callback_context.state.get(
+        'function_declarations', {}
+    )
+    # 单次计划涉及的所有场景
+    callback_context.state['scenes'] = callback_context.state.get('scenes', [])
 
 
 async def matmaster_set_lang(

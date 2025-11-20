@@ -1,6 +1,7 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
+from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgent
 from agents.matmaster_agent.constant import BohriumStorge
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.sub_agents.chembrain_agent.smiles_conversion_agent.callback import (
@@ -16,16 +17,16 @@ from agents.matmaster_agent.sub_agents.chembrain_agent.smiles_conversion_agent.p
     instruction_en,
 )
 
-from ..base import CalculationLlmAgent
+from ..constant import CHEMBRAIN_AGENT_NAME
 
 # Configure SSE params
-toolset = CalculationMCPToolset(
+smiles_conversion_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=SMILESConversionServerUrl),
     storage=BohriumStorge,
 )
 
 
-class SMILESConversionAgent(CalculationLlmAgent):
+class SMILESConversionAgent(BaseSyncAgent):
     def __init__(self, llm_config):
         selected_model = llm_config.gpt_4o
 
@@ -34,9 +35,10 @@ class SMILESConversionAgent(CalculationLlmAgent):
             name=SMILESConversionAgentName,
             description=description,
             instruction=instruction_en,
-            tools=[toolset],
+            tools=[smiles_conversion_toolset],
             before_tool_callback=smiles_conversion_before_tool,
             after_tool_callback=smiles_conversion_after_tool,
+            supervisor_agent=CHEMBRAIN_AGENT_NAME,
         )
 
 
