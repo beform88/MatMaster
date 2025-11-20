@@ -14,10 +14,7 @@ from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import (
 )
 
 lammps_toolset = CalculationMCPToolset(
-    connection_params=SseServerParams(
-        url=LAMMPS_URL,
-        sse_read_timeout=3600,
-    ),
+    connection_params=SseServerParams(url=LAMMPS_URL),
     executor=LAMMPS_BOHRIUM_EXECUTOR,
     storage=LAMMPS_BOHRIUM_STORAGE,
     async_mode=True,
