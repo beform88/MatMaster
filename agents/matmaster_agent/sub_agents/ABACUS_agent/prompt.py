@@ -43,14 +43,16 @@ For the first step of preparing ABACUS input files, there are **COMMOM PARAMETER
     - dft_functional (Literal['PBE', 'PBEsol', 'LDA', 'SCAN', 'HSE', "PBE0", 'R2SCAN']): The DFT functional to use, can be 'PBE', 'PBEsol', 'LDA', 'SCAN', 'HSE', 'PBE0', or 'R2SCAN'. Default is 'PBE'.
                If hybrid functionals like HSE and PBE0 are used, the calculation may be much slower than GGA functionals like PBE.
     - dftu (bool): Whether to use DFT+U, default is False.
-    - dftu_param (dict): The DFT+U parameters, should be 'auto' or a dict
-        If dft_param is set to 'auto', hubbard U parameters will be set to d-block and f-block elements automatically. For d-block elements, default U=4eV will
-            be set to d orbital. For f-block elements, default U=6eV will be set to f orbital.
-        If dft_param is a dict, the keys should be name of elements and the value has two choices:
-            - A float number, which is the Hubbard U value of the element. The corrected orbital will be infered from the name of the element.
-            - A list containing two elements: the corrected orbital (should be 'p', 'd' or 'f') and the Hubbard U value.
-            For example, {"Fe": ["d", 4], "O": ["p", 1]} means applying DFT+U to Fe 3d orbital with U=4 eV and O 2p orbital with U=1 eV.
-    - init_mag ( dict or None): The initial magnetic moment for magnetic elements, should be a dict like {"Fe": 4, "Ti": 1}, where the key is the element symbol and the value is the initial magnetic moment.
+    - dftu_param (dict or None): The DFT+U parameters, should be a dict containing the following keys:
+        - 'element' (List[str]): List of elements to apply DFT+U to.
+        - 'orbital' (List[str]): List of orbitals to apply DFT+U to for each element. Should be 'p', 'd' or 'f'.
+        - 'U_value' (List[float]): List of Hubbard U values for each element.
+        The length of list for each key in dftu_param should be the same.
+    - init_mag (dict or None): The initial magnetic moment for magnetic elements, should be a dict containing the following keys:
+        - 'element': List of elements to apply initial magnetic moment to.
+        - 'mag': List of initial magnetic moments for each element.
+        The length of list for each key in init_mag should be the same.. Prepare ABACUS input files using given structure and provided DFT calculation settings
+
 For the second step of doing geometry optimization, thera are also **COMMOM PARAMETERS AMONG ALL TOOLS**, you **MUST** request user's confirm before using the tool:
     - relax: Whether to do a relax calculation before doing the property calculation. Default is False.
         If the calculated property is phonon dispersion or elastic properties, the crystal should be relaxed first with relax_cell set to True and `relax_precision` is strongly recommended be set to `high`.
