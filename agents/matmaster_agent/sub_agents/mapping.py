@@ -475,7 +475,7 @@ ALL_TOOLS = {
     'build_surface_slab': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Build surface slab structures based on bulk structure file miller indices. Needs to provide bulk structure file.',
+        'description': 'Build surface slab structures based on bulk structure file miller indices. Requires bulk structure file.',
     },
     'build_surface_adsorbate': {
         'belonging_agent': StructureGenerateAgentName,
