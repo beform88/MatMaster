@@ -161,6 +161,12 @@ class BaseAgentWithParamsRecommendation(
             ):
                 yield recommend_params_event
 
+            # 过滤 executor，storage 参数
+            missing_tool_args = [
+                item
+                for item in missing_tool_args
+                if item not in ['executor', 'storage']
+            ]
             self.recommend_params_schema_agent.output_schema = create_tool_args_schema(
                 missing_tool_args, current_function_declaration
             )
