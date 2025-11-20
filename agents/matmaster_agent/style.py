@@ -293,11 +293,7 @@ def tool_retry_failed_card(i18n: I18N):
     return (
         f"""
 <div style="
-<<<<<<< HEAD
-    background: linear-gradient(135deg, #ffa502 0%, #ff7f50 100%);
-=======
     background: #ff6b6b;
->>>>>>> 6e2d8096dcc7fa7464982e8b95bcc6211313f659
     color: white;
     padding: 10px 18px;
     border-radius: 6px;
