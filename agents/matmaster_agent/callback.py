@@ -137,7 +137,10 @@ async def matmaster_set_lang(
         messages=[{'role': 'user', 'content': prompt}],
         response_format=UserContent,
     )
-    result: dict = json.loads(response.choices[0].message.content)
+    try:
+        result: dict = json.loads(response.choices[0].message.content)
+    except BaseException:
+        result = {}
     logger.info(
         f"[{MATMASTER_AGENT_NAME}]:[{inspect.currentframe().f_code.co_name}] result = {result}"
     )
