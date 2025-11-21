@@ -20,6 +20,7 @@ class SceneEnum(str, Enum):
     DENSITY_OF_STATES = 'density_of_states'
     REACTION = 'reaction'
     BADER_CHARGE_ANALYSIS = 'bader_charge_analysis'
+    WORK_FUNCTION = 'work_function'
 
     CompositionOptimization = 'composition_optimization'
 
