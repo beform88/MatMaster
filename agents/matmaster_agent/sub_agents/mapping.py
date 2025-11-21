@@ -618,7 +618,7 @@ ALL_TOOLS = {
     'orchestrate_lammps_input': {
         'belonging_agent': LAMMPS_AGENT_NAME,
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
-        'description': 'Automatically generate LAMMPS input script based on natural language description using LLM, capable of multi-stage simulation in one script with appropriate parameters or user-appointed parameters.',
+        'description': 'Automatically generate LAMMPS input script based on natural language description using LLM, capable of multi-stage simulation in one script with appropriate parameters or user-appointed parameters. CAN DO: support recognition of potential file type and generate appropriate formats accordingly, including DeePMD and classical force fields.',
     },
 }
 
