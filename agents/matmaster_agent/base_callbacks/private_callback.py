@@ -28,7 +28,6 @@ from agents.matmaster_agent.constant import (
     SKU_MAPPING,
     Transfer2Agent,
 )
-from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import CostFuncType
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
@@ -36,6 +35,7 @@ from agents.matmaster_agent.utils.finance import get_user_photon_balance
 from agents.matmaster_agent.utils.helper_func import (
     check_None_wrapper,
     function_calls_to_str,
+    get_current_step_function_call,
     get_session_state,
     get_unique_function_call,
     update_llm_response,
@@ -95,32 +95,6 @@ def filter_function_calls(
         if not current_function_calls:
             return None
 
-        if enforce_single_function_call:
-            logger.info(
-                f'{callback_context.session.id} current_function_calls_before_single = {function_calls_to_str(current_function_calls)}'
-            )
-            current_step = callback_context.state['plan']['steps'][
-                callback_context.state['plan_index']
-            ]
-            current_tool_name = current_step['tool_name']
-            current_step_satus = current_step['status']
-            current_function_calls = [
-                item
-                for item in current_function_calls
-                if item['name'] == current_tool_name
-                and current_step_satus == PlanStepStatusEnum.PROCESS
-            ]
-
-            if not current_function_calls:
-                logger.warning(
-                    f'{callback_context.session.id} current_function_calls empty, manual build one'
-                )
-                current_function_calls = [{'name': current_tool_name, 'args': {}}]
-
-            logger.info(
-                f'{callback_context.session.id} current_function_calls_after_single = {function_calls_to_str(current_function_calls)}'
-            )
-
         if (
             not callback_context.state.get('invocation_id_with_tool_call')
             or callback_context.invocation_id
@@ -129,6 +103,9 @@ def filter_function_calls(
             if len(current_function_calls) == 1:
                 logger.info(
                     f'{callback_context.session.id} Single Function Call In New Turn'
+                )
+                current_function_calls = get_current_step_function_call(
+                    current_function_calls, callback_context
                 )
                 logger.info(
                     f"{callback_context.session.id} current_function_calls = {function_calls_to_str(current_function_calls)}"
@@ -145,10 +122,12 @@ def filter_function_calls(
                 )
             else:
                 logger.warning('Multi Function Calls In One Turn')
+                current_function_calls = get_current_step_function_call(
+                    current_function_calls, callback_context
+                )
                 logger.info(
                     f"current_function_calls = {function_calls_to_str(current_function_calls)}"
                 )
-
                 callback_context.state['invocation_id_with_tool_call'] = {
                     **callback_context.state['invocation_id_with_tool_call'],
                     callback_context.invocation_id: get_unique_function_call(
@@ -163,6 +142,9 @@ def filter_function_calls(
             before_function_calls = callback_context.state[
                 'invocation_id_with_tool_call'
             ][callback_context.invocation_id]
+            current_function_calls = get_current_step_function_call(
+                current_function_calls, callback_context
+            )
             logger.info(
                 f"before_function_calls = {function_calls_to_str(before_function_calls)},"
                 f"current_function_calls = {function_calls_to_str(current_function_calls)}"
