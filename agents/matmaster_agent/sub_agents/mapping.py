@@ -366,7 +366,7 @@ ALL_TOOLS = {
     'run_molecular_dynamics': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.MOLECULAR_DYNAMICS],
-        'description': '',
+        'description': 'Run molecular dynamics simulations using ASE interface. CAN DO: run MD with DPA pretrained model or user-uploaded DeePMD mdoel; run NVE, NVT, NPT MD with logging basic thermodynamics and lattice parameters. CANNOT DO: run MD with classical force-field or ab initio (or DFT) methods; nor run complicated MD like shock conditions, or with complicated on-the-fly stastistics like RDF, MSD.',
     },
     'calculate_phonon': {
         'belonging_agent': DPACalulator_AGENT_NAME,
