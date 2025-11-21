@@ -8,6 +8,7 @@ from pydantic import Field, computed_field, model_validator
 from agents.matmaster_agent.base_agents.run_agent import (
     BaseAgentWithParamsRecommendation,
 )
+from agents.matmaster_agent.base_agents.validator_agent import ValidatorAgent
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
 )
@@ -23,9 +24,6 @@ from agents.matmaster_agent.job_agents.submit_core_agent.prompt import (
 )
 from agents.matmaster_agent.job_agents.submit_render_agent.agent import (
     SubmitRenderAgent,
-)
-from agents.matmaster_agent.job_agents.submit_validator_agent.agent import (
-    SubmitValidatorAgent,
 )
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.utils.event_utils import (
@@ -78,8 +76,9 @@ class BaseAsyncJobAgent(BaseAgentWithParamsRecommendation):
             model=self.model, name=f"{agent_prefix}_submit_render_agent"
         )
 
-        submit_validator_agent = SubmitValidatorAgent(
-            name=f"{agent_prefix}_submit_validator_agent"
+        submit_validator_agent = ValidatorAgent(
+            name=f"{agent_prefix}_submit_validator_agent",
+            validator_key='long_running_jobs_count',
         )
 
         # Create sequential agent for submission process

@@ -16,22 +16,22 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class SubmitValidatorAgent(ErrorHandleBaseAgent):
+class ValidatorAgent(ErrorHandleBaseAgent):
+    validator_key: str
+
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         if ctx.session.state['error_occurred']:
             return
 
         if (
-            ctx.session.state['long_running_jobs_count']
-            > ctx.session.state['long_running_jobs_count_ori']
+            ctx.session.state[self.validator_key]
+            > ctx.session.state[f'{self.validator_key}_ori']
         ):
             yield update_state_event(
                 ctx,
                 state_delta={
-                    'long_running_jobs_count_ori': ctx.session.state[
-                        'long_running_jobs_count'
-                    ],
+                    f'{self.validator_key}_ori': ctx.session.state[self.validator_key],
                     'tool_hallucination': False,
                 },
             )
@@ -54,6 +54,4 @@ class SubmitValidatorAgent(ErrorHandleBaseAgent):
                 ):
                     yield tool_hallucination_event
 
-        logger.info(
-            f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} state = {ctx.session.state}'
-        )
+        logger.info(f'{ctx.session.id} state = {ctx.session.state}')
