@@ -125,6 +125,8 @@ async def matmaster_prepare_state(
     )
     # 单次计划涉及的所有场景
     callback_context.state['scenes'] = callback_context.state.get('scenes', [])
+    # 单次计划涉及的所有场景
+    callback_context.state['upload_file'] = False
 
 
 async def matmaster_set_lang(
