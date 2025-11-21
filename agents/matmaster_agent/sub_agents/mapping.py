@@ -255,7 +255,7 @@ ALL_TOOLS = {
     },
     'abacus_cal_work_function': {
         'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
+        'scene': [SceneEnum.ABACUS, SceneEnum.WORK_FUNCTION],
         'description': 'Use a structure file in cif/VASP POSCAR/ABACUS STRU format as input to calculate work function of slabs and 2D materials. DFT parameters including DFT functional,  spin polarization, DFT+U settings and initial magnetic moment calculation can be setted. Support do relax calculation before calculate EOS, and whether to do relax, whether to relax cell, relax method, and fixed axes during the relaxation can be setted. The direction of vacuum, and whether to do dipole correction can be setted. A plot of the average electrostat potential and calculated work function can be returned. For polar slabs, two work function for each of the surface will be calculated.',
     },
     'abacus_run_md': {
