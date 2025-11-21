@@ -9,7 +9,11 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.style import tool_retry_failed_card
-from agents.matmaster_agent.utils.event_utils import all_text_event, update_state_event
+from agents.matmaster_agent.utils.event_utils import (
+    all_text_event,
+    context_function_event,
+    update_state_event,
+)
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -38,6 +42,17 @@ class ValidatorAgent(ErrorHandleBaseAgent):
             yield Event(author=self.name)
         else:
             if not ctx.session.state['tool_hallucination']:  # 第一次重试
+                message = i18n.t('ToolInvocateHallucinationAction')
+                for tool_hallucination_event in context_function_event(
+                    ctx,
+                    self.name,
+                    'materials_tool_hallucination',
+                    {'msg': message},
+                    ModelRole,
+                    None,
+                ):
+                    yield tool_hallucination_event
+
                 yield update_state_event(
                     ctx,
                     state_delta={
