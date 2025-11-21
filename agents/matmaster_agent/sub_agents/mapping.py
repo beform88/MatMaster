@@ -613,7 +613,7 @@ ALL_TOOLS = {
     'run_lammps': {
         'belonging_agent': LAMMPS_AGENT_NAME,
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
-        'description': 'Run LAMMPS simulation, capable of multi-stage simulation in one job.',
+        'description': 'Run LAMMPS simulation, capable of multi-stage simulation in one job. In this tool, the structure file must be in LAMMPS format. Use `convert_lammps_structural_format` to convert the structure file to LAMMPS format before running unless user explicitly states that the structure file is in LAMMPS format.',
     },
     'orchestrate_lammps_input': {
         'belonging_agent': LAMMPS_AGENT_NAME,
