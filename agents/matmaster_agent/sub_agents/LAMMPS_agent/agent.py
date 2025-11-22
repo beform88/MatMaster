@@ -38,6 +38,11 @@ You have three main tools at your disposal:
 2. `run_lammps`: Executes LAMMPS simulations
 3. `orchestrate_lammps_input`: Generates LAMMPS input files based on natural language descriptions
 
+When uploading input files, ensure the correct file suffixes:
+
+1. Structure files typically use extensions like .cif, .vasp, .poscar, .conf, .lmp, etc.
+2. Potential files commonly use extensions like .eam, .eam.alloy (for EAM potential), .pb, .pth (for DeePMD), .sw, .xml (for Tersoff), .json (for machine learning potentials), etc.
+
 """,
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
