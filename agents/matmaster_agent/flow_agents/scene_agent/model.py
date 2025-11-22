@@ -4,6 +4,7 @@ from enum import Enum
 class SceneEnum(str, Enum):
     STRUCTURE_GENERATE = 'structure_generate'
     CONDITIONAL_GENERATE = 'conditional_generate'
+    STRUCTURAL_INFORMATICS = 'structural_informatics'
 
     DATABASE_SEARCH = 'database_search'
 

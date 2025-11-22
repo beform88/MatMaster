@@ -355,7 +355,7 @@ ALL_TOOLS = {
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
-        'scene': [SceneEnum.LITERATURE],
+        'scene': [SceneEnum.LITERATURE, SceneEnum.STRUCTURAL_INFORMATICS],
         'description': 'Read and extract contents from PDF-formatted document files. Outputs information of materials involved and methodologies, supporting additional information required by users.',
     },
     'optimize_structure': {
@@ -532,8 +532,13 @@ ALL_TOOLS = {
     },
     'get_structure_info': {
         'belonging_agent': StructureGenerateAgentName,
-        'scene': [],
-        'description': 'Extract key structural descriptors from a given crystal or molecular structure file, including lattice parameters, chemical formula, atomic composition, cell volume, crystallographic density, and molar mass.',
+        'scene': [SceneEnum.STRUCTURAL_INFORMATICS],
+        'description': 'Extract key structural descriptors from a given crystal structure file, including lattice parameters, chemical formula, atomic composition, cell volume, crystallographic density, and molar mass.',
+    },
+    'get_molecule_info': {
+        'belonging_agent': StructureGenerateAgentName,
+        'scene': [SceneEnum.STRUCTURAL_INFORMATICS],
+        'description': 'Extract key structural descriptors from a given molecular structure file.',
     },
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
