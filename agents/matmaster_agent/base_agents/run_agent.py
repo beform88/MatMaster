@@ -41,6 +41,7 @@ from agents.matmaster_agent.job_agents.tool_call_info_agent.utils import (
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
+from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import update_state_event
 
 logger = logging.getLogger(__name__)
@@ -106,8 +107,13 @@ class BaseAgentWithParamsRecommendation(
         current_step = ctx.session.state['plan']['steps'][
             ctx.session.state['plan_index']
         ]
+        current_step_tool_name = current_step['tool_name']
         self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
-            user_prompt=current_step['description'], agent_prompt=self.instruction
+            user_prompt=current_step['description'],
+            agent_prompt=self.instruction,
+            tool_args_recommend_prompt=ALL_TOOLS[current_step_tool_name].get(
+                'args_setting', ''
+            ),
         )
         async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
             yield tool_call_info_event
@@ -121,7 +127,7 @@ class BaseAgentWithParamsRecommendation(
             != current_step['tool_name']
         ):
             update_tool_call_info = copy.deepcopy(ctx.session.state['tool_call_info'])
-            update_tool_call_info['tool_name'] = current_step['tool_name']
+            update_tool_call_info['tool_name'] = current_step_tool_name
             update_tool_call_info['tool_args'] = {}
             update_tool_call_info['missing_tool_args'] = []
             yield update_state_event(
