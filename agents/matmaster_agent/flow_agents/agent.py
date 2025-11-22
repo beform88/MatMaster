@@ -24,6 +24,7 @@ from agents.matmaster_agent.flow_agents.execution_result_agent.prompt import (
 from agents.matmaster_agent.flow_agents.expand_agent.agent import ExpandAgent
 from agents.matmaster_agent.flow_agents.expand_agent.prompt import EXPAND_INSTRUCTION
 from agents.matmaster_agent.flow_agents.expand_agent.schema import ExpandSchema
+from agents.matmaster_agent.flow_agents.intent_agent.agent import IntentAgent
 from agents.matmaster_agent.flow_agents.intent_agent.model import IntentEnum
 from agents.matmaster_agent.flow_agents.intent_agent.prompt import INTENT_INSTRUCTION
 from agents.matmaster_agent.flow_agents.intent_agent.schema import IntentSchema
@@ -75,7 +76,7 @@ class MatMasterFlowAgent(LlmAgent):
             name='chat_agent', model=MatMasterLlmConfig.deepseek_chat
         )
 
-        self._intent_agent = SchemaAgent(
+        self._intent_agent = IntentAgent(
             name='intent_agent',
             model=MatMasterLlmConfig.tool_schema_model,
             description='识别用户的意图',
@@ -230,6 +231,15 @@ class MatMasterFlowAgent(LlmAgent):
             if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
                 async for intent_event in self.intent_agent.run_async(ctx):
                     yield intent_event
+
+            # 如果用户上传文件，强制为 research 模式
+            if (
+                ctx.session.state['upload_file']
+                and ctx.session.state['intent']['type'] == IntentEnum.CHAT
+            ):
+                update_intent = copy.deepcopy(ctx.session.state['intent'])
+                update_intent['type'] = IntentEnum.RESEARCH
+                yield update_state_event(ctx, state_delta={'intent': update_intent})
 
             # chat 模式
             if ctx.session.state['intent']['type'] == IntentEnum.CHAT:

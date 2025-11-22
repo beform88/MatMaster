@@ -446,3 +446,5 @@ async def handle_upload_file_event(ctx: InvocationContext, author):
                     ModelRole,
                 ):
                     yield event
+
+                yield update_state_event(ctx, state_delta={'upload_file': True})
