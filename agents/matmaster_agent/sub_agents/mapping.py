@@ -481,7 +481,7 @@ ALL_TOOLS = {
     'build_bulk_structure_by_template': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'CAN ONLY: build structures for elements with packing of sc, fcc, bcc, hcp; and compounds like rhombohedral, orthorhombic, monoclinic, diamond, zincblende, rocksalt, cesiumchloride, fluorite, and wurtzite. Lattice constant requirements: sc/fcc/bcc/diamond/rocksalt/cesiumchloride/zincblende/fluorite → only a; hcp/wurtzite → a and c; orthorhombic/monoclinic → a, b, c. CANNOT DO: build structures for complex structures with elements more than two or molecular crystals.',
+        'description': 'CAN ONLY: build structures for elements with packing of sc, fcc, bcc, hcp; and compounds like rhombohedral, orthorhombic, monoclinic, diamond, zincblende, rocksalt, cesiumchloride, fluorite, and wurtzite. CANNOT DO: build structures for complex structures with elements more than two or molecular crystals. ',
     },
     'build_molecule_structure_from_g2database': {
         'belonging_agent': StructureGenerateAgentName,
