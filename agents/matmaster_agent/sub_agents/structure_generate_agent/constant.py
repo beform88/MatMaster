@@ -1,5 +1,7 @@
 from agents.matmaster_agent.constant import CURRENT_ENV
 
+StructureGenerateAgentName = 'structure_generate_agent'
+
 if CURRENT_ENV in ['test', 'uat']:
     StructureGenerateServerUrl = 'http://qpus1389933.bohrium.tech:50003/sse'
 else:
