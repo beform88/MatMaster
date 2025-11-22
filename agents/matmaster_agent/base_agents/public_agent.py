@@ -11,8 +11,8 @@ from agents.matmaster_agent.base_agents.subordinate_agent import (
 )
 from agents.matmaster_agent.base_agents.sync_agent import (
     SyncMCPAgent,
-    ToolValidatorAgent,
 )
+from agents.matmaster_agent.base_agents.validator_agent import ValidatorAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.logger import PrefixFilter
 
@@ -46,8 +46,8 @@ class BaseSyncAgentWithToolValidator(BaseAgentWithParamsRecommendation):
             render_tool_response=self.render_tool_response,
         )
 
-        tool_validator_agent = ToolValidatorAgent(
-            name=f"{agent_prefix}_tool_validator_agent",
+        tool_validator_agent = ValidatorAgent(
+            name=f"{agent_prefix}_tool_validator_agent", validator_key='tools_count'
         )
 
         self._submit_agent = SequentialAgent(

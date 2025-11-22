@@ -55,8 +55,8 @@ from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
-    ALL_TOOLS,
 )
+from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
     context_function_event,
