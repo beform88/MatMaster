@@ -47,6 +47,9 @@ from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
 from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
     SSEBRAIN_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
+    SCIENCE_NAVIGATOR_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,
 )
@@ -202,7 +205,7 @@ ALL_TOOLS = {
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
         'scene': [SceneEnum.LITERATURE, SceneEnum.STRUCTURAL_INFORMATICS],
-        'description': 'Read and extract contents from PDF-formatted document files. Outputs information of materials involved and methodologies, supporting additional information required by users.',
+        'description': 'Read and extract contents from PDF-formatted document files. Outputs information of materials involved and methodologies, supporting additional information required by users. CANNOT retrieve data from the internet.',
     },
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -485,5 +488,15 @@ ALL_TOOLS = {
         'belonging_agent': LAMMPS_AGENT_NAME,
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
         'description': 'Automatically generate LAMMPS input script based on natural language description using LLM, capable of multi-stage tasks, including energy minimization, MD simulation and on-the-fly property computations (e.g. MSD, RDF, density, stress) within complicated constraints, in one script with appropriate parameters or user-appointed parameters. CAN DO: support recognition of potential file type and generate appropriate formats accordingly, including DeePMD and classical force fields.',
+    },
+    'create-research-session': {
+        'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
+        'scene': [SceneEnum.LITERATURE],
+        'description': 'Initiating a literature/documentary/research paper retrieving and reviewing on a specific scientific topic based on a huge document database.',
+    },
+    'ask-followup-question': {
+        'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
+        'scene': [SceneEnum.LITERATURE],
+        'description': 'Ask a follow-up question within an existing research session to deepen understanding and explore specific aspects of the research topic.',
     },
 }

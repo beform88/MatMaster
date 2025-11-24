@@ -120,6 +120,13 @@ from agents.matmaster_agent.sub_agents.ssebrain_agent.agent import SSEBrainAgent
 from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
     SSEBRAIN_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.agent import (
+    ScienceNavigatorAgent,
+    science_navigator_toolset,
+)
+from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
+    SCIENCE_NAVIGATOR_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.structure_generate_agent.agent import (
     StructureGenerateAgent,
     structure_generate_toolset,
@@ -196,6 +203,7 @@ ALL_TOOLSET_DICT = {
     'visualizer_toolset': visualizer_toolset,
     'lammps_toolset': lammps_toolset,
     'vaspkit_toolset': vaspkit_toolset,
+    'science_navigator_toolset': science_navigator_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -217,6 +225,7 @@ AGENT_CLASS_MAPPING = {
     PerovskiteAgentName: PerovskiteAgent,
     PILOTEYE_ELECTRO_AGENT_NAME: PiloteyeElectroAgent,
     SSEBRAIN_AGENT_NAME: SSEBrainAgent,
+    SCIENCE_NAVIGATOR_AGENT_NAME: ScienceNavigatorAgent,
     StructureGenerateAgentName: StructureGenerateAgent,
     SuperconductorAgentName: SuperconductorAgent,
     TASK_ORCHESTRATOR_AGENT_NAME: TaskOrchestratorAgent,
@@ -245,6 +254,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     PerovskiteAgent = PerovskiteAgentName
     PiloteyeElectroAgent = PILOTEYE_ELECTRO_AGENT_NAME
     SSEBrainAgent = SSEBRAIN_AGENT_NAME
+    ScienceNavigatorAgent = SCIENCE_NAVIGATOR_AGENT_NAME
     StructureGenerateAgent = StructureGenerateAgentName
     SuperConductorAgent = SuperconductorAgentName
     ThermoElectricAgent = ThermoelectricAgentName
