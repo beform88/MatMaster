@@ -10,7 +10,18 @@ Classification Guidelines:
    - Use a single scene only if the entire request fits perfectly under one specific category.
    - Use multiple scenes when the request contains genuinely distinct operational goals, even if they are part of the same project.
 5. **Scope Clarification**:
-   - `structure_generate` should be strictly limited to tasks involving the creation or generation of new structures (e.g., molecule generation, surface construction, interface building).
+   - `structure_generate` should be applied to tasks involving the creation, modification, or generation of new structures, including but not limited to:
+     - Molecule generation and building
+     - Surface construction and slab creation
+     - Interface building
+     - Supercell generation and expansion (e.g., "扩胞至3*3*3", "create 2x2x2 supercell")
+     - Structure replication and periodic boundary extension
+     - Defect insertion and structural modification
+     - Crystal structure construction from scratch
+
+6. **Structure Manipulation Recognition**:
+   - Any operation that transforms an existing structure into a new structural configuration should be classified under `structure_generate`
+   - This includes unit cell expansion, supercell construction, lattice vector modification, and atomic position transformations
 
 Return a valid, parseable JSON string using this exact structure:
 {{

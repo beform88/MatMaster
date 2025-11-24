@@ -125,6 +125,8 @@ async def matmaster_prepare_state(
     )
     # 单次计划涉及的所有场景
     callback_context.state['scenes'] = callback_context.state.get('scenes', [])
+    # 单次计划涉及的所有场景
+    callback_context.state['upload_file'] = False
 
 
 async def matmaster_set_lang(
@@ -137,7 +139,10 @@ async def matmaster_set_lang(
         messages=[{'role': 'user', 'content': prompt}],
         response_format=UserContent,
     )
-    result: dict = json.loads(response.choices[0].message.content)
+    try:
+        result: dict = json.loads(response.choices[0].message.content)
+    except BaseException:
+        result = {}
     logger.info(
         f"[{MATMASTER_AGENT_NAME}]:[{inspect.currentframe().f_code.co_name}] result = {result}"
     )

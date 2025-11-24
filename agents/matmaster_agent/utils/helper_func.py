@@ -13,6 +13,7 @@ from mcp.types import CallToolResult
 from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.model import JobResult, JobResultType
 
 logger = logging.getLogger(__name__)
@@ -339,6 +340,29 @@ def get_new_function_call_indices(
             new_indices.append(idx)
 
     return new_indices
+
+
+def get_current_step_function_call(current_function_calls, ctx):
+    current_step = ctx.state['plan']['steps'][ctx.state['plan_index']]
+    current_step_tool_name, current_step_satus = (
+        current_step['tool_name'],
+        current_step['status'],
+    )
+
+    update_current_function_calls = [
+        item
+        for item in current_function_calls
+        if item['name'] == current_step_tool_name
+        and current_step_satus == PlanStepStatusEnum.PROCESS
+    ]
+
+    # if not update_current_function_calls:
+    #     logger.warning(
+    #         f'{ctx.session.id} current_function_calls empty, manual build one'
+    #     )
+    #     update_current_function_calls = [{'name': current_step_tool_name, 'args': {}}]
+
+    return update_current_function_calls
 
 
 def check_None_wrapper(func):

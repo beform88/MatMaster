@@ -4,6 +4,7 @@ from enum import Enum
 class SceneEnum(str, Enum):
     STRUCTURE_GENERATE = 'structure_generate'
     CONDITIONAL_GENERATE = 'conditional_generate'
+    STRUCTURAL_INFORMATICS = 'structural_informatics'
 
     DATABASE_SEARCH = 'database_search'
 
@@ -20,6 +21,7 @@ class SceneEnum(str, Enum):
     DENSITY_OF_STATES = 'density_of_states'
     REACTION = 'reaction'
     BADER_CHARGE_ANALYSIS = 'bader_charge_analysis'
+    WORK_FUNCTION = 'work_function'
 
     CompositionOptimization = 'composition_optimization'
 
@@ -34,6 +36,7 @@ class SceneEnum(str, Enum):
     DPA = 'DPA'
     APEX = 'APEX'
     ABACUS = 'ABACUS'
+    LAMMPS = 'LAMMPS'
 
     HIGH_ENTROPY_ALLOY = 'high_entropy_alloy'
     POLYMER = 'polymer'
