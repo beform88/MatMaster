@@ -155,6 +155,13 @@ from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
 )
+from agents.matmaster_agent.sub_agents.vaspkit_agent.agent import (
+    VASPKITAgent,
+    vaspkit_toolset,
+)
+from agents.matmaster_agent.sub_agents.vaspkit_agent.constant import (
+    VASPKIT_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.visualizer_agent.agent import (
     VisualizerAgent,
     visualizer_toolset,
@@ -188,6 +195,7 @@ ALL_TOOLSET_DICT = {
     'traj_analysis_toolset': traj_analysis_toolset,
     'visualizer_toolset': visualizer_toolset,
     'lammps_toolset': lammps_toolset,
+    'vaspkit_toolset': vaspkit_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -215,6 +223,7 @@ AGENT_CLASS_MAPPING = {
     ThermoelectricAgentName: ThermoAgent,
     TrajAnalysisAgentName: TrajAnalysisAgent,
     VisualizerAgentName: VisualizerAgent,
+    VASPKIT_AGENT_NAME: VASPKITAgent,
 }
 
 
@@ -243,6 +252,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     TrajAnalysisAgent = TrajAnalysisAgentName
     FinetuneDPAAgent = FinetuneDPAAgentName
     VisualizerAgent = VisualizerAgentName
+    VASPKITAgent = VASPKIT_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())
