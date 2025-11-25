@@ -7,6 +7,9 @@ from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
 from agents.matmaster_agent.sub_agents.CompDART_agent.constant import (
     COMPDART_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.convexhull_agent.constant import (
+    ConvexHullAgentName,
+)
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
@@ -406,43 +409,43 @@ ALL_TOOLS = {
     },
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Do geometry optimization for given superconductor under ambient or high pressure condition with DPA',
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Calculate enthalpy for given superconductor under ambient or high pressure condition with DPA',
     },
     'predict_superconductor_Tc': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Predict critical temperature for given superconductor under ambient or high pressure condition with DPA',
     },
     'screen_superconductor': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Screen potential supercondutors from given compounds at ambient or high pressure condition',
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Predict thermoelectric related properties with DPA under given pressure',
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Do geometry optimization for given thermoelectric materials with DPA under give pressure',
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Calcualte entalpy for given thermoelectric materials with DPA under given pressure',
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Screen potential thermoelectric materials from given compounds at given pressure',
     },
     'traj_analysis_msd': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -498,5 +501,10 @@ ALL_TOOLS = {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Ask a follow-up question within an existing research session to deepen understanding and explore specific aspects of the research topic.',
+    },
+    'build_convex_hull': {
+        'belonging_agent': ConvexHullAgentName,
+        'scene': [SceneEnum.CONVEXHULL],
+        'description': 'Optimize structures with Deep Potential, predicts enthalpies, and builds a convex hull to assess stability via energy above hull.',
     },
 }
