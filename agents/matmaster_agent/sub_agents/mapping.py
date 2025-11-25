@@ -27,6 +27,9 @@ from agents.matmaster_agent.sub_agents.CompDART_agent.agent import (
 from agents.matmaster_agent.sub_agents.CompDART_agent.constant import (
     COMPDART_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.convexhull_agent.agent import (
+    convexhull_toolset,
+)
 from agents.matmaster_agent.sub_agents.document_parser_agent.agent import (
     DocumentParserAgentBase,
     document_parser_toolset,
@@ -204,6 +207,7 @@ ALL_TOOLSET_DICT = {
     'lammps_toolset': lammps_toolset,
     'vaspkit_toolset': vaspkit_toolset,
     'science_navigator_toolset': science_navigator_toolset,
+    'convexhull_toolset': convexhull_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
