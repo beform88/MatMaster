@@ -44,3 +44,5 @@ class SceneEnum(str, Enum):
     CONVEXHULL = 'convexhull'
 
     SUPERCONDUCTOR = 'superconductor'
+
+    THERMOELECTRIC = 'thermoelectric'

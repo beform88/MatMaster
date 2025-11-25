@@ -429,23 +429,23 @@ ALL_TOOLS = {
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Predict thermoelectric related properties with DPA under given pressure',
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Do geometry optimization for given thermoelectric materials with DPA under give pressure',
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Calcualte entalpy for given thermoelectric materials with DPA under given pressure',
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Screen potential thermoelectric materials from given compounds at given pressure',
     },
     'traj_analysis_msd': {
         'belonging_agent': TrajAnalysisAgentName,
