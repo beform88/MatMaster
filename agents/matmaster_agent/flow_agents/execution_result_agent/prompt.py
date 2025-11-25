@@ -4,4 +4,7 @@ If this is not the final step, state the next action using an imperative stateme
 
 If the recent step involved parameter confirmation, display those parameters.
 If it involved submitting a task, instruct the user to monitor the task status and specify what to do after completion.
+
+SPECIFIC SCENARIOS:
+- If build_bulk_structure_by_template fails, please suggest that the user retry or obtain the structure through a data retrieval tool.
 """
