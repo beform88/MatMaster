@@ -116,16 +116,16 @@ from agents.matmaster_agent.sub_agents.piloteye_electro_agent.agent import (
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.ssebrain_agent.agent import SSEBrainAgent
-from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
-    SSEBRAIN_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.agent import (
     ScienceNavigatorAgent,
     science_navigator_toolset,
 )
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.ssebrain_agent.agent import SSEBrainAgent
+from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
+    SSEBRAIN_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.agent import (
     StructureGenerateAgent,

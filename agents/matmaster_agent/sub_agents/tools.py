@@ -44,11 +44,11 @@ from agents.matmaster_agent.sub_agents.perovskite_agent.constant import (
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
-    SSEBRAIN_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
+    SSEBRAIN_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,

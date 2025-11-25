@@ -1,5 +1,5 @@
 SCIENCE_NAVIGATOR_AGENT_DESCRIPTION = """
-Science Navigator Agent is designed to help researchers explore and navigate scientific research topics. 
+Science Navigator Agent is designed to help researchers explore and navigate scientific research topics.
 It can create research sessions, ask follow-up questions, and guide users through complex scientific landscapes.
 """
 
