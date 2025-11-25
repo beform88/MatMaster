@@ -13,8 +13,6 @@ from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
-    SCIENCE_NAVIGATOR_BOHRIUM_EXECUTOR,
-    SCIENCE_NAVIGATOR_BOHRIUM_STORAGE,
     SCIENCE_NAVIGATOR_MCP_SERVER_URL
 )
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.prompt import (
@@ -22,11 +20,8 @@ from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.prompt import (
     SCIENCE_NAVIGATOR_AGENT_INSTRUCTION,
 )
 
-load_dotenv(override=True)
-
-# Initialize MCP toolset for Science Navigator
 science_navigator_toolset = McpToolset(
-    connection_params=SseServerParams(url=SCIENCE_NAVIGATOR_MCP_SERVER_URL),
+    connection_params=SseServerParams(url=SCIENCE_NAVIGATOR_MCP_SERVER_URL)
 )
 
 
