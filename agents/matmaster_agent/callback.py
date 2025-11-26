@@ -19,7 +19,9 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
+from agents.matmaster_agent.services.quota import check_quota_service, use_quota_service
 from agents.matmaster_agent.style import get_job_complete_card, hallucination_card
+from agents.matmaster_agent.utils.helper_func import get_user_id
 from agents.matmaster_agent.utils.job_utils import (
     get_job_status,
     get_running_jobs_detail,
@@ -159,6 +161,16 @@ async def matmaster_set_lang(
         i18n.language = 'en'
 
 
+async def matmaster_check_quota(
+    callback_context: CallbackContext,
+) -> Optional[types.Content]:
+    user_id = get_user_id(callback_context)
+    response = await check_quota_service(user_id=user_id)
+    logger.info(f'{callback_context.session.id} check_quota_response = {response}')
+    if not response.get('remaining') or not response['remaining']:
+        return types.Content(parts=[Part(text='每日免费次数不足，请申请后重试')])
+
+
 # after_model_callback
 async def matmaster_check_job_status(
     callback_context: CallbackContext, llm_response: LlmResponse
@@ -263,3 +275,13 @@ async def matmaster_hallucination_retry(
     callback_context.state['hallucination'] = False
 
     return llm_response
+
+
+async def matmaster_use_quota(
+    callback_context: CallbackContext,
+) -> Optional[types.Content]:
+    user_id = get_user_id(callback_context)
+    response = await use_quota_service(user_id=user_id)
+    logger.info(f'{callback_context.session.id} use_quota_service = {response}')
+    if response['code']:
+        return types.Content(parts=[Part(text=response['msg'])])

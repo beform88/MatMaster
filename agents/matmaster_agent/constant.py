@@ -48,6 +48,7 @@ GOODS_API_BASE = f'https://goods-server{URL_PART}.dp.tech'
 FINANCE_API_BASE = f'https://finance-web{URL_PART}.dp.tech'
 BOHRIUM_COM = f'https://www{URL_PART}.bohrium.com'
 BOHRIUM_HOST = f'https://bohrium{URL_PART}.dp.tech'
+MATMASTER_TOOLS_SERVER = f'https://matmaster-tools-server{URL_PART}.bohrium.com'
 if CURRENT_ENV == 'test':
     DFLOW_HOST = 'https://lbg-workflow-mlops.test.dp.tech'
     DFLOW_K8S_API_SERVER = 'https://lbg-workflow-mlops.test.dp.tech'
