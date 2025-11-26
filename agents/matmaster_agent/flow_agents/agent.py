@@ -1,11 +1,11 @@
 import copy
 import logging
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional
 
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from google.adk.models.lite_llm import LiteLlm
-from pydantic import computed_field, model_validator
+from pydantic import computed_field, model_validator, PrivateAttr
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
@@ -63,6 +63,7 @@ from agents.matmaster_agent.utils.event_utils import (
     send_error_event,
     update_state_event,
 )
+from agents.matmaster_agent.utils.icl import ICLExampleSelector,icl_example_selector
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -70,6 +71,8 @@ logger.setLevel(logging.INFO)
 
 
 class MatMasterFlowAgent(LlmAgent):
+    # store example selector as a private attribute to avoid pydantic field validation
+    _icl_example_selector: Optional[ICLExampleSelector] = PrivateAttr(default=None)
     @model_validator(mode='after')
     def after_init(self):
         self._chat_agent = DisallowTransferLlmAgent(
@@ -164,6 +167,8 @@ class MatMasterFlowAgent(LlmAgent):
             instruction='',
         )
 
+        self._icl_example_selector = icl_example_selector()
+
         self.sub_agents = [
             self.chat_agent,
             self.intent_agent,
@@ -177,6 +182,11 @@ class MatMasterFlowAgent(LlmAgent):
         ]
 
         return self
+    
+    @property
+    def icl_example_selector(self) -> ICLExampleSelector:
+        """向后兼容：只读属性，返回私有的 example selector。"""
+        return self._icl_example_selector
 
     @computed_field
     @property
@@ -247,11 +257,31 @@ class MatMasterFlowAgent(LlmAgent):
                     yield chat_event
             # research 模式
             else:
+                # 检索 ICL 示例
+                icl_examples = self._icl_example_selector.select_examples(
+                    ctx.session.state['expand']['update_user_content']
+                )
+                EXPAND_INPUT_EXAMPLES_PROMPT = self._icl_example_selector.expand_input_examples(
+                    icl_examples
+                )
+                SCENE_EXAMPLES_PROMPT = self._icl_example_selector.scene_tags_from_examples(
+                    icl_examples
+                )
+                TOOLCHAIN_EXAMPLES_PROMPT = self._icl_example_selector.toolchain_from_examples(
+                    icl_examples
+                )
+                logger.info(f'{EXPAND_INPUT_EXAMPLES_PROMPT}')
+                logger.info(f'{SCENE_EXAMPLES_PROMPT}')
+                logger.info(f'{TOOLCHAIN_EXAMPLES_PROMPT}')
                 # 扩写用户问题
+                self.expand_agent.instruction = (
+                    EXPAND_INSTRUCTION + EXPAND_INPUT_EXAMPLES_PROMPT
+                )
                 async for expand_event in self.expand_agent.run_async(ctx):
                     yield expand_event
 
                 # 划分问题场景
+                self.scene_agent.instruction = SCENE_INSTRUCTION + SCENE_EXAMPLES_PROMPT
                 async for scene_event in self.scene_agent.run_async(ctx):
                     yield scene_event
 
@@ -297,7 +327,7 @@ class MatMasterFlowAgent(LlmAgent):
                         ]
                     )
                     self.plan_make_agent.instruction = get_plan_make_instruction(
-                        available_tools_with_info_str
+                        available_tools_with_info_str + TOOLCHAIN_EXAMPLES_PROMPT
                     )
                     self.plan_make_agent.output_schema = create_dynamic_plan_schema(
                         available_tools
