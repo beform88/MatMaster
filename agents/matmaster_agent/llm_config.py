@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 from google.adk.models.lite_llm import LiteLlm
 from opik.integrations.adk import OpikTracer
 
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-
 load_dotenv()
 logger = logging.getLogger(__name__)
 
@@ -33,6 +31,7 @@ MODEL_MAPPING = {
     ('litellm_proxy', 'gemini-2.0-flash'): 'litellm_proxy/gemini-2.0-flash',
     ('litellm_proxy', 'gemini-2.5-flash'): 'litellm_proxy/gemini-2.5-flash',
     ('litellm_proxy', 'gemini-2.5-pro'): 'litellm_proxy/gemini-2.5-pro',
+    ('litellm_proxy', 'gemini-3-pro-preview'): 'litellm_proxy/gemini-3-pro-preview',
     ('litellm_proxy', 'claude-sonnet-4'): 'litellm_proxy/claude-sonnet-4',
     ('litellm_proxy', 'gpt-5'): 'litellm_proxy/azure/gpt-5',
     ('litellm_proxy', 'gpt-5-mini'): 'litellm_proxy/azure/gpt-5-mini',

@@ -31,7 +31,6 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import CostFuncType
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
-from agents.matmaster_agent.utils.finance import get_user_photon_balance
 from agents.matmaster_agent.utils.helper_func import (
     check_None_wrapper,
     function_calls_to_str,
@@ -298,7 +297,7 @@ def check_user_phonon_balance(
             )
             return
 
-        user_id = _get_userId(tool_context)
+        _get_userId(tool_context)
         cost, sku_id = await cost_func(tool, args)
         tool_context.state['cost'][tool_context.function_call_id] = {
             'value': cost,

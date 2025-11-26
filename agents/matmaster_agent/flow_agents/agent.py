@@ -5,7 +5,7 @@ from typing import AsyncGenerator, Optional
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from google.adk.models.lite_llm import LiteLlm
-from pydantic import computed_field, model_validator, PrivateAttr
+from pydantic import PrivateAttr, computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
@@ -63,7 +63,7 @@ from agents.matmaster_agent.utils.event_utils import (
     send_error_event,
     update_state_event,
 )
-from agents.matmaster_agent.utils.icl import ICLExampleSelector,icl_example_selector
+from agents.matmaster_agent.utils.icl import ICLExampleSelector, icl_example_selector
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -73,6 +73,7 @@ logger.setLevel(logging.INFO)
 class MatMasterFlowAgent(LlmAgent):
     # store example selector as a private attribute to avoid pydantic field validation
     _icl_example_selector: Optional[ICLExampleSelector] = PrivateAttr(default=None)
+
     @model_validator(mode='after')
     def after_init(self):
         self._chat_agent = DisallowTransferLlmAgent(
@@ -182,7 +183,7 @@ class MatMasterFlowAgent(LlmAgent):
         ]
 
         return self
-    
+
     @property
     def icl_example_selector(self) -> ICLExampleSelector:
         """向后兼容：只读属性，返回私有的 example selector。"""
@@ -261,14 +262,14 @@ class MatMasterFlowAgent(LlmAgent):
                 icl_examples = self._icl_example_selector.select_examples(
                     ctx.session.state['expand']['update_user_content']
                 )
-                EXPAND_INPUT_EXAMPLES_PROMPT = self._icl_example_selector.expand_input_examples(
-                    icl_examples
+                EXPAND_INPUT_EXAMPLES_PROMPT = (
+                    self._icl_example_selector.expand_input_examples(icl_examples)
                 )
-                SCENE_EXAMPLES_PROMPT = self._icl_example_selector.scene_tags_from_examples(
-                    icl_examples
+                SCENE_EXAMPLES_PROMPT = (
+                    self._icl_example_selector.scene_tags_from_examples(icl_examples)
                 )
-                TOOLCHAIN_EXAMPLES_PROMPT = self._icl_example_selector.toolchain_from_examples(
-                    icl_examples
+                TOOLCHAIN_EXAMPLES_PROMPT = (
+                    self._icl_example_selector.toolchain_from_examples(icl_examples)
                 )
                 logger.info(f'{EXPAND_INPUT_EXAMPLES_PROMPT}')
                 logger.info(f'{SCENE_EXAMPLES_PROMPT}')

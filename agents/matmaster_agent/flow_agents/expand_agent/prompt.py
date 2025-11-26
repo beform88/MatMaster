@@ -88,4 +88,3 @@ OUTPUT REQUIREMENTS:
 #   "origin_user_content": "为 Ni–Fe–O 催化剂生成 (100)、(110) 与 (111) 三个表面模型，并在每个表面构建 H₂O 吸附构型",
 #   "update_user_content": "首先构建Ni–Fe–O体相结构，然后生成(100)、(110)与(111)三个表面模型，接着构建H₂O分子结构（O-H键长0.96Å，H-O-H键角104.5°），最后在每个表面上构建H₂O吸附构型"
 # }}
-
