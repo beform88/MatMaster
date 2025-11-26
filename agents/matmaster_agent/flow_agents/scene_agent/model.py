@@ -40,3 +40,9 @@ class SceneEnum(str, Enum):
 
     HIGH_ENTROPY_ALLOY = 'high_entropy_alloy'
     POLYMER = 'polymer'
+
+    CONVEXHULL = 'convexhull'
+
+    SUPERCONDUCTOR = 'superconductor'
+
+    THERMOELECTRIC = 'thermoelectric'
