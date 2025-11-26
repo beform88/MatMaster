@@ -28,4 +28,5 @@ log
 *.txt
 *log*
 *.ipynb
+/agents/matmaster_agent/llm_config.py
 function_declaration
