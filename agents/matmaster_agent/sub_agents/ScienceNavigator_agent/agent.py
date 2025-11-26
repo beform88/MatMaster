@@ -1,10 +1,13 @@
+from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool import McpToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import (
     SseServerParams,
 )
 
+from agents.matmaster_agent.base_agents.public_agent import (
+    BaseSyncAgentWithToolValidator,
+)
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
@@ -20,7 +23,7 @@ science_navigator_toolset = McpToolset(
 )
 
 
-class ScienceNavigatorAgent(BaseAsyncJobAgent):
+class ScienceNavigatorAgent(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=SCIENCE_NAVIGATOR_AGENT_NAME,
@@ -28,10 +31,10 @@ class ScienceNavigatorAgent(BaseAsyncJobAgent):
             model=llm_config.default_litellm_model,
             description=SCIENCE_NAVIGATOR_AGENT_DESCRIPTION,
             instruction=SCIENCE_NAVIGATOR_AGENT_INSTRUCTION,
-            dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
+            render_tool_response=True,
         )
 
 
-def init_science_navigator_agent(llm_config):
+def init_science_navigator_agent(llm_config) -> BaseAgent:
     return ScienceNavigatorAgent(llm_config)
