@@ -10,10 +10,14 @@ class ICLExampleSelector:
         self,
         examples,
         model_name='/internfs/ycjin/MatMaster/models/moka-ai/m3e-base',
-        model_kwargs={'device': 'cpu'},
-        encode_kwargs={'normalize_embeddings': False},
+        model_kwargs=None,
+        encode_kwargs=None,
         k=2,
     ):
+        if model_kwargs is None:
+            model_kwargs = {'device': 'cpu'}
+        if encode_kwargs is None:
+            encode_kwargs = {'normalize_embeddings': False}
         self.embeddings = HuggingFaceEmbeddings(
             model_name=model_name,
             model_kwargs=model_kwargs,
