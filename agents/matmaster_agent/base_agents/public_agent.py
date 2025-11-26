@@ -41,6 +41,7 @@ class BaseSyncAgentWithToolValidator(BaseAgentWithParamsRecommendation):
             disallow_transfer_to_peers=True,
             disallow_transfer_to_parent=True,
             after_model_callback=self.after_model_callback,
+            after_tool_callback=self.after_tool_callback,
             enable_tgz_unpack=self.enable_tgz_unpack,
             cost_func=self.cost_func,
             render_tool_response=self.render_tool_response,
