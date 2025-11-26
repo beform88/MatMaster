@@ -7,6 +7,9 @@ from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
 from agents.matmaster_agent.sub_agents.CompDART_agent.constant import (
     COMPDART_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.convexhull_agent.constant import (
+    ConvexHullAgentName,
+)
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
@@ -406,43 +409,43 @@ ALL_TOOLS = {
     },
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Do geometry optimization for given superconductor under ambient or high pressure condition with DPA',
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Calculate enthalpy for given superconductor under ambient or high pressure condition with DPA',
     },
     'predict_superconductor_Tc': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Predict critical temperature for given superconductor under ambient or high pressure condition with DPA',
     },
     'screen_superconductor': {
         'belonging_agent': SuperconductorAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.SUPERCONDUCTOR],
+        'description': 'Screen potential supercondutors from given compounds at ambient or high pressure condition',
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Predict thermoelectric related properties with DPA under given pressure',
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Do geometry optimization for given thermoelectric materials with DPA under give pressure',
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Calcualte entalpy for given thermoelectric materials with DPA under given pressure',
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.THERMOELECTRIC],
+        'description': 'Screen potential thermoelectric materials from given compounds at given pressure',
     },
     'traj_analysis_msd': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -489,14 +492,20 @@ ALL_TOOLS = {
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
         'description': 'Automatically generate LAMMPS input script based on natural language description using LLM, capable of multi-stage tasks, including energy minimization, MD simulation and on-the-fly property computations (e.g. MSD, RDF, density, stress) within complicated constraints, in one script with appropriate parameters or user-appointed parameters. CAN DO: support recognition of potential file type and generate appropriate formats accordingly, including DeePMD and classical force fields.',
     },
-    'create-research-session': {
+    'search-papers-normal': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
-        'description': 'Initiating a literature/documentary/research paper retrieving and reviewing on a specific scientific topic based on a huge document database.',
+        'description': 'Standard version of searching academic papers based on author information',
     },
-    'ask-followup-question': {
+    'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
-        'description': 'Ask a follow-up question within an existing research session to deepen understanding and explore specific aspects of the research topic.',
+        'description': 'Intelligent enhanced paper search system based on keywords and research questions',
+        'args_setting': 'If not specified, the year range is 2018-2025; the number of papers is 20.',
+    },
+    'build_convex_hull': {
+        'belonging_agent': ConvexHullAgentName,
+        'scene': [SceneEnum.CONVEXHULL],
+        'description': 'Optimize structures with Deep Potential, predicts enthalpies, and builds a convex hull to assess stability via energy above hull.',
     },
 }

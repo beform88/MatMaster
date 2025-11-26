@@ -3,6 +3,9 @@ from agents.matmaster_agent.sub_agents.apex_agent.constant import ApexAgentName
 from agents.matmaster_agent.sub_agents.CompDART_agent.constant import (
     COMPDART_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.convexhull_agent.constant import (
+    ConvexHullAgentName,
+)
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
@@ -165,6 +168,7 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "task_orchestrator" → {TASK_ORCHESTRATOR_AGENT_NAME}
    - "sse" → SSE-related agents (context dependent)
    - "finetune_dpa" → {FinetuneDPAAgentName}
+   - "convexhull" → {ConvexHullAgentName}
 
 
 3. **If No Explicit Tool Mention**: When user asks for property calculations without specifying a tool:
@@ -631,8 +635,16 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
      -Based on user given dpdata to fine tune pretrained dpa model to provide with user finetuned model which is aligned with their requirement.
    - Workflow: Prepare train.json -> split train and valid dataset -> fine tune pretrained dpa model
    - If user mention fine tune model, use all tools in FinetuneDPAAgentName
-
-8. **{SuperconductorAgentName}** - **Superconductor critical temperature specialist**
+17. **{ConvexHullAgentName}** - **Convex-hull stability specialist**
+   - Purpose: Build convex hulls and assess thermodynamic stability of compounds
+   - Capabilities:
+     - Structure optimization using DPA models
+     - Enthalpy prediction for candidate structures
+     - Convex-hull construction at ambient or high-pressure conditions
+     - Energy-above-hull analysis and stability screening
+   - Workflow: Input structures (e.g. POSCARs) → DPA optimization → enthalpy prediction → convex-hull construction → energy-above-hull stability analysis
+   - If the user mentions convex hull, “energy above hull”, or stability screening, use all tools in {ConvexHullAgentName}
+   - We provide two convex-hull reference conditions: ambient pressure and high pressure. If the user does not specify the condition, remind them to choose one or explicitly state the default (ambient).
 
 ## CRITICAL RULES TO PREVENT HALLUCINATION
 0. Strictly follow the rules below UNLESS the USERS explicitly instruct you to break them.

@@ -27,6 +27,13 @@ from agents.matmaster_agent.sub_agents.CompDART_agent.agent import (
 from agents.matmaster_agent.sub_agents.CompDART_agent.constant import (
     COMPDART_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.convexhull_agent.agent import (
+    ConvexHullAgent,
+    convexhull_toolset,
+)
+from agents.matmaster_agent.sub_agents.convexhull_agent.constant import (
+    ConvexHullAgentName,
+)
 from agents.matmaster_agent.sub_agents.document_parser_agent.agent import (
     DocumentParserAgentBase,
     document_parser_toolset,
@@ -204,6 +211,7 @@ ALL_TOOLSET_DICT = {
     'lammps_toolset': lammps_toolset,
     'vaspkit_toolset': vaspkit_toolset,
     'science_navigator_toolset': science_navigator_toolset,
+    'convexhull_toolset': convexhull_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -233,6 +241,7 @@ AGENT_CLASS_MAPPING = {
     TrajAnalysisAgentName: TrajAnalysisAgent,
     VisualizerAgentName: VisualizerAgent,
     VASPKIT_AGENT_NAME: VASPKITAgent,
+    ConvexHullAgentName: ConvexHullAgent,
 }
 
 
@@ -263,6 +272,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     FinetuneDPAAgent = FinetuneDPAAgentName
     VisualizerAgent = VisualizerAgentName
     VASPKITAgent = VASPKIT_AGENT_NAME
+    ConvexHullAgent = ConvexHullAgentName
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())
