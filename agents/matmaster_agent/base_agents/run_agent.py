@@ -148,6 +148,9 @@ class BaseAgentWithParamsRecommendation(
 
         tool_call_info = ctx.session.state['tool_call_info']
         function_declarations = ctx.session.state['function_declarations']
+        logger.info(
+            f'{ctx.session.id} tool_call_info = {tool_call_info}, function_declarations = {function_declarations}'
+        )
         tool_call_info, current_function_declaration = (
             update_tool_call_info_with_function_declarations(
                 tool_call_info, function_declarations

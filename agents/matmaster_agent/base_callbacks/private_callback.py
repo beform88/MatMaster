@@ -53,9 +53,10 @@ logger.setLevel(logging.INFO)
 async def default_before_model_callback(
     callback_context: CallbackContext, llm_request: LlmRequest
 ) -> Optional[LlmResponse]:
-    callback_context.state['function_declarations'] = llm_request.config.tools[
-        0
-    ].function_declarations
+    callback_context.state['function_declarations'] = [
+        item.to_json_dict()
+        for item in llm_request.config.tools[0].function_declarations
+    ]
 
 
 # after_model_callback
