@@ -18,9 +18,19 @@ def update_tool_call_info_with_function_declarations(
         for item in function_declarations
         if item['name'] == tool_call_info['tool_name']
     ]
+
+    # 记录返回的函数工具，即使为空也要记录
+    if current_function_declaration:
+        logger.info(f'current_function_declaration = {current_function_declaration}')
+    else:
+        logger.info(
+            f'current_function_declaration = [] (empty, tool_name: {tool_call_info.get("tool_name", "unknown")})'
+        )
+
     required_params = []
-    if current_function_declaration[0]['parameters'].get('required'):
-        required_params = current_function_declaration[0]['parameters']['required']
+    if current_function_declaration:
+        if current_function_declaration[0]['parameters'].get('required'):
+            required_params = current_function_declaration[0]['parameters']['required']
     logger.info(f'required_params = {required_params}')
 
     for param in required_params:

@@ -38,6 +38,9 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.constant impor
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant import (
     OPTIMADE_DATABASE_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.NMR_agent.constant import (
+    NMR_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.organic_reaction_agent.constant import (
     ORGANIC_REACTION_AGENT_NAME,
 )
@@ -507,5 +510,20 @@ ALL_TOOLS = {
         'belonging_agent': ConvexHullAgentName,
         'scene': [SceneEnum.CONVEXHULL],
         'description': 'Optimize structures with Deep Potential, predicts enthalpies, and builds a convex hull to assess stability via energy above hull.',
+    },
+    'NMR_search_tool': {
+        'belonging_agent': NMR_AGENT_NAME,
+        'scene': [SceneEnum.NMR],
+        'description': 'Database search for molecules based on NMR(nmr) spectroscopic data. ',
+    },
+    'NMR_predict_tool': {
+        'belonging_agent': NMR_AGENT_NAME,
+        'scene': [SceneEnum.NMR],
+        'description': 'Predict NMR(nmr) spectroscopic properties for molecular structures. Calculates simulated 1H and 13C NMR chemical shifts for given molecular structures (SMILES strings). Useful for validating structural assignments and comparing predicted spectra with reference spectra for similarity scoring. Input SMILES strings to simulate NMR spectra. Returns list of molecules with predicted NMR chemical shifts and spectral similarity scores.',
+    },
+    'NMR_reverse_predict_tool': {
+        'belonging_agent': NMR_AGENT_NAME,
+        'scene': [SceneEnum.NMR],
+        'description': 'Generates candidate molecular structures from Nuclear Magnetic Resonance (NMR) spectroscopic data.',
     },
 }
