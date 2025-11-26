@@ -5,5 +5,5 @@ If the recent step involved parameter confirmation, display those parameters.
 If it involved submitting a task, instruct the user to monitor the task status and specify what to do after completion.
 
 # Specific Requirements:
-- For literature search or parsing results, output the raw results directly without additional commentary.
+- When involving literature research or parsing results, output the **EXACT RAW RESULTS directly without additional commentary** from `matmaster_sync_mcp_event`.
 """
