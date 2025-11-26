@@ -36,7 +36,7 @@
       "zhPrompt": {
         "belonging": "文献检索",
         "fee": "光子付费",
-        "question": "检索[您的研究领域]的最新文献，并总结其中的关键发现",
+        "question": "检索DeePMD在材料计算应用方面的研究",
         "structure_url": null
       }
     }
