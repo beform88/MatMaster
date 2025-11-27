@@ -226,7 +226,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构获取->性质预测",
+        "belonging": "性质预测",
         "fee": "光子付费",
         "question": "对 SrTiO₃ 进行弹性常数计算并输出完整的 C₁₁、C₁₂、C₄₄ 张量（从开源数据库获取初始结构并自行设定合理参数）",
         "structure_url": ""
@@ -234,7 +234,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构获取->性质预测",
+        "belonging": "性质预测",
         "fee": "光子付费",
         "question": "帮我建一个H₂O在 TiO₂ 表面 (101) 吸附的结构，并进行结构优化，TiO₂ bluk结构可以从bohrium数据库中检索",
         "structure_url": ""
@@ -242,17 +242,9 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构获取->性质预测",
+        "belonging": "性质预测",
         "fee": "光子付费",
         "question": "从开源数据库获取一个MgB₂结构 ，并计算其声子谱",
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构获取->结构优化",
-        "fee": "光子付费",
-        "question": "建一个FCC Al结构，并对其执行结构优化",
         "structure_url": ""
       }
     },
