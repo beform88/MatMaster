@@ -227,6 +227,13 @@ class MatMasterFlowAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
+            if not ctx.session.state['quota_remaining']:
+                for quota_remaining_event in all_text_event(
+                    ctx, self.name, '每日免费次数不足，请申请后重试', ModelRole
+                ):
+                    yield quota_remaining_event
+                return
+
             # 用户意图识别（一旦进入 research 模式，暂时无法退出）
             if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
                 async for intent_event in self.intent_agent.run_async(ctx):
