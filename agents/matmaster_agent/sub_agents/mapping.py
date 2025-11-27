@@ -102,6 +102,13 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.agent import 
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant import (
     OPTIMADE_DATABASE_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.NMR_agent.agent import (
+    NMRAgent,
+    nmr_toolset,
+)
+from agents.matmaster_agent.sub_agents.NMR_agent.constant import (
+    NMR_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.organic_reaction_agent.agent import (
     OragnicReactionAgent,
     organic_reaction_toolset,
@@ -212,6 +219,7 @@ ALL_TOOLSET_DICT = {
     'vaspkit_toolset': vaspkit_toolset,
     'science_navigator_toolset': science_navigator_toolset,
     'convexhull_toolset': convexhull_toolset,
+    'nmr_toolset': nmr_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -242,6 +250,7 @@ AGENT_CLASS_MAPPING = {
     VisualizerAgentName: VisualizerAgent,
     VASPKIT_AGENT_NAME: VASPKITAgent,
     ConvexHullAgentName: ConvexHullAgent,
+    NMR_AGENT_NAME: NMRAgent,
 }
 
 
@@ -273,6 +282,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     VisualizerAgent = VisualizerAgentName
     VASPKITAgent = VASPKIT_AGENT_NAME
     ConvexHullAgent = ConvexHullAgentName
+    NMRAgent = NMR_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())

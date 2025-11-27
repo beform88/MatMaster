@@ -37,6 +37,7 @@ class SceneEnum(str, Enum):
     APEX = 'APEX'
     ABACUS = 'ABACUS'
     LAMMPS = 'LAMMPS'
+    NMR = 'NMR'
 
     HIGH_ENTROPY_ALLOY = 'high_entropy_alloy'
     POLYMER = 'polymer'
