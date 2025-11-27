@@ -439,6 +439,47 @@ def _inject_sessionId(ctx: ToolContext, executor):
         raise RuntimeError('Failed to get session_id')
 
 
+def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 如果 tool 为 Transfer2Agent，不做 ak 和 project_id 设置/校验
+        if tool.name == Transfer2Agent:
+            return None
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            logger.warning(
+                'Not CalculationMCPTool type, current tool does not have <storage>'
+            )
+            return
+
+        # 获取 access_key
+        access_key, tool.executor, tool.storage = _inject_ak(
+            tool_context, tool.executor, tool.storage
+        )
+
+        # 获取 project_id
+        try:
+            project_id, tool.executor, tool.storage = _inject_projectId(
+                tool_context, tool.executor, tool.storage
+            )
+        except ValueError as e:
+            raise ValueError('ProjectId is invalid') from e
+
+        tool_context.state['ak'] = access_key
+        tool_context.state['project_id'] = project_id
+
+    return wrapper
+
+
 def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
     @wraps(func)
     async def wrapper(

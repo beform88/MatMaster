@@ -19,6 +19,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     default_before_tool_callback,
     default_cost_func,
     filter_function_calls,
+    inject_ak_projectId,
     inject_current_env,
     inject_userId_sessionId,
     inject_username_ticket,
@@ -101,7 +102,8 @@ def mcp_callback_model_validator(data: Any):
         )
     )
 
-    pipeline = inject_userId_sessionId(data['before_tool_callback'])
+    pipeline = inject_ak_projectId(data['before_tool_callback'])
+    pipeline = inject_userId_sessionId(pipeline)
 
     if USE_PHOTON:
         pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
@@ -122,10 +124,7 @@ def mcp_callback_model_validator(data: Any):
         )
     )
 
-    if 'nmr' in data['name']:
-        return data
-    else:
-        return data
+    return data
 
 
 class MCPCallbackMixin(BaseMixin):
