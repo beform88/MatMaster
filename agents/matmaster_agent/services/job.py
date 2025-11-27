@@ -3,10 +3,7 @@ import logging
 
 import aiohttp
 
-from agents.matmaster_agent.config import USER_DIRECT_CONSUME
 from agents.matmaster_agent.constant import (
-    MATERIALS_ACCESS_KEY,
-    MATERIALS_PROJECT_ID,
     MATMASTER_AGENT_NAME,
     OPENAPI_HOST,
 )
@@ -20,13 +17,8 @@ logger.setLevel(logging.INFO)
 
 async def check_job_create_service(ctx):
     job_create_url = f"{OPENAPI_HOST}/openapi/v1/sandbox/job/create"
-
-    if USER_DIRECT_CONSUME:
-        access_key = _get_ak(ctx)
-        project_id = _get_projectId(ctx)
-    else:
-        access_key = MATERIALS_ACCESS_KEY
-        project_id = MATERIALS_PROJECT_ID
+    access_key = _get_ak(ctx)
+    project_id = _get_projectId(ctx)
     payload = {
         'projectId': project_id,
         'name': 'check_job_create',

@@ -23,7 +23,6 @@ from agents.matmaster_agent.constant import (
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
     LOCAL_EXECUTOR,
-    MATERIALS_ACCESS_KEY,
     MATMASTER_AGENT_NAME,
     SKU_MAPPING,
     Transfer2Agent,
@@ -367,7 +366,8 @@ def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, stor
 
 
 def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
-    username = ak_to_username(access_key=MATERIALS_ACCESS_KEY)
+    access_key = _get_ak(ctx)
+    username = ak_to_username(access_key=access_key)
     if username:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
@@ -385,7 +385,8 @@ def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
 
 
 def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
-    ticket = ak_to_ticket(access_key=MATERIALS_ACCESS_KEY)
+    access_key = _get_ak(ctx)
+    ticket = ak_to_ticket(access_key=access_key)
     if ticket:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
