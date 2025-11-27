@@ -69,29 +69,3 @@ async def get_project_name():
             ][0]
 
     return project_name
-
-
-async def check_job_create_service():
-    job_create_url = f"{OPENAPI_HOST}/openapi/v1/sandbox/job/create"
-    payload = {
-        'projectId': MATERIALS_PROJECT_ID,
-        'name': 'check_job_create',
-    }
-    params = {'accessKey': MATERIALS_ACCESS_KEY}
-    logger.info(
-        f"[{MATMASTER_AGENT_NAME}] project_id = {MATERIALS_PROJECT_ID}, "
-        f"ak = {MATERIALS_ACCESS_KEY}"
-    )
-
-    async with aiohttp.ClientSession() as session:
-        async with session.post(
-            job_create_url, json=payload, params=params
-        ) as response:
-            res = json.loads(await response.text())
-            if res['code'] != 0:
-                if res['code'] == 140202:
-                    res['error'][
-                        'msg'
-                    ] = 'Agent 开发者账户余额不足，需开发者充值，请稍后重试。'
-
-                return res

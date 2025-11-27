@@ -13,10 +13,10 @@ from google.adk.tools import BaseTool
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
+from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.locales import i18n
-from agents.matmaster_agent.setting import USE_PHOTON
 from agents.matmaster_agent.style import (
     photon_consume_free_card,
     photon_consume_notify_card,

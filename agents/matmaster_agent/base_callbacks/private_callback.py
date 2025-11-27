@@ -30,7 +30,9 @@ from agents.matmaster_agent.constant import (
 )
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import CostFuncType
+from agents.matmaster_agent.services.job import check_job_create_service
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
+from agents.matmaster_agent.utils.callback_utils import _get_ak, _get_projectId
 from agents.matmaster_agent.utils.finance import get_user_photon_balance
 from agents.matmaster_agent.utils.helper_func import (
     check_None_wrapper,
@@ -41,7 +43,6 @@ from agents.matmaster_agent.utils.helper_func import (
     update_llm_response,
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
-from agents.matmaster_agent.utils.job_utils import check_job_create_service
 from agents.matmaster_agent.utils.tool_response_utils import check_valid_tool_response
 
 logger = logging.getLogger(__name__)
@@ -317,22 +318,6 @@ def check_user_phonon_balance(
 
 
 @check_None_wrapper
-def _get_ak(ctx: Union[InvocationContext, ToolContext, CallbackContext]):
-    session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv(
-        'BOHRIUM_ACCESS_KEY'
-    )
-
-
-@check_None_wrapper
-def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
-    session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv(
-        'BOHRIUM_PROJECT_ID'
-    )
-
-
-@check_None_wrapper
 def _get_userId(ctx: Union[InvocationContext, ToolContext]):
     session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY].get('adk_user_id') or os.getenv(
@@ -526,7 +511,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             return
 
         if tool.executor is not None:
-            return await check_job_create_service()
+            return await check_job_create_service(tool_context)
 
     return wrapper
 
