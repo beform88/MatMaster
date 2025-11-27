@@ -139,7 +139,7 @@ class MatMasterFlowAgent(LlmAgent):
 
         execution_result_agent = DisallowTransferLlmAgent(
             name='execution_result_agent',
-            model=MatMasterLlmConfig.default_litellm_model,
+            model=MatMasterLlmConfig.gemini_2_5_pro,  # NOTE: Temporary fix until refactor
             description='汇总计划的执行情况，并根据计划提示下一步的动作',
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
