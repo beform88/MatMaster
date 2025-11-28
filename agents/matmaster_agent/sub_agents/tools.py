@@ -504,7 +504,7 @@ ALL_TOOLS = {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Intelligent enhanced paper search system based on keywords and research questions',
-        'args_setting': '',
+        'args_setting': 'Use English to fill the input queries to ensure professionality. If not specified, the year range is 2020-2025; the number of papers is 100.',
     },
     'build_convex_hull': {
         'belonging_agent': ConvexHullAgentName,

@@ -36,11 +36,17 @@ web_parser_tools = [
 ]
 
 science_navigator_toolset = McpToolset(
-    connection_params=SseServerParams(url=SCIENCE_NAVIGATOR_MCP_SERVER_URL),
+    connection_params=SseServerParams(
+        url=SCIENCE_NAVIGATOR_MCP_SERVER_URL,
+        timeout=360,
+    ),
     tool_filter=sn_tools,
 )
 web_parser_toolset = McpToolset(
-    connection_params=SseServerParams(url=DocumentParserServerUrl),
+    connection_params=SseServerParams(
+        url=DocumentParserServerUrl,
+        timeout=360,
+    ),
     tool_filter=web_parser_tools,
 )
 
