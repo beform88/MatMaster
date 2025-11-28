@@ -205,7 +205,7 @@ ALL_TOOLS = {
     },
     'run_ga': {
         'belonging_agent': COMPDART_AGENT_NAME,
-        'scene': [SceneEnum.CompositionOptimization],
+        'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
         'description': 'CAN DO: composition optimization targeting specific properties; CANNOT DO: build doping structures based on given composition',
     },
     'extract_material_data_from_pdf': {
