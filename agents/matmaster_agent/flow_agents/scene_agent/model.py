@@ -29,11 +29,11 @@ class SceneEnum(str, Enum):
 
     SMILES = 'smiles'
 
-    LITERATURE = "literature: involving research papers retrieval, content extraction, or trend analysis.e.g. Search for research papers on [topic], Extract key findings from the paper at [URL], Analyze research trends in [field]"
+    LITERATURE = 'literature: involving research papers retrieval, content extraction, or trend analysis.e.g. Search for research papers on [topic], Extract key findings from the paper at [URL], Analyze research trends in [field]'
 
-    WEB_SEARCH = "general_web_search: involving concept query or procedure query.e.g. `What is [concept]`, `How to do [procedure]`"
+    WEB_SEARCH = 'general_web_search: involving concept query or procedure query.e.g. `What is [concept]`, `How to do [procedure]`'
 
-    WEB_PARSING = "webpage_parsing: involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH."
+    WEB_PARSING = 'webpage_parsing: involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH.'
 
     JobResultRetrieval = 'job_result_retrieval'
 
