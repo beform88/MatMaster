@@ -526,4 +526,14 @@ ALL_TOOLS = {
         'scene': [SceneEnum.NMR],
         'description': 'Generates candidate molecular structures from Nuclear Magnetic Resonance (NMR) spectroscopic data.',
     },
+    'extract_info_from_webpage': {
+        'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
+        'scene': [SceneEnum.WEB_PARSING],
+        'description': 'Extract key information from a given webpage URL, including scientific facts, data, and research findings.',
+    },
+    'web-search': {
+        'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
+        'scene': [SceneEnum.WEB_SEARCH],
+        'description': 'Perform web search to find relevant scientific information, research papers, and technical documents based on user queries. ONLY returns url and tite, consider follow an `extract_info_from_webpage` tool call to extract detailed information from the webpage.',
+    },
 }
