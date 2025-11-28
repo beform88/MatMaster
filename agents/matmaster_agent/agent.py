@@ -55,9 +55,9 @@ from agents.matmaster_agent.sub_agents.organic_reaction_agent.agent import (
 from agents.matmaster_agent.sub_agents.perovskite_agent.agent import (
     init_perovskite_agent,
 )
-from agents.matmaster_agent.sub_agents.piloteye_electro_agent.agent import (
-    init_piloteye_electro_agent,
-)
+# from agents.matmaster_agent.sub_agents.piloteye_electro_agent.agent import (
+#     init_piloteye_electro_agent,
+# )
 from agents.matmaster_agent.sub_agents.ssebrain_agent.agent import init_ssebrain_agent
 from agents.matmaster_agent.sub_agents.structure_generate_agent.agent import (
     init_structure_generate_agent,
@@ -92,7 +92,7 @@ logger.setLevel(logging.INFO)
 
 class MatMasterAgent(HandleFileUploadLlmAgent):
     def __init__(self, llm_config: LLMConfig):
-        piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
+        # piloteye_electro_agent = init_piloteye_electro_agent(llm_config)
         traj_analysis_agent = init_traj_analysis_agent(llm_config)
         mrdice_agent = init_MrDice_agent(llm_config)
         dpa_calculator_agent = init_dpa_calculations_agent(llm_config)
@@ -116,7 +116,7 @@ class MatMasterAgent(HandleFileUploadLlmAgent):
             name=MATMASTER_AGENT_NAME,
             model=llm_config.default_litellm_model,
             sub_agents=[
-                piloteye_electro_agent,
+                # piloteye_electro_agent,
                 traj_analysis_agent,
                 dpa_calculator_agent,
                 mrdice_agent,
