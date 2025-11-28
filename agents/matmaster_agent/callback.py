@@ -129,6 +129,10 @@ async def matmaster_prepare_state(
     callback_context.state['scenes'] = callback_context.state.get('scenes', [])
     # 单次计划涉及的所有场景
     callback_context.state['upload_file'] = False
+    # 用户免费使用次数
+    callback_context.state['quota_remaining'] = callback_context.state.get(
+        'quota_remaining', None
+    )
 
 
 async def matmaster_set_lang(
@@ -168,7 +172,9 @@ async def matmaster_check_quota(
     response = await check_quota_service(user_id=user_id)
     logger.info(f'{callback_context.session.id} check_quota_response = {response}')
     if not response.get('remaining') or not response['remaining']:
-        return types.Content(parts=[Part(text='每日免费次数不足，请申请后重试')])
+        callback_context.state['quota_remaining'] = 0
+    else:
+        callback_context.state['quota_remaining'] = response['remaining']
 
 
 # after_model_callback
