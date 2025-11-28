@@ -97,7 +97,7 @@ async def is_matmodeler_file(filename: str) -> bool:
 
 
 async def is_image_file(filename: str) -> bool:
-    return filename.endswith(('.png', '.jpg', '.jpeg'))
+    return filename.endswith(('.png', '.jpg', '.jpeg', '.svg'))
 
 
 def flatten_dict(d, parent_key='', sep='_'):
