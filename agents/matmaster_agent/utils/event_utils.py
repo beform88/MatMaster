@@ -255,9 +255,7 @@ def context_multipart2function_event(
 ):
     for part in event.content.parts:
         if part.text:
-            yield from context_function_event(
-                ctx, author, function_call_name, {'msg': part.text}, ModelRole
-            )
+            yield Event(author=author, invocation_id=ctx.invocation_id)
         elif part.function_call:
             logger.warning(
                 f"[{MATMASTER_AGENT_NAME}]:[context_multipart2function_event] function_name = {part.function_call.name}"

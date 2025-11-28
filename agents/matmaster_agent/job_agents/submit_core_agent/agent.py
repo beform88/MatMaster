@@ -6,7 +6,9 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.mcp_agent import MCPAgent
+from agents.matmaster_agent.base_agents.mcp_agent import (
+    DisallowTransferMCPAgent,
+)
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     MATMASTER_AGENT_NAME,
@@ -44,12 +46,10 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class SubmitCoreMCPAgent(MCPAgent):
+class SubmitCoreMCPAgent(DisallowTransferMCPAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        logger.info(
-            f"[{MATMASTER_AGENT_NAME}]:[{self.name}] state: {ctx.session.state}"
-        )
+        logger.info(f"{ctx.session.id} state: {ctx.session.state}")
         async for event in super()._run_events(ctx):
             # Only For Sync Tool Call
             if (
