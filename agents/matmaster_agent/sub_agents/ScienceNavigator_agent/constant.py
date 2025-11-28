@@ -1,4 +1,3 @@
-from agents.matmaster_agent.constant import CURRENT_ENV
 
 SCIENCE_NAVIGATOR_AGENT_NAME = 'science_navigator_agent'
 
