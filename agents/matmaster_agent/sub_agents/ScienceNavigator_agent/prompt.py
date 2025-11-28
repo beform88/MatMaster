@@ -24,7 +24,7 @@ When performing web searches using the 'web-search' tool:
 4. Ensure that only URLs that likely contain valuable information related to the user's query are processed
 
 # PAPER SEARCH REQUIREMENTS:
-If not specified, the year range is 2020-2025; the number of papers is 150.
+If not specified, the year range is 2020-2025; the number of papers is 100.
 
 ## Execution Procedure:
 1. Understand the user's scientific query. Carefully identify the user's specific intent: whether they are asking about 'mechanism', 'application', 'methodology', 'trends', or simply 'general overview'.
