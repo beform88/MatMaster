@@ -4,12 +4,11 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.public_agent import BaseAsyncJobAgent
 from agents.matmaster_agent.constant import (
-    MATMASTER_AGENT_NAME,
     BohriumExecutor,
     BohriumStorge,
 )
+from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.sub_agents.structure_generate_agent.prompt import (
@@ -25,7 +24,7 @@ StructureGenerateBohriumExecutor = copy.deepcopy(BohriumExecutor)
 StructureGenerateBohriumStorge = copy.deepcopy(BohriumStorge)
 StructureGenerateBohriumExecutor['machine']['remote_profile'][
     'image_address'
-] = 'registry.dp.tech/dptech/dp/native/prod-788025/structure-generate-agent:small'
+] = 'registry.dp.tech/dptech/dpa-calculator:46bc2c88'
 StructureGenerateBohriumExecutor['machine']['remote_profile'][
     'machine_type'
 ] = 'c8_m32_1 * NVIDIA 4090'
@@ -43,15 +42,14 @@ structure_generate_toolset = CalculationMCPToolset(
 
 
 class StructureGenerateAgent(BaseAsyncJobAgent):
-    def __init__(self, llm_config: LLMConfig):
+    def __init__(self, llm_config: LLMConfig, name_suffix=''):
         super().__init__(
             model=llm_config.default_litellm_model,
-            mcp_tools=[structure_generate_toolset],
-            name=StructureGenerateAgentName,
+            tools=[structure_generate_toolset],
+            name=StructureGenerateAgentName + name_suffix,
             description=StructureGenerateAgentDescription,
-            agent_instruction=StructureGenerateAgentInstruction,
+            instruction=StructureGenerateAgentInstruction,
             dflow_flag=False,
-            supervisor_agent=MATMASTER_AGENT_NAME,
             sync_tools=[
                 'build_bulk_structure_by_template',
                 'build_bulk_structure_by_wyckoff',

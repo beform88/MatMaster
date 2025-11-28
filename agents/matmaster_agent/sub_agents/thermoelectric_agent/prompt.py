@@ -1,5 +1,3 @@
-from agents.matmaster_agent.prompt import TransferAgentDescription
-
 description = 'Thermoelectric is a tool to calculate thermoelectric materials related properties with Deep Potential Models'
 
 instruction_en = (
@@ -12,8 +10,6 @@ instruction_en = (
 
 # from thermoelectric
 
-
-TransferAgentDescription
 
 # from agents.matmaster_agent.traj_analysis_agent.constant import TrajAnalysisAgentName
 TrajAnalysisAgentName = 'traj_analysis_agent'

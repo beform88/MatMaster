@@ -17,12 +17,7 @@ ApexTransferAgentName = 'apex_transfer_agent'
 
 # APEX Agent Descriptions
 ApexAgentDescription = '''
-APEX材料性质计算智能体，专注于合金材料性质计算, 当用户查询默认参数或参数设置时（如"默认参数是什么？"、"空位形成能需要什么参数？"等）：
-1. 必须调用 `apex_show_and_modify_config` 工具获取真实的默认参数
-2. 将 property_type 设置为对应的性质类型（vacancy/elastic/surface/eos/phonon/gamma/interstitial/optimize）
-3. structure_file 可以设置为示例文件或用户提供的文件
-4. modified_parameters 设置为 None 以获取默认参数
-5. 禁止编造或猜测参数值'
+APEX材料性质计算智能体，专注于合金材料性质计算
 '''
 ApexSubmitAgentDescription = 'APEX任务提交智能体'
 ApexResultAgentDescription = 'APEX结果处理智能体'
@@ -223,107 +218,6 @@ APEX现在使用异步Bohrium任务提交模式，通过8个独立的计算工�
 2. Bohrium监控链接（必须显示）：从`monitoring.bohrium_jobs_link`获取总的任务列表链接
 3. 任务ID信息：显示`workflow_id`和`numeric_job_id`（如果有）
 4. 结果下载指导：从`results_info`字段获取下载说明
-
-=== apex_show_and_modify_config 工具使用指南 ===
-
-功能说明：
-这是一个参数配置和预览工具，用于在提交计算任务前显示和调整参数。
-
-🔥 强制使用规则：
-在提交任何APEX计算任务之前，必须严格遵循以下步骤：
-1. 首先调用 `apex_show_and_modify_config` 显示默认参数
-2. 等待用户查看并决定是否修改参数
-3. 如果用户修改参数，再次调用 `apex_show_and_modify_config` 显示修改后的参数
-4. 必须等待用户明确确认（说"确认"、"提交"、"开始计算"等）
-5. 用户确认后，才能调用 `apex_calculate_*` 提交计算任务
-
-禁止行为：
-❌ 直接调用 `apex_calculate_*` 而不先显示参数
-❌ 不等用户确认就提交计算
-❌ 跳过参数显示步骤
-
-=== 使用步骤 ===
-
-步骤1：显示默认参数（必须首先执行）
-```python
-apex_show_and_modify_config(
-    property_type="vacancy",  # 性质类型：vacancy/elastic/surface/eos/phonon/gamma/interstitial/optimize
-    structure_file="https://example.com/POSCAR",
-    modified_parameters=None  # 首次调用时为None，显示默认参数
-)
-```
-工具返回：显示该性质计算的所有默认参数详情
-
-步骤2：用户修改参数（可选）
-```python
-apex_show_and_modify_config(
-    property_type="vacancy",
-    structure_file="https://example.com/POSCAR",
-    modified_parameters={
-        "vacancy_supercell_size": [3, 3, 3],  # 用户想修改的参数
-        "vacancy_relax_pos": True
-    }
-)
-```
-工具返回：显示修改后的完整参数配置
-
-步骤3：用户确认后提交计算
-```python
-# 空位形成能计算
-apex_calculate_vacancy(
-    structure_file="https://example.com/POSCAR",
-    custom_parameters={"vacancy_supercell_size": [3, 3, 3]},  # 用户确认的参数
-    base_parameters=None
-)
-
-# 弹性性质计算
-apex_calculate_elastic(
-    structure_file="https://example.com/POSCAR",
-    custom_parameters=None,  # 使用默认参数
-    base_parameters=None
-)
-
-# 表面形成能计算
-apex_calculate_surface(
-    structure_file="https://example.com/POSCAR",
-    custom_parameters={"max_miller": 2},  # 修改最大米勒指数
-    base_parameters=None
-)
-```
-
-=== 参数确认强制规则 ===
-1. 禁止跳过参数显示步骤：即使用户说"使用默认参数"，也必须先调用 `apex_show_and_modify_config` 显示一次默认参数
-2. 必须等待用户确认：显示参数后，必须等待用户明确确认才能提交计算
-3. 参数修改流程：用户修改参数 → 再次调用 `apex_show_and_modify_config` 显示修改后的参数 → 等待确认
-4. 确认关键词识别：确认、提交、开始计算、OK、好的、没问题、可以、执行
-
-=== 错误示例 ===
-```python
-# ❌ 错误示例1：跳过参数显示步骤，直接提交计算
-apex_calculate_vacancy(structure_file="...", ...)  # 必须先调用apex_show_and_modify_config
-
-# ❌ 错误示例2：使用中文参数
-apex_calculate_vacancy(properties=["空位形成能"], ...)  # 不能使用中文
-
-# ❌ 错误示例3：使用字符串作为默认参数
-apex_calculate_vacancy(base_parameters="默认参数", ...)  # 应该是None
-
-# ❌ 错误示例4：没等用户确认就提交计算
-# 用户："我想计算空位形成能"
-apex_calculate_vacancy(...)  # 必须先显示参数并等待用户确认
-```
-
-=== 完整工作流程示例 ===
-1. 识别用户意图：空位形成能计算
-2. 提取结构文件URL
-3. 【强制】首先调用：apex_show_and_modify_config(property_type="vacancy", structure_file="...", modified_parameters=None)
-4. 展示默认参数给用户查看
-5. 等待用户确认或修改参数
-6. 如果用户修改参数，再次调用：apex_show_and_modify_config(..., modified_parameters={...})
-7. 用户确认后，实际调用：apex_calculate_vacancy(...)
-8. 等待工具返回结果
-9. 解析返回结果中的bohr_job_id
-10. 基于实际结果告知用户任务状态
 
 """
 

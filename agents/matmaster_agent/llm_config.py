@@ -32,6 +32,7 @@ MODEL_MAPPING = {
     ('litellm_proxy', 'gemini-2.0-flash'): 'litellm_proxy/gemini-2.0-flash',
     ('litellm_proxy', 'gemini-2.5-flash'): 'litellm_proxy/gemini-2.5-flash',
     ('litellm_proxy', 'gemini-2.5-pro'): 'litellm_proxy/gemini-2.5-pro',
+    ('litellm_proxy', 'gemini-3-pro-preview'): 'litellm_proxy/gemini-3-pro-preview',
     ('litellm_proxy', 'claude-sonnet-4'): 'litellm_proxy/claude-sonnet-4',
     ('litellm_proxy', 'gpt-5'): 'litellm_proxy/azure/gpt-5',
     ('litellm_proxy', 'gpt-5-mini'): 'litellm_proxy/azure/gpt-5-mini',
@@ -85,7 +86,7 @@ class LLMConfig:
         # Helper to init any provider model
         def _init_model(model: str):
             llm_kwargs = {}
-            if model.endswith(gpt_5_chat):
+            if model.endswith(gpt_5_chat) and 'litellm' in model:
                 llm_kwargs = {'stream_options': {'include_usage': True}}
             logger.info(
                 f'[{MATMASTER_AGENT_NAME}] model = {model}, llm_kwargs = {llm_kwargs}'

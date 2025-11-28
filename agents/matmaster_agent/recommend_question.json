@@ -31,6 +31,14 @@
         "question": "帮我用 DPA 对上传结构进行优化",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1758895146_POSCAR_1"
       }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "文献检索",
+        "fee": "光子付费",
+        "question": "检索DeePMD在材料计算应用方面的研究",
+        "structure_url": null
+      }
     }
   ]
 }

@@ -18,11 +18,13 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     default_after_tool_callback,
     default_before_tool_callback,
     default_cost_func,
+    filter_function_calls,
     inject_current_env,
     inject_userId_sessionId,
     inject_username_ticket,
     remove_job_link,
     tgz_oss_to_oss_list,
+    update_tool_args,
 )
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
@@ -31,11 +33,13 @@ from agents.matmaster_agent.constant import (
     LOADING_START,
     LOADING_STATE_KEY,
     LOADING_TITLE,
+    MATMASTER_AGENT_NAME,
     TMP_FRONTEND_STATE_KEY,
     ModelRole,
 )
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import CostFuncType
+from agents.matmaster_agent.setting import USE_PHOTON
 from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
@@ -50,6 +54,7 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
+    get_markdown_image_result,
     is_mcp_result,
     load_tool_response,
     parse_result,
@@ -64,6 +69,7 @@ class MCPInitMixin(BaseMixin):
     render_tool_response: bool = False  # Whether render tool response in frontend
     enable_tgz_unpack: bool = True  # Whether unpack tgz files for tool_results
     cost_func: Optional[CostFuncType] = None
+    enforce_single_function_call: bool = True  # 是否只允许单个 function_call
 
 
 class MCPCallbackMixin(BaseMixin):
@@ -88,18 +94,26 @@ class MCPCallbackMixin(BaseMixin):
         if data.get('enable_tgz_unpack') is None:
             data['enable_tgz_unpack'] = True
 
-        data['before_tool_callback'] = catch_before_tool_callback_error(
-            inject_current_env(
-                inject_username_ticket(
-                    check_job_create(
-                        check_user_phonon_balance(
-                            inject_userId_sessionId(data['before_tool_callback']),
-                            data['cost_func'],
-                        )
-                    )
-                )
+        if data.get('enforce_single_function_call') is None:
+            data['enforce_single_function_call'] = True
+
+        data['after_model_callback'] = update_tool_args(
+            filter_function_calls(
+                data['after_model_callback'],
+                enforce_single_function_call=data['enforce_single_function_call'],
             )
         )
+
+        pipeline = inject_userId_sessionId(data['before_tool_callback'])
+
+        if USE_PHOTON:
+            pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
+
+        pipeline = check_job_create(pipeline)
+        pipeline = inject_username_ticket(pipeline)
+        pipeline = inject_current_env(pipeline)
+
+        data['before_tool_callback'] = catch_before_tool_callback_error(pipeline)
 
         data['after_tool_callback'] = check_before_tool_callback_effect(
             catch_after_tool_callback_error(
@@ -147,12 +161,13 @@ class MCPRunEventsMixin(BaseMixin):
                         },
                         event=event,
                     )
-                    # prompt user photon cost
-                    cost_func = self.cost_func
-                    async for future_consume_event in display_future_consume_event(
-                        event, cost_func, ctx, self.name
-                    ):
-                        yield future_consume_event
+                    if USE_PHOTON:
+                        # prompt user photon cost
+                        cost_func = self.cost_func
+                        async for future_consume_event in display_future_consume_event(
+                            event, cost_func, ctx, self.name
+                        ):
+                            yield future_consume_event
                 elif is_function_response(event):
                     # Loading Event
                     if self.loading:
@@ -198,6 +213,10 @@ class MCPRunEventsMixin(BaseMixin):
                         raise
 
                     job_result = await parse_result(dict_result)
+                    logger.info(
+                        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} job_result = {job_result}'
+                    )
+                    markdown_image_result = get_markdown_image_result(job_result)
                     job_result_comp_data = get_frontend_job_result_data(job_result)
 
                     # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
@@ -219,6 +238,13 @@ class MCPRunEventsMixin(BaseMixin):
                             ModelRole,
                         ):
                             yield result_event
+
+                    if markdown_image_result:
+                        for item in markdown_image_result:
+                            for markdown_image_event in all_text_event(
+                                ctx, self.name, item['data'], ModelRole
+                            ):
+                                yield markdown_image_event
 
                 if is_text(event):
                     if not event.partial:
