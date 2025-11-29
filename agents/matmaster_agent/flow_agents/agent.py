@@ -11,9 +11,15 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
 from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent
+from agents.matmaster_agent.base_callbacks.private_callback import remove_function_call
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
     get_analysis_instruction,
+)
+from agents.matmaster_agent.flow_agents.chat_agent.prompt import (
+    ChatAgentDescription,
+    ChatAgentGlobalInstruction,
+    ChatAgentInstruction,
 )
 from agents.matmaster_agent.flow_agents.execution_agent.agent import (
     MatMasterSupervisorAgent,
@@ -73,7 +79,12 @@ class MatMasterFlowAgent(LlmAgent):
     @model_validator(mode='after')
     def after_init(self):
         self._chat_agent = DisallowTransferLlmAgent(
-            name='chat_agent', model=MatMasterLlmConfig.deepseek_chat
+            name='chat_agent',
+            model=MatMasterLlmConfig.deepseek_chat,
+            description=ChatAgentDescription,
+            instruction=ChatAgentInstruction,
+            global_instruction=ChatAgentGlobalInstruction,
+            after_model_callback=remove_function_call,
         )
 
         self._intent_agent = IntentAgent(
@@ -227,6 +238,13 @@ class MatMasterFlowAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
+            if not ctx.session.state['quota_remaining']:
+                for quota_remaining_event in all_text_event(
+                    ctx, self.name, '每日免费次数不足，请申请后重试', ModelRole
+                ):
+                    yield quota_remaining_event
+                return
+
             # 用户意图识别（一旦进入 research 模式，暂时无法退出）
             if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
                 async for intent_event in self.intent_agent.run_async(ctx):

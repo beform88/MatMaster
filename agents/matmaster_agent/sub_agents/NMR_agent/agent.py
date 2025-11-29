@@ -10,6 +10,7 @@ from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.sub_agents.NMR_agent.constant import (
     NMR_AGENT_NAME,
+    NMR_BOHRIUM_STORAGE,
     NMR_MCP_SERVER_URL,
 )
 from agents.matmaster_agent.sub_agents.NMR_agent.prompt import (
@@ -19,6 +20,7 @@ from agents.matmaster_agent.sub_agents.NMR_agent.prompt import (
 
 nmr_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=NMR_MCP_SERVER_URL),
+    storage=NMR_BOHRIUM_STORAGE,
     logging_callback=matmodeler_logging_handler,
 )
 
@@ -33,6 +35,7 @@ class NMRAgent(BaseSyncAgentWithToolValidator):
             tools=[nmr_toolset],
             render_tool_response=True,
             supervisor_agent=MATMASTER_AGENT_NAME,
+            enable_tgz_unpack=False,
         )
 
 

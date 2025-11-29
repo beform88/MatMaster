@@ -1,10 +1,12 @@
 import copy
 import json
 import logging
+import os
 import re
 from typing import Any, List, Optional, Union
 
 import jsonpickle
+from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.models import LlmResponse
 from google.adk.tools import ToolContext
@@ -12,7 +14,7 @@ from google.genai.types import Part
 from mcp.types import CallToolResult
 from yaml.scanner import ScannerError
 
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATMASTER_AGENT_NAME
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.model import JobResult, JobResultType
 
@@ -21,6 +23,11 @@ logger = logging.getLogger(__name__)
 
 def get_session_state(ctx: Union[InvocationContext, ToolContext]):
     return ctx.session.state if isinstance(ctx, InvocationContext) else ctx.state
+
+
+def get_user_id(ctx: CallbackContext):
+    frontend_state = ctx.state.get(FRONTEND_STATE_KEY)
+    return frontend_state.get('adk_user_id') or os.getenv('BOHRIUM_USER_ID') or '1'
 
 
 def update_llm_response(
@@ -90,7 +97,7 @@ async def is_matmodeler_file(filename: str) -> bool:
 
 
 async def is_image_file(filename: str) -> bool:
-    return filename.endswith(('.png', '.jpg', '.jpeg'))
+    return filename.endswith(('.png', '.jpg', '.jpeg', '.svg'))
 
 
 def flatten_dict(d, parent_key='', sep='_'):

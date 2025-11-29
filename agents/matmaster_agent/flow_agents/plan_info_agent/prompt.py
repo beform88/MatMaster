@@ -26,4 +26,6 @@ Format your response to be user-friendly and actionable.
 Important:
 - Do not end with any question or prompt for user action.
 - Avoid using the exact title "计划总结" at the beginning. You may use titles like "任务执行方案", "处理概要", or similar alternatives to present the summary more naturally.
+
+Response in {target_language}.
 """

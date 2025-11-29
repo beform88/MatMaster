@@ -9,6 +9,9 @@ from agents.matmaster_agent.base_agents.public_agent import (
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import LLMConfig
+from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
+    DocumentParserServerUrl,
+)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.callback import (
     after_tool_callback,
 )
@@ -26,11 +29,25 @@ sn_tools = [
     # "ask-followup-question"
     'search-papers-normal',
     'search-papers-enhanced',
+    'web-search',
+]
+web_parser_tools = [
+    'extract_info_from_webpage',
 ]
 
 science_navigator_toolset = McpToolset(
-    connection_params=SseServerParams(url=SCIENCE_NAVIGATOR_MCP_SERVER_URL),
+    connection_params=SseServerParams(
+        url=SCIENCE_NAVIGATOR_MCP_SERVER_URL,
+        timeout=360,
+    ),
     tool_filter=sn_tools,
+)
+web_parser_toolset = McpToolset(
+    connection_params=SseServerParams(
+        url=DocumentParserServerUrl,
+        timeout=360,
+    ),
+    tool_filter=web_parser_tools,
 )
 
 
@@ -38,8 +55,8 @@ class ScienceNavigatorAgent(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             name=SCIENCE_NAVIGATOR_AGENT_NAME,
-            tools=[science_navigator_toolset],
-            model=llm_config.default_litellm_model,
+            tools=[science_navigator_toolset, web_parser_toolset],
+            model=llm_config.gemini_2_5_pro,
             description=SCIENCE_NAVIGATOR_AGENT_DESCRIPTION,
             instruction=SCIENCE_NAVIGATOR_AGENT_INSTRUCTION,
             supervisor_agent=MATMASTER_AGENT_NAME,
