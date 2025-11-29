@@ -23,15 +23,24 @@ class ICLExampleSelector:
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs,
         )
-        self.vector_store = FAISS.from_texts(
+        self.update_vector_store = FAISS.from_texts(
             [e['update_input'] for e in examples], self.embeddings, metadatas=examples
         )
-        self.example_selector = SemanticSimilarityExampleSelector(
-            vectorstore=self.vector_store, k=k
+        self.ori_vector_store = FAISS.from_texts(
+            [e['input'] for e in examples], self.embeddings, metadatas=examples
+        )
+        self.ori_example_selector = SemanticSimilarityExampleSelector(
+            vectorstore=self.ori_vector_store, k=k
+        )
+        self.update_example_selector = SemanticSimilarityExampleSelector(
+            vectorstore=self.update_vector_store, k=k
         )
 
     def select_examples(self, query):
-        return self.example_selector.select_examples({'input': query})
+        return self.ori_example_selector.select_examples({'input': query})
+
+    def select_update_examples(self, query):
+        return self.update_example_selector.select_examples({'input': query})
 
     def scene_tags_from_examples(self, examples):
         scene_prompts = ['\nSCENE_TAGS EXAMPLES:']
