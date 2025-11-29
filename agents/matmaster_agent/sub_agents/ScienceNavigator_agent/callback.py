@@ -90,10 +90,8 @@ English translation (JSON list only):
             model=model,
             messages=[{"role": "user", "content": prompt}],
         )
-        print(response)
 
         raw_output = response.choices[0].message.content.strip()
-        print("raw", raw_output)
 
         # Try to extract JSON: handle common LLM hallucinations (e.g., ```json [...]```)
         # 1. Strip code fences
