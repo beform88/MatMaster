@@ -21,6 +21,9 @@ from agents.matmaster_agent.sub_agents.HEA_assistant_agent.constant import (
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.HEAbrain_agent.constant import (
+    HEA_BRAIN_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.sub_agents.organic_reaction_agent.constant import (
     ORGANIC_REACTION_AGENT_NAME,
@@ -155,7 +158,10 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "apex" → {ApexAgentName}
    - "dpa" → {DPACalulator_AGENT_NAME}
    - "abacus" → {ABACUS_AGENT_NAME}
-   - "hea" → {HEACALCULATOR_AGENT_NAME} or {HEA_assistant_AgentName} (context dependent)
+   - "hea" → {HEACALCULATOR_AGENT_NAME} or {HEA_assistant_AgentName} or {HEA_BRAIN_AGENT_NAME} (context dependent)
+   - "heabrain" → {HEA_BRAIN_AGENT_NAME}
+   - "hea literature" → {HEA_BRAIN_AGENT_NAME}
+   - "hea knowledge" → {HEA_BRAIN_AGENT_NAME}
    - "invar" → {COMPDART_AGENT_NAME}
    - "perovskite" → {PerovskiteAgentName}
    - "thermoelectric" → {ThermoelectricAgentName}
@@ -360,7 +366,21 @@ You have access to the following specialized sub-agents. You must delegate the t
      - "用 deepmd3.1.0_dpa3_Alloy_tongqi 数据库计算 TiZrNb 的形成能"
      - "生成 Fe-Ni 的凸包数据"
 
-4. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
+4. **{HEA_BRAIN_AGENT_NAME}** - **HEA literature knowledge base specialist**
+   - Purpose: Query and analyze HEA literature using RAG (Retrieval-Augmented Generation) technology
+   - Capabilities:
+     - Natural language queries about HEA research topics
+     - Vector similarity search across 1M+ document chunks from 10,000+ research papers
+     - Multi-document retrieval and analysis
+     - Parallel literature summarization
+     - Comprehensive research report generation
+   - Example Queries:
+     - "高熵合金中的相变机制是什么？"
+     - "FCC到HCP相变的条件和影响因素"
+     - "高熵合金在低温下的力学性能如何？"
+     - "高熵合金的腐蚀行为和防护机制"
+
+5. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
    - Purpose: Optimize compositions via genetic algorithms (GA) to find target properties with desired characteristics
    - Capabilities:
      - Compositional optimization for arbitrary materials systems

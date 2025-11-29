@@ -25,6 +25,9 @@ from agents.matmaster_agent.sub_agents.HEA_assistant_agent.constant import (
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.HEAbrain_agent.constant import (
+    HEA_BRAIN_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import LAMMPS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
@@ -257,6 +260,11 @@ ALL_TOOLS = {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
+    },
+    'query_hea_literature': {
+        'belonging_agent': HEA_BRAIN_AGENT_NAME,
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY, SceneEnum.LITERATURE],
+        'description': 'Query the HEA (High-Entropy Alloy) literature knowledge base using RAG technology. Supports natural language queries about HEA research topics, vector similarity search across 1M+ document chunks, multi-document retrieval and analysis, parallel literature summarization, and comprehensive research report generation. The tool retrieves relevant literature chunks, extracts unique paper IDs, reads full texts in parallel, and generates literature summaries. Returns a list of literature summaries that must be synthesized into a comprehensive report.',
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,

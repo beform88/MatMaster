@@ -69,6 +69,13 @@ from agents.matmaster_agent.sub_agents.HEACalculator_agent.agent import (
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.HEAbrain_agent.agent import (
+    HEABrainAgent,
+    hea_brain_toolset,
+)
+from agents.matmaster_agent.sub_agents.HEAbrain_agent.constant import (
+    HEA_BRAIN_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.agent import (
     LAMMPSAgent,
     lammps_toolset,
@@ -203,6 +210,7 @@ ALL_TOOLSET_DICT = {
     'finetune_dpa_toolset': finetune_dpa_toolset,
     'hea_assistant_toolset': hea_assistant_toolset,
     'hea_calculator_toolset': hea_calculator_toolset,
+    'hea_brain_toolset': hea_brain_toolset,
     'optimade_toolset': optimade_toolset,
     'bohriumpublic_toolset': bohriumpublic_toolset,
     'openlam_toolset': openlam_toolset,
@@ -232,6 +240,7 @@ AGENT_CLASS_MAPPING = {
     FinetuneDPAAgentName: FinetuneDPAAgent,
     HEA_assistant_AgentName: HEA_assistant_AgentBase,
     HEACALCULATOR_AGENT_NAME: HEACalculatorAgentBase,
+    HEA_BRAIN_AGENT_NAME: HEABrainAgent,
     LAMMPS_AGENT_NAME: LAMMPSAgent,
     OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
@@ -262,6 +271,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     DPACalculatorAgent = DPACalulator_AGENT_NAME
     HEAAssistantAgent = HEA_assistant_AgentName
     HEACalculatorAgent = HEACALCULATOR_AGENT_NAME
+    HEABrainAgent = HEA_BRAIN_AGENT_NAME
     LAMMPSAgent = LAMMPS_AGENT_NAME
     CompDARTAgent = COMPDART_AGENT_NAME
     OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
