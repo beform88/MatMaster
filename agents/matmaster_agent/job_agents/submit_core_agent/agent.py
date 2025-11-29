@@ -6,7 +6,7 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.mcp_agent import (
+from agents.matmaster_agent.base_agents.disallow_mcp_agent import (
     DisallowTransferMCPAgent,
 )
 from agents.matmaster_agent.constant import (
