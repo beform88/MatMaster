@@ -57,7 +57,7 @@ class BaseAgentWithRecAndSum(
     tools: list
     after_tool_callback: Optional[AfterToolCallback] = None
     after_model_callback: Optional[AfterModelCallback] = None
-    # before_tool_callback: Optional[BeforeToolCallback] = None
+    before_tool_callback: Optional[BeforeToolCallback] = None
 
     def _after_init(self):
         agent_prefix = self.name.replace('_agent', '')

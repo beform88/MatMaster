@@ -41,7 +41,7 @@ class BaseSyncAgentWithToolValidator(BaseAgentWithRecAndSum):
             tools=self.tools,
             after_model_callback=self.after_model_callback,
             after_tool_callback=self.after_tool_callback,
-            # before_tool_callback=self.before_tool_callback,
+            before_tool_callback=self.before_tool_callback,
             enable_tgz_unpack=self.enable_tgz_unpack,
             cost_func=self.cost_func,
             render_tool_response=self.render_tool_response,
