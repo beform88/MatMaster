@@ -259,7 +259,7 @@ AGENT_CLASS_MAPPING = {
     VASPKIT_AGENT_NAME: VASPKITAgent,
     ConvexHullAgentName: ConvexHullAgent,
     NMR_AGENT_NAME: NMRAgent,
-    XRD_AGENT_NAME: XRDAgent
+    XRD_AGENT_NAME: XRDAgent,
 }
 
 
