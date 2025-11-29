@@ -2,10 +2,11 @@ import json
 import logging
 import re
 
-from mcp.types import CallToolResult, TextContent
-from google.adk.tools import ToolContext
-from agents.matmaster_agent.llm_config import LLMConfig
 import litellm
+from google.adk.tools import ToolContext
+from mcp.types import CallToolResult, TextContent
+
+from agents.matmaster_agent.llm_config import LLMConfig
 
 DISCARD_KEYS = [
     'paperId',
@@ -61,8 +62,10 @@ async def after_tool_callback(tool, args, tool_context, tool_response):
 
     return new_response
 
+
 def contains_chinese(text: str) -> bool:
     return bool(re.search(r'[\u4e00-\u9fff]', text))
+
 
 def translate_word_list_to_english(chinese_words: list) -> list:
     if not isinstance(chinese_words, list) or not chinese_words:
@@ -88,37 +91,41 @@ English translation (JSON list only):
 
         response = litellm.completion(
             model=model,
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{'role': 'user', 'content': prompt}],
         )
 
         raw_output = response.choices[0].message.content.strip()
 
         # Try to extract JSON: handle common LLM hallucinations (e.g., ```json [...]```)
         # 1. Strip code fences
-        if raw_output.startswith("```"):
-            raw_output = re.split(r"```(?:json)?", raw_output, maxsplit=1)[-1]
-            raw_output = raw_output.rsplit("```", 1)[0].strip()
+        if raw_output.startswith('```'):
+            raw_output = re.split(r'```(?:json)?', raw_output, maxsplit=1)[-1]
+            raw_output = raw_output.rsplit('```', 1)[0].strip()
 
         # 2. Try direct parse
         try:
             translated_list = json.loads(raw_output)
         except json.JSONDecodeError:
             # 3. Fallback: look for [...] in text
-            match = re.search(r"\[.*\]", raw_output, re.DOTALL)
+            match = re.search(r'\[.*\]', raw_output, re.DOTALL)
             if match:
                 try:
                     translated_list = json.loads(match.group(0))
                 except Exception:
-                    raise ValueError("Failed to extract JSON from LLM output")
+                    raise ValueError('Failed to extract JSON from LLM output')
             else:
-                raise ValueError("No JSON array found in LLM response")
+                raise ValueError('No JSON array found in LLM response')
 
         # Validate: must be list of strings, same length
-        if not isinstance(translated_list, list) or len(translated_list) != len(chinese_words):
-            raise ValueError("Translated list length mismatch or invalid type")
+        if not isinstance(translated_list, list) or len(translated_list) != len(
+            chinese_words
+        ):
+            raise ValueError('Translated list length mismatch or invalid type')
 
         # Ensure all items are strings
-        translated_list = [str(item).strip() if item is not None else "" for item in translated_list]
+        translated_list = [
+            str(item).strip() if item is not None else '' for item in translated_list
+        ]
 
         logger.info(f"[Batch translate] {chinese_words} → {translated_list}")
         return translated_list

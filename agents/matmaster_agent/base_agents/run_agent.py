@@ -3,7 +3,11 @@ import logging
 from typing import AsyncGenerator, Optional, Union, override
 
 from google.adk.agents import InvocationContext
-from google.adk.agents.llm_agent import AfterModelCallback, AfterToolCallback, BeforeToolCallback
+from google.adk.agents.llm_agent import (
+    AfterModelCallback,
+    AfterToolCallback,
+    BeforeToolCallback,
+)
 from google.adk.events import Event
 from google.adk.models import BaseLlm
 from pydantic import computed_field

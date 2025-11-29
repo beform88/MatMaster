@@ -13,7 +13,8 @@ from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserServerUrl,
 )
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.callback import (
-    after_tool_callback, before_tool_callback
+    after_tool_callback,
+    before_tool_callback,
 )
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
