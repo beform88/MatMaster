@@ -14,3 +14,22 @@ def plan_ask_confirm_card():
   <strong>请确认是否执行上述计划？</strong>
 </div>
 """
+
+
+def all_summary_card():
+    return """
+<div style="
+    background-color: #f0f9eb;
+    border: 1px solid #e1f3d8;
+    border-left: 4px solid #67c23a;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin: 4px 0;
+    font-family: sans-serif;
+    color: #529b2e;
+    line-height: 1.3;
+    display: inline-block;
+">
+  <strong>计划汇总概要</strong>
+</div>
+"""

@@ -258,7 +258,7 @@ def context_multipart2function_event(
             yield Event(author=author, invocation_id=ctx.invocation_id)
         elif part.function_call:
             logger.warning(
-                f"[{MATMASTER_AGENT_NAME}]:[context_multipart2function_event] function_name = {part.function_call.name}"
+                f"[{MATMASTER_AGENT_NAME}]:[context_multipart2function_event] function_name = {part.function_call.name}, function_args = {part.function_call.args}"
             )
             yield context_function_call_event(
                 ctx,

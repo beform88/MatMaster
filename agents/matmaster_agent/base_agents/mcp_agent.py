@@ -7,9 +7,6 @@ from google.adk.events import Event, EventActions
 from pydantic import model_validator
 
 from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferMixin,
-)
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.base_callbacks.private_callback import (
     catch_after_tool_callback_error,
@@ -75,60 +72,67 @@ class MCPInitMixin(BaseMixin):
     enforce_single_function_call: bool = True  # 是否只允许单个 function_call
 
 
+def mcp_callback_model_validator(data: Any):
+    if not isinstance(data, dict):
+        return data
+
+    if data.get('after_model_callback') is None:
+        data['after_model_callback'] = default_after_model_callback
+
+    if data.get('before_tool_callback') is None:
+        data['before_tool_callback'] = default_before_tool_callback
+
+    if data.get('after_tool_callback') is None:
+        data['after_tool_callback'] = default_after_tool_callback
+
+    if data.get('cost_func') is None:
+        data['cost_func'] = default_cost_func
+
+    if data.get('enable_tgz_unpack') is None:
+        data['enable_tgz_unpack'] = True
+
+    if data.get('enforce_single_function_call') is None:
+        data['enforce_single_function_call'] = True
+
+    data['after_model_callback'] = update_tool_args(
+        filter_function_calls(
+            data['after_model_callback'],
+            enforce_single_function_call=data['enforce_single_function_call'],
+        )
+    )
+
+    pipeline = inject_userId_sessionId(data['before_tool_callback'])
+
+    if USE_PHOTON:
+        pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
+
+    pipeline = check_job_create(pipeline)
+    pipeline = inject_username_ticket(pipeline)
+    pipeline = inject_current_env(pipeline)
+
+    data['before_tool_callback'] = catch_before_tool_callback_error(pipeline)
+
+    data['after_tool_callback'] = check_before_tool_callback_effect(
+        catch_after_tool_callback_error(
+            remove_job_link(
+                tgz_oss_to_oss_list(
+                    data['after_tool_callback'], data['enable_tgz_unpack']
+                )
+            )
+        )
+    )
+
+    if 'nmr' in data['name']:
+        return data
+    else:
+        return data
+
+
 class MCPCallbackMixin(BaseMixin):
     @model_validator(mode='before')
     @classmethod
     def decorate_callbacks(cls, data: Any) -> Any:
-        if not isinstance(data, dict):
-            return data
-
-        if data.get('after_model_callback') is None:
-            data['after_model_callback'] = default_after_model_callback
-
-        if data.get('before_tool_callback') is None:
-            data['before_tool_callback'] = default_before_tool_callback
-
-        if data.get('after_tool_callback') is None:
-            data['after_tool_callback'] = default_after_tool_callback
-
-        if data.get('cost_func') is None:
-            data['cost_func'] = default_cost_func
-
-        if data.get('enable_tgz_unpack') is None:
-            data['enable_tgz_unpack'] = True
-
-        if data.get('enforce_single_function_call') is None:
-            data['enforce_single_function_call'] = True
-
-        data['after_model_callback'] = update_tool_args(
-            filter_function_calls(
-                data['after_model_callback'],
-                enforce_single_function_call=data['enforce_single_function_call'],
-            )
-        )
-
-        pipeline = inject_userId_sessionId(data['before_tool_callback'])
-
-        if USE_PHOTON:
-            pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
-
-        pipeline = check_job_create(pipeline)
-        pipeline = inject_username_ticket(pipeline)
-        pipeline = inject_current_env(pipeline)
-
-        data['before_tool_callback'] = catch_before_tool_callback_error(pipeline)
-
-        data['after_tool_callback'] = check_before_tool_callback_effect(
-            catch_after_tool_callback_error(
-                remove_job_link(
-                    tgz_oss_to_oss_list(
-                        data['after_tool_callback'], data['enable_tgz_unpack']
-                    )
-                )
-            )
-        )
-
-        return data
+        return mcp_callback_model_validator(data)
 
 
 class MCPRunEventsMixin(BaseMixin):
@@ -260,8 +264,4 @@ class MCPRunEventsMixin(BaseMixin):
 
 
 class MCPAgent(MCPInitMixin, MCPCallbackMixin, ErrorHandleLlmAgent):
-    pass
-
-
-class DisallowTransferMCPAgent(DisallowTransferMixin, MCPAgent):
     pass
