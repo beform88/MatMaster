@@ -82,19 +82,18 @@ def translate_word_list_to_english(chinese_words: list) -> list:
 - Output ONLY a valid JSON list of strings. No explanations, no markdown, no prefix.
 - Example: ['密度', 'LAMMPS', 'ΔH'] → ['density', 'LAMMPS', 'ΔH']
 
-Terms: {json.dumps(chinese_words, ensure_ascii=False)}
+Terms: {str(chinese_words)}
 English translation (JSON list only):
 """
 
         response = litellm.completion(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=512,
-            temperature=0.0,
-            timeout=12.0
         )
+        print(response)
 
         raw_output = response.choices[0].message.content.strip()
+        print("raw", raw_output)
 
         # Try to extract JSON: handle common LLM hallucinations (e.g., ```json [...]```)
         # 1. Strip code fences
@@ -159,3 +158,10 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
             logger.error(f"Unexpected error in translation flow: {e}")
         print(f"[before_tool_callback] Translated words: {translated_words}")
     return args
+
+
+if __name__ == '__main__':
+    # DEBUG
+    chinese_words = ['含能材料DAP-4', 'DeePMD势函数', 'DPA预训练模型']
+    translated_words = translate_word_list_to_english(chinese_words)
+    print(f"[DEBUG] Translated words: {translated_words}")
