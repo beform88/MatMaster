@@ -51,3 +51,5 @@ class SceneEnum(str, Enum):
     SUPERCONDUCTOR = 'superconductor'
 
     THERMOELECTRIC = 'thermoelectric'
+
+    XRD = 'XRD'
