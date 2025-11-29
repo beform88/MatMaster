@@ -50,7 +50,10 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
-from agents.matmaster_agent.flow_agents.style import plan_ask_confirm_card
+from agents.matmaster_agent.flow_agents.style import (
+    all_summary_card,
+    plan_ask_confirm_card,
+)
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     create_dynamic_plan_schema,
@@ -368,6 +371,10 @@ class MatMasterFlowAgent(LlmAgent):
                         check_plan(ctx) == FlowStatusEnum.COMPLETE
                         or ctx.session.state['plan']['feasibility'] == 'null'
                     ):
+                        for all_summary_event in all_text_event(
+                            ctx, self.name, all_summary_card(), ModelRole
+                        ):
+                            yield all_summary_event
                         self._analysis_agent.instruction = get_analysis_instruction(
                             ctx.session.state['plan']
                         )
