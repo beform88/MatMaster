@@ -59,9 +59,7 @@ class SceneEnum(DescriptiveEnum):
 
     JOB_RESULT_RETRIEVAL = ('job_result_retrieval', '')
 
-    THERMOELECTRIC = 'thermoelectric'
-
-    XRD = 'XRD'
+    XRD = ('XRD', '')
     DPA = ('DPA', '')
     APEX = ('APEX', '')
     ABACUS = ('ABACUS', '')
