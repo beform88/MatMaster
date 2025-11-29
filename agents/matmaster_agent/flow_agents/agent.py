@@ -278,26 +278,30 @@ class MatMasterFlowAgent(LlmAgent):
             else:
                 # 检索 ICL 示例
                 icl_examples = self._icl_example_selector.select_examples(
-                    ctx.session.state['expand']['update_user_content']
+                    ctx.user_content.parts[0].text
                 )
                 EXPAND_INPUT_EXAMPLES_PROMPT = (
                     self._icl_example_selector.expand_input_examples(icl_examples)
                 )
-                SCENE_EXAMPLES_PROMPT = (
-                    self._icl_example_selector.scene_tags_from_examples(icl_examples)
-                )
-                TOOLCHAIN_EXAMPLES_PROMPT = (
-                    self._icl_example_selector.toolchain_from_examples(icl_examples)
-                )
                 logger.info(f'{EXPAND_INPUT_EXAMPLES_PROMPT}')
-                logger.info(f'{SCENE_EXAMPLES_PROMPT}')
-                logger.info(f'{TOOLCHAIN_EXAMPLES_PROMPT}')
                 # 扩写用户问题
                 self.expand_agent.instruction = (
                     EXPAND_INSTRUCTION + EXPAND_INPUT_EXAMPLES_PROMPT
                 )
                 async for expand_event in self.expand_agent.run_async(ctx):
                     yield expand_event
+
+                icl_update_examples = self._icl_example_selector.select_update_examples(
+                    ctx.session.state['expand']['update_user_content']
+                )
+                SCENE_EXAMPLES_PROMPT = (
+                    self._icl_example_selector.scene_tags_from_examples(icl_update_examples)
+                )
+                TOOLCHAIN_EXAMPLES_PROMPT = (
+                    self._icl_example_selector.toolchain_from_examples(icl_update_examples)
+                )
+                logger.info(f'{SCENE_EXAMPLES_PROMPT}')
+                logger.info(f'{TOOLCHAIN_EXAMPLES_PROMPT}')
 
                 # 划分问题场景
                 self.scene_agent.instruction = SCENE_INSTRUCTION + SCENE_EXAMPLES_PROMPT
