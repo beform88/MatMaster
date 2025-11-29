@@ -35,6 +35,7 @@ class NMRAgent(BaseSyncAgentWithToolValidator):
             tools=[nmr_toolset],
             render_tool_response=True,
             supervisor_agent=MATMASTER_AGENT_NAME,
+            enable_tgz_unpack=False,
         )
 
 
