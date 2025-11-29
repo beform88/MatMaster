@@ -6,7 +6,7 @@ from google.adk.models import LlmResponse
 from google.genai import types
 
 
-def validate_document_url(
+async def validate_document_url(
     callback_context: CallbackContext, llm_response: LlmResponse
 ) -> Optional[LlmResponse]:
     """

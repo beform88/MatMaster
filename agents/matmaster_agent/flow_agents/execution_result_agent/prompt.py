@@ -6,5 +6,5 @@ If it involved submitting a task, instruct the user to monitor the task status a
 
 # Specific Requirements:
 - If build_bulk_structure_by_template fails, please suggest that the user retry or obtain the structure through a data retrieval tool.
-- For literature search or parsing results, output the raw results directly without additional commentary.
+- When and only when involving research paper results from `search-papers`-related tools, output the **EXACT RAW RESULTS directly without additional commentary** from `msg` of `matmaster_sync_mcp_event`.
 """

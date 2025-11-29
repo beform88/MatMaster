@@ -1,5 +1,11 @@
-SCENE_INSTRUCTION = """
+from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
+
+SCENE_INSTRUCTION = f"""
 You are an intelligent and precise scene classification agent. Your task is to analyze user queries and classify them into the most specific and appropriate scene(s) based on the core actions requested.
+
+[All Scenes & Description]
+{"\n".join([f"{scene.value}: {scene.description}" for scene in SceneEnum])}
+---
 
 Classification Guidelines:
 

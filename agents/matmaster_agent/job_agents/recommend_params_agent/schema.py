@@ -88,6 +88,9 @@ def create_tool_args_schema(missing_tool_args, function_declaration):
     fields = {}
 
     for field_name in missing_tool_args:
+        if field_name not in properties:
+            logger.warning(f'{field_name} Not In Properties')
+            continue
         field_schema = properties[field_name]
         field_type = get_field_type(field_schema)
         field_kwargs = get_field_kwargs(field_schema)
