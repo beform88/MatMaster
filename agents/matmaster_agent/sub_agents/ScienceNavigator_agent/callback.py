@@ -1,6 +1,12 @@
 import json
+import logging
+import re
 
+import litellm
+from google.adk.tools import ToolContext
 from mcp.types import CallToolResult, TextContent
+
+from agents.matmaster_agent.llm_config import LLMConfig
 
 DISCARD_KEYS = [
     'paperId',
@@ -23,11 +29,13 @@ DISCARD_KEYS = [
 
 MAX_ABSTRACT_LEN = 600
 
+logger = logging.getLogger(__name__)
+
 
 async def after_tool_callback(tool, args, tool_context, tool_response):
     print(f"[after_tool_callback] Tool '{tool.name}' executed.")
-    tool_output = tool_response.content
     try:
+        tool_output = tool_response.content
         output_json = json.loads(tool_output[0].text)
         output_paper_list = output_json['data']
     except Exception as e:
@@ -53,3 +61,112 @@ async def after_tool_callback(tool, args, tool_context, tool_response):
     )
 
     return new_response
+
+
+def contains_chinese(text: str) -> bool:
+    return bool(re.search(r'[\u4e00-\u9fff]', text))
+
+
+def translate_word_list_to_english(chinese_words: list) -> list:
+    if not isinstance(chinese_words, list) or not chinese_words:
+        return chinese_words
+
+    # Only translate if at least one item contains Chinese
+    if not any(isinstance(w, str) and contains_chinese(w) for w in chinese_words):
+        return chinese_words  # no-op
+
+    try:
+        llm_config = LLMConfig()
+        model = llm_config.gpt_5_nano.model
+
+        # Build prompt: explicit JSON schema + few-shot example
+        prompt = f"""Translate the following list of search terms from Chinese to English.
+- Preserve English terms, acronyms, numbers, and symbols exactly as they are.
+- Output ONLY a valid JSON list of strings. No explanations, no markdown, no prefix.
+- Example: ['密度', 'LAMMPS', 'ΔH'] → ['density', 'LAMMPS', 'ΔH']
+
+Terms: {str(chinese_words)}
+English translation (JSON list only):
+"""
+
+        response = litellm.completion(
+            model=model,
+            messages=[{'role': 'user', 'content': prompt}],
+        )
+
+        raw_output = response.choices[0].message.content.strip()
+
+        # Try to extract JSON: handle common LLM hallucinations (e.g., ```json [...]```)
+        # 1. Strip code fences
+        if raw_output.startswith('```'):
+            raw_output = re.split(r'```(?:json)?', raw_output, maxsplit=1)[-1]
+            raw_output = raw_output.rsplit('```', 1)[0].strip()
+
+        # 2. Try direct parse
+        try:
+            translated_list = json.loads(raw_output)
+        except json.JSONDecodeError:
+            # 3. Fallback: look for [...] in text
+            match = re.search(r'\[.*\]', raw_output, re.DOTALL)
+            if match:
+                try:
+                    translated_list = json.loads(match.group(0))
+                except Exception:
+                    raise ValueError('Failed to extract JSON from LLM output')
+            else:
+                raise ValueError('No JSON array found in LLM response')
+
+        # Validate: must be list of strings, same length
+        if not isinstance(translated_list, list) or len(translated_list) != len(
+            chinese_words
+        ):
+            raise ValueError('Translated list length mismatch or invalid type')
+
+        # Ensure all items are strings
+        translated_list = [
+            str(item).strip() if item is not None else '' for item in translated_list
+        ]
+
+        logger.info(f"[Batch translate] {chinese_words} → {translated_list}")
+        return translated_list
+
+    except Exception as e:
+        logger.error(f"Batch translation failed for {chinese_words}: {e}")
+        return chinese_words  # FALLBACK: return original list (safe!)
+
+
+async def before_tool_callback(tool, args, tool_context: ToolContext):
+    search_tools = ['search-papers-normal', 'search-papers-enhanced', 'web-search']
+    print(f"[before_tool_callback] Tool '{tool.name}' called with args: {args}")
+    if tool.name not in search_tools:
+        return args
+
+    words = args.get('words', [])
+    if isinstance(words, str):
+        words = [w.strip() for w in words.split()] if words.strip() else []
+    elif not isinstance(words, list):
+        logger.warning(f"'words' is unexpected type {type(words)}, fallback to []")
+        words = []
+
+    if not words:
+        return args
+
+    if any(isinstance(w, str) and contains_chinese(w) for w in words):
+        print(f"[before_tool_callback] Detected Chinese words: {words}")
+        try:
+            translated_words = translate_word_list_to_english(words)
+            if isinstance(translated_words, list):
+                new_args = dict(args)  # avoid mutating original if shared
+                new_args['words'] = translated_words
+                return new_args
+        except Exception as e:
+            logger.error(f"Unexpected error in translation flow: {e}")
+        print(f"[before_tool_callback] Translated words: {translated_words}")
+    return args
+
+
+if __name__ == '__main__':
+    # DEBUG
+    chinese_words = ['含能材料DAP-4', 'DeePMD势函数', 'DPA预训练模型']
+    translated_words = translate_word_list_to_english(chinese_words)
+    print(f"[DEBUG] Translated words: {translated_words}")

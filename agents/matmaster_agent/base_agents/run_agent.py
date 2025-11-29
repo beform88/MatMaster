@@ -3,7 +3,11 @@ import logging
 from typing import AsyncGenerator, Optional, Union, override
 
 from google.adk.agents import InvocationContext
-from google.adk.agents.llm_agent import AfterModelCallback, AfterToolCallback
+from google.adk.agents.llm_agent import (
+    AfterModelCallback,
+    AfterToolCallback,
+    BeforeToolCallback,
+)
 from google.adk.events import Event
 from google.adk.models import BaseLlm
 from pydantic import computed_field
@@ -57,6 +61,7 @@ class BaseAgentWithRecAndSum(
     tools: list
     after_tool_callback: Optional[AfterToolCallback] = None
     after_model_callback: Optional[AfterModelCallback] = None
+    before_tool_callback: Optional[BeforeToolCallback] = None
 
     def _after_init(self):
         agent_prefix = self.name.replace('_agent', '')
