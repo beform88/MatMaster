@@ -371,15 +371,24 @@ class MatMasterFlowAgent(LlmAgent):
                         check_plan(ctx) == FlowStatusEnum.COMPLETE
                         or ctx.session.state['plan']['feasibility'] == 'null'
                     ):
-                        for all_summary_event in all_text_event(
-                            ctx, self.name, all_summary_card(), ModelRole
-                        ):
-                            yield all_summary_event
-                        self._analysis_agent.instruction = get_analysis_instruction(
-                            ctx.session.state['plan']
+                        # Skip summary for single-tool plans
+                        plan_steps = ctx.session.state['plan'].get('steps', [])
+                        tool_count = sum(
+                            1 for step in plan_steps if step.get('tool_name')
                         )
-                        async for analysis_event in self.analysis_agent.run_async(ctx):
-                            yield analysis_event
+
+                        if tool_count > 1:
+                            for all_summary_event in all_text_event(
+                                ctx, self.name, all_summary_card(), ModelRole
+                            ):
+                                yield all_summary_event
+                            self._analysis_agent.instruction = get_analysis_instruction(
+                                ctx.session.state['plan']
+                            )
+                            async for analysis_event in self.analysis_agent.run_async(
+                                ctx
+                            ):
+                                yield analysis_event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
