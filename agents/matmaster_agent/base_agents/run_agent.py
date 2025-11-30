@@ -101,8 +101,8 @@ class BaseAgentWithRecAndSum(
             self._summary_agent = DisallowTransferLlmAgent(
                 model=MatMasterLlmConfig.gpt_5_nano,
                 name=f"{agent_prefix}_summary_agent",
-                description="You are an assistant to summarize the task to aware the user.",
-                instruction="Do simple summary."
+                description='You are an assistant to summarize the task to aware the user.',
+                instruction='Do simple summary.',
             )
 
         return self
