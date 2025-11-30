@@ -59,6 +59,7 @@ class SceneEnum(DescriptiveEnum):
 
     JOB_RESULT_RETRIEVAL = ('job_result_retrieval', '')
 
+    XRD = ('XRD', '')
     DPA = ('DPA', '')
     APEX = ('APEX', '')
     ABACUS = ('ABACUS', '')
