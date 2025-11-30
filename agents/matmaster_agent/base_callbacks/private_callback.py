@@ -191,31 +191,31 @@ def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
                 tool_call_info = callback_context.state['tool_call_info']
                 if not tool_call_info:
                     logger.warning(
-                        f'[{MATMASTER_AGENT_NAME}] empty, tool_call_info = {tool_call_info}'
+                        f'{callback_context.session.id} empty, tool_call_info = {tool_call_info}'
                     )
                     return
 
                 last_tool_call_info = tool_call_info
                 if last_tool_call_info['tool_name'] != function_call_name:
                     logger.warning(
-                        f'[{MATMASTER_AGENT_NAME}] not match, tool_call_info = {tool_call_info}, tool.name = {function_call_name}'
+                        f'{callback_context.session.id} not match, tool_call_info = {tool_call_info}, tool.name = {function_call_name}'
                     )
                     return
 
                 logger.info(
-                    f'[{MATMASTER_AGENT_NAME}] before args = {function_call_args}'
+                    f'{callback_context.session.id} function_call_name = {function_call_name}, before args = {function_call_args}'
                 )
                 diff = DeepDiff(function_call_args, last_tool_call_info['tool_args'])
                 if diff:
                     part.function_call.args = last_tool_call_info['tool_args']
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] args updated with differences: {diff}'
+                        f'{callback_context.session.id} args updated with differences: {diff}'
                     )
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] after args = {part.function_call.args}'
+                        f'{callback_context.session.id} after args = {part.function_call.args}'
                     )
                 else:
-                    logger.info(f'[{MATMASTER_AGENT_NAME}] args unchanged')
+                    logger.info(f'{callback_context.session.id} args unchanged')
 
     return wrapper
 

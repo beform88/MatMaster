@@ -6,7 +6,7 @@ from google.adk.events import Event
 from pydantic import Field, computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.run_agent import (
-    BaseAgentWithParamsRecommendation,
+    BaseAgentWithRecAndSum,
 )
 from agents.matmaster_agent.base_agents.validator_agent import ValidatorAgent
 from agents.matmaster_agent.constant import (
@@ -18,9 +18,6 @@ from agents.matmaster_agent.job_agents.result_core_agent.agent import (
 )
 from agents.matmaster_agent.job_agents.submit_core_agent.agent import (
     SubmitCoreMCPAgent,
-)
-from agents.matmaster_agent.job_agents.submit_core_agent.prompt import (
-    gen_submit_core_agent_instruction,
 )
 from agents.matmaster_agent.job_agents.submit_render_agent.agent import (
     SubmitRenderAgent,
@@ -35,7 +32,7 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class BaseAsyncJobAgent(BaseAgentWithParamsRecommendation):
+class BaseAsyncJobAgent(BaseAgentWithRecAndSum):
     """
     Base agent class for handling asynchronous job submissions.
 
@@ -63,10 +60,7 @@ class BaseAsyncJobAgent(BaseAgentWithParamsRecommendation):
         submit_core_agent = SubmitCoreMCPAgent(
             model=self.model,
             name=f"{agent_prefix}_submit_core_agent",
-            description=f"A specialized {agent_prefix} job submit agent",
-            instruction=gen_submit_core_agent_instruction(agent_prefix),
             tools=self.tools,
-            disallow_transfer_to_parent=True,
             enable_tgz_unpack=self.enable_tgz_unpack,
             cost_func=self.cost_func,
             enforce_single_function_call=True,

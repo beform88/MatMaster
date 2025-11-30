@@ -3,7 +3,11 @@ import logging
 from typing import AsyncGenerator, Optional, Union, override
 
 from google.adk.agents import InvocationContext
-from google.adk.agents.llm_agent import AfterModelCallback, AfterToolCallback
+from google.adk.agents.llm_agent import (
+    AfterModelCallback,
+    AfterToolCallback,
+    BeforeToolCallback,
+)
 from google.adk.events import Event
 from google.adk.models import BaseLlm
 from pydantic import computed_field
@@ -49,7 +53,7 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class BaseAgentWithParamsRecommendation(
+class BaseAgentWithRecAndSum(
     SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseAgent
 ):
     model: Union[str, BaseLlm]
@@ -57,6 +61,7 @@ class BaseAgentWithParamsRecommendation(
     tools: list
     after_tool_callback: Optional[AfterToolCallback] = None
     after_model_callback: Optional[AfterModelCallback] = None
+    before_tool_callback: Optional[BeforeToolCallback] = None
 
     def _after_init(self):
         agent_prefix = self.name.replace('_agent', '')
@@ -85,6 +90,13 @@ class BaseAgentWithParamsRecommendation(
             state_key='recommend_params',
         )
 
+        self._summary_agent = DisallowTransferLlmAgent(
+            model=MatMasterLlmConfig.gemini_2_5_pro,
+            name=f"{agent_prefix}_summary_agent",
+            description=self.description,
+            instruction=self.instruction,
+        )
+
         return self
 
     @computed_field
@@ -101,6 +113,11 @@ class BaseAgentWithParamsRecommendation(
     @property
     def recommend_params_schema_agent(self) -> SchemaAgent:
         return self._recommend_params_schema_agent
+
+    @computed_field
+    @property
+    def summary_agent(self) -> DisallowTransferLlmAgent:
+        return self._summary_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -204,3 +221,7 @@ class BaseAgentWithParamsRecommendation(
 
             if not ctx.session.state['tool_hallucination']:
                 break
+
+        if not ctx.session.state['error_occurred']:
+            async for summary_event in self.summary_agent.run_async(ctx):
+                yield summary_event
