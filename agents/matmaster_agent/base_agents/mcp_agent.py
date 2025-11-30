@@ -38,7 +38,8 @@ from agents.matmaster_agent.constant import (
     ModelRole,
 )
 from agents.matmaster_agent.locales import i18n
-from agents.matmaster_agent.model import CostFuncType
+from agents.matmaster_agent.logger import PrefixFilter
+from agents.matmaster_agent.model import CostFuncType, RenderTypeEnum
 from agents.matmaster_agent.setting import USE_PHOTON
 from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
@@ -61,6 +62,7 @@ from agents.matmaster_agent.utils.helper_func import (
 )
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
@@ -219,25 +221,44 @@ class MCPRunEventsMixin(BaseMixin):
                         yield event
                         raise
 
-                    job_result = await parse_result(dict_result)
+                    parsed_tool_result = await parse_result(dict_result)
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} job_result = {job_result}'
+                        f'{ctx.session.id} parsed_tool_result = {parsed_tool_result}'
                     )
-                    markdown_image_result = get_markdown_image_result(job_result)
-                    job_result_comp_data = get_frontend_job_result_data(job_result)
 
                     # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                    for system_job_result_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'matmaster_job_result',
-                        {JOB_RESULT_KEY: job_result},
-                        ModelRole,
+                    if (
+                        parsed_tool_result
+                        and parsed_tool_result[0].get('meta_type')
+                        == RenderTypeEnum.LITERATURE
                     ):
-                        yield system_job_result_event
+                        for parsed_tool_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_literature_list',
+                            None,
+                            ModelRole,
+                            {'literature_list_result': parsed_tool_result},
+                        ):
+                            yield parsed_tool_result_event
+                    else:
+                        for parsed_tool_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_parsed_tool_result',
+                            {'parsed_tool_result': parsed_tool_result},
+                            ModelRole,
+                        ):
+                            yield parsed_tool_result_event
 
-                    # Render Tool Response Event
-                    if self.render_tool_response:
+                    # Render Job Result Event
+                    job_result_comp_data = get_frontend_job_result_data(
+                        parsed_tool_result
+                    )
+                    if (
+                        self.render_tool_response
+                        and job_result_comp_data['eventData']['content'][JOB_RESULT_KEY]
+                    ):
                         for result_event in all_text_event(
                             ctx,
                             self.name,
@@ -246,6 +267,10 @@ class MCPRunEventsMixin(BaseMixin):
                         ):
                             yield result_event
 
+                    # 渲染 Markdown 图片
+                    markdown_image_result = get_markdown_image_result(
+                        parsed_tool_result
+                    )
                     if markdown_image_result:
                         for item in markdown_image_result:
                             for markdown_image_event in all_text_event(

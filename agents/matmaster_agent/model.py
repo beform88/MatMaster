@@ -1,8 +1,8 @@
 from enum import Enum
-from typing import Awaitable, Callable, List, Optional, TypeAlias, Union
+from typing import Awaitable, Callable, List, Literal, Optional, TypeAlias, Union
 
 from google.adk.tools import BaseTool
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 CostFuncType: TypeAlias = Callable[[BaseTool, dict], Awaitable[tuple[int, int]]]
 
@@ -19,11 +19,19 @@ class JobResultType(str, Enum):
     Value = 'Value'
 
 
+class RenderTypeEnum(str, Enum):
+    JOB_RESULT = 'job_result'
+    LITERATURE = 'literature'
+
+
 class JobResult(BaseModel):
     name: str
     data: Union[int, float, str]
     url: Optional[str] = ''
     type: JobResultType
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = (
+        RenderTypeEnum.JOB_RESULT
+    )
 
 
 class BohrJobInfo(BaseModel):
@@ -63,3 +71,18 @@ class ToolCallInfoSchema(BaseModel):
     tool_name: str
     tool_args: dict
     missing_tool_args: List[str]
+
+
+class LiteratureItem(BaseModel):
+    doi: str
+    publicationEnName: str
+    enName: str
+    enAbstract: str
+    authors: List[str]
+    coverDateStart: str
+    citationNums: int
+    good: int
+    paperUrl: Union[HttpUrl, str] = ''
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = (
+        RenderTypeEnum.LITERATURE
+    )

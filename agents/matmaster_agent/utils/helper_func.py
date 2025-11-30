@@ -16,7 +16,7 @@ from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATMASTER_AGENT_NAME
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.model import JobResult, JobResultType
+from agents.matmaster_agent.model import JobResult, JobResultType, LiteratureItem
 
 logger = logging.getLogger(__name__)
 
@@ -65,12 +65,30 @@ def is_json(json_str):
     return True
 
 
+async def is_sequence(data):
+    return isinstance(data, (tuple, list))
+
+
 async def is_float_sequence(data) -> bool:
-    return isinstance(data, (tuple, list)) and all(isinstance(x, float) for x in data)
+    return is_sequence(data) and all(isinstance(x, float) for x in data)
 
 
 async def is_str_sequence(data) -> bool:
-    return isinstance(data, (tuple, list)) and all(isinstance(x, str) for x in data)
+    return is_sequence(data) and all(isinstance(x, str) for x in data)
+
+
+def validate_literature_list(data: list) -> bool:
+    for item in data:
+        try:
+            LiteratureItem.model_validate(item)
+        except BaseException as e:
+            logger.warning(e)
+            return False
+    return True
+
+
+async def is_literature_sequence(data) -> bool:
+    return is_sequence(data) and validate_literature_list(data)
 
 
 async def is_matmodeler_file(filename: str) -> bool:
@@ -254,6 +272,9 @@ async def parse_result(result: dict) -> List[dict]:
                     type=JobResultType.Value,
                 ).model_dump(mode='json')
             )
+        elif await is_literature_sequence(v):
+            for item in v:
+                parsed_result.append(LiteratureItem(**item).model_dump(mode='json'))
         else:
             parsed_result.append(
                 {
@@ -264,10 +285,10 @@ async def parse_result(result: dict) -> List[dict]:
     return parsed_result
 
 
-def get_markdown_image_result(job_result: List[dict]) -> List[dict]:
+def get_markdown_image_result(parsed_tool_result: List[dict]) -> List[dict]:
     return [
         item
-        for item in job_result
+        for item in parsed_tool_result
         if item.get('name') and item['name'].startswith('markdown_image')
     ]
 
