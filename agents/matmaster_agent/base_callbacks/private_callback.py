@@ -23,14 +23,15 @@ from agents.matmaster_agent.constant import (
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
     LOCAL_EXECUTOR,
-    MATERIALS_ACCESS_KEY,
     MATMASTER_AGENT_NAME,
     SKU_MAPPING,
     Transfer2Agent,
 )
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import CostFuncType
+from agents.matmaster_agent.services.job import check_job_create_service
 from agents.matmaster_agent.utils.auth import ak_to_ticket, ak_to_username
+from agents.matmaster_agent.utils.callback_utils import _get_ak, _get_projectId
 from agents.matmaster_agent.utils.finance import get_user_photon_balance
 from agents.matmaster_agent.utils.helper_func import (
     check_None_wrapper,
@@ -41,7 +42,6 @@ from agents.matmaster_agent.utils.helper_func import (
     update_llm_response,
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
-from agents.matmaster_agent.utils.job_utils import check_job_create_service
 from agents.matmaster_agent.utils.tool_response_utils import check_valid_tool_response
 
 logger = logging.getLogger(__name__)
@@ -317,22 +317,6 @@ def check_user_phonon_balance(
 
 
 @check_None_wrapper
-def _get_ak(ctx: Union[InvocationContext, ToolContext, CallbackContext]):
-    session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('ak') or os.getenv(
-        'BOHRIUM_ACCESS_KEY'
-    )
-
-
-@check_None_wrapper
-def _get_projectId(ctx: Union[InvocationContext, ToolContext]):
-    session_state = get_session_state(ctx)
-    return session_state[FRONTEND_STATE_KEY]['biz'].get('projectId') or os.getenv(
-        'BOHRIUM_PROJECT_ID'
-    )
-
-
-@check_None_wrapper
 def _get_userId(ctx: Union[InvocationContext, ToolContext]):
     session_state = get_session_state(ctx)
     return session_state[FRONTEND_STATE_KEY].get('adk_user_id') or os.getenv(
@@ -382,7 +366,8 @@ def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, stor
 
 
 def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
-    username = ak_to_username(access_key=MATERIALS_ACCESS_KEY)
+    access_key = _get_ak(ctx)
+    username = ak_to_username(access_key=access_key)
     if username:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
@@ -400,7 +385,8 @@ def _inject_username(ctx: Union[InvocationContext, ToolContext], executor):
 
 
 def _inject_ticket(ctx: Union[InvocationContext, ToolContext], executor):
-    ticket = ak_to_ticket(access_key=MATERIALS_ACCESS_KEY)
+    access_key = _get_ak(ctx)
+    ticket = ak_to_ticket(access_key=access_key)
     if ticket:
         if executor is not None:
             if executor['type'] == 'dispatcher':  # BohriumExecutor
@@ -451,6 +437,47 @@ def _inject_sessionId(ctx: ToolContext, executor):
         return session_id, executor
     else:
         raise RuntimeError('Failed to get session_id')
+
+
+def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
+    @wraps(func)
+    async def wrapper(
+        tool: BaseTool, args: dict, tool_context: ToolContext
+    ) -> Optional[dict]:
+        # 两步操作：
+        # 1. 调用被装饰的 before_tool_callback；
+        # 2. 如果调用的 before_tool_callback 有返回值，以这个为准
+        if (before_tool_result := await func(tool, args, tool_context)) is not None:
+            return before_tool_result
+
+        # 如果 tool 为 Transfer2Agent，不做 ak 和 project_id 设置/校验
+        if tool.name == Transfer2Agent:
+            return None
+
+        # 如果 tool 不是 CalculationMCPTool，不应该调用这个 callback
+        if not isinstance(tool, CalculationMCPTool):
+            logger.warning(
+                'Not CalculationMCPTool type, current tool does not have <storage>'
+            )
+            return
+
+        # 获取 access_key
+        access_key, tool.executor, tool.storage = _inject_ak(
+            tool_context, tool.executor, tool.storage
+        )
+
+        # 获取 project_id
+        try:
+            project_id, tool.executor, tool.storage = _inject_projectId(
+                tool_context, tool.executor, tool.storage
+            )
+        except ValueError as e:
+            raise ValueError('ProjectId is invalid') from e
+
+        tool_context.state['ak'] = access_key
+        tool_context.state['project_id'] = project_id
+
+    return wrapper
 
 
 def inject_username_ticket(func: BeforeToolCallback) -> BeforeToolCallback:
@@ -526,7 +553,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             return
 
         if tool.executor is not None:
-            return await check_job_create_service()
+            return await check_job_create_service(tool_context)
 
     return wrapper
 

@@ -17,8 +17,6 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
 from agents.matmaster_agent.constant import (
     FRONTEND_STATE_KEY,
     JOB_RESULT_KEY,
-    MATERIALS_ACCESS_KEY,
-    MATERIALS_PROJECT_ID,
     MATMASTER_AGENT_NAME,
     ModelRole,
     get_BohriumExecutor,
@@ -67,15 +65,11 @@ class ResultMCPAgent(MCPAgent):
         )
         await self.tools[0].get_tools()
         if not ctx.session.state['dflow']:
-            access_key, Executor, BohriumStorge = (
-                MATERIALS_ACCESS_KEY,
-                get_BohriumExecutor(),
-                get_BohriumStorage(),
+            access_key, Executor, BohriumStorge = _inject_ak(
+                ctx, get_BohriumExecutor(), get_BohriumStorage()
             )
-            project_id, Executor, BohriumStorge = (
-                MATERIALS_PROJECT_ID,
-                Executor,
-                BohriumStorge,
+            project_id, Executor, BohriumStorge = _inject_projectId(
+                ctx, Executor, BohriumStorge
             )
         else:
             access_key, Executor, BohriumStorge = _inject_ak(

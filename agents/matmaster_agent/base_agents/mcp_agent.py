@@ -19,6 +19,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     default_before_tool_callback,
     default_cost_func,
     filter_function_calls,
+    inject_ak_projectId,
     inject_current_env,
     inject_userId_sessionId,
     inject_username_ticket,
@@ -26,6 +27,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     tgz_oss_to_oss_list,
     update_tool_args,
 )
+from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     LOADING_DESC,
@@ -40,7 +42,6 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import CostFuncType, RenderTypeEnum
-from agents.matmaster_agent.setting import USE_PHOTON
 from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
@@ -104,7 +105,8 @@ def mcp_callback_model_validator(data: Any):
         )
     )
 
-    pipeline = inject_userId_sessionId(data['before_tool_callback'])
+    pipeline = inject_ak_projectId(data['before_tool_callback'])
+    pipeline = inject_userId_sessionId(pipeline)
 
     if USE_PHOTON:
         pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
@@ -125,10 +127,7 @@ def mcp_callback_model_validator(data: Any):
         )
     )
 
-    if 'nmr' in data['name']:
-        return data
-    else:
-        return data
+    return data
 
 
 class MCPCallbackMixin(BaseMixin):
