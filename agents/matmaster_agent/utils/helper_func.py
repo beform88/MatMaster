@@ -17,6 +17,7 @@ from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATMASTER_AGENT_NAME
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
+from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import (
     JobResult,
     JobResultType,
@@ -25,6 +26,8 @@ from agents.matmaster_agent.model import (
 )
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
 
 
 def get_session_state(ctx: Union[InvocationContext, ToolContext]):
@@ -71,7 +74,7 @@ def is_json(json_str):
     return True
 
 
-async def is_sequence(data):
+def is_sequence(data):
     return isinstance(data, (tuple, list))
 
 
@@ -231,7 +234,7 @@ async def parse_result(result: dict) -> List[dict]:
             new_result[k] = v
 
     for k, v in new_result.items():
-        if type(v) in [int, float]:
+        if type(v) in [int, float, bool]:
             parsed_result.append(
                 JobResult(name=k, data=v, type=JobResultType.Value).model_dump(
                     mode='json'
