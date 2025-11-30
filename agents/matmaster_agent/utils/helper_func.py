@@ -124,6 +124,10 @@ async def is_matmodeler_file(filename: str) -> bool:
     )
 
 
+async def is_echarts_file(filename: str) -> bool:
+    return filename.endswith('.echarts')
+
+
 async def is_image_file(filename: str) -> bool:
     return filename.endswith(('.png', '.jpg', '.jpeg', '.svg'))
 
@@ -251,6 +255,15 @@ async def parse_result(result: dict) -> List[dict]:
                             url=v,
                         ).model_dump(mode='json')
                     )
+                elif await is_echarts_file(filename):
+                    parsed_result.append(
+                        JobResult(
+                            name=k,
+                            data=filename,
+                            type=JobResultType.EchartsFile,
+                            url=v,
+                        ).model_dump(mode='json')
+                    )
                 else:
                     parsed_result.append(
                         JobResult(
@@ -298,11 +311,19 @@ async def parse_result(result: dict) -> List[dict]:
     return parsed_result
 
 
-def get_markdown_image_result(parsed_tool_result: List[dict]) -> List[dict]:
+def get_markdown_image_result(parsed_tool_result: List[JobResult]) -> List[JobResult]:
     return [
         item
         for item in parsed_tool_result
         if item.get('name') and item['name'].startswith('markdown_image')
+    ]
+
+
+def get_echarts_result(parsed_tool_result: List[JobResult]) -> List[JobResult]:
+    return [
+        item
+        for item in parsed_tool_result
+        if item.get('name') and item['type'] == JobResultType.EchartsFile
     ]
 
 
