@@ -16,7 +16,7 @@ Language: {{target_language}}
 
 # Format Requirements:
 {HUMAN_FRIENDLY_FORMAT_REQUIREMENT}
-- Output without bullet points;
+- DO NOT output with unnecessary bullet points.
 
 # Instructions:
 - The interpretations and summaries should not be too long.
