@@ -22,6 +22,7 @@ class JobResultType(str, Enum):
 class RenderTypeEnum(str, Enum):
     JOB_RESULT = 'job_result'
     LITERATURE = 'literature'
+    WEB = 'web'
 
 
 class JobResult(BaseModel):
@@ -57,6 +58,28 @@ class DFlowJobInfo(BaseModel):
     job_in_ctx: bool = False
 
 
+class LiteratureItem(BaseModel):
+    doi: str
+    publicationEnName: str
+    enName: str
+    enAbstract: str
+    authors: List[str]
+    coverDateStart: str
+    citationNums: int
+    good: int
+    paperUrl: Union[HttpUrl, str] = ''
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = (
+        RenderTypeEnum.LITERATURE
+    )
+
+
+class WebSearchItem(BaseModel):
+    title: str
+    link: HttpUrl
+    snippet: str
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = RenderTypeEnum.WEB
+
+
 class ParamsCheckComplete(BaseModel):
     flag: bool
     reason: str
@@ -71,18 +94,3 @@ class ToolCallInfoSchema(BaseModel):
     tool_name: str
     tool_args: dict
     missing_tool_args: List[str]
-
-
-class LiteratureItem(BaseModel):
-    doi: str
-    publicationEnName: str
-    enName: str
-    enAbstract: str
-    authors: List[str]
-    coverDateStart: str
-    citationNums: int
-    good: int
-    paperUrl: Union[HttpUrl, str] = ''
-    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = (
-        RenderTypeEnum.LITERATURE
-    )

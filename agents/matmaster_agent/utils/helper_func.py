@@ -12,11 +12,17 @@ from google.adk.models import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai.types import Part
 from mcp.types import CallToolResult
+from pydantic import BaseModel
 from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATMASTER_AGENT_NAME
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.model import JobResult, JobResultType, LiteratureItem
+from agents.matmaster_agent.model import (
+    JobResult,
+    JobResultType,
+    LiteratureItem,
+    WebSearchItem,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -77,10 +83,10 @@ async def is_str_sequence(data) -> bool:
     return is_sequence(data) and all(isinstance(x, str) for x in data)
 
 
-def validate_literature_list(data: list) -> bool:
+def validate_model_list(data: list, model: type[BaseModel]) -> bool:
     for item in data:
         try:
-            LiteratureItem.model_validate(item)
+            model.model_validate(item)
         except BaseException as e:
             logger.warning(e)
             return False
@@ -88,7 +94,11 @@ def validate_literature_list(data: list) -> bool:
 
 
 async def is_literature_sequence(data) -> bool:
-    return is_sequence(data) and validate_literature_list(data)
+    return is_sequence(data) and validate_model_list(data, LiteratureItem)
+
+
+async def is_web_search_sequence(data) -> bool:
+    return is_sequence(data) and validate_model_list(data, WebSearchItem)
 
 
 async def is_matmodeler_file(filename: str) -> bool:
@@ -275,6 +285,9 @@ async def parse_result(result: dict) -> List[dict]:
         elif await is_literature_sequence(v):
             for item in v:
                 parsed_result.append(LiteratureItem(**item).model_dump(mode='json'))
+        elif await is_web_search_sequence(v):
+            for item in v:
+                parsed_result.append(WebSearchItem(**item).model_dump(mode='json'))
         else:
             parsed_result.append(
                 {

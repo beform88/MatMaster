@@ -238,7 +238,26 @@ class MCPRunEventsMixin(BaseMixin):
                             'matmaster_literature_list',
                             None,
                             ModelRole,
-                            {'literature_list_result': parsed_tool_result},
+                            {
+                                'tool_name': first_part.function_response.name,
+                                'literature_list_result': parsed_tool_result,
+                            },
+                        ):
+                            yield parsed_tool_result_event
+                    elif (
+                        parsed_tool_result
+                        and parsed_tool_result[0].get('meta_type') == RenderTypeEnum.WEB
+                    ):
+                        for parsed_tool_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_web_search_list',
+                            None,
+                            ModelRole,
+                            {
+                                'tool_name': first_part.function_response.name,
+                                'web_search_result': parsed_tool_result,
+                            },
                         ):
                             yield parsed_tool_result_event
                     else:
