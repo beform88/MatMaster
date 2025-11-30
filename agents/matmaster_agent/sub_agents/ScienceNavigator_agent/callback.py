@@ -140,7 +140,7 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
     search_tools = ['search-papers-normal', 'search-papers-enhanced', 'web-search']
     print(f"[before_tool_callback] Tool '{tool.name}' called with args: {args}")
     if tool.name not in search_tools:
-        return args
+        return
 
     words = args.get('words', [])
     if isinstance(words, str):
@@ -150,20 +150,20 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
         words = []
 
     if not words:
-        return args
+        return
 
     if any(isinstance(w, str) and contains_chinese(w) for w in words):
         print(f"[before_tool_callback] Detected Chinese words: {words}")
         try:
             translated_words = translate_word_list_to_english(words)
             if isinstance(translated_words, list):
-                new_args = dict(args)  # avoid mutating original if shared
-                new_args['words'] = translated_words
-                return new_args
+                args['words'] = translated_words
+                print(f"[before_tool_callback] Updated args: {args}")
+                return
         except Exception as e:
             logger.error(f"Unexpected error in translation flow: {e}")
         print(f"[before_tool_callback] Translated words: {translated_words}")
-    return args
+    return
 
 
 if __name__ == '__main__':
