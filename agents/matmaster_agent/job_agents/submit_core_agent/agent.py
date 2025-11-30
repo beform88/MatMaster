@@ -9,6 +9,7 @@ from google.adk.events import Event
 from agents.matmaster_agent.base_agents.disallow_mcp_agent import (
     DisallowTransferMCPAgent,
 )
+from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     MATMASTER_AGENT_NAME,
@@ -18,7 +19,6 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
-from agents.matmaster_agent.setting import USE_PHOTON
 from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,

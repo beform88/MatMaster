@@ -1,8 +1,8 @@
 from enum import Enum
-from typing import Awaitable, Callable, List, Optional, TypeAlias, Union
+from typing import Awaitable, Callable, List, Literal, Optional, TypeAlias, Union
 
 from google.adk.tools import BaseTool
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 CostFuncType: TypeAlias = Callable[[BaseTool, dict], Awaitable[tuple[int, int]]]
 
@@ -16,7 +16,14 @@ class JobStatus(str, Enum):
 class JobResultType(str, Enum):
     RegularFile = 'RegularFile'
     MatModelerFile = 'MatModelerFile'
+    EchartsFile = 'EchartsFile'
     Value = 'Value'
+
+
+class RenderTypeEnum(str, Enum):
+    JOB_RESULT = 'job_result'
+    LITERATURE = 'literature'
+    WEB = 'web'
 
 
 class JobResult(BaseModel):
@@ -24,6 +31,9 @@ class JobResult(BaseModel):
     data: Union[int, float, str]
     url: Optional[str] = ''
     type: JobResultType
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = (
+        RenderTypeEnum.JOB_RESULT
+    )
 
 
 class BohrJobInfo(BaseModel):
@@ -47,6 +57,28 @@ class DFlowJobInfo(BaseModel):
     workflow_url: str
     job_result: Optional[List[JobResult]] = None
     job_in_ctx: bool = False
+
+
+class LiteratureItem(BaseModel):
+    doi: str
+    publicationEnName: str
+    enName: str
+    enAbstract: str
+    authors: List[str]
+    coverDateStart: str
+    citationNums: int
+    good: int
+    paperUrl: Union[HttpUrl, str] = ''
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = (
+        RenderTypeEnum.LITERATURE
+    )
+
+
+class WebSearchItem(BaseModel):
+    title: str
+    link: HttpUrl
+    snippet: str
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = RenderTypeEnum.WEB
 
 
 class ParamsCheckComplete(BaseModel):

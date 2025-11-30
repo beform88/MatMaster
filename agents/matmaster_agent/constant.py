@@ -78,8 +78,8 @@ SANDBOX_JOB_DETAIL_URL = f'{BOHRIUM_COM}/sandboxjob/detail'
 # Constant-Materials
 MATERIALS_USER_ID = int(os.getenv('MATERIALS_USER_ID', -1))
 MATERIALS_ORG_ID = int(os.getenv('MATERIALS_ORG_ID', -1))
-MATERIALS_ACCESS_KEY = str(os.getenv('MATERIALS_ACCESS_KEY'))
-MATERIALS_PROJECT_ID = int(os.getenv('MATERIALS_PROJECT_ID'))
+MATERIALS_ACCESS_KEY = str(os.getenv('MATERIALS_ACCESS_KEY', ''))
+MATERIALS_PROJECT_ID = int(os.getenv('MATERIALS_PROJECT_ID', -1))
 MATMASTER_SKU_ID = int(os.getenv('MATMASTER_SKU_ID', -1))
 
 # Constant-SKU
@@ -90,8 +90,8 @@ BohriumStorge = {
     'type': 'https',
     'plugin': {
         'type': 'bohrium',
-        'access_key': MATERIALS_ACCESS_KEY,
-        'project_id': MATERIALS_PROJECT_ID,
+        'access_key': '',
+        'project_id': -1,
         'app_key': 'agent',
     },
 }
@@ -104,8 +104,8 @@ BohriumExecutor = {
         'batch_type': 'OpenAPI',
         'context_type': 'OpenAPI',
         'remote_profile': {
-            'access_key': MATERIALS_ACCESS_KEY,
-            'project_id': MATERIALS_PROJECT_ID,
+            'access_key': '',
+            'project_id': -1,
             'app_key': 'agent',
             'image_address': '',
             'platform': 'ali',
@@ -124,8 +124,8 @@ DFlowExecutor = {
         'DFLOW_K8S_API_SERVER': DFLOW_K8S_API_SERVER,
         'DFLOW_S3_REPO_KEY': 'oss-bohrium',
         'DFLOW_S3_STORAGE_CLIENT': 'dflow.plugins.bohrium.TiefblueClient',
-        'BOHRIUM_ACCESS_KEY': MATERIALS_ACCESS_KEY,
-        'BOHRIUM_PROJECT_ID': str(MATERIALS_PROJECT_ID),
+        'BOHRIUM_ACCESS_KEY': '',
+        'BOHRIUM_PROJECT_ID': '',
         'BOHRIUM_APP_KEY': 'agent',
     },
 }
