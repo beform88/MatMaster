@@ -1,13 +1,14 @@
+from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
+
+
 def gen_recommend_params_agent_instruction():
-    return """
+    return f"""
 Convert the recommended parameters into a user-friendly format for a tool invocation.
 
-- The output language must be {target_language}.
+- The output language must be {{target_language}}.
 
 ## FORMAT INSTRUCTIONS:
-- A space should be added between figures and units, e.g. 10 cm, 5 kg. An italic font should be used for physical quantities. A bold font should be used for vectors;
-- Chemical formula should be appropriately formatted using superscript and subscript, not plain text;
-- Space group should be written in the format of appropriate `H-M` notation with Latin letters in intalics and correct subscript for screw axis, not plain text.
+{HUMAN_FRIENDLY_FORMAT_REQUIREMENT}
 
 Critical Instructions:
 - If the input parameter is a **complete HTTP or HTTPS URL**, use it directly as the parameter.

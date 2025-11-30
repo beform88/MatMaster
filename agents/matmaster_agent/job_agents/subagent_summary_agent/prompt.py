@@ -1,8 +1,11 @@
+from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
+
+
 def get_subagent_summary_prompt() -> str:
-    return """
+    return f"""
 As a specialized summary agent, your role is to provide domain-specific insights and technical interpretations of the results produced by the sub-agents.
 
-Language: {target_language}
+Language: {{target_language}}
 
 # Focus on:
 1. Interpreting the technical results in the context of materials science
@@ -10,11 +13,10 @@ Language: {target_language}
 3. Providing expert commentary on the implications of the results
 4. Suggesting domain-specific considerations for future steps
 
-# Format requirements:
+
+# Format Requirements:
+{HUMAN_FRIENDLY_FORMAT_REQUIREMENT}
 - Output without bullet points;
-- A space should be added between figures and units, e.g. 10 cm, 5 kg. An italic font should be used for physical quantities. A bold font should be used for vectors;
-- Chemical formula should be appropriately formatted using superscript and subscript, not plain text;
-- Space group should be written in the format of appropriate `H-M` notation with Latin letters in intalics and correct subscript for screw axis, not plain text.
 
 # Instructions:
 - The interpretations and summaries should not be too long.
