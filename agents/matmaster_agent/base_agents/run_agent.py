@@ -59,6 +59,7 @@ class BaseAgentWithRecAndSum(
     model: Union[str, BaseLlm]
     instruction: str
     tools: list
+    doc_summary: bool = False
     after_tool_callback: Optional[AfterToolCallback] = None
     after_model_callback: Optional[AfterModelCallback] = None
     before_tool_callback: Optional[BeforeToolCallback] = None
@@ -89,13 +90,20 @@ class BaseAgentWithRecAndSum(
             name=f"{agent_prefix}_recommend_params_schema_agent",
             state_key='recommend_params',
         )
-
-        self._summary_agent = DisallowTransferLlmAgent(
-            model=MatMasterLlmConfig.gemini_2_5_pro,
-            name=f"{agent_prefix}_summary_agent",
-            description=self.description,
-            instruction=self.instruction,
-        )
+        if self.doc_summary:
+            self._summary_agent = DisallowTransferLlmAgent(
+                model=MatMasterLlmConfig.gemini_2_5_pro,
+                name=f"{agent_prefix}_summary_agent",
+                description=self.description,
+                instruction=self.instruction,
+            )
+        else:
+            self._summary_agent = DisallowTransferLlmAgent(
+                model=MatMasterLlmConfig.gpt_5_nano,
+                name=f"{agent_prefix}_summary_agent",
+                description="You are an assistant to summarize the task to aware the user.",
+                instruction="Do simple summary."
+            )
 
         return self
 
