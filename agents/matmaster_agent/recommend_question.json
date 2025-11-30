@@ -3,147 +3,147 @@
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "请生成空间群为 225 的晶体结构，要求带隙（bandgap）小于 0.5 eV，生成 2 个样本",
+        "question": "请生成空间群为225的晶体结构，要求带隙（bandgap）小于0.5 eV，生成2个样本",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "请根据给定的空间群和 Wyckoff 位置信息生成一个晶体结构：Pm-3m空间群（编号221），a=b=c=3.90 Angstrom，α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
+        "question": "请根据给定的空间群和Wyckoff位置信息生成一个晶体结构：Pm-3m空间群（编号221），a = b = c = 3.90 Å, α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "生成 FCC Cu 的 2×2×2 超胞",
+        "question": "生成FCC Cu的2×2×2超胞",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "生成 Al 的 fcc 晶体结构，晶格常数 a = 5.0 Å",
+        "question": "生成Al的fcc晶体结构，晶格常数a = 5.0 Å",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "构建KCl的3*3超胞，将30%的K替换为Na，20%的Cl替换为Br，",
+        "question": "构建KCl的3*3超胞，将30%的K替换为Na、20%的Cl替换为Br",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "根据 SMILES 'C1=CC=CC=C1' 生成苯分子结构",
+        "question": "根据SMILES'C1=CC=CC=C1'生成苯分子结构",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "为 Si 生成 (111) 表面 slab，厚度 10 Å，真空层 15 Å",
+        "question": "为Si生成(111)表面slab，厚度10 Å，真空层15 Å",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "在 Materials Project 中检索并返回3个带隙大于 2 eV 的氧化物结构",
+        "question": "在Materials Project中检索并返回3个带隙大于 2 eV的氧化物结构",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "在 Alexandria 中查找并返回 5 个含 Li、Mn、O 的材料",
+        "question": "在Alexandria中查找并返回5个含 Li、Mn、O的材料",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "在 Materials Project 中检索并返回不超过 2 个仅含 Ti、Al、O 且空间群为 63 的化合物，并导出 CIF 文件 ",
+        "question": "在Materials Project中检索并返回不超过2个仅含 Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "在 Materials Project 中检索并返回不超过 5 个含稀土、过渡金属和氧，并且不包含 Fe 和 Ni 的三元化合物",
+        "question": "在Materials Project中检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "对比不同数据库中 Fe₂O₃ 的带隙数据",
+        "question": "对比不同数据库中Fe₂O₃的带隙数据",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "从 Materials Project 批量下载20个含锂材料的 CIF 文件，并统计其平均体积/原子",
+        "question": "从Materials Project批量下载20个含锂材料的CIF文件，并统计其平均体积/原子",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "从 hMOF 数据库中检索比表面积 > 2000 m²/g 且孔径在 6–8 Å 的 MOF 结构，并导出 10 个候选结构",
+        "question": "从hMOF数据库中检索比表面积> 2000 m²/g且孔径在6–8 Å的MOF结构，并导出10个候选结构",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "数据检索",
-        "question": "检索 hMOF 数据库中 CO₂ 吸附量 > 3 mmol/g 的结构，并导出前 5 个候选结构与吸附等温线数据",
+        "question": "检索hMOF数据库中CO₂吸附量> 3 mmol/g的结构，并导出前5个候选结构与吸附等温线数据",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
-        "question": "帮我用 DPA 对上传结构进行优化",
+        "belonging": "DPA计算",
+        "question": "帮我用DPA对上传结构进行优化",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1758895146_POSCAR_1"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
+        "belonging": "DPA计算",
         "question": "帮我用DPA计算一下这个结构的弹性常数",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
-        "question": "请使用dpa在 300 K 下对 Li2O 进行 1 ps 分子动力学模拟，时间步长 1 fs",
+        "belonging": "DPA计算",
+        "question": "请使用DPA在300 K下对Li₂O 进行1 ps分子动力学模拟，时间步长1 fs",
         "structure_url": " https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761029503_bohriumcrystal_65e5a9898d93f05838e25195_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
-        "question": "使用dpa计算 Si 结构的声子谱",
+        "belonging": "DPA计算",
+        "question": "使用DPA计算Si结构的声子谱",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
-        "question": "请使用 DPA 计算 MgO 的弹性常数",
+        "belonging": "DPA计算",
+        "question": "请使用DPA计算MgO的弹性常数",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761030016_bohriumcrystal_65e5a9a78d93f05838e28106_0.cif"
       }
     },
     {
       "zhPrompt": {
         "belonging": "ABACUS计算",
-        "question": "对 GaN 使用 HSE06 方法计算能带结构，并输出能带图与态密度（DOS)",
+        "question": "对GaN使用HSE06方法计算能带结构，并输出能带图与态密度（DOS）",
         "structure_url": ""
       }
     },
@@ -157,21 +157,21 @@
     {
       "zhPrompt": {
         "belonging": "ABACUS计算",
-        "question": "使用ABACUS计算 Si 的声子色散曲线（需先进行结构优化）",
+        "question": "使用ABACUS计算Si的声子色散曲线（需先进行结构优化）",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
     },
     {
       "zhPrompt": {
         "belonging": "ABACUS计算",
-        "question": "使用ABACUS对 Al₂O₃ 体系进行 Bader 电荷分析，并展示每个原子的电荷转移量",
+        "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
       }
     },
     {
       "zhPrompt": {
         "belonging": "ABACUS计算",
-        "question": "使用 ABACUS 计算 GaAs 晶体的弹性常数和体模量",
+        "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
     },
@@ -185,7 +185,7 @@
     {
       "zhPrompt": {
         "belonging": "APEX计算",
-        "question": "用apex_agent计算Al2O3的弹性常数和声子谱",
+        "question": "用apex_agent计算Al₂O₃的弹性常数和声子谱",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
       }
     },
@@ -199,21 +199,21 @@
     {
       "zhPrompt": {
         "belonging": "性质预测",
-        "question": "对 SrTiO₃ 进行弹性常数计算并输出完整的 C₁₁、C₁₂、C₄₄ 张量（从开源数据库获取初始结构并自行设定合理参数）",
+        "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
         "structure_url": ""
       }
     },
     {
       "zhPrompt": {
         "belonging": "性质预测",
-        "question": "帮我建一个H₂O在 TiO₂ 表面 (101) 吸附的结构，并进行结构优化，TiO₂ bluk结构可以从bohrium数据库中检索",
+        "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化，TiO₂ bluk结构可以从bohrium数据库中检索",
         "structure_url": ""
       }
     },
     {
       "zhPrompt": {
         "belonging": "性质预测",
-        "question": "从开源数据库获取一个MgB₂结构 ，并计算其声子谱",
+        "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
         "structure_url": ""
       }
     },
