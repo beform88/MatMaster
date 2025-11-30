@@ -61,6 +61,7 @@ from agents.matmaster_agent.flow_agents.utils import (
 )
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
+from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -153,8 +154,8 @@ class MatMasterFlowAgent(LlmAgent):
 
         execution_result_agent = DisallowTransferLlmAgent(
             name='execution_result_agent',
-            model=self.model,
-            description='汇总计划的执行情况，并根据计划提示下一步的动作',
+            model=MatMasterLlmConfig.gpt_5_mini,
+            description='汇总计划的执行情况',
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
 
@@ -174,7 +175,7 @@ class MatMasterFlowAgent(LlmAgent):
             name='execution_summary_agent',
             model=MatMasterLlmConfig.default_litellm_model,
             global_instruction='使用 {target_language} 回答',
-            description='总结本轮的计划执行情况',
+            description=f'总结本轮的计划执行情况\n格式要求: \n{HUMAN_FRIENDLY_FORMAT_REQUIREMENT}',
             instruction='',
         )
 
