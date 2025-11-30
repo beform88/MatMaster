@@ -107,35 +107,35 @@
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
+        "belonging": "DPA计算",
         "question": "帮我用 DPA 对上传结构进行优化",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1758895146_POSCAR_1"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
+        "belonging": "DPA计算",
         "question": "帮我用DPA计算一下这个结构的弹性常数",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
+        "belonging": "DPA计算",
         "question": "请使用dpa在 300 K 下对 Li2O 进行 1 ps 分子动力学模拟，时间步长 1 fs",
         "structure_url": " https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761029503_bohriumcrystal_65e5a9898d93f05838e25195_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
+        "belonging": "DPA计算",
         "question": "使用dpa计算 Si 结构的声子谱",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "DPA性质预测",
+        "belonging": "DPA计算",
         "question": "请使用 DPA 计算 MgO 的弹性常数",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761030016_bohriumcrystal_65e5a9a78d93f05838e28106_0.cif"
       }
