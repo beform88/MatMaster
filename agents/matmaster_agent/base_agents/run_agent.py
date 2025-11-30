@@ -35,6 +35,9 @@ from agents.matmaster_agent.job_agents.recommend_params_agent.prompt import (
 from agents.matmaster_agent.job_agents.recommend_params_agent.schema import (
     create_tool_args_schema,
 )
+from agents.matmaster_agent.job_agents.subagent_summary_agent.prompt import (
+    get_subagent_summary_prompt,
+)
 from agents.matmaster_agent.job_agents.tool_call_info_agent.prompt import (
     gen_tool_call_info_instruction,
 )
@@ -99,10 +102,10 @@ class BaseAgentWithRecAndSum(
             )
         else:
             self._summary_agent = DisallowTransferLlmAgent(
-                model=MatMasterLlmConfig.gpt_5_nano,
+                model=MatMasterLlmConfig.default_litellm_model,
                 name=f"{agent_prefix}_summary_agent",
                 description='You are an assistant to summarize the task to aware the user.',
-                instruction='Do simple summary.',
+                instruction=get_subagent_summary_prompt(),
             )
 
         return self
