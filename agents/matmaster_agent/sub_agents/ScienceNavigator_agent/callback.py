@@ -80,10 +80,11 @@ def translate_word_list_to_english(chinese_words: list) -> list:
         model = llm_config.gpt_5_nano.model
 
         # Build prompt: explicit JSON schema + few-shot example
-        prompt = f"""Translate the following list of search terms from Chinese to English.
-- Preserve English terms, acronyms, numbers, and symbols exactly as they are.
-- Output ONLY a valid JSON list of strings. No explanations, no markdown, no prefix.
-- Example: ['密度', 'LAMMPS', 'ΔH'] → ['density', 'LAMMPS', 'ΔH']
+        prompt = f"""
+Translate the following list of search terms to English.
+    - Preserve English terms, acronyms, numbers, and symbols exactly as they are.
+    - Output ONLY a valid JSON list of strings. No explanations, no markdown, no prefix.
+    - Example: ['密度', 'LAMMPS', 'ΔH'] → ['density', 'LAMMPS', 'ΔH']
 
 Terms: {str(chinese_words)}
 English translation (JSON list only):
