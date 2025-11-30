@@ -63,7 +63,7 @@ class ScienceNavigatorAgent(BaseSyncAgentWithToolValidator):
             instruction=SCIENCE_NAVIGATOR_AGENT_INSTRUCTION,
             supervisor_agent=MATMASTER_AGENT_NAME,
             after_tool_callback=after_tool_callback,
-            before_tool_callback=before_tool_callback,
+            # before_tool_callback=before_tool_callback, # TODO: fix bug of function response
             render_tool_response=True,
         )
 
