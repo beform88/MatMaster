@@ -19,6 +19,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     default_before_tool_callback,
     default_cost_func,
     filter_function_calls,
+    inject_ak_projectId,
     inject_current_env,
     inject_userId_sessionId,
     inject_username_ticket,
@@ -26,6 +27,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     tgz_oss_to_oss_list,
     update_tool_args,
 )
+from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     LOADING_DESC,
@@ -38,8 +40,8 @@ from agents.matmaster_agent.constant import (
     ModelRole,
 )
 from agents.matmaster_agent.locales import i18n
-from agents.matmaster_agent.model import CostFuncType
-from agents.matmaster_agent.setting import USE_PHOTON
+from agents.matmaster_agent.logger import PrefixFilter
+from agents.matmaster_agent.model import CostFuncType, RenderTypeEnum
 from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
@@ -53,6 +55,7 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
+    get_echarts_result,
     get_markdown_image_result,
     is_mcp_result,
     load_tool_response,
@@ -60,6 +63,7 @@ from agents.matmaster_agent.utils.helper_func import (
 )
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
@@ -71,60 +75,65 @@ class MCPInitMixin(BaseMixin):
     enforce_single_function_call: bool = True  # 是否只允许单个 function_call
 
 
+def mcp_callback_model_validator(data: Any):
+    if not isinstance(data, dict):
+        return data
+
+    if data.get('after_model_callback') is None:
+        data['after_model_callback'] = default_after_model_callback
+
+    if data.get('before_tool_callback') is None:
+        data['before_tool_callback'] = default_before_tool_callback
+
+    if data.get('after_tool_callback') is None:
+        data['after_tool_callback'] = default_after_tool_callback
+
+    if data.get('cost_func') is None:
+        data['cost_func'] = default_cost_func
+
+    if data.get('enable_tgz_unpack') is None:
+        data['enable_tgz_unpack'] = True
+
+    if data.get('enforce_single_function_call') is None:
+        data['enforce_single_function_call'] = True
+
+    data['after_model_callback'] = update_tool_args(
+        filter_function_calls(
+            data['after_model_callback'],
+            enforce_single_function_call=data['enforce_single_function_call'],
+        )
+    )
+
+    pipeline = inject_ak_projectId(data['before_tool_callback'])
+    pipeline = inject_userId_sessionId(pipeline)
+
+    if USE_PHOTON:
+        pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
+
+    pipeline = check_job_create(pipeline)
+    pipeline = inject_username_ticket(pipeline)
+    pipeline = inject_current_env(pipeline)
+
+    data['before_tool_callback'] = catch_before_tool_callback_error(pipeline)
+
+    data['after_tool_callback'] = check_before_tool_callback_effect(
+        catch_after_tool_callback_error(
+            remove_job_link(
+                tgz_oss_to_oss_list(
+                    data['after_tool_callback'], data['enable_tgz_unpack']
+                )
+            )
+        )
+    )
+
+    return data
+
+
 class MCPCallbackMixin(BaseMixin):
     @model_validator(mode='before')
     @classmethod
     def decorate_callbacks(cls, data: Any) -> Any:
-        if not isinstance(data, dict):
-            return data
-
-        if data.get('after_model_callback') is None:
-            data['after_model_callback'] = default_after_model_callback
-
-        if data.get('before_tool_callback') is None:
-            data['before_tool_callback'] = default_before_tool_callback
-
-        if data.get('after_tool_callback') is None:
-            data['after_tool_callback'] = default_after_tool_callback
-
-        if data.get('cost_func') is None:
-            data['cost_func'] = default_cost_func
-
-        if data.get('enable_tgz_unpack') is None:
-            data['enable_tgz_unpack'] = True
-
-        if data.get('enforce_single_function_call') is None:
-            data['enforce_single_function_call'] = True
-
-        data['after_model_callback'] = update_tool_args(
-            filter_function_calls(
-                data['after_model_callback'],
-                enforce_single_function_call=data['enforce_single_function_call'],
-            )
-        )
-
-        pipeline = inject_userId_sessionId(data['before_tool_callback'])
-
-        if USE_PHOTON:
-            pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
-
-        pipeline = check_job_create(pipeline)
-        pipeline = inject_username_ticket(pipeline)
-        pipeline = inject_current_env(pipeline)
-
-        data['before_tool_callback'] = catch_before_tool_callback_error(pipeline)
-
-        data['after_tool_callback'] = check_before_tool_callback_effect(
-            catch_after_tool_callback_error(
-                remove_job_link(
-                    tgz_oss_to_oss_list(
-                        data['after_tool_callback'], data['enable_tgz_unpack']
-                    )
-                )
-            )
-        )
-
-        return data
+        return mcp_callback_model_validator(data)
 
 
 class MCPRunEventsMixin(BaseMixin):
@@ -210,25 +219,63 @@ class MCPRunEventsMixin(BaseMixin):
                         yield event
                         raise
 
-                    job_result = await parse_result(dict_result)
+                    parsed_tool_result = await parse_result(dict_result)
                     logger.info(
-                        f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} job_result = {job_result}'
+                        f'{ctx.session.id} parsed_tool_result = {parsed_tool_result}'
                     )
-                    markdown_image_result = get_markdown_image_result(job_result)
-                    job_result_comp_data = get_frontend_job_result_data(job_result)
 
                     # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                    for system_job_result_event in context_function_event(
-                        ctx,
-                        self.name,
-                        'matmaster_job_result',
-                        {JOB_RESULT_KEY: job_result},
-                        ModelRole,
+                    if (
+                        parsed_tool_result
+                        and parsed_tool_result[0].get('meta_type')
+                        == RenderTypeEnum.LITERATURE
                     ):
-                        yield system_job_result_event
+                        for parsed_tool_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_literature_list',
+                            None,
+                            ModelRole,
+                            {
+                                'tool_name': first_part.function_response.name,
+                                'literature_list_result': parsed_tool_result,
+                            },
+                        ):
+                            yield parsed_tool_result_event
+                    elif (
+                        parsed_tool_result
+                        and parsed_tool_result[0].get('meta_type') == RenderTypeEnum.WEB
+                    ):
+                        for parsed_tool_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_web_search_list',
+                            None,
+                            ModelRole,
+                            {
+                                'tool_name': first_part.function_response.name,
+                                'web_search_result': parsed_tool_result,
+                            },
+                        ):
+                            yield parsed_tool_result_event
+                    else:
+                        for parsed_tool_result_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_parsed_tool_result',
+                            {'parsed_tool_result': parsed_tool_result},
+                            ModelRole,
+                        ):
+                            yield parsed_tool_result_event
 
-                    # Render Tool Response Event
-                    if self.render_tool_response:
+                    # Render Job Result Event
+                    job_result_comp_data = get_frontend_job_result_data(
+                        parsed_tool_result
+                    )
+                    if (
+                        self.render_tool_response
+                        and job_result_comp_data['eventData']['content'][JOB_RESULT_KEY]
+                    ):
                         for result_event in all_text_event(
                             ctx,
                             self.name,
@@ -237,12 +284,28 @@ class MCPRunEventsMixin(BaseMixin):
                         ):
                             yield result_event
 
+                    # 渲染 Markdown 图片
+                    markdown_image_result = get_markdown_image_result(
+                        parsed_tool_result
+                    )
                     if markdown_image_result:
                         for item in markdown_image_result:
                             for markdown_image_event in all_text_event(
                                 ctx, self.name, item['data'], ModelRole
                             ):
                                 yield markdown_image_event
+
+                    echarts_result = get_echarts_result(parsed_tool_result)
+                    if echarts_result:
+                        for echarts_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_echarts',
+                            None,
+                            ModelRole,
+                            {'echarts_url': [item['url'] for item in echarts_result]},
+                        ):
+                            yield echarts_event
 
                 if is_text(event):
                     if not event.partial:

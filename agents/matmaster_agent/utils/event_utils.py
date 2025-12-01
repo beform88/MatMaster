@@ -13,10 +13,10 @@ from google.adk.tools import BaseTool
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
+from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.locales import i18n
-from agents.matmaster_agent.setting import USE_PHOTON
 from agents.matmaster_agent.style import (
     photon_consume_free_card,
     photon_consume_notify_card,
@@ -255,12 +255,10 @@ def context_multipart2function_event(
 ):
     for part in event.content.parts:
         if part.text:
-            yield from context_function_event(
-                ctx, author, function_call_name, {'msg': part.text}, ModelRole
-            )
+            yield Event(author=author, invocation_id=ctx.invocation_id)
         elif part.function_call:
             logger.warning(
-                f"[{MATMASTER_AGENT_NAME}]:[context_multipart2function_event] function_name = {part.function_call.name}"
+                f"[{MATMASTER_AGENT_NAME}]:[context_multipart2function_event] function_name = {part.function_call.name}, function_args = {part.function_call.args}"
             )
             yield context_function_call_event(
                 ctx,

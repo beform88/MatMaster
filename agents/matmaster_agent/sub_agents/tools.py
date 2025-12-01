@@ -249,12 +249,27 @@ ALL_TOOLS = {
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
-        'description': '',
+        'description': 'Split the HEA chemical formula into element ratios, and calculate VEC, delta, Hmix, Smix, Lambda parameters of the given composition.',
     },
     'HEA_predictor': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
-        'description': '',
+        'description': 'Use the given High Entropy Alloy composition to construct a dataframe of important features, and Use the dataframe and a pre-trained ML model to predict if the formula can form a solid-solution system, and if so, predict its crystal structure.',
+    },
+    'HEA_comps_generator': {
+        'belonging_agent': HEA_assistant_AgentName,
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
+        'description': 'Based on a given initial High Entropy Alloy composition, Generate a series of High Entropy Alloy compositions by adjusting the molar ratio of one specific element.',
+    },
+    'HEA_data_extract': {
+        'belonging_agent': HEACALCULATOR_AGENT_NAME,
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
+        'description': 'Extract High Entropy Alloy related data from provided literature in PDF format, including compositions, processing methods, micro-phasestructures, and properties.',
+    },
+    'HEA_paper_search': {
+        'belonging_agent': HEA_assistant_AgentName,
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
+        'description': 'Search for papers on arXiv by title, author or keywords related to High Entropy Alloys, download the original publications and save basic information.',
     },
     'generate_binary_phase_diagram': {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
@@ -507,7 +522,7 @@ ALL_TOOLS = {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Intelligent enhanced paper search system based on keywords and research questions',
-        'args_setting': 'Use English to fill the input queries to ensure professionality. If not specified, the year range is 2020-2025; the number of papers is 100.',
+        'args_setting': 'Use English to fill the input queries to ensure professionality. If not specified, the starting year 2020, the ending time is today; the number of papers is 100.',
     },
     'build_convex_hull': {
         'belonging_agent': ConvexHullAgentName,

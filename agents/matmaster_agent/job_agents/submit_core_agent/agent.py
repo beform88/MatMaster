@@ -6,7 +6,10 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.mcp_agent import MCPAgent
+from agents.matmaster_agent.base_agents.disallow_mcp_agent import (
+    DisallowTransferMCPAgent,
+)
+from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     MATMASTER_AGENT_NAME,
@@ -16,7 +19,6 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import BohrJobInfo, DFlowJobInfo
-from agents.matmaster_agent.setting import USE_PHOTON
 from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
@@ -44,12 +46,10 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class SubmitCoreMCPAgent(MCPAgent):
+class SubmitCoreMCPAgent(DisallowTransferMCPAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
-        logger.info(
-            f"[{MATMASTER_AGENT_NAME}]:[{self.name}] state: {ctx.session.state}"
-        )
+        logger.info(f"{ctx.session.id} state: {ctx.session.state}")
         async for event in super()._run_events(ctx):
             # Only For Sync Tool Call
             if (
