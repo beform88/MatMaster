@@ -184,22 +184,22 @@
     },
     {
       "zhPrompt": {
-        "belonging": "APEX计算",
-        "question": "用apex_agent优化以下结构并返回最低能量构型",
+        "belonging": "合金性质计算",
+        "question": "使用APEX（Alloy Property EXplorer，合金性质计算工具）优化以下合金结构并返回最低能量构型",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "APEX计算",
-        "question": "用apex_agent计算Al₂O₃的弹性常数",
+        "belonging": "合金性质计算",
+        "question": "使用APEX计算Al₂O₃的弹性常数",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "APEX计算",
-        "question": "我想用APEX算Si的状态方程",
+        "belonging": "合金性质计算",
+        "question": "使用APEX计算合金的状态方程（EOS）",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
     },
