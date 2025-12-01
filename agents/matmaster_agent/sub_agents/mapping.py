@@ -62,19 +62,19 @@ from agents.matmaster_agent.sub_agents.HEA_assistant_agent.agent import (
 from agents.matmaster_agent.sub_agents.HEA_assistant_agent.constant import (
     HEA_assistant_AgentName,
 )
-from agents.matmaster_agent.sub_agents.HEACalculator_agent.agent import (
-    HEACalculatorAgentBase,
-    hea_calculator_toolset,
-)
-from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
-    HEACALCULATOR_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.HEAbrain_agent.agent import (
     HEABrainAgent,
     hea_brain_toolset,
 )
 from agents.matmaster_agent.sub_agents.HEAbrain_agent.constant import (
     HEA_BRAIN_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.HEACalculator_agent.agent import (
+    HEACalculatorAgentBase,
+    hea_calculator_toolset,
+)
+from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
+    HEACALCULATOR_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.agent import (
     LAMMPSAgent,

@@ -23,11 +23,11 @@ from agents.matmaster_agent.sub_agents.finetune_dpa_agent.constant import (
 from agents.matmaster_agent.sub_agents.HEA_assistant_agent.constant import (
     HEA_assistant_AgentName,
 )
-from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
-    HEACALCULATOR_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.HEAbrain_agent.constant import (
     HEA_BRAIN_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
+    HEACALCULATOR_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import LAMMPS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
