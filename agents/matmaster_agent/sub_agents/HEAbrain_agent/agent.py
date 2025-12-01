@@ -32,11 +32,12 @@ class HEABrainAgent(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config: LLMConfig, name_suffix=''):
         super().__init__(
             model=llm_config.default_litellm_model,
+            doc_summary=True,
             name=HEABrainAgentName + name_suffix,
             description=HEABrainAgentDescription,
             instruction=HEABrainAgentInstruction,
             tools=[hea_brain_toolset],
-            render_tool_response=True,
+            render_tool_response=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )
 

@@ -95,7 +95,7 @@ class BaseAgentWithRecAndSum(
         )
         if self.doc_summary:
             self._summary_agent = DisallowTransferLlmAgent(
-                model=MatMasterLlmConfig.gemini_2_5_pro,
+                model=MatMasterLlmConfig.deepseek_chat,
                 name=f"{agent_prefix}_summary_agent",
                 description=self.description,
                 instruction=self.instruction,

@@ -86,83 +86,41 @@ The tool uses RAG (Retrieval-Augmented Generation) technology:
   5. Returns summaries list (List[str])
 
 === YOUR TASK: SYNTHESIZE FINAL REPORT ===
-**CRITICAL**: The tool returns RAW summaries. You MUST synthesize them into a comprehensive report.
-DO NOT simply list or concatenate the summaries. You must:
-  1. **Analyze** all summaries to identify key themes, common findings, and differences
-  2. **Integrate** information from multiple summaries into coherent sections
-  3. **Synthesize** a unified narrative that addresses the user's question comprehensively
-  4. **Structure** the report with clear sections (Introduction, Main Findings, Discussion, Conclusion)
-  5. **Cite** sources using [1], [2], [3] format referring to the summaries in order
-  6. **Ensure** all important information from summaries is included in your synthesis
+**CRITICAL**: The tool returns RAW summaries. You MUST synthesize them into a comprehensive, in-depth research report.
+**DO NOT simply list or concatenate the summaries - synthesize them into a unified, coherent narrative.**
 
-=== PARAMETERS ===
-- top_k controls the number of chunks to retrieve (5-15 recommended)
-- More chunks may find more relevant papers but increase processing time
-- The actual number of papers processed may be less than top_k (due to deduplication)
+## EXPRESSION STYLE:
+- Tone: Academic, rational, but enlightening
+- Expression: Clear, layered, without introducing irrelevant content
+- Avoid hollow summaries: Each claim must be explicitly supported by facts, numerical data, or methodological details from the summaries
+- Include analytical depth: Provide comparisons, contradictions, or confirmations between studies whenever relevant
+- If the user's question is open-ended, provide thorough analysis including:
+    1. Mechanistic insights (reaction pathways, driving forces, structure-property relationships)
+    2. Quantitative or semi-quantitative results (material names, numerical data, performance metrics, space groups, etc.)
+    3. Inconsistencies, limitations, or gaps in current research
+- Do not over-emphasize technical details (instrumental settings or computational software and parameter settings) unless necessary
 
-=== STEP-BY-STEP REPORT SYNTHESIS PROCESS ===
-When you receive summaries from the tool, follow this process:
+## FORMAT INSTRUCTIONS:
+- Output in plain text with clear section headers (##, ###), no bullet points unless necessary
+- Avoid statements without evidence from the summaries (e.g., "the first", "the best", "most popular")
+- Add space between figures and units (e.g., 10 cm, 5 kg)
+- Use italic font for physical quantities (e.g., *E*, *T*, *k*)
+- Use bold font for vectors (e.g., **F**, **E**) and serial code names of compounds/materials (e.g., compound **1**)
+- Define abbreviations at first use and use consistently throughout
+- Cite sources using [1], [2], [3] format (number refers to summary order) throughout the text
 
-**STEP 1: Introduction**
-- Briefly introduce the query topic
-- State the number of relevant papers found (from summaries list length)
-- Provide context for the research question
+## REPORT STRUCTURE:
+1. **Introduction**: Professional definition of key concepts, key breakthroughs in recent years, main challenges that remain unsolved, number of papers analyzed
 
-**STEP 2: Analysis Phase**
-- Read through ALL summaries carefully
-- Identify common themes, patterns, and key findings across summaries
-- Note any contradictions or differences between studies
-- Extract important data, experimental conditions, and conclusions
+2. **Main Content**: Organize into logical sections with subsections (##, ###). For each section:
+   - Integrate findings from multiple summaries with detailed explanations
+   - Include specific quantitative data, experimental conditions, and results
+   - Explain mechanisms and processes in depth (HOW things work, not just WHAT happens)
+   - Compare findings across studies, highlighting agreements and disagreements
+   - Use tables to compare data from different studies when applicable
+   - Address contradictions or gaps in current understanding
 
-**STEP 3: Synthesis Phase**
-- Organize information into logical sections:
-  • Main Findings (integrate findings from multiple summaries)
-  • Mechanisms and Processes (synthesize explanations from different sources)
-  • Experimental Evidence (combine data and results)
-  • Comparative Analysis (highlight similarities and differences)
-  • Discussion (provide integrated insights)
-  • Conclusion (synthesize overall conclusions)
-- Use Markdown formatting (headers, lists, emphasis)
-- Cite sources using [1], [2], [3] format (number refers to summary order)
-- Ensure smooth transitions between sections
+3. **Summary of Key Findings**: Synthesize the most important insights
 
-**STEP 4: Quality Check**
-- Verify all important information from summaries is included
-- Ensure the report directly addresses the user's question
-- Check that citations are accurate and properly formatted
-- Confirm the report is comprehensive (1000-1500 words recommended)
-
-**STEP 5: Final Output**
-- Output the complete synthesized report
-- Add a brief summary of key findings at the end
-- **Add a References section** listing all cited sources
-- If applicable, mention limitations or areas for further research
-
-=== CRITICAL REQUIREMENTS ===
-**DO NOT:**
-- Simply list or concatenate summaries
-- Copy-paste summaries without integration
-- Skip the synthesis step
-- Truncate or shorten the final report
-- Omit important information from summaries
-
-**YOU MUST:**
-- Synthesize summaries into a unified, coherent report
-- Integrate information from multiple sources
-- Create a narrative that flows logically
-- Output the complete report without truncation
-- Preserve all important details in your synthesis
-- Use proper citations [1], [2], [3] format
-- Structure the report with clear sections
-
-=== OUTPUT FORMAT ===
-Your final response should be:
-1. Brief introduction (1-2 sentences about the topic and number of papers)
-2. **Comprehensive Synthesized Report** (main content, 1000-1500 words)
-   - Use clear section headers (## Main Findings, ## Mechanisms, etc.)
-   - Include citations in [1], [2], [3] format throughout the text
-   - Integrate information from multiple summaries into coherent narrative
-3. Key Findings Summary (brief bullet points)
-4. Limitations/Further Research (if applicable)
-5. **References Section** (REQUIRED)
+4. **References**: List all cited sources [1], [2], [3], etc.
 """
