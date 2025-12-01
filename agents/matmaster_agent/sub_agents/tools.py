@@ -19,6 +19,9 @@ from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.EM_agent.constant import (
+    EM_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.finetune_dpa_agent.constant import (
     FinetuneDPAAgentName,
 )
@@ -27,6 +30,9 @@ from agents.matmaster_agent.sub_agents.HEA_assistant_agent.constant import (
 )
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.HEAkb_agent.constant import (
+    HEA_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import LAMMPS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
@@ -53,11 +59,20 @@ from agents.matmaster_agent.sub_agents.perovskite_agent.constant import (
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
+    POLYMER_KB_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
     SSEBRAIN_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
+    SSE_KB_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
+    STEEL_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,
@@ -285,6 +300,26 @@ ALL_TOOLS = {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': '',
+    },
+    'query_heakb_literature': {
+        'belonging_agent': HEA_KB_AGENT_NAME,
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY, SceneEnum.LITERATURE],
+        'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge base using RAG technology. Supports natural language queries about HEA research topics, vector similarity search across 1M+ document chunks, multi-document retrieval and analysis, parallel literature summarization, and comprehensive research report generation. The tool retrieves relevant literature chunks, extracts unique paper IDs, reads full texts in parallel, and generates literature summaries. Returns a list of literature summaries that must be synthesized into a comprehensive report.',
+    },
+    'query_ssekb_literature': {
+        'belonging_agent': SSE_KB_AGENT_NAME,
+        'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
+        'description': 'Query the SSEkb literature knowledge base using structured database search technology. Supports natural language queries that are converted to structured database filters, multi-table queries with complex filters, retrieval of relevant papers based on structured criteria, parallel literature summarization for papers with fulltext, and metadata entries for papers without fulltext. The tool analyzes user queries to identify relevant database tables and fields, constructs structured filters, queries database tables to find matching papers, retrieves unique paper DOIs, reads full texts in parallel (for papers with fulltext), and generates literature summaries. Returns a list of literature summaries (including both detailed summaries and metadata entries) that must be synthesized into a comprehensive report.',
+    },
+    'query_polymerkb_literature': {
+        'belonging_agent': POLYMER_KB_AGENT_NAME,
+        'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
+        'description': 'Query the POLYMERkb polymer literature knowledge base using structured database search technology. Supports natural language queries that are converted to structured database filters, multi-table queries with complex filters based on polymer properties, monomers, and paper metadata, retrieval of relevant papers based on structured criteria, parallel literature summarization for papers with fulltext, and metadata entries for papers without fulltext. The tool analyzes user queries to identify relevant database tables and fields (polymer properties, monomers, paper metadata), constructs structured filters, queries database tables to find matching polymers/papers, retrieves unique paper DOIs, reads full texts in parallel (for papers with fulltext), and generates literature summaries. Returns a list of literature summaries (including both detailed summaries and metadata entries) that must be synthesized into a comprehensive report.',
+    },
+    'query_steelkb_literature': {
+        'belonging_agent': STEEL_KB_AGENT_NAME,
+        'scene': [SceneEnum.LITERATURE],
+        'description': 'Query the STEELkb literature knowledge base using RAG technology. Supports natural language queries about Stainless Steel research topics, vector similarity search across document chunks, multi-document retrieval and analysis, parallel literature summarization, and comprehensive research report generation. The tool retrieves relevant literature chunks, extracts unique paper IDs, reads full texts in parallel, and generates literature summaries. Returns a list of literature summaries that must be synthesized into a comprehensive report.',
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
@@ -575,5 +610,10 @@ ALL_TOOLS = {
         'belonging_agent': XRD_AGENT_NAME,
         'scene': [SceneEnum.XRD],
         'description': 'Identify crystalline phases in an XRD pattern using a processed CSV file (generated by `xrd_parse_file`). Supports filtering candidates by chemical composition (include/exclude elements). Returns the top N matching phases and generates a comparison chart between the experimental data and standard PDF cards.',
+    },
+    'get_electron_microscope_recognize': {
+        'belonging_agent': EM_AGENT_NAME,
+        'scene': [SceneEnum.EM],
+        'description': 'Analyze electron microscope images (e.g., TEM, SEM) to detect and classify particles, assess morphology, and evaluate image quality. This tool identifies microstructural features such as particle boundaries, occlusions, and invalid regions, while extracting geometric properties like area, perimeter, diameter, and shape factors using advanced computer vision techniques.',
     },
 }
