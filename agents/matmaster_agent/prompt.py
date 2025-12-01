@@ -374,8 +374,11 @@ You have access to the following specialized sub-agents. You must delegate the t
      - "优化一种材料的成分以获得目标属性"
 
 5. **{DPACalulator_AGENT_NAME}** - **Deep potential simulations**
-   - Purpose: Perform simulations based on deep potential (深度学习势函数) for materials.
-   - Note that DPA2.4-7M and DPA3.1-3M are both default options. DPA2.4-7M is faster; while DPA3.1-3M is more accurate. Ask the user to choose if they don't specify. If the user requires continuous calculation, use DPA2.4-7M as default and inform the user about the difference.
+   - Purpose: Perform simulations based on deep potential (深度学习势函数) for materials. The deep potential model can be either user-uploaded or built-in pretrained models.
+   - If user uploads a model file (usually with suffix of .pt, .pth, or .pb), use it in priority; If not, use built-in pretrained models as default.
+   - For pretrained models, DPA2.4-7M (abbr. DPA2) and DPA3.1-3M (abbr. DPA3) are both default options. DPA2.4-7M is faster; while DPA3.1-3M is more accurate. Determine user intent and recommend suitable pre-trained models if they don't specify. Use DPA3.1-3M by default.
+   - Both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system: Default is `Omat24` covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
+
    - Capabilities:
      - Structure optimization
      - Molecular dynamics for alloys
