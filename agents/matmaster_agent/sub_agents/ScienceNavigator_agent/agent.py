@@ -57,7 +57,7 @@ class ScienceNavigatorAgent(BaseSyncAgentWithToolValidator):
         super().__init__(
             name=SCIENCE_NAVIGATOR_AGENT_NAME,
             tools=[science_navigator_toolset, web_parser_toolset],
-            model=llm_config.gemini_2_5_pro,
+            model=llm_config.default_litellm_model,
             doc_summary=True,
             description=SCIENCE_NAVIGATOR_AGENT_DESCRIPTION,
             instruction=SCIENCE_NAVIGATOR_AGENT_INSTRUCTION,

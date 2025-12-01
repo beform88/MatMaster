@@ -18,6 +18,7 @@ from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     get_agent_name,
 )
+from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import MatMasterCheckTransferPrompt
@@ -64,6 +65,7 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
         for index, step in enumerate(steps):
             if step.get('tool_name'):
                 target_agent = get_agent_name(step['tool_name'], self.sub_agents)
+                is_async_agent = isinstance(target_agent, BaseAsyncJobAgent)
                 logger.info(
                     f'{ctx.session.id} tool_name = {step['tool_name']}, target_agent = {target_agent.name}'
                 )
@@ -103,10 +105,11 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                         f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
                     )
 
-                    if not is_single_tool_plan and check_plan(ctx) not in [
+                    sync_single = is_single_tool_plan and not is_async_agent
+                    if check_plan(ctx) not in [
                         FlowStatusEnum.NO_PLAN,
                         FlowStatusEnum.NEW_PLAN,
-                    ]:
+                    ] and (not sync_single or is_async_agent):
                         # 检查之前的计划执行情况
                         async for execution_result_event in self.sub_agents[
                             -1
