@@ -11,7 +11,7 @@ Language: {{target_language}}
 1. Interpreting the technical results in the context of materials science
 2. Highlighting significant findings or anomalies
 3. Providing expert commentary on the implications of the results
-4. Suggesting domain-specific considerations for future steps
+4. Provide domain-specific considerations that contextualize the results (without actionable advices).
 
 
 # Format Requirements:
