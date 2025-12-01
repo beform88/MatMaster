@@ -10,6 +10,14 @@
     },
     {
       "zhPrompt": {
+        "belonging": "结构搜索",
+        "fee": "光子付费",
+        "question": "搜索基于空间群和Wyckoff位置的信息，然后构建alpha-氧化铝的晶体结构",
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
         "belonging": "结构生成",
         "fee": "光子付费",
         "question": "请根据给定的空间群和 Wyckoff 位置信息生成一个晶体结构：Pm-3m空间群（编号221），a=b=c=3.90 Angstrom，α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
@@ -246,6 +254,38 @@
         "fee": "光子付费",
         "question": "从开源数据库获取一个MgB₂结构 ，并计算其声子谱",
         "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "高熵合金",
+        "fee": "光子付费",
+        "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "",
+        "fee": "光子付费",
+        "question": "",
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据可视化",
+        "fee": "光子付费",
+        "question": "绘制DSC曲线，每个冷却-加热循环的曲线以上下排列的子图形式呈现，横坐标为温度，纵坐标为热流。校准点为热流为0的点，绘制曲线前将其移除。删除数据点过少的子图。",
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/18739/store/upload/276ae3d0-1aae-4422-a2f5-d23761c02486/85B_S.txt"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "文献检索",
+        "fee": "光子付费",
+        "question": "",
+        "structure_url": "检索机器学习势函数在含能材料领域的文章"
       }
     },
     {
