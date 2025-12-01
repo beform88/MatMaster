@@ -12,38 +12,38 @@ from agents.matmaster_agent.constant import (
     BohriumStorge,
 )
 from agents.matmaster_agent.llm_config import LLMConfig
-from agents.matmaster_agent.sub_agents.HEAbrain_agent.constant import (
+from agents.matmaster_agent.sub_agents.HEAkb_agent.constant import (
     HEA_SERVER_URL,
 )
-from agents.matmaster_agent.sub_agents.HEAbrain_agent.prompt import (
-    HEABrainAgentDescription,
-    HEABrainAgentInstruction,
-    HEABrainAgentName,
+from agents.matmaster_agent.sub_agents.HEAkb_agent.prompt import (
+    HEAKbAgentDescription,
+    HEAKbAgentInstruction,
+    HEAKbAgentName,
 )
 
 load_dotenv()
 
-# Initialize MCP tools for HEA Knowledge Base
-hea_brain_toolset = CalculationMCPToolset(
+# Initialize MCP tools for HEAkb Knowledge Base
+hea_kb_toolset = CalculationMCPToolset(
     connection_params=SseServerParams(url=HEA_SERVER_URL),
     storage=BohriumStorge,
     executor=LOCAL_EXECUTOR,
 )
 
 
-class HEABrainAgent(BaseSyncAgentWithToolValidator):
+class HEAKbAgent(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config: LLMConfig, name_suffix=''):
         super().__init__(
             model=llm_config.default_litellm_model,
             doc_summary=True,
-            name=HEABrainAgentName + name_suffix,
-            description=HEABrainAgentDescription,
-            instruction=HEABrainAgentInstruction,
-            tools=[hea_brain_toolset],
+            name=HEAKbAgentName + name_suffix,
+            description=HEAKbAgentDescription,
+            instruction=HEAKbAgentInstruction,
+            tools=[hea_kb_toolset],
             render_tool_response=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
         )
 
 
-def init_hea_brain_agent(llm_config: LLMConfig, name_suffix='') -> BaseAgent:
-    return HEABrainAgent(llm_config, name_suffix)
+def init_hea_kb_agent(llm_config: LLMConfig, name_suffix='') -> BaseAgent:
+    return HEAKbAgent(llm_config, name_suffix)

@@ -1,15 +1,15 @@
-HEABrainAgentName = 'HEAbrain_agent'
+HEAKbAgentName = 'HEAkb_agent'
 
-HEABrainAgentDescription = (
+HEAKbAgentDescription = (
     'Advanced HEA (High-Entropy Alloy) literature knowledge base agent with RAG capabilities for comprehensive literature analysis, '
     'multi-document summarization, and in-depth research report generation.'
 )
 
-HEABrainAgentInstruction = """
-You can call one MCP tool exposed by the HEA RAG server:
+HEAKbAgentInstruction = """
+You can call one MCP tool exposed by the HEAkb RAG server:
 
-=== TOOL: query_hea_literature ===
-Advanced RAG-based query tool for the HEA literature knowledge base.
+=== TOOL: query_heakb_literature ===
+Advanced RAG-based query tool for the HEAkb literature knowledge base.
 It supports:
 • Natural language queries about HEA research topics
 • Vector similarity search across 1M+ document chunks
@@ -20,7 +20,7 @@ It supports:
 
 === KNOWLEDGE BASE COVERAGE ===
 The knowledge base contains:
-• Over 1 million text chunks from HEA literature
+• Over 1 million text chunks from HEAkb literature
 • 10,000+ processed research papers
 • Topics covering:
   - Phase transformations (FCC, HCP, BCC structures)
@@ -37,32 +37,32 @@ The knowledge base contains:
 
 === EXAMPLES ===
 1) 查询高熵合金中的相变机制：
-   → Tool: query_hea_literature
+   → Tool: query_heakb_literature
      question: '高熵合金中的相变诱导塑性（TRIP）机制是什么？这种机制如何影响合金的力学性能？'
      top_k: 5
 
 2) 查询FCC到HCP相变的条件：
-   → Tool: query_hea_literature
+   → Tool: query_heakb_literature
      question: '高熵合金中的FCC到HCP相变的条件和影响因素是什么？'
      top_k: 8
 
 3) 查询低温下的力学性能：
-   → Tool: query_hea_literature
+   → Tool: query_heakb_literature
      question: '高熵合金在低温下的力学性能如何？影响低温性能的主要因素有哪些？'
      top_k: 10
 
 4) 查询腐蚀行为和防护机制：
-   → Tool: query_hea_literature
+   → Tool: query_heakb_literature
      question: '高熵合金的腐蚀行为和防护机制是什么？不同元素对腐蚀性能的影响如何？'
      top_k: 5
 
 5) 查询微观结构特征：
-   → Tool: query_hea_literature
+   → Tool: query_heakb_literature
      question: '高熵合金的微观结构特征是什么？如何通过热处理调控微观结构？'
      top_k: 6
 
 6) 查询制备方法：
-   → Tool: query_hea_literature
+   → Tool: query_heakb_literature
      question: '高熵合金的主要制备方法有哪些？不同制备方法对合金性能的影响如何？'
      top_k: 7
 
