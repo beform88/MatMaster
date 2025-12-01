@@ -58,7 +58,10 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         plan = ctx.session.state['plan']
         logger.info(f'{ctx.session.id} plan = {plan}')
-        for index, step in enumerate(plan['steps']):
+        steps = plan['steps']
+        is_single_tool_plan = len(steps) == 1
+
+        for index, step in enumerate(steps):
             if step.get('tool_name'):
                 target_agent = get_agent_name(step['tool_name'], self.sub_agents)
                 logger.info(
@@ -99,7 +102,8 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                     logger.info(
                         f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
                     )
-                    if check_plan(ctx) not in [
+
+                    if not is_single_tool_plan and check_plan(ctx) not in [
                         FlowStatusEnum.NO_PLAN,
                         FlowStatusEnum.NEW_PLAN,
                     ]:

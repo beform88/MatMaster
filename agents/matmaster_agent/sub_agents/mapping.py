@@ -190,6 +190,13 @@ from agents.matmaster_agent.sub_agents.visualizer_agent.agent import (
 from agents.matmaster_agent.sub_agents.visualizer_agent.constant import (
     VisualizerAgentName,
 )
+from agents.matmaster_agent.sub_agents.XRD_agent.agent import (
+    XRDAgent,
+    xrd_toolset,
+)
+from agents.matmaster_agent.sub_agents.XRD_agent.constant import (
+    XRD_AGENT_NAME,
+)
 
 ALL_TOOLSET_DICT = {
     'abacus_toolset': abacus_toolset,
@@ -220,6 +227,7 @@ ALL_TOOLSET_DICT = {
     'science_navigator_toolset': science_navigator_toolset,
     'convexhull_toolset': convexhull_toolset,
     'nmr_toolset': nmr_toolset,
+    'xrd_toolset': xrd_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -251,6 +259,7 @@ AGENT_CLASS_MAPPING = {
     VASPKIT_AGENT_NAME: VASPKITAgent,
     ConvexHullAgentName: ConvexHullAgent,
     NMR_AGENT_NAME: NMRAgent,
+    XRD_AGENT_NAME: XRDAgent,
 }
 
 
@@ -283,6 +292,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     VASPKITAgent = VASPKIT_AGENT_NAME
     ConvexHullAgent = ConvexHullAgentName
     NMRAgent = NMR_AGENT_NAME
+    XRDAgent = XRD_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())

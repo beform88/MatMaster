@@ -12,13 +12,22 @@ from google.adk.models import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai.types import Part
 from mcp.types import CallToolResult
+from pydantic import BaseModel
 from yaml.scanner import ScannerError
 
 from agents.matmaster_agent.constant import FRONTEND_STATE_KEY, MATMASTER_AGENT_NAME
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.model import JobResult, JobResultType
+from agents.matmaster_agent.logger import PrefixFilter
+from agents.matmaster_agent.model import (
+    JobResult,
+    JobResultType,
+    LiteratureItem,
+    WebSearchItem,
+)
 
 logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
 
 
 def get_session_state(ctx: Union[InvocationContext, ToolContext]):
@@ -65,12 +74,34 @@ def is_json(json_str):
     return True
 
 
+def is_sequence(data):
+    return isinstance(data, (tuple, list))
+
+
 async def is_float_sequence(data) -> bool:
-    return isinstance(data, (tuple, list)) and all(isinstance(x, float) for x in data)
+    return is_sequence(data) and all(isinstance(x, float) for x in data)
 
 
 async def is_str_sequence(data) -> bool:
-    return isinstance(data, (tuple, list)) and all(isinstance(x, str) for x in data)
+    return is_sequence(data) and all(isinstance(x, str) for x in data)
+
+
+def validate_model_list(data: list, model: type[BaseModel]) -> bool:
+    for item in data:
+        try:
+            model.model_validate(item)
+        except BaseException as e:
+            logger.warning(e)
+            return False
+    return True
+
+
+async def is_literature_sequence(data) -> bool:
+    return is_sequence(data) and validate_model_list(data, LiteratureItem)
+
+
+async def is_web_search_sequence(data) -> bool:
+    return is_sequence(data) and validate_model_list(data, WebSearchItem)
 
 
 async def is_matmodeler_file(filename: str) -> bool:
@@ -94,6 +125,10 @@ async def is_matmodeler_file(filename: str) -> bool:
         or 'CONTCAR' in filename
         or filename == 'STRU'
     )
+
+
+async def is_echarts_file(filename: str) -> bool:
+    return filename.endswith('.echarts')
 
 
 async def is_image_file(filename: str) -> bool:
@@ -199,7 +234,7 @@ async def parse_result(result: dict) -> List[dict]:
             new_result[k] = v
 
     for k, v in new_result.items():
-        if type(v) in [int, float]:
+        if type(v) in [int, float, bool]:
             parsed_result.append(
                 JobResult(name=k, data=v, type=JobResultType.Value).model_dump(
                     mode='json'
@@ -220,6 +255,15 @@ async def parse_result(result: dict) -> List[dict]:
                             name=k,
                             data=filename,
                             type=JobResultType.MatModelerFile,
+                            url=v,
+                        ).model_dump(mode='json')
+                    )
+                elif await is_echarts_file(filename):
+                    parsed_result.append(
+                        JobResult(
+                            name=k,
+                            data=filename,
+                            type=JobResultType.EchartsFile,
                             url=v,
                         ).model_dump(mode='json')
                     )
@@ -254,6 +298,12 @@ async def parse_result(result: dict) -> List[dict]:
                     type=JobResultType.Value,
                 ).model_dump(mode='json')
             )
+        elif await is_literature_sequence(v):
+            for item in v:
+                parsed_result.append(LiteratureItem(**item).model_dump(mode='json'))
+        elif await is_web_search_sequence(v):
+            for item in v:
+                parsed_result.append(WebSearchItem(**item).model_dump(mode='json'))
         else:
             parsed_result.append(
                 {
@@ -264,11 +314,19 @@ async def parse_result(result: dict) -> List[dict]:
     return parsed_result
 
 
-def get_markdown_image_result(job_result: List[dict]) -> List[dict]:
+def get_markdown_image_result(parsed_tool_result: List[JobResult]) -> List[JobResult]:
     return [
         item
-        for item in job_result
+        for item in parsed_tool_result
         if item.get('name') and item['name'].startswith('markdown_image')
+    ]
+
+
+def get_echarts_result(parsed_tool_result: List[JobResult]) -> List[JobResult]:
+    return [
+        item
+        for item in parsed_tool_result
+        if item.get('name') and item['type'] == JobResultType.EchartsFile
     ]
 
 

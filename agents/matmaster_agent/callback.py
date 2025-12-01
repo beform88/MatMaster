@@ -171,10 +171,10 @@ async def matmaster_check_quota(
     user_id = get_user_id(callback_context)
     response = await check_quota_service(user_id=user_id)
     logger.info(f'{callback_context.session.id} check_quota_response = {response}')
-    if not response.get('remaining') or not response['remaining']:
+    if not response['data'].get('remaining') or not response['data']['remaining']:
         callback_context.state['quota_remaining'] = 0
     else:
-        callback_context.state['quota_remaining'] = response['remaining']
+        callback_context.state['quota_remaining'] = response['data']['remaining']
 
 
 # after_model_callback
