@@ -12,7 +12,6 @@ Language: {{target_language}}
 1. Briefly state what has been accomplished in the most recent step
 2. Clearly indicate if this is the final step or what the immediate next action should be
 3. For parameter confirmation steps, display those parameters
-4. For task submission steps, instruct the user to monitor task status
 
 Focus ONLY on workflow progression and status communication. Do not include any other information or details.
 
