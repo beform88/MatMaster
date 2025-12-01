@@ -227,7 +227,6 @@
     {
       "zhPrompt": {
         "belonging": "高熵合金",
-        "fee": "光子付费",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
         "structure_url": ""
       }
