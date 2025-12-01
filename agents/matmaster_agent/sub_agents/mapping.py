@@ -203,6 +203,8 @@ from agents.matmaster_agent.sub_agents.thermoelectric_agent.agent import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
+from agents.matmaster_agent.sub_agents.tool_agent.agent import ToolAgent
+from agents.matmaster_agent.sub_agents.tool_agent.constant import TOOL_AGENT_NAME
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
     TrajAnalysisAgent,
@@ -305,6 +307,7 @@ AGENT_CLASS_MAPPING = {
     NMR_AGENT_NAME: NMRAgent,
     XRD_AGENT_NAME: XRDAgent,
     Electron_Microscope_AGENT_NAME: ElectronMicroscopeAgent,
+    TOOL_AGENT_NAME: ToolAgent,
 }
 
 
@@ -343,6 +346,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     NMRAgent = NMR_AGENT_NAME
     XRDAgent = XRD_AGENT_NAME
     ElectronMicroscopeAgent = Electron_Microscope_AGENT_NAME
+    ToolAgent = TOOL_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())
