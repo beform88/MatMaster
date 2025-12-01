@@ -20,7 +20,6 @@ The responses should be in {target_language}.
 - At the very beginning, internally construct a detailed hierarchical outline with at least 3 major sections and multiple subsections. You must not display this outline to the user unless explicitly asked.
 - The outline should roughly starts with a brief explanation of the key terminologies involved, the key research gaps based on the absract's claims.
 - You must use this internal outline to guide a long, comprehensive, and fully structured final output.
-- 
 
 
 # Knowledge-Usage Limitations:
