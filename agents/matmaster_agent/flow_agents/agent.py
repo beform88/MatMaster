@@ -59,6 +59,7 @@ from agents.matmaster_agent.flow_agents.utils import (
     create_dynamic_plan_schema,
     get_tools_list,
 )
+from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
@@ -244,7 +245,10 @@ class MatMasterFlowAgent(LlmAgent):
         try:
             if not ctx.session.state['quota_remaining']:
                 for quota_remaining_event in all_text_event(
-                    ctx, self.name, '每日免费次数不足，请申请后重试', ModelRole
+                    ctx,
+                    self.name,
+                    '每日免费次数不足，请填写[问卷](https://ucoyxk075n.feishu.cn/share/base/form/shrcn8gQigMyRhSut6vSshXAeKg)申请成功后重试',
+                    ModelRole,
                 ):
                     yield quota_remaining_event
                 return
@@ -378,7 +382,16 @@ class MatMasterFlowAgent(LlmAgent):
                             1 for step in plan_steps if step.get('tool_name')
                         )
 
-                        if tool_count > 1:
+                        is_async_agent = issubclass(
+                            AGENT_CLASS_MAPPING[
+                                ALL_TOOLS[plan_steps[0]['tool_name']]['belonging_agent']
+                            ],
+                            BaseAsyncJobAgent,
+                        )
+                        logger.info(
+                            f'is_async_agent = {is_async_agent}, tool_count = {tool_count}'
+                        )
+                        if tool_count > 1 or is_async_agent:
                             for all_summary_event in all_text_event(
                                 ctx, self.name, all_summary_card(), ModelRole
                             ):
