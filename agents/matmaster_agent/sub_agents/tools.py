@@ -1,3 +1,5 @@
+from datetime import date
+
 from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.prompt import DPA_PRIOR_KNOWLEDGE
 from agents.matmaster_agent.sub_agents.ABACUS_agent.constant import ABACUS_AGENT_NAME
@@ -75,6 +77,8 @@ from agents.matmaster_agent.sub_agents.visualizer_agent.constant import (
 from agents.matmaster_agent.sub_agents.XRD_agent.constant import (
     XRD_AGENT_NAME,
 )
+
+TODAY = date.today()
 
 ALL_TOOLS = {
     'abacus_vacancy_formation_energy': {
@@ -523,12 +527,14 @@ ALL_TOOLS = {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Standard version of searching academic papers based on author information',
+        'args_setting': f'If not specified, the starting year 2020, the ending time is {TODAY}.',
     },
     'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Intelligent enhanced paper search system based on keywords and research questions',
-        'args_setting': 'Use English to fill the input queries to ensure professionality. If not specified, the starting year 2020, the ending time is today; the number of papers is 100.',
+        'args_setting': f"""
+    If not specified, the starting year 2020, the ending time is {TODAY}; the number of papers is 100. When constructing query words, (i) use English to fill the input queries to ensure professionality; (ii) avoid using broad keywords such as 'materials science', 'chemistry', 'progress'; (iii) extract the most specific and technically relevant keywords from the user's query, including material names, chemical formulas, molecular identifiers, mechanisms, properties, or application contexts; (iv) If the user\'s query is inherently broad and lacks specific entities, methods, or systems, you must decompose the conceptual domain into its technical intension and generate concrete, research-usable keywords. This includes identifying: representative subfields, canonical mechanisms or processes, prototypical material classes or molecular systems, commonly studied performance metrics, key methodological or application contexts. These derived keywords must be specific enough to retrieve meaningful literature rather than triggering domain-level noise.""",
     },
     'build_convex_hull': {
         'belonging_agent': ConvexHullAgentName,
