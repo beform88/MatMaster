@@ -1,6 +1,3 @@
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferMixin,
-)
 from agents.matmaster_agent.base_agents.mcp_agent import (
     MCPAgent,
     MCPRunEventsMixin,
@@ -8,8 +5,4 @@ from agents.matmaster_agent.base_agents.mcp_agent import (
 
 
 class SyncMCPAgent(MCPRunEventsMixin, MCPAgent):
-    pass
-
-
-class DisallowTransferSyncMCPAgent(DisallowTransferMixin, SyncMCPAgent):
     pass

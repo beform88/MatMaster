@@ -50,7 +50,10 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
-from agents.matmaster_agent.flow_agents.style import plan_ask_confirm_card
+from agents.matmaster_agent.flow_agents.style import (
+    all_summary_card,
+    plan_ask_confirm_card,
+)
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     create_dynamic_plan_schema,
@@ -58,6 +61,7 @@ from agents.matmaster_agent.flow_agents.utils import (
 )
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
+from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -150,8 +154,8 @@ class MatMasterFlowAgent(LlmAgent):
 
         execution_result_agent = DisallowTransferLlmAgent(
             name='execution_result_agent',
-            model=MatMasterLlmConfig.gemini_2_5_pro,  # NOTE: Temporary fix until refactor
-            description='汇总计划的执行情况，并根据计划提示下一步的动作',
+            model=MatMasterLlmConfig.gpt_5_mini,
+            description='汇总计划的执行情况',
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
 
@@ -171,7 +175,7 @@ class MatMasterFlowAgent(LlmAgent):
             name='execution_summary_agent',
             model=MatMasterLlmConfig.default_litellm_model,
             global_instruction='使用 {target_language} 回答',
-            description='总结本轮的计划执行情况',
+            description=f'总结本轮的计划执行情况\n格式要求: \n{HUMAN_FRIENDLY_FORMAT_REQUIREMENT}',
             instruction='',
         )
 
@@ -368,11 +372,24 @@ class MatMasterFlowAgent(LlmAgent):
                         check_plan(ctx) == FlowStatusEnum.COMPLETE
                         or ctx.session.state['plan']['feasibility'] == 'null'
                     ):
-                        self._analysis_agent.instruction = get_analysis_instruction(
-                            ctx.session.state['plan']
+                        # Skip summary for single-tool plans
+                        plan_steps = ctx.session.state['plan'].get('steps', [])
+                        tool_count = sum(
+                            1 for step in plan_steps if step.get('tool_name')
                         )
-                        async for analysis_event in self.analysis_agent.run_async(ctx):
-                            yield analysis_event
+
+                        if tool_count > 1:
+                            for all_summary_event in all_text_event(
+                                ctx, self.name, all_summary_card(), ModelRole
+                            ):
+                                yield all_summary_event
+                            self._analysis_agent.instruction = get_analysis_instruction(
+                                ctx.session.state['plan']
+                            )
+                            async for analysis_event in self.analysis_agent.run_async(
+                                ctx
+                            ):
+                                yield analysis_event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event

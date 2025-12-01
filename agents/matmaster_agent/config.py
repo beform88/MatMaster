@@ -1,0 +1,2 @@
+USE_PHOTON = False
+USER_DIRECT_CONSUME = True

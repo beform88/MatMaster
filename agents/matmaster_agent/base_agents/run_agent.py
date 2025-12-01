@@ -3,7 +3,11 @@ import logging
 from typing import AsyncGenerator, Optional, Union, override
 
 from google.adk.agents import InvocationContext
-from google.adk.agents.llm_agent import AfterModelCallback, AfterToolCallback
+from google.adk.agents.llm_agent import (
+    AfterModelCallback,
+    AfterToolCallback,
+    BeforeToolCallback,
+)
 from google.adk.events import Event
 from google.adk.models import BaseLlm
 from pydantic import computed_field
@@ -31,6 +35,9 @@ from agents.matmaster_agent.job_agents.recommend_params_agent.prompt import (
 from agents.matmaster_agent.job_agents.recommend_params_agent.schema import (
     create_tool_args_schema,
 )
+from agents.matmaster_agent.job_agents.subagent_summary_agent.prompt import (
+    get_subagent_summary_prompt,
+)
 from agents.matmaster_agent.job_agents.tool_call_info_agent.prompt import (
     gen_tool_call_info_instruction,
 )
@@ -49,14 +56,16 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class BaseAgentWithParamsRecommendation(
+class BaseAgentWithRecAndSum(
     SubordinateFeaturesMixin, MCPInitMixin, ErrorHandleBaseAgent
 ):
     model: Union[str, BaseLlm]
     instruction: str
     tools: list
+    doc_summary: bool = False
     after_tool_callback: Optional[AfterToolCallback] = None
     after_model_callback: Optional[AfterModelCallback] = None
+    before_tool_callback: Optional[BeforeToolCallback] = None
 
     def _after_init(self):
         agent_prefix = self.name.replace('_agent', '')
@@ -84,6 +93,20 @@ class BaseAgentWithParamsRecommendation(
             name=f"{agent_prefix}_recommend_params_schema_agent",
             state_key='recommend_params',
         )
+        if self.doc_summary:
+            self._summary_agent = DisallowTransferLlmAgent(
+                model=MatMasterLlmConfig.gemini_2_5_pro,
+                name=f"{agent_prefix}_summary_agent",
+                description=self.description,
+                instruction=self.instruction,
+            )
+        else:
+            self._summary_agent = DisallowTransferLlmAgent(
+                model=MatMasterLlmConfig.default_litellm_model,
+                name=f"{agent_prefix}_summary_agent",
+                description='You are an assistant to summarize the task to aware the user.',
+                instruction=get_subagent_summary_prompt(),
+            )
 
         return self
 
@@ -101,6 +124,11 @@ class BaseAgentWithParamsRecommendation(
     @property
     def recommend_params_schema_agent(self) -> SchemaAgent:
         return self._recommend_params_schema_agent
+
+    @computed_field
+    @property
+    def summary_agent(self) -> DisallowTransferLlmAgent:
+        return self._summary_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -204,3 +232,7 @@ class BaseAgentWithParamsRecommendation(
 
             if not ctx.session.state['tool_hallucination']:
                 break
+
+        if not ctx.session.state['error_occurred']:
+            async for summary_event in self.summary_agent.run_async(ctx):
+                yield summary_event
