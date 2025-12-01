@@ -184,21 +184,21 @@
     },
     {
       "zhPrompt": {
-        "belonging": "合金性质计算",
-        "question": "使用APEX（Alloy Property EXplorer，合金性质计算工具）优化以下合金结构并返回最低能量构型",
+        "belonging": "性质预测",
+        "question": "使用APEX（Alloy Property EXplorer，性质预测工具）优化以下合金结构并返回最低能量构型",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "合金性质计算",
+        "belonging": "性质预测",
         "question": "使用APEX计算Al₂O₃的弹性常数",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
       }
     },
     {
       "zhPrompt": {
-        "belonging": "合金性质计算",
+        "belonging": "性质预测",
         "question": "使用APEX计算合金的状态方程（EOS）",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
@@ -226,7 +226,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "高熵合金",
+        "belonging": "性质预测",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
         "structure_url": ""
       }
@@ -242,6 +242,20 @@
       "zhPrompt": {
         "belonging": "文献检索",
         "question": "检索机器学习势函数在含能材料领域的文章",
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "性质预测",
+        "question": "帮我生成500个SnTe从中筛选出潜在的热电材料",
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "性质预测",
+        "question": "帮我检索近年来热门的高温超导，构建其结构并预测其超导临界温度",
         "structure_url": ""
       }
     },
