@@ -269,7 +269,7 @@ ALL_TOOLS = {
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
         'scene': [SceneEnum.DPA],
-        'description': 'Fine-tune dpa2 or dpa3 pretrained model with provided labeled data. CANNOT DO: use DPA model to run calculations for material systems. ',
+        'description': 'Fine-tune DPA2 or DPA3 pretrained models using user-provided DFT-labeled data (e.g., energies, forces, stresses) to adapt the potential to specific material systems; CANNOT DO: use DPA model to run calculations for material systems. ',
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -384,7 +384,7 @@ ALL_TOOLS = {
     'generate_calypso_structures': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Generate candidate crystal structures based on specified chemical species and number of configurations. Employs particle-swarm algorithms to produce stable crystal candidates. Requires valid element inputs and accessible CALYPSO environment',
+        'description': 'Perform global structure search with CALYPSO to generate multiple candidate crystal structures for a given composition. Use this tool when the user asks for "randomly generate many structures“ or "structure search" for a formula (e.g. "help me randomly generate 50 SnTe structures"). It is suitable for exploring different configurations and polymorphs for specified elements. Requires valid element inputs and an accessible CALYPSO environment.',
         'args_setting': 'Parameter guidance: n_tot=10–30 gives reasonable diversity without excessive cost. Elements must be from the supported list (H–Bi, Ac–Pu). Output is a set of POSCAR files; downstream relaxation is strongly recommended.',
     },
     'generate_crystalformer_structures': {
@@ -476,42 +476,42 @@ ALL_TOOLS = {
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Do geometry optimization for given superconductor under ambient or high pressure condition with DPA',
+        'description': 'Perform geometry optimization for a given superconducting structure using DPA under ambient or high-pressure conditions; this tool is only for superconductor geometry relaxation with format of (e.g., CIF or POSCAR)',
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Calculate enthalpy for given superconductor under ambient or high pressure condition with DPA',
+        'description': 'Compute the enthalpy of a given superconducting material using DPA under ambient or high-pressure conditions, build a convex hull within the provided superconducting candidates, and identify superconductors with energy-above-hull below a user-specified threshold; this tool is only for enthalpy and stability screening of superconductors and must not be used for generic materials.',
     },
     'predict_superconductor_Tc': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Predict critical temperature for given superconductor under ambient or high pressure condition with DPA',
+        'description': 'This tool MUST be called whenever the user asks to predict, estimate, or compute the superconducting critical temperature (Tc) of any material. Use this tool to perform Tc prediction under ambient or high-pressure conditions using the DPA model. If the user mentions Tc, superconductivity, critical temperature, or superconducting transition, always invoke this tool.',
     },
     'screen_superconductor': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Screen potential supercondutors from given compounds at ambient or high pressure condition',
+        'description': 'Given a user-provided list of candidate structures or compounds, this tool predicts their superconducting critical temperatures (Tc) using DPA, checks their stability (energy above hull), and returns an ordered screening result. This tool should ONLY be called when the user explicitly provides multiple candidate materials for Tc screening. It must NOT be used for querying known superconductors, global Tc records, or general Tc questions.',
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Predict thermoelectric related properties with DPA under given pressure',
+        'description': 'Predict thermoelectric-related properties for a given material using DPA , including band gap, Seebeck coefficient, power factor, effective mass, shear modulus, and bulk modulus; this tool does not compute thermal conductivity and is only for thermoelectric property prediction, not for generic structure optimization or unrelated property queries.',
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Do geometry optimization for given thermoelectric materials with DPA under give pressure',
+        'description': 'Perform geometry optimization for given thermoelectric materials using DPA under a user-specified pressure; this tool is only for structural relaxation of thermoelectric systems and should not be used for thermoelectric property prediction or non-thermoelectric materials.',
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Calcualte entalpy for given thermoelectric materials with DPA under given pressure',
+        'description': 'Compute the enthalpy of given thermoelectric materials using DPA under a specified pressure, construct a convex hull among the thermoelectric candidates, and select structures with energy-above-hull below a user-defined threshold; this tool is only for enthalpy and stability screening of thermoelectric materials and must not be used for non-thermoelectric systems or other property predictions.',
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Screen potential thermoelectric materials from given compounds at given pressure',
+        'description': 'Screen potential thermoelectric materials from a user-provided set of candidate structures using DPA under a specified pressure, internally predicting all required thermoelectric properties to identify promising candidates; this tool requires the user to supply multiple input structures and does not perform screening without provided candidates.',
     },
     'traj_analysis_msd': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -574,7 +574,7 @@ ALL_TOOLS = {
     'build_convex_hull': {
         'belonging_agent': ConvexHullAgentName,
         'scene': [SceneEnum.CONVEXHULL],
-        'description': 'Optimize structures with Deep Potential, predicts enthalpies, and builds a convex hull to assess stability via energy above hull.',
+        'description': 'Build a convex hull for general materials by optimizing user-provided structures with Deep Potential, predicting their enthalpies, and assessing thermodynamic stability via energy above hull to identify on-hull or near-hull stable candidates.',
     },
     'NMR_search_tool': {
         'belonging_agent': NMR_AGENT_NAME,
