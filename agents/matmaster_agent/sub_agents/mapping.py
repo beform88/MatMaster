@@ -48,6 +48,13 @@ from agents.matmaster_agent.sub_agents.DPACalculator_agent.agent import (
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.EM_agent.agent import (
+    EMAgent,
+    em_toolset,
+)
+from agents.matmaster_agent.sub_agents.EM_agent.constant import (
+    EM_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.finetune_dpa_agent.agent import (
     FinetuneDPAAgent,
     finetune_dpa_toolset,
@@ -196,13 +203,6 @@ from agents.matmaster_agent.sub_agents.XRD_agent.agent import (
 )
 from agents.matmaster_agent.sub_agents.XRD_agent.constant import (
     XRD_AGENT_NAME,
-)
-from agents.matmaster_agent.sub_agents.EM_agent.agent import (
-    EMAgent,
-    em_toolset,
-)
-from agents.matmaster_agent.sub_agents.EM_agent.constant import (
-    EM_AGENT_NAME,
 )
 
 ALL_TOOLSET_DICT = {

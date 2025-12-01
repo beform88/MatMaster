@@ -19,6 +19,9 @@ from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.EM_agent.constant import (
+    EM_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.finetune_dpa_agent.constant import (
     FinetuneDPAAgentName,
 )
@@ -76,9 +79,6 @@ from agents.matmaster_agent.sub_agents.visualizer_agent.constant import (
 )
 from agents.matmaster_agent.sub_agents.XRD_agent.constant import (
     XRD_AGENT_NAME,
-)
-from agents.matmaster_agent.sub_agents.EM_agent.constant import (
-    EM_AGENT_NAME,
 )
 
 TODAY = date.today()
@@ -583,5 +583,5 @@ ALL_TOOLS = {
         'belonging_agent': EM_AGENT_NAME,
         'scene': [SceneEnum.EM],
         'description': 'Analyze electron microscope images (e.g., TEM, SEM) to detect and classify particles, assess morphology, and evaluate image quality. This tool identifies microstructural features such as particle boundaries, occlusions, and invalid regions, while extracting geometric properties like area, perimeter, diameter, and shape factors using advanced computer vision techniques.',
-    }
+    },
 }
