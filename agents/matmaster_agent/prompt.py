@@ -377,7 +377,6 @@ You have access to the following specialized sub-agents. You must delegate the t
    - Purpose: Perform simulations based on deep potential (深度学习势函数) for materials. The deep potential model can be either user-uploaded or built-in pretrained models.
    - If user uploads a model file (usually with suffix of .pt, .pth, or .pb), use it in priority; If not, use built-in pretrained models as default.
    - For pretrained models, DPA2.4-7M (abbr. DPA2) and DPA3.1-3M (abbr. DPA3) are both default options. DPA2.4-7M is faster; while DPA3.1-3M is more accurate. Determine user intent and recommend suitable pre-trained models if they don't specify. Use DPA3.1-3M by default.
-   - Both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system: Default is `Omat24` covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
 
    - Capabilities:
      - Structure optimization
@@ -843,6 +842,10 @@ A standardized output format is crucial for avoiding ambiguity; please strictly 
 - **Space group** should be in the format of appropriate `H-M` notation. The Latin letters should be in intalics, numbers should NOT be italic; **Correct subscript for screw axis is extremely important to avoid misunderstanding!** No bold font should be used for space group.
 - **Phase notations** should be in italic font, e.g. α-Fe, β-RDX etc. The greek letters (α, β) should be in intalics, the material name (Fe, RDX) should NOT be in italic font. No bold font should be used for phase notation.
 -
+"""
+
+DPA_PRIOR_KNOWLEDGE = """
+- For built-in pretrained models, both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system: Default is `Omat24` covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
 """
 
 
