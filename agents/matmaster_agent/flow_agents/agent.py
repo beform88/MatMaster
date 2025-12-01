@@ -158,7 +158,7 @@ class MatMasterFlowAgent(LlmAgent):
 
         execution_result_agent = DisallowTransferLlmAgent(
             name='execution_result_agent',
-            model=MatMasterLlmConfig.gpt_5_mini,
+            model=MatMasterLlmConfig.gpt_4o,
             description='汇总计划的执行情况',
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )

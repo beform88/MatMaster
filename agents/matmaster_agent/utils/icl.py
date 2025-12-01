@@ -124,12 +124,6 @@ examples = [
         'scene_tags': ['database_search', 'band', 'visualize_data'],
     },
     {
-        'input': '从 hMOF 数据库中检索比表面积 > 2000 m²/g 且孔径在 6–8 Å 的 MOF 结构，并导出 10 个候选结构 ',
-        'update_input': '从 hMOF 数据库中检索符合以下条件的MOF结构：比表面积大于2000m²/g且孔径在6-8Å范围，然后导出10个候选结构。',
-        'toolchain': ['fetch_mofs_sql'],
-        'scene_tags': ['database_search'],
-    },
-    {
         'input': '将两块 Cu(111) 表面叠加生成界面结构（堆叠轴为 z，界面间距 2.5 Å）',
         'update_input': '首先构建Cu的体相结构（空间群Fm-3m，a=3.61Å），然后生成单个Cu(111)表面模型，随后根据堆叠轴为z方向、界面间距为2.5Å的要求将两块Cu(111)表面叠加生成界面结构。',
         'toolchain': [
@@ -203,4 +197,191 @@ examples = [
         ],
         'scene_tags': ['database_search', 'surface_energy', 'structure_generate'],
     },
+    {
+        'input': '请生成2个空间群为225且带隙小于0.5 eV的晶体结构',
+        'update_input':'请根据以下条件生成晶体结构：1. 空间群为225；2. 带隙小于0.5 eV；3. 生成两个样本。',
+        'toolchain': [
+            'generate_crystalformer_structures'
+        ],
+        'scene_tags': [
+            'structure_generate'
+        ],
+    },
+    {
+        'input': '请根据给定的空间群和Wyckoff位置信息生成一个晶体结构：Pm-3m空间群（编号221），a = b = c = 3.90 Å, α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)',
+        'update_input':'请根据给定的空间群和Wyckoff位置信息生成一个晶体结构：Pm-3m空间群（编号221），a = b = c = 3.90 Å, α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)',
+        'toolchain': [
+            "build_bulk_structure_by_wyckoff"
+        ],
+        'scene_tags': [
+            'structure_generate'
+        ],
+    },
+    {
+        'input': '生成FCC Cu的2×2×2超胞',
+        'update_input':'首先构建铜的面心立方（FCC）晶体结构，空间群为Fm-3m，晶格常数为3.61Å，然后在此基础上生成一个2×2×2的超胞结构。',
+        'toolchain': [
+            'build_bulk_structure_by_template',
+            'make_supercell_structure',
+        ],
+        'scene_tags': [
+            "structure_generate"
+        ],
+    },
+    {
+        'input': '生成Al的fcc晶体结构，晶格常数a = 5.0 Å',
+        'update_input':'生成Al的fcc晶体结构，并设置其晶格常数a为5.0 Å。',
+        'toolchain': [
+            'build_bulk_structure_by_template'
+        ],
+        'scene_tags': [
+            "structure_generate"
+        ],
+    },
+    {
+        'input': '构建KCl的3*3超胞，将30%的K替换为Na、20%的Cl替换为Br',
+        'update_input':'首先构建KCl的体相晶体结构（空间群Fm-3m，a=6.29Å），然后生成一个3×3×3的超胞。在超胞中随机选择30%的K位置替换为Na原子，20%的Cl位置替换为Br原子。完成后提供最终的结构模型以供进一步分析',
+        'toolchain': [
+            "build_bulk_structure_by_template",
+            "make_supercell_structure",
+            "make_doped_structure"
+        ],
+        'scene_tags': [
+            "structure_generate"
+        ],
+    },
+    {
+        'input': "根据SMILES'C1=CC=CC=C1'生成分子结构",
+        'update_input':"利用 SMILES 字符串 'C1=CC=CC=C1' 生成苯分子结构",
+        'toolchain': [
+            "build_molecule_structures_from_smiles"
+        ],
+        'scene_tags': [
+            "structure_generate",
+            "smiles"
+        ],
+    },
+    {
+        'input': '为Si生成(111)表面slab，厚度10 Å，真空层15 Å',
+        'update_input':'首先构建Si的体相结构（空间群Fd-3m，晶胞参数a=5.43Å），然后生成厚度为10 Å的Si(111)表面slab，并在该表面上加15 Å的真空层',
+        'toolchain': [
+            "build_bulk_structure_by_template",
+            "build_surface_slab"
+        ],
+        'scene_tags': [
+            "structure_generate"
+        ],
+    },
+    {
+        'input': '在Materials Project中检索并返回3个带隙大于 2 eV的氧化物结构',
+        'update_input':'从Materials Project数据库中检索3个符合以下条件的氧化物结构：带隙大于2 eV',
+        'toolchain': [
+            "fetch_bohrium_crystals"
+        ],
+        'scene_tags': [
+            'database_search'
+        ],
+    },
+    {
+        'input': '在Alexandria中查找并返回5个含 Li、Mn、O的材料',
+        'update_input':'从Alexandria数据库中查找含有元素Li、Mn和O的材料，返回5个符合条件的材料结构',
+        'toolchain': [
+            'fetch_structures_with_filter'
+        ],
+        'scene_tags': [
+            'database_search'
+        ],
+    },
+    {
+        'input': '在Materials Project中检索并返回不超过2个仅含 Ti、Al、O且空间群为63的化合物',
+        'update_input':'从Materials Project数据库中检索不超过2个符合以下条件的化合物：仅含元素Ti、Al、O且空间群为63',
+        'toolchain': [
+            "fetch_bohrium_crystals"
+        ],
+        'scene_tags': [
+            'database_search'
+        ],
+    },
+    {
+        'input': '检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物',
+        'update_input':'检索符合以下条件的三元化合物（不超过5个）：化合物中含有稀土元素、过渡金属和氧，同时不包含铁（Fe）和镍（Ni）。',
+        'toolchain': [
+            "fetch_structures_with_filter"
+        ],
+        'scene_tags': [
+            'database_search'
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    },
+    {
+        'input': '',
+        'update_input':'',
+        'toolchain': [
+        ],
+        'scene_tags': [
+        ],
+    }
 ]
