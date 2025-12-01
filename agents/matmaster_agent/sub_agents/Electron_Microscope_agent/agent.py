@@ -39,4 +39,4 @@ class ElectronMicroscopeAgent(BaseSyncAgentWithToolValidator):
 
 
 def init_electron_microscope_agent(llm_config) -> BaseAgent:
-    return Electron_Microscope_Agent(llm_config)
+    return ElectronMicroscopeAgent(llm_config)
