@@ -244,7 +244,7 @@ ALL_TOOLS = {
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
         'scene': [SceneEnum.DPA],
-        'description': 'Fine tune dpa2 or dpa3 pretrained model with provided labeled data',
+        'description': 'Fine-tune dpa2 or dpa3 pretrained model with provided labeled data. CANNOT DO: use DPA model to run calculations for material systems. ',
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
