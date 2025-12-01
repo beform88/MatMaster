@@ -82,6 +82,7 @@ For each article, the format could be primarily referred but not limited to the 
 In [year], [first author] et al. found that [summary of findings including quantitative results if available] by conducting [method]; The key findings include [key results] and [innovations];<a href="URL" target="_blank">[n]</a>
 Compare with [first author from another paper] et al., who [summary of support/contradiction with reference to data or mechanism];<a href="URL" target="_blank">[n]</a>
 ```
+No need to include the title, the journal name of the paper.
 
 
 ## SUGGESTING NEXT TOPICS
