@@ -1,13 +1,21 @@
 import requests
+
 from agents.matmaster_agent.constant import ICL_SERVICE_URL
 
-    
 
 def select_examples(query):
-    return requests.post(url=f"http://{ICL_SERVICE_URL}/api/v1/icl/select-examples", json={"query":query}).json()['data']
+    return requests.post(
+        url=f"http://{ICL_SERVICE_URL}/api/v1/icl/select-examples",
+        json={'query': query},
+    ).json()['data']
+
 
 def select_update_examples(query):
-    return requests.post(url=f"http://{ICL_SERVICE_URL}/api/v1/icl/select-update-examples", json={"query":query}).json()['data']
+    return requests.post(
+        url=f"http://{ICL_SERVICE_URL}/api/v1/icl/select-update-examples",
+        json={'query': query},
+    ).json()['data']
+
 
 def scene_tags_from_examples(examples):
     scene_prompts = ['\nSCENE_TAGS EXAMPLES:']
@@ -17,6 +25,7 @@ def scene_tags_from_examples(examples):
                 f"User Input: {example['update_input']}\nScenes: {', '.join(example['scene_tags'])}\n"
             )
     return '\n'.join(scene_prompts)
+
 
 def toolchain_from_examples(examples):
     toolchain_prompts = ['\nToolchain EXAMPLES:']
@@ -32,6 +41,7 @@ def toolchain_from_examples(examples):
                 f"Input: {example['update_input']}\nToolchain: {toolchain_}\n"
             )
     return '\n'.join(toolchain_prompts)
+
 
 def expand_input_examples(examples):
     expanded_inputs = ['\nEXPAND EXAMPLES:']

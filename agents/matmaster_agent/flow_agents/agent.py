@@ -5,7 +5,7 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from google.adk.models.lite_llm import LiteLlm
-from pydantic import PrivateAttr, computed_field, model_validator
+from pydantic import computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
@@ -63,6 +63,13 @@ from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
+from agents.matmaster_agent.services.icl import (
+    expand_input_examples,
+    scene_tags_from_examples,
+    select_examples,
+    select_update_examples,
+    toolchain_from_examples,
+)
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -73,13 +80,6 @@ from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     send_error_event,
     update_state_event,
-)
-from agents.matmaster_agent.services.icl import (
-    select_examples,
-    select_update_examples,
-    scene_tags_from_examples,
-    toolchain_from_examples,
-    expand_input_examples
 )
 
 logger = logging.getLogger(__name__)
@@ -283,12 +283,8 @@ class MatMasterFlowAgent(LlmAgent):
             # research 模式
             else:
                 # 检索 ICL 示例
-                icl_examples = select_examples(
-                    ctx.user_content.parts[0].text
-                )
-                EXPAND_INPUT_EXAMPLES_PROMPT = (
-                    expand_input_examples(icl_examples)
-                )
+                icl_examples = select_examples(ctx.user_content.parts[0].text)
+                EXPAND_INPUT_EXAMPLES_PROMPT = expand_input_examples(icl_examples)
                 logger.info(f'{EXPAND_INPUT_EXAMPLES_PROMPT}')
                 # 扩写用户问题
                 self.expand_agent.instruction = (
@@ -300,12 +296,8 @@ class MatMasterFlowAgent(LlmAgent):
                 icl_update_examples = select_update_examples(
                     ctx.session.state['expand']['update_user_content']
                 )
-                SCENE_EXAMPLES_PROMPT = (
-                    scene_tags_from_examples(icl_update_examples)
-                )
-                TOOLCHAIN_EXAMPLES_PROMPT = (
-                    toolchain_from_examples(icl_update_examples)
-                )
+                SCENE_EXAMPLES_PROMPT = scene_tags_from_examples(icl_update_examples)
+                TOOLCHAIN_EXAMPLES_PROMPT = toolchain_from_examples(icl_update_examples)
                 logger.info(f'{SCENE_EXAMPLES_PROMPT}')
                 logger.info(f'{TOOLCHAIN_EXAMPLES_PROMPT}')
 
