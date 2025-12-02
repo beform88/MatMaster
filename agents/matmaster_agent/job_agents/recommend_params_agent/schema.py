@@ -35,7 +35,6 @@ def get_field_type(field: Dict[str, Any]) -> Any:
     if 'type' not in field:
         raise ValueError(f'Field must have a type, {field}')
 
-    
     field_type = field['type']
 
     # 基本类型
