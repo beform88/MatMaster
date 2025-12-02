@@ -28,22 +28,6 @@ piloteye_electro_toolset = CalculationMCPToolset(
 )
 
 
-# # Create agent
-# def init_unielf_agent(llm_config):
-#     selected_model = llm_config.gpt_4o
-#     unielf_agent = CalculationLlmAgent(
-#         name=UniELFAgentName,
-#         model=selected_model,
-#         instruction=instruction_en,
-#         description=description,
-#         tools=[toolset]
-#     )
-#     return unielf_agent
-
-
-# root_agent = init_unielf_agent(ChemBrainLlmConfig)
-
-
 class PiloteyeElectroAgent(BaseAsyncJobAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
@@ -57,5 +41,6 @@ class PiloteyeElectroAgent(BaseAsyncJobAgent):
         )
 
 
+# Create agent
 def init_piloteye_electro_agent(llm_config) -> BaseAgent:
     return PiloteyeElectroAgent(llm_config)

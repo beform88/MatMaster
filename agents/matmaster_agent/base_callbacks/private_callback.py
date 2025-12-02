@@ -591,7 +591,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             )
             return
 
-        if tool.executor is not None:
+        if tool.executor is not None and tool.executor.get('type') != 'local':
             return await check_job_create_service(tool_context)
 
     return wrapper

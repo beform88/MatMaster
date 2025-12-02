@@ -41,6 +41,13 @@ from agents.matmaster_agent.sub_agents.document_parser_agent.agent import (
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
+from agents.matmaster_agent.sub_agents.doe_agent.agent import (
+    DoEAgent,
+    doe_toolset,
+)
+from agents.matmaster_agent.sub_agents.doe_agent.constant import (
+    DOE_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.agent import (
     DPACalculationsAgent,
     dpa_toolset,
@@ -48,12 +55,12 @@ from agents.matmaster_agent.sub_agents.DPACalculator_agent.agent import (
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.EM_agent.agent import (
-    EMAgent,
-    em_toolset,
+from agents.matmaster_agent.sub_agents.Electron_Microscope_agent.agent import (
+    ElectronMicroscopeAgent,
+    electron_microscope_toolset,
 )
-from agents.matmaster_agent.sub_agents.EM_agent.constant import (
-    EM_AGENT_NAME,
+from agents.matmaster_agent.sub_agents.Electron_Microscope_agent.constant import (
+    Electron_Microscope_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.finetune_dpa_agent.agent import (
     FinetuneDPAAgent,
@@ -210,6 +217,8 @@ from agents.matmaster_agent.sub_agents.thermoelectric_agent.agent import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
+from agents.matmaster_agent.sub_agents.tool_agent.agent import ToolAgent
+from agents.matmaster_agent.sub_agents.tool_agent.constant import TOOL_AGENT_NAME
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
     TrajAnalysisAgent,
@@ -247,6 +256,7 @@ ALL_TOOLSET_DICT = {
     'retrosyn_toolset': retrosyn_toolset,
     'uni_elf_toolset': uni_elf_toolset,
     'compdart_toolset': compdart_toolset,
+    'doe_toolset': doe_toolset,
     'document_parser_toolset': document_parser_toolset,
     'dpa_toolset': dpa_toolset,
     'finetune_dpa_toolset': finetune_dpa_toolset,
@@ -275,7 +285,7 @@ ALL_TOOLSET_DICT = {
     'convexhull_toolset': convexhull_toolset,
     'nmr_toolset': nmr_toolset,
     'xrd_toolset': xrd_toolset,
-    'em_toolset': em_toolset,
+    'electron_microscope_toolset': electron_microscope_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -283,6 +293,7 @@ AGENT_CLASS_MAPPING = {
     ApexAgentName: ApexAgent,
     CHEMBRAIN_AGENT_NAME: ChemBrainAgent,
     COMPDART_AGENT_NAME: CompDARTAgent,
+    DOE_AGENT_NAME: DoEAgent,
     DocumentParserAgentName: DocumentParserAgentBase,
     DPACalulator_AGENT_NAME: DPACalculationsAgent,
     FinetuneDPAAgentName: FinetuneDPAAgent,
@@ -313,7 +324,8 @@ AGENT_CLASS_MAPPING = {
     ConvexHullAgentName: ConvexHullAgent,
     NMR_AGENT_NAME: NMRAgent,
     XRD_AGENT_NAME: XRDAgent,
-    EM_AGENT_NAME: EMAgent,
+    Electron_Microscope_AGENT_NAME: ElectronMicroscopeAgent,
+    TOOL_AGENT_NAME: ToolAgent,
 }
 
 
@@ -352,7 +364,8 @@ class MatMasterSubAgentsEnum(str, Enum):
     ConvexHullAgent = ConvexHullAgentName
     NMRAgent = NMR_AGENT_NAME
     XRDAgent = XRD_AGENT_NAME
-    EMAgent = EM_AGENT_NAME
+    ElectronMicroscopeAgent = Electron_Microscope_AGENT_NAME
+    ToolAgent = TOOL_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())

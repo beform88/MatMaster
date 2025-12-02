@@ -16,11 +16,14 @@ from agents.matmaster_agent.sub_agents.convexhull_agent.constant import (
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
+from agents.matmaster_agent.sub_agents.doe_agent.constant import (
+    DOE_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.EM_agent.constant import (
-    EM_AGENT_NAME,
+from agents.matmaster_agent.sub_agents.Electron_Microscope_agent.constant import (
+    Electron_Microscope_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.finetune_dpa_agent.constant import (
     FinetuneDPAAgentName,
@@ -65,6 +68,11 @@ from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.prompt import (
+    PAPER_SEARCH_AGENT_INSTRUCTION,
+    WEB_SEARCH_AGENT_INSTRUCTION,
+    WEBPAGE_PARSING_AGENT_INSTRUCTION,
+)
 from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
     SSEBRAIN_AGENT_NAME,
 )
@@ -86,6 +94,7 @@ from agents.matmaster_agent.sub_agents.superconductor_agent.constant import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
+from agents.matmaster_agent.sub_agents.tool_agent.constant import TOOL_AGENT_NAME
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
 )
@@ -234,6 +243,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
         'description': 'CAN DO: composition optimization targeting specific properties; CANNOT DO: build doping structures based on given composition',
     },
+    'run_doe_task': {
+        'belonging_agent': DOE_AGENT_NAME,
+        'scene': [SceneEnum.DOE],
+        'description': 'Run a Design of Experiments (DoE) task using one of the supported algorithms (Extreme Vertices, Simplex Centroid, Simplex Lattice, SDC).',
+    },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
         'scene': [SceneEnum.LITERATURE, SceneEnum.STRUCTURAL_INFORMATICS],
@@ -272,7 +286,7 @@ ALL_TOOLS = {
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
         'scene': [SceneEnum.DPA],
-        'description': 'Fine-tune dpa2 or dpa3 pretrained model with provided labeled data. CANNOT DO: use DPA model to run calculations for material systems. ',
+        'description': 'Fine-tune DPA2 or DPA3 pretrained models using user-provided DFT-labeled data (e.g., energies, forces, stresses) to adapt the potential to specific material systems; CANNOT DO: use DPA model to run calculations for material systems. ',
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -307,22 +321,22 @@ ALL_TOOLS = {
     'query_heakb_literature': {
         'belonging_agent': HEA_KB_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY, SceneEnum.LITERATURE],
-        'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge base using RAG technology. Supports natural language queries about HEA research topics, vector similarity search across 1M+ document chunks, multi-document retrieval and analysis, parallel literature summarization, and comprehensive research report generation. The tool retrieves relevant literature chunks, extracts unique paper IDs, reads full texts in parallel, and generates literature summaries. Returns a list of literature summaries that must be synthesized into a comprehensive report.',
+        'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge.',
     },
     'query_ssekb_literature': {
         'belonging_agent': SSE_KB_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
-        'description': 'Query the SSEkb literature knowledge base using structured database search technology. Supports natural language queries that are converted to structured database filters, multi-table queries with complex filters, retrieval of relevant papers based on structured criteria, parallel literature summarization for papers with fulltext, and metadata entries for papers without fulltext. The tool analyzes user queries to identify relevant database tables and fields, constructs structured filters, queries database tables to find matching papers, retrieves unique paper DOIs, reads full texts in parallel (for papers with fulltext), and generates literature summaries. Returns a list of literature summaries (including both detailed summaries and metadata entries) that must be synthesized into a comprehensive report.',
+        'description': 'Query the SSEkb literature knowledge base.',
     },
     'query_polymerkb_literature': {
         'belonging_agent': POLYMER_KB_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
-        'description': 'Query the POLYMERkb polymer literature knowledge base using structured database search technology. Supports natural language queries that are converted to structured database filters, multi-table queries with complex filters based on polymer properties, monomers, and paper metadata, retrieval of relevant papers based on structured criteria, parallel literature summarization for papers with fulltext, and metadata entries for papers without fulltext. The tool analyzes user queries to identify relevant database tables and fields (polymer properties, monomers, paper metadata), constructs structured filters, queries database tables to find matching polymers/papers, retrieves unique paper DOIs, reads full texts in parallel (for papers with fulltext), and generates literature summaries. Returns a list of literature summaries (including both detailed summaries and metadata entries) that must be synthesized into a comprehensive report.',
+        'description': 'Query the POLYMERkb polymer literature knowledge base. ',
     },
     'query_steelkb_literature': {
         'belonging_agent': STEEL_KB_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
-        'description': 'Query the STEELkb literature knowledge base using RAG technology. Supports natural language queries about Stainless Steel research topics, vector similarity search across document chunks, multi-document retrieval and analysis, parallel literature summarization, and comprehensive research report generation. The tool retrieves relevant literature chunks, extracts unique paper IDs, reads full texts in parallel, and generates literature summaries. Returns a list of literature summaries that must be synthesized into a comprehensive report.',
+        'description': 'Query the STEELkb literature knowledge base. ',
     },
     'predict_tensile_strength': {
         'belonging_agent': STEEL_PREDICT_AGENT_NAME,
@@ -376,7 +390,7 @@ ALL_TOOLS = {
     },
     'run_piloteye': {
         'belonging_agent': PILOTEYE_ELECTRO_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.PILOTEYE_ELECTRO],
         'description': '',
     },
     'deep_research_agent': {
@@ -392,7 +406,7 @@ ALL_TOOLS = {
     'generate_calypso_structures': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Generate candidate crystal structures based on specified chemical species and number of configurations. Employs particle-swarm algorithms to produce stable crystal candidates. Requires valid element inputs and accessible CALYPSO environment',
+        'description': 'Perform global structure search with CALYPSO to generate multiple candidate crystal structures for a given composition. Use this tool when the user asks for "randomly generate many structures“ or "structure search" for a formula (e.g. "help me randomly generate 50 SnTe structures"). It is suitable for exploring different configurations and polymorphs for specified elements. Requires valid element inputs and an accessible CALYPSO environment.',
         'args_setting': 'Parameter guidance: n_tot=10–30 gives reasonable diversity without excessive cost. Elements must be from the supported list (H–Bi, Ac–Pu). Output is a set of POSCAR files; downstream relaxation is strongly recommended.',
     },
     'generate_crystalformer_structures': {
@@ -446,9 +460,7 @@ ALL_TOOLS = {
     'build_bulk_structure_by_wyckoff': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Build bulk crystal by specifying space group and, for each *distinct* atomic species, exactly one Wyckoff position (e.g., "4a") with its representative coordinates (x, y, z). '
-        'CRITICAL RULE: A single Wyckoff position (e.g., "4a") defines a full, closed set of symmetry-equivalent points (an orbit); DO NOT assign multiple atoms to different points *within the same Wyckoff position*, and DO NOT assign atoms to Wyckoff positions that are symmetry-equivalent under the space group. '
-        'The multiplicity of each Wyckoff position (the number prefix) gives the count of atoms generated for that species; the total atom count is the sum of all multiplicities.',
+        'description': 'Build bulk crystal by specifying space group and, for each *distinct* atomic species, exactly one Wyckoff position (e.g., "4a") with its representative coordinates (x, y, z).',
         'args_setting': 'Parameter guidance: Space Group: Integer (e.g., 225) or Symbol (e.g., "Fm-3m"). Wyckoff Consistency: The provided coordinates must mathematically belong to the specific Wyckoff position (e.g., if using position 4a at (0,0,0), do not input (0.5, 0.5, 0) just because it\'s in the same unit cell; only input the canonical generator). Lattice: Angles in degrees, lengths in Å. Fractional Coordinates: Must be in [0, 1). Strictly Use the Asymmetric Unit: You must provide only the generating coordinates for each Wyckoff orbit. Do NOT Pre-calculate Symmetry: The function will automatically apply all space group operators to your input. If you manually input coordinates that are already symmetry-equivalent (e.g., providing both (x, y, z) and (-x, -y, -z) in a centrosymmetric structure), the function will generate them again, causing catastrophic atom overlapping. Redundancy Rule: Before adding a coordinate, check if it can be generated from an existing input coordinate via any operator in the Space Group. If yes, discard it. One Wyckoff letter = One coordinate triplet input.',
     },
     'build_molecule_structures_from_smiles': {
@@ -484,42 +496,42 @@ ALL_TOOLS = {
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Do geometry optimization for given superconductor under ambient or high pressure condition with DPA',
+        'description': 'Perform geometry optimization for a given superconducting structure using DPA under ambient or high-pressure conditions; this tool is only for superconductor geometry relaxation with format of (e.g., CIF or POSCAR)',
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Calculate enthalpy for given superconductor under ambient or high pressure condition with DPA',
+        'description': 'Compute the enthalpy of a given superconducting material using DPA under ambient or high-pressure conditions, build a convex hull within the provided superconducting candidates, and identify superconductors with energy-above-hull below a user-specified threshold; this tool is only for enthalpy and stability screening of superconductors and must not be used for generic materials.',
     },
     'predict_superconductor_Tc': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Predict critical temperature for given superconductor under ambient or high pressure condition with DPA',
+        'description': 'This tool MUST be called whenever the user asks to predict, estimate, or compute the superconducting critical temperature (Tc) of any material. Use this tool to perform Tc prediction under ambient or high-pressure conditions using the DPA model. If the user mentions Tc, superconductivity, critical temperature, or superconducting transition, always invoke this tool.',
     },
     'screen_superconductor': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Screen potential supercondutors from given compounds at ambient or high pressure condition',
+        'description': 'Given a user-provided list of candidate structures or compounds, this tool predicts their superconducting critical temperatures (Tc) using DPA, checks their stability (energy above hull), and returns an ordered screening result. This tool should ONLY be called when the user explicitly provides multiple candidate materials for Tc screening. It must NOT be used for querying known superconductors, global Tc records, or general Tc questions.',
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Predict thermoelectric related properties with DPA under given pressure',
+        'description': 'Predict thermoelectric-related properties for a given material using DPA , including band gap, Seebeck coefficient, power factor, effective mass, shear modulus, and bulk modulus; this tool does not compute thermal conductivity and is only for thermoelectric property prediction, not for generic structure optimization or unrelated property queries.',
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Do geometry optimization for given thermoelectric materials with DPA under give pressure',
+        'description': 'Perform geometry optimization for given thermoelectric materials using DPA under a user-specified pressure; this tool is only for structural relaxation of thermoelectric systems and should not be used for thermoelectric property prediction or non-thermoelectric materials.',
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Calcualte entalpy for given thermoelectric materials with DPA under given pressure',
+        'description': 'Compute the enthalpy of given thermoelectric materials using DPA under a specified pressure, construct a convex hull among the thermoelectric candidates, and select structures with energy-above-hull below a user-defined threshold; this tool is only for enthalpy and stability screening of thermoelectric materials and must not be used for non-thermoelectric systems or other property predictions.',
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Screen potential thermoelectric materials from given compounds at given pressure',
+        'description': 'Screen potential thermoelectric materials from a user-provided set of candidate structures using DPA under a specified pressure, internally predicting all required thermoelectric properties to identify promising candidates; this tool requires the user to supply multiple input structures and does not perform screening without provided candidates.',
     },
     'traj_analysis_msd': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -571,18 +583,21 @@ ALL_TOOLS = {
         'scene': [SceneEnum.LITERATURE],
         'description': 'Standard version of searching academic papers based on author information',
         'args_setting': f'If not specified, the starting year 2020, the ending time is {TODAY}.',
+        'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
     },
     'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Intelligent enhanced paper search system based on keywords and research questions',
         'args_setting': f"""
-    If not specified, the starting year 2020, the ending time is {TODAY}; the number of papers is 100. When constructing query words, (i) use English to fill the input queries to ensure professionality; (ii) avoid using broad keywords such as 'materials science', 'chemistry', 'progress'; (iii) extract the most specific and technically relevant keywords from the user's query, including material names, chemical formulas, molecular identifiers, mechanisms, properties, or application contexts; (iv) If the user\'s query is inherently broad and lacks specific entities, methods, or systems, you must decompose the conceptual domain into its technical intension and generate concrete, research-usable keywords. This includes identifying: representative subfields, canonical mechanisms or processes, prototypical material classes or molecular systems, commonly studied performance metrics, key methodological or application contexts. These derived keywords must be specific enough to retrieve meaningful literature rather than triggering domain-level noise.""",
+            If not specified, the starting year 2020, the ending time is {TODAY}; the number of papers is 100. When constructing query words, (i) use English to fill the input queries to ensure professionality; (ii) avoid using broad keywords such as 'materials science', 'chemistry', 'progress'; (iii) extract the most specific and technically relevant keywords from the user's query, including material names, chemical formulas, molecular identifiers, mechanisms, properties, or application contexts; (iv) If the user\'s query is inherently broad and lacks specific entities, methods, or systems, you must decompose the conceptual domain into its technical intension and generate concrete, research-usable keywords. (v) When extracting or translating domain-specific terms, do not segment or re-group any composite technical noun phrase unless its decomposition is an established scientific usage; if a phrase is structurally ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering any refinement. This includes identifying: representative subfields, canonical mechanisms or processes, prototypical material classes or molecular systems, commonly studied performance metrics, key methodological or application contexts. These derived keywords must be specific enough to retrieve meaningful literature rather than triggering domain-level noise.
+        """,
+        'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
     },
     'build_convex_hull': {
         'belonging_agent': ConvexHullAgentName,
         'scene': [SceneEnum.CONVEXHULL],
-        'description': 'Optimize structures with Deep Potential, predicts enthalpies, and builds a convex hull to assess stability via energy above hull.',
+        'description': 'Build a convex hull for general materials by optimizing user-provided structures with Deep Potential, predicting their enthalpies, and assessing thermodynamic stability via energy above hull to identify on-hull or near-hull stable candidates.',
     },
     'NMR_search_tool': {
         'belonging_agent': NMR_AGENT_NAME,
@@ -603,11 +618,13 @@ ALL_TOOLS = {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.WEB_PARSING],
         'description': 'Extract key information from a given webpage URL, including scientific facts, data, and research findings.',
+        'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
     },
     'web-search': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.WEB_SEARCH],
-        'description': 'Perform web search to find relevant scientific information, research papers, and technical documents based on user queries. ONLY returns url and tite, consider follow an `extract_info_from_webpage` tool call to extract detailed information from the webpage.',
+        'description': 'Perform web searches specifically for what, why, and how question types, excluding command- or instruction-type queries. The tool returns only URL, title, and snippet, which makes it suitable for concise factual lookups (what-questions) and simple causal or explanatory lookups (basic why-questions). Should follow up by `extract_info_from_webpage` for completed contents.',
+        'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
     },
     'xrd_parse_file': {
         'belonging_agent': XRD_AGENT_NAME,
@@ -620,8 +637,9 @@ ALL_TOOLS = {
         'description': 'Identify crystalline phases in an XRD pattern using a processed CSV file (generated by `xrd_parse_file`). Supports filtering candidates by chemical composition (include/exclude elements). Returns the top N matching phases and generates a comparison chart between the experimental data and standard PDF cards.',
     },
     'get_electron_microscope_recognize': {
-        'belonging_agent': EM_AGENT_NAME,
-        'scene': [SceneEnum.EM],
+        'belonging_agent': Electron_Microscope_AGENT_NAME,
+        'scene': [SceneEnum.Electron_Microscope],
         'description': 'Analyze electron microscope images (e.g., TEM, SEM) to detect and classify particles, assess morphology, and evaluate image quality. This tool identifies microstructural features such as particle boundaries, occlusions, and invalid regions, while extracting geometric properties like area, perimeter, diameter, and shape factors using advanced computer vision techniques.',
     },
+    'llm_tool': {'belonging_agent': TOOL_AGENT_NAME, 'scene': [], 'description': ''},
 }

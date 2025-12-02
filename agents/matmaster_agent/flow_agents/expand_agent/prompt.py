@@ -23,7 +23,11 @@ STRUCTURE ACQUISITION PROTOCOL:
      * **CRITICAL**: Build individual adsorbate molecules with appropriate bond lengths and angles
      * Finally construct adsorption configurations on surfaces
 
-3. REQUEST ENHANCEMENT RULE:
+3. For scientific intelligence tasks:
+  - The tool `web-search` only provides brief web search results. Therefore, always consider following a webpage parsing tool after searching
+  - For paper research, use `search-papers-enhanced` for topic-related searching and use `search-papers-normal` for author-specific searching. NO NEED to follow webpage parsing.
+
+4. REQUEST ENHANCEMENT RULE:
    - Expand user requests to explicitly include initial structure preparation
    - Preserve all original specifications and requirements
    - Add clear structure acquisition step before the requested operations
@@ -87,5 +91,21 @@ Output:
 {{
   "origin_user_content": "为 Ni–Fe–O 催化剂生成 (100)、(110) 与 (111) 三个表面模型，并在每个表面构建 H₂O 吸附构型",
   "update_user_content": "首先构建Ni–Fe–O体相结构，然后生成(100)、(110)与(111)三个表面模型，接着构建H₂O分子结构（O-H键长0.96Å，H-O-H键角104.5°），最后在每个表面上构建H₂O吸附构型"
+}}
+
+EXAMPLE 7:
+Input: "搜索DP-GEN的教程"
+Output:
+{{
+  "origin_user_content": "搜索DP-GEN的教程",
+  "update_user_content": "搜索DP-GEN的教程网页并解析和提取关键信息"
+}}
+
+EXAMPLE 8:
+Input: "PXRD如何区分bcc和fcc晶格"
+Output:
+{{
+  "origin_user_content": "PXRD如何区分bcc和fcc晶格",
+  "update_user_content": "搜索网页、解析和提取关键信息，回答PXRD如何区分bcc和fcc晶格"
 }}
 """

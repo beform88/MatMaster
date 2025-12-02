@@ -1,5 +1,5 @@
 description = (
-    'An EM (TEM/SEM) image analysis assistant. '
+    'An Electron Microscope (TEM/SEM) image analysis assistant. '
     'Use a recognition service to segment particles, then compute morphology metrics with scale-bar calibration, '
     'produce structured results and save a CSV.'
 )
@@ -22,14 +22,14 @@ Core behavior:
 Note: do NOT include template variables like csv_path or other curly-braced placeholders in replies or instruction text.
 """
 
-EMAgentName = 'em_agent'
+Electron_Microscope_AgentName = 'electron_microscope_agent'
 
-EMAgentDescription = (
+Electron_Microscope_AgentDescription = (
     'EM analysis assistant — run particle recognition on a local image path via XML-RPC, compute nm-scale '
     'metrics when a scale bar is present, export a CSV, and provide an LLM-ready summary.'
 )
 
-EMAgentInstruction = (
+Electron_Microscope_AgentInstruction = (
     'You must use the MCP tool get_electron_microscope_recognize for EM image processing.\n\n'
     'Tool contract and expected fields:\n'
     '- Input: img_path (local Path or URL).\n'

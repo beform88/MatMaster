@@ -87,3 +87,34 @@ def create_dynamic_plan_schema(available_tools: list):
     )
 
     return DynamicPlanSchema
+
+
+def should_bypass_confirmation(ctx: InvocationContext) -> bool:
+    """
+    Determine whether to skip plan confirmation based on the tools in the plan.
+
+    Returns True if the plan contains exactly one step with a tool that is in
+    the BYPASS_CONFIRMATION_TOOLS list.
+    """
+    BYPASS_CONFIRMATION_TOOLS = [
+        'web-search',
+        'extract_info_from_webpage',
+        'search-papers-normal',
+        'search-papers-enhanced',
+    ]
+
+    plan_steps = ctx.session.state['plan'].get('steps', [])
+    tool_count = len(
+        plan_steps
+    )  # plan steps are `actual_steps` validated by `tool_name` before appended
+
+    # Check if there is exactly one tool in the plan
+    if tool_count == 1:
+        # Find the first (and only) tool name
+        first_tool_name = plan_steps[0].get('tool_name', '')
+
+        # Check if this tool is in the bypass list
+        if first_tool_name in BYPASS_CONFIRMATION_TOOLS:
+            return True
+
+    return False
