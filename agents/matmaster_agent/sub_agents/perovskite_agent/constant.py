@@ -8,6 +8,7 @@ PerovskiteAgentName = 'perovskite_research_agent'
 
 if CURRENT_ENV in ['test', 'uat']:
     PEROVSKITE_RESEARCH_URL = 'http://cbqz1338812.bohrium.tech:50004/mcp'
+    UNIMOL_SERVER_URL = 'http://acsa1402612.bohrium.tech:50001/mcp'
     # PEROVSKITE_RESEARCH_URL='http://dhxi1369865.bohrium.tech:50004/sse'
     # 'https://perovskite-rag-uuid1753420543.app-space.dplink.cc/sse?token=8d1cb39154134328a0caa1f55df84016'
 else:

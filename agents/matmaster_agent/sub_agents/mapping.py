@@ -144,6 +144,13 @@ from agents.matmaster_agent.sub_agents.perovskite_agent.agent import (
 from agents.matmaster_agent.sub_agents.perovskite_agent.constant import (
     PerovskiteAgentName,
 )
+from agents.matmaster_agent.sub_agents.Physical_adsorption_agent.agent import (
+    PhysicalAdsorptionAgent,
+    physical_adsorption_toolset,
+)
+from agents.matmaster_agent.sub_agents.Physical_adsorption_agent.constant import (
+    Physical_Adsorption_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.agent import (
     PiloteyeElectroAgent,
     piloteye_electro_toolset,
@@ -278,6 +285,7 @@ ALL_TOOLSET_DICT = {
     'nmr_toolset': nmr_toolset,
     'xrd_toolset': xrd_toolset,
     'electron_microscope_toolset': electron_microscope_toolset,
+    'physical_adsorption_toolset': physical_adsorption_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -317,6 +325,7 @@ AGENT_CLASS_MAPPING = {
     XRD_AGENT_NAME: XRDAgent,
     Electron_Microscope_AGENT_NAME: ElectronMicroscopeAgent,
     TOOL_AGENT_NAME: ToolAgent,
+    Physical_Adsorption_AGENT_NAME: PhysicalAdsorptionAgent,
 }
 
 
@@ -356,6 +365,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     XRDAgent = XRD_AGENT_NAME
     ElectronMicroscopeAgent = Electron_Microscope_AGENT_NAME
     ToolAgent = TOOL_AGENT_NAME
+    PhysicalAdsorptionAgent = Physical_Adsorption_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())

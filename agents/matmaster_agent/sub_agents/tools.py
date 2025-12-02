@@ -59,6 +59,9 @@ from agents.matmaster_agent.sub_agents.organic_reaction_agent.constant import (
 from agents.matmaster_agent.sub_agents.perovskite_agent.constant import (
     PerovskiteAgentName,
 )
+from agents.matmaster_agent.sub_agents.Physical_adsorption_agent.constant import (
+    Physical_Adsorption_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
@@ -240,6 +243,11 @@ ALL_TOOLS = {
         'belonging_agent': PerovskiteAgentName,
         'scene': [SceneEnum.PEROVSKITE_RESEARCH],
         'description': 'Execute SQL queries against the perovskite solar cell database and return the first k rows. (ALWAYS call get_database_info() first to understand the schema and important columns.)',
+    },
+    'Unimol_Predict_Perovskite_Additive': {
+        'belonging_agent': PerovskiteAgentName,
+        'scene': [SceneEnum.PEROVSKITE_RESEARCH],
+        'description': 'Predict the additive effect of a perovskite PCE change with a list of additives molecules.',
     },
     'validate_smiles': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
@@ -640,4 +648,9 @@ ALL_TOOLS = {
         'description': 'Analyze electron microscope images (e.g., TEM, SEM) to detect and classify particles, assess morphology, and evaluate image quality. This tool identifies microstructural features such as particle boundaries, occlusions, and invalid regions, while extracting geometric properties like area, perimeter, diameter, and shape factors using advanced computer vision techniques.',
     },
     'llm_tool': {'belonging_agent': TOOL_AGENT_NAME, 'scene': [], 'description': ''},
+    'physical_adsorption_echart_data': {
+        'belonging_agent': Physical_Adsorption_AGENT_NAME,
+        'scene': [SceneEnum.PHYSICAL_ADSORPTION],
+        'description': 'Analyze physical adsorption (gas adsorption) instrument reports.',
+    },
 }

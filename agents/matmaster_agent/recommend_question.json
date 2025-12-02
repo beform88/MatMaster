@@ -244,8 +244,13 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "使用APEX计算Al₂O₃的弹性常数",
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
+        "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/019adf11f5e77f3883d19bb7543c7819",
+          "uat_url": ""
+        },
+        "structure_url": ""
       }
     },
     {
