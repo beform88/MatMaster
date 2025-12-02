@@ -16,6 +16,9 @@ from agents.matmaster_agent.sub_agents.convexhull_agent.constant import (
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
+from agents.matmaster_agent.sub_agents.doe_agent.constant import (
+    DOE_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
 )
@@ -236,6 +239,11 @@ ALL_TOOLS = {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
         'description': 'CAN DO: composition optimization targeting specific properties; CANNOT DO: build doping structures based on given composition',
+    },
+    'run_doe_task': {
+        'belonging_agent': DOE_AGENT_NAME,
+        'scene': [],
+        'description': 'Run a Design of Experiments (DoE) task using one of the supported algorithms (Extreme Vertices, Simplex Centroid, Simplex Lattice, SDC).',
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
