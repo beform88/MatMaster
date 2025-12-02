@@ -382,7 +382,7 @@ ALL_TOOLS = {
     },
     'run_piloteye': {
         'belonging_agent': PILOTEYE_ELECTRO_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.PILOTEYE_ELECTRO],
         'description': '',
     },
     'deep_research_agent': {
