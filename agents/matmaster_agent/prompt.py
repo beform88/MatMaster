@@ -21,6 +21,9 @@ from agents.matmaster_agent.sub_agents.HEA_assistant_agent.constant import (
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.HEAkb_agent.constant import (
+    HEA_KB_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
 from agents.matmaster_agent.sub_agents.organic_reaction_agent.constant import (
     ORGANIC_REACTION_AGENT_NAME,
@@ -30,6 +33,15 @@ from agents.matmaster_agent.sub_agents.perovskite_agent.constant import (
 )
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
+    POLYMER_KB_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
+    SSE_KB_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
+    STEEL_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,
@@ -155,7 +167,24 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "apex" → {ApexAgentName}
    - "dpa" → {DPACalulator_AGENT_NAME}
    - "abacus" → {ABACUS_AGENT_NAME}
-   - "hea" → {HEACALCULATOR_AGENT_NAME} or {HEA_assistant_AgentName} (context dependent)
+   - "hea" → {HEACALCULATOR_AGENT_NAME} or {HEA_assistant_AgentName} or {HEA_KB_AGENT_NAME} (context dependent)
+   - "heakb" → {HEA_KB_AGENT_NAME}
+   - "hea literature" → {HEA_KB_AGENT_NAME}
+   - "hea knowledge" → {HEA_KB_AGENT_NAME}
+   - "sse" → {SSE_KB_AGENT_NAME}
+   - "ssekb" → {SSE_KB_AGENT_NAME}
+   - "sse literature" → {SSE_KB_AGENT_NAME}
+   - "sse knowledge" → {SSE_KB_AGENT_NAME}
+   - "polymer" → {POLYMER_KB_AGENT_NAME}
+   - "polymerkb" → {POLYMER_KB_AGENT_NAME}
+   - "polymer literature" → {POLYMER_KB_AGENT_NAME}
+   - "polymer knowledge" → {POLYMER_KB_AGENT_NAME}
+   - "chembrain" → {POLYMER_KB_AGENT_NAME}
+   - "steel" → {STEEL_KB_AGENT_NAME}
+   - "steelkb" → {STEEL_KB_AGENT_NAME}
+   - "steel literature" → {STEEL_KB_AGENT_NAME}
+   - "steel knowledge" → {STEEL_KB_AGENT_NAME}
+   - "stainless steel" → {STEEL_KB_AGENT_NAME}
    - "invar" → {COMPDART_AGENT_NAME}
    - "perovskite" → {PerovskiteAgentName}
    - "thermoelectric" → {ThermoelectricAgentName}
@@ -360,7 +389,64 @@ You have access to the following specialized sub-agents. You must delegate the t
      - "用 deepmd3.1.0_dpa3_Alloy_tongqi 数据库计算 TiZrNb 的形成能"
      - "生成 Fe-Ni 的凸包数据"
 
-4. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
+4. **{HEA_KB_AGENT_NAME}** - **HEAkb literature knowledge base specialist**
+   - Purpose: Query and analyze HEA literature using RAG (Retrieval-Augmented Generation) technology
+   - Capabilities:
+     - Natural language queries about HEA research topics
+     - Vector similarity search across 1M+ document chunks from 10,000+ research papers
+     - Multi-document retrieval and analysis
+     - Parallel literature summarization
+     - Comprehensive research report generation
+   - Example Queries:
+     - "高熵合金中的相变机制是什么？"
+     - "FCC到HCP相变的条件和影响因素"
+     - "高熵合金在低温下的力学性能如何？"
+     - "高熵合金的腐蚀行为和防护机制"
+
+5. **{SSE_KB_AGENT_NAME}** - **SSEkb structured database search specialist**
+   - Purpose: Query and analyze literature using structured database search technology
+   - Capabilities:
+     - Natural language queries converted to structured database filters
+     - Multi-table queries with complex filters based on material properties and paper metadata
+     - Retrieval of relevant papers based on structured criteria
+     - Parallel literature summarization for papers with fulltext
+     - Metadata entries for papers without fulltext
+     - Comprehensive research report generation
+   - Example Queries:
+     - "查找具有特定性能的材料相关论文"
+     - "查找特定材料类型的相关论文"
+     - "查询具有特定属性的材料研究"
+
+6. **{POLYMER_KB_AGENT_NAME}** - **POLYMERkb polymer literature knowledge base specialist**
+   - Purpose: Query and analyze polymer literature using structured database search technology
+   - Capabilities:
+     - Natural language queries converted to structured database filters
+     - Multi-table queries with complex filters based on polymer properties, monomers, and paper metadata
+     - Retrieval of relevant papers based on structured criteria
+     - Parallel literature summarization for papers with fulltext
+     - Metadata entries for papers without fulltext
+     - Comprehensive research report generation
+   - Example Queries:
+     - "查找玻璃化转变温度低于400°C的聚酰亚胺相关论文"
+     - "查找包含PMDA单体的聚合物相关论文"
+     - "查找发表在一区期刊上的聚酰亚胺论文"
+     - "查找具有特定机械性能的聚合物材料"
+
+7. **{STEEL_KB_AGENT_NAME}** - **STEELkb literature knowledge base specialist**
+   - Purpose: Query and analyze Stainless Steel literature using RAG technology
+   - Capabilities:
+     - Natural language queries about Stainless Steel research topics
+     - Vector similarity search across document chunks
+     - Multi-document retrieval and analysis
+     - Parallel literature summarization
+     - Comprehensive research report generation
+   - Example Queries:
+     - "不锈钢的腐蚀行为和防护机制是什么？"
+     - "不锈钢的力学性能如何？影响力学性能的主要因素有哪些？"
+     - "不锈钢的微观结构特征是什么？如何通过热处理调控微观结构？"
+     - "不锈钢的主要制备方法有哪些？"
+
+8. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
    - Purpose: Optimize compositions via genetic algorithms (GA) to find target properties with desired characteristics
    - Capabilities:
      - Compositional optimization for arbitrary materials systems
@@ -846,6 +932,11 @@ A standardized output format is crucial for avoiding ambiguity; please strictly 
 
 DPA_PRIOR_KNOWLEDGE = """
 - For built-in pretrained models, both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system: Default is `Omat24` covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
+
+Built-in multi-task general-purpose pretrained models:
+  'DPA2.4-7M': "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/cd12300a-d3e6-4de9-9783-dd9899376cae/dpa-2.4-7M.pt"
+  DPA3.1-3M": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/18b8f35e-69f5-47de-92ef-af8ef2c13f54/DPA-3.1-3M.pt"
+
 """
 
 

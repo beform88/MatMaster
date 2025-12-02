@@ -48,12 +48,12 @@ from agents.matmaster_agent.sub_agents.DPACalculator_agent.agent import (
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.EM_agent.agent import (
-    EMAgent,
-    em_toolset,
+from agents.matmaster_agent.sub_agents.Electron_Microscope_agent.agent import (
+    ElectronMicroscopeAgent,
+    electron_microscope_toolset,
 )
-from agents.matmaster_agent.sub_agents.EM_agent.constant import (
-    EM_AGENT_NAME,
+from agents.matmaster_agent.sub_agents.Electron_Microscope_agent.constant import (
+    Electron_Microscope_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.finetune_dpa_agent.agent import (
     FinetuneDPAAgent,
@@ -75,6 +75,13 @@ from agents.matmaster_agent.sub_agents.HEACalculator_agent.agent import (
 )
 from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
     HEACALCULATOR_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.HEAkb_agent.agent import (
+    HEAKbAgent,
+    hea_kb_toolset,
+)
+from agents.matmaster_agent.sub_agents.HEAkb_agent.constant import (
+    HEA_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.agent import (
     LAMMPSAgent,
@@ -137,6 +144,13 @@ from agents.matmaster_agent.sub_agents.piloteye_electro_agent.agent import (
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.POLYMERkb_agent.agent import (
+    POLYMERKbAgent,
+    polymer_kb_toolset,
+)
+from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
+    POLYMER_KB_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.agent import (
     ScienceNavigatorAgent,
     science_navigator_toolset,
@@ -147,6 +161,20 @@ from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
 from agents.matmaster_agent.sub_agents.ssebrain_agent.agent import SSEBrainAgent
 from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
     SSEBRAIN_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.SSEkb_agent.agent import (
+    SSEKbAgent,
+    sse_kb_toolset,
+)
+from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
+    SSE_KB_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.agent import (
+    STEELKbAgent,
+    steel_kb_toolset,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
+    STEEL_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.agent import (
     StructureGenerateAgent,
@@ -175,6 +203,8 @@ from agents.matmaster_agent.sub_agents.thermoelectric_agent.agent import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
+from agents.matmaster_agent.sub_agents.tool_agent.agent import ToolAgent
+from agents.matmaster_agent.sub_agents.tool_agent.constant import TOOL_AGENT_NAME
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
     TrajAnalysisAgent,
@@ -217,6 +247,10 @@ ALL_TOOLSET_DICT = {
     'finetune_dpa_toolset': finetune_dpa_toolset,
     'hea_assistant_toolset': hea_assistant_toolset,
     'hea_calculator_toolset': hea_calculator_toolset,
+    'hea_kb_toolset': hea_kb_toolset,
+    'sse_kb_toolset': sse_kb_toolset,
+    'polymer_kb_toolset': polymer_kb_toolset,
+    'steel_kb_toolset': steel_kb_toolset,
     'optimade_toolset': optimade_toolset,
     'bohriumpublic_toolset': bohriumpublic_toolset,
     'openlam_toolset': openlam_toolset,
@@ -235,7 +269,7 @@ ALL_TOOLSET_DICT = {
     'convexhull_toolset': convexhull_toolset,
     'nmr_toolset': nmr_toolset,
     'xrd_toolset': xrd_toolset,
-    'em_toolset': em_toolset,
+    'electron_microscope_toolset': electron_microscope_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -248,6 +282,10 @@ AGENT_CLASS_MAPPING = {
     FinetuneDPAAgentName: FinetuneDPAAgent,
     HEA_assistant_AgentName: HEA_assistant_AgentBase,
     HEACALCULATOR_AGENT_NAME: HEACalculatorAgentBase,
+    HEA_KB_AGENT_NAME: HEAKbAgent,
+    SSE_KB_AGENT_NAME: SSEKbAgent,
+    POLYMER_KB_AGENT_NAME: POLYMERKbAgent,
+    STEEL_KB_AGENT_NAME: STEELKbAgent,
     LAMMPS_AGENT_NAME: LAMMPSAgent,
     OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
@@ -268,7 +306,8 @@ AGENT_CLASS_MAPPING = {
     ConvexHullAgentName: ConvexHullAgent,
     NMR_AGENT_NAME: NMRAgent,
     XRD_AGENT_NAME: XRDAgent,
-    EM_AGENT_NAME: EMAgent,
+    Electron_Microscope_AGENT_NAME: ElectronMicroscopeAgent,
+    TOOL_AGENT_NAME: ToolAgent,
 }
 
 
@@ -280,6 +319,10 @@ class MatMasterSubAgentsEnum(str, Enum):
     DPACalculatorAgent = DPACalulator_AGENT_NAME
     HEAAssistantAgent = HEA_assistant_AgentName
     HEACalculatorAgent = HEACALCULATOR_AGENT_NAME
+    HEAKbAgent = HEA_KB_AGENT_NAME
+    SSEKbAgent = SSE_KB_AGENT_NAME
+    POLYMERKbAgent = POLYMER_KB_AGENT_NAME
+    STEELKbAgent = STEEL_KB_AGENT_NAME
     LAMMPSAgent = LAMMPS_AGENT_NAME
     CompDARTAgent = COMPDART_AGENT_NAME
     OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME
@@ -302,7 +345,8 @@ class MatMasterSubAgentsEnum(str, Enum):
     ConvexHullAgent = ConvexHullAgentName
     NMRAgent = NMR_AGENT_NAME
     XRDAgent = XRD_AGENT_NAME
-    EMAgent = EM_AGENT_NAME
+    ElectronMicroscopeAgent = Electron_Microscope_AGENT_NAME
+    ToolAgent = TOOL_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())
