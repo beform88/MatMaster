@@ -23,9 +23,9 @@ STRUCTURE ACQUISITION PROTOCOL:
      * **CRITICAL**: Build individual adsorbate molecules with appropriate bond lengths and angles
      * Finally construct adsorption configurations on surfaces
 
-3. For web searching
-  - The tool `web-search` only provides brief web search results
-  - Therefore, it must follows a webpage parsing tool after searching
+3. For scientific intelligence tasks:
+  - The tool `web-search` only provides brief web search results. Therefore, always consider following a webpage parsing tool after searching
+  - For paper research, use `search-papers-enhanced` for topic-related searching and use `search-papers-normal` for author-specific searching. NO NEED to follow webpage parsing.
 
 4. REQUEST ENHANCEMENT RULE:
    - Expand user requests to explicitly include initial structure preparation
