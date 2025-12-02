@@ -1,6 +1,6 @@
 import copy
 import logging
-from typing import AsyncGenerator, Optional
+from typing import AsyncGenerator
 
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
@@ -74,7 +74,13 @@ from agents.matmaster_agent.utils.event_utils import (
     send_error_event,
     update_state_event,
 )
-from agents.matmaster_agent.utils.icl import ICLExampleSelector, icl_example_selector
+from agents.matmaster_agent.services.icl import (
+    select_examples,
+    select_update_examples,
+    scene_tags_from_examples,
+    toolchain_from_examples,
+    expand_input_examples
+)
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -83,7 +89,6 @@ logger.setLevel(logging.INFO)
 
 class MatMasterFlowAgent(LlmAgent):
     # store example selector as a private attribute to avoid pydantic field validation
-    _icl_example_selector: Optional[ICLExampleSelector] = PrivateAttr(default=None)
 
     @model_validator(mode='after')
     def after_init(self):
@@ -159,7 +164,7 @@ class MatMasterFlowAgent(LlmAgent):
 
         execution_result_agent = DisallowTransferLlmAgent(
             name='execution_result_agent',
-            model=MatMasterLlmConfig.gpt_5_mini,
+            model=MatMasterLlmConfig.gpt_4o,
             description='汇总计划的执行情况',
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
@@ -184,8 +189,6 @@ class MatMasterFlowAgent(LlmAgent):
             instruction='',
         )
 
-        self._icl_example_selector = icl_example_selector()
-
         self.sub_agents = [
             self.chat_agent,
             self.intent_agent,
@@ -199,11 +202,6 @@ class MatMasterFlowAgent(LlmAgent):
         ]
 
         return self
-
-    @property
-    def icl_example_selector(self) -> ICLExampleSelector:
-        """向后兼容：只读属性，返回私有的 example selector。"""
-        return self._icl_example_selector
 
     @computed_field
     @property
@@ -285,11 +283,11 @@ class MatMasterFlowAgent(LlmAgent):
             # research 模式
             else:
                 # 检索 ICL 示例
-                icl_examples = self._icl_example_selector.select_examples(
+                icl_examples = select_examples(
                     ctx.user_content.parts[0].text
                 )
                 EXPAND_INPUT_EXAMPLES_PROMPT = (
-                    self._icl_example_selector.expand_input_examples(icl_examples)
+                    expand_input_examples(icl_examples)
                 )
                 logger.info(f'{EXPAND_INPUT_EXAMPLES_PROMPT}')
                 # 扩写用户问题
@@ -299,18 +297,14 @@ class MatMasterFlowAgent(LlmAgent):
                 async for expand_event in self.expand_agent.run_async(ctx):
                     yield expand_event
 
-                icl_update_examples = self._icl_example_selector.select_update_examples(
+                icl_update_examples = select_update_examples(
                     ctx.session.state['expand']['update_user_content']
                 )
                 SCENE_EXAMPLES_PROMPT = (
-                    self._icl_example_selector.scene_tags_from_examples(
-                        icl_update_examples
-                    )
+                    scene_tags_from_examples(icl_update_examples)
                 )
                 TOOLCHAIN_EXAMPLES_PROMPT = (
-                    self._icl_example_selector.toolchain_from_examples(
-                        icl_update_examples
-                    )
+                    toolchain_from_examples(icl_update_examples)
                 )
                 logger.info(f'{SCENE_EXAMPLES_PROMPT}')
                 logger.info(f'{TOOLCHAIN_EXAMPLES_PROMPT}')
