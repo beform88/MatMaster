@@ -118,15 +118,16 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                         async for execution_result_event in self.sub_agents[
                             -1
                         ].run_async(ctx):
-                            for plan_ask_confirm_event in all_text_event(
-                                ctx,
-                                self.name,
-                                get_execution_result_card(
-                                    execution_result_event.content.parts[0].text
-                                ),
-                                ModelRole,
-                            ):
-                                yield plan_ask_confirm_event
+                            if not execution_result_event.partial:
+                                for plan_ask_confirm_event in all_text_event(
+                                    ctx,
+                                    self.name,
+                                    get_execution_result_card(
+                                        execution_result_event.content.parts[0].text
+                                    ),
+                                    ModelRole,
+                                ):
+                                    yield plan_ask_confirm_event
 
                     current_steps = ctx.session.state['plan']['steps']
                     if (
