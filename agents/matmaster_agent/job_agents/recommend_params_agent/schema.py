@@ -20,7 +20,7 @@ logger.setLevel(logging.INFO)
 
 
 def get_field_kwargs(field):
-    # 添加字段描述（如果有）
+    # 添加字段描述（ 如果有 ）
     field_kwargs = {}
     for key in ['description', 'title', 'min_items', 'max_items']:
         if key in field:
