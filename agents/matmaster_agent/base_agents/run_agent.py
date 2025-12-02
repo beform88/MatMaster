@@ -71,7 +71,7 @@ class BaseAgentWithRecAndSum(
         agent_prefix = self.name.replace('_agent', '')
 
         self._tool_call_info_agent = DisallowTransferSchemaAgent(
-            model=MatMasterLlmConfig.tool_schema_model,
+            model=self.model,
             name=f"{agent_prefix}_tool_call_info_agent",
             tools=self.tools,
             before_model_callback=default_before_model_callback,
