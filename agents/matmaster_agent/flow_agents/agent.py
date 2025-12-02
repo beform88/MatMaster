@@ -164,7 +164,7 @@ class MatMasterFlowAgent(LlmAgent):
 
         execution_result_agent = DisallowTransferLlmAgent(
             name='execution_result_agent',
-            model=MatMasterLlmConfig.gpt_4o,
+            model=MatMasterLlmConfig.gpt_5_mini,
             description='汇总计划的执行情况',
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
@@ -285,7 +285,7 @@ class MatMasterFlowAgent(LlmAgent):
                 # 检索 ICL 示例
                 icl_examples = select_examples(ctx.user_content.parts[0].text)
                 EXPAND_INPUT_EXAMPLES_PROMPT = expand_input_examples(icl_examples)
-                logger.info(f'{EXPAND_INPUT_EXAMPLES_PROMPT}')
+                logger.info(f'{ctx.session.id} {EXPAND_INPUT_EXAMPLES_PROMPT}')
                 # 扩写用户问题
                 self.expand_agent.instruction = (
                     EXPAND_INSTRUCTION + EXPAND_INPUT_EXAMPLES_PROMPT
@@ -298,8 +298,8 @@ class MatMasterFlowAgent(LlmAgent):
                 )
                 SCENE_EXAMPLES_PROMPT = scene_tags_from_examples(icl_update_examples)
                 TOOLCHAIN_EXAMPLES_PROMPT = toolchain_from_examples(icl_update_examples)
-                logger.info(f'{SCENE_EXAMPLES_PROMPT}')
-                logger.info(f'{TOOLCHAIN_EXAMPLES_PROMPT}')
+                logger.info(f'{ctx.session.id} {SCENE_EXAMPLES_PROMPT}')
+                logger.info(f'{ctx.session.id} {TOOLCHAIN_EXAMPLES_PROMPT}')
 
                 # 划分问题场景
                 self.scene_agent.instruction = SCENE_INSTRUCTION + SCENE_EXAMPLES_PROMPT
