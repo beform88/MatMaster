@@ -75,3 +75,7 @@ class SceneEnum(DescriptiveEnum):
 
     THERMOELECTRIC = ('thermoelectric', '')
     Electron_Microscope = ('electron_microscope', '')
+    PEROVSKITE_RESEARCH = (
+        'perovskite_research',
+        'Research, literature/database search, and semantic mining focused on perovskite solar cells (efficiency, stability, additives, architectures, new molecules).',
+    )
