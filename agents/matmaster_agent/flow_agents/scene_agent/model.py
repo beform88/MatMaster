@@ -82,3 +82,4 @@ class SceneEnum(DescriptiveEnum):
         'perovskite_research',
         'Research, literature/database search, and semantic mining focused on perovskite solar cells (efficiency, stability, additives, architectures, new molecules).',
     )
+    PHYSICAL_ADSORPTION = ('physical_adsorption', '')
