@@ -104,16 +104,14 @@ def should_bypass_confirmation(ctx: InvocationContext) -> bool:
     ]
 
     plan_steps = ctx.session.state['plan'].get('steps', [])
-    tool_count = sum(1 for step in plan_steps if step.get('tool_name'))
+    tool_count = len(
+        plan_steps
+    )  # plan steps are `actual_steps` validated by `tool_name` before appended
 
     # Check if there is exactly one tool in the plan
     if tool_count == 1:
         # Find the first (and only) tool name
-        first_tool_name = None
-        for step in plan_steps:
-            if step.get('tool_name'):
-                first_tool_name = step['tool_name']
-                break
+        first_tool_name = plan_steps[0].get('tool_name', '')
 
         # Check if this tool is in the bypass list
         if first_tool_name in BYPASS_CONFIRMATION_TOOLS:
