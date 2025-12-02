@@ -16,7 +16,7 @@ Language: {{target_language}}
 5. Keep your response concise and action-oriented, focusing on what has happened and what comes next in the process flow.
 6. Could refer to the following template:
 ```
-- I've already completed [STEP NAME] with [PARAMETERS]. This [IS/IS NOT] the final step.
+- I've already completed [STEP NAME] with [PARAMETERS]. This [IS ALREADY/IS NOT YET] the final step.
 - (IF NOT FINAL) Next, I will [NEXT-STEP NAME] with [NEXT-STEP PARAMETERS].
 - (IF FINAL) All missions have been completed.
 ```
