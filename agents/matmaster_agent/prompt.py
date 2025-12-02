@@ -665,6 +665,8 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
     - Available Functions:
       - `get_database_info`: retrieve complete schema and descriptive information for the perovskite solar cell database (call this first before `sql_database_mcp`)
       - `sql_database_mcp(sql, k=10)`: execute SQL queries and return the first k rows (default k=10)
+      - `Unimol_Predict_Perovskite_Additive(List[str])`: Predict a list of molecules and their effect to perovskite solar cells.
+
     - Usage rule: ALWAYS call `get_database_info` before running `sql_database_mcp` so queries align with the latest schema, output detail findings with academic writing style.
     - Examples: "Find recent perovskite solar cell PCE records for Cs-based systems"; "List common architectures and associated efficiencies from literature"
 
