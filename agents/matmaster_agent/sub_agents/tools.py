@@ -230,6 +230,17 @@ ALL_TOOLS = {
         'scene': [SceneEnum.SMILES],
         'description': '',
     },
+    # Perovskite solar cell literature/database tools
+    'get_database_info': {
+        'belonging_agent': PerovskiteAgentName,
+        'scene': [SceneEnum.PEROVSKITE_RESEARCH],
+        'description': 'Fetch complete schema and descriptive information for the perovskite solar cell database (ALWAYS call this function before sql_database_mcp()).',
+    },
+    'sql_database_mcp': {
+        'belonging_agent': PerovskiteAgentName,
+        'scene': [SceneEnum.PEROVSKITE_RESEARCH],
+        'description': 'Execute SQL queries against the perovskite solar cell database and return the first k rows. (ALWAYS call get_database_info() first to understand the schema and important columns.)',
+    },
     'validate_smiles': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
         'scene': [SceneEnum.SMILES],
@@ -373,16 +384,6 @@ ALL_TOOLS = {
     'calculate_reaction_profile': {
         'belonging_agent': ORGANIC_REACTION_AGENT_NAME,
         'scene': [SceneEnum.REACTION],
-        'description': '',
-    },
-    'semantic_search': {
-        'belonging_agent': PerovskiteAgentName,
-        'scene': [],
-        'description': '',
-    },
-    'plot_vs_time': {
-        'belonging_agent': PerovskiteAgentName,
-        'scene': [],
         'description': '',
     },
     'run_piloteye': {

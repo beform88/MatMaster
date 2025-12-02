@@ -33,8 +33,6 @@ async def check_job_create_service(ctx):
             res = json.loads(await response.text())
             if res['code'] != 0:
                 if res['code'] == 140202:
-                    res['error'][
-                        'msg'
-                    ] = 'Agent 开发者账户余额不足，需开发者充值，请稍后重试。'
+                    res['error']['msg'] = '钱包余额不足，请充值后重试。'
 
                 return res

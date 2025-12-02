@@ -142,6 +142,9 @@ def filter_function_calls(
                 logger.info(
                     f'{callback_context.session.id} state = {callback_context.state.to_dict()}'
                 )
+                logger.info(
+                    f"{callback_context.session.id} current_function_calls = {function_calls_to_str(current_function_calls)}"
+                )
 
                 return LlmResponse(
                     content=Content(
@@ -591,7 +594,7 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             )
             return
 
-        if tool.executor is not None:
+        if tool.executor is not None and tool.executor.get('type') != 'local':
             return await check_job_create_service(tool_context)
 
     return wrapper
