@@ -68,6 +68,7 @@ class SceneEnum(DescriptiveEnum):
 
     HIGH_ENTROPY_ALLOY = ('high_entropy_alloy', '')
     POLYMER = ('polymer', '')
+    STEEL = ('steel', '')
 
     CONVEXHULL = ('convexhull', '')
 

@@ -43,6 +43,9 @@ from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
 from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
     STEEL_KB_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
+    STEEL_PREDICT_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,
 )
@@ -180,11 +183,16 @@ When multiple tools can perform the same calculation or property analysis, you M
    - "polymer literature" → {POLYMER_KB_AGENT_NAME}
    - "polymer knowledge" → {POLYMER_KB_AGENT_NAME}
    - "chembrain" → {POLYMER_KB_AGENT_NAME}
-   - "steel" → {STEEL_KB_AGENT_NAME}
+   - "steel" → {STEEL_KB_AGENT_NAME} or {STEEL_PREDICT_AGENT_NAME} (context dependent: literature/knowledge → {STEEL_KB_AGENT_NAME}, prediction/calculation → {STEEL_PREDICT_AGENT_NAME})
    - "steelkb" → {STEEL_KB_AGENT_NAME}
    - "steel literature" → {STEEL_KB_AGENT_NAME}
    - "steel knowledge" → {STEEL_KB_AGENT_NAME}
-   - "stainless steel" → {STEEL_KB_AGENT_NAME}
+   - "stainless steel" → {STEEL_KB_AGENT_NAME} or {STEEL_PREDICT_AGENT_NAME} (context dependent)
+   - "steel predict" → {STEEL_PREDICT_AGENT_NAME}
+   - "steel prediction" → {STEEL_PREDICT_AGENT_NAME}
+   - "steel tensile" → {STEEL_PREDICT_AGENT_NAME}
+   - "steel uts" → {STEEL_PREDICT_AGENT_NAME}
+   - "tensile strength" → {STEEL_PREDICT_AGENT_NAME}
    - "invar" → {COMPDART_AGENT_NAME}
    - "perovskite" → {PerovskiteAgentName}
    - "thermoelectric" → {ThermoelectricAgentName}
@@ -446,7 +454,23 @@ You have access to the following specialized sub-agents. You must delegate the t
      - "不锈钢的微观结构特征是什么？如何通过热处理调控微观结构？"
      - "不锈钢的主要制备方法有哪些？"
 
-8. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
+8. **{STEEL_PREDICT_AGENT_NAME}** - **Stainless steel tensile strength prediction specialist**
+   - Purpose: Predict ultimate tensile strength (UTS) of stainless steel based on chemical composition
+   - Capabilities:
+     - Neural network-based prediction using trained models
+     - Chemical formula parsing and validation
+     - Element composition analysis (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W)
+     - Returns predicted tensile strength in MPa
+   - Use when:
+     - User asks to predict tensile strength based on composition
+     - User provides chemical formula and wants property prediction
+     - User wants to estimate mechanical properties from composition
+   - Example Queries:
+     - "预测 Fe70Cr20Ni10 的抗拉强度"
+     - "根据成分 C0.1Si0.5Mn1.0Cr18.0Ni8.0 预测抗拉强度"
+     - "这个不锈钢配方的力学性能如何？"
+
+9. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
    - Purpose: Optimize compositions via genetic algorithms (GA) to find target properties with desired characteristics
    - Capabilities:
      - Compositional optimization for arbitrary materials systems
