@@ -25,10 +25,10 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "单手性的分子晶体在室温SC-XRD测试中flack ~ 1e-4而高温接近1e-1，解释原因",
-        "structure_url": null,
         "share_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adf9dae8e78daa6d229b8497adbe3"
-        }
+        },
+        "structure_url": null
       }
     },
     {
