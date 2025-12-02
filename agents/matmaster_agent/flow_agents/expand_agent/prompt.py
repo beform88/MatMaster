@@ -7,7 +7,6 @@ STRUCTURE ACQUISITION PROTOCOL:
 2. For structure generation requests:
    - SIMPLE STRUCTURES (elements, binary compounds, common crystals):
      * Build from crystallographic parameters
-     * References: ICSD, CRC Handbook, Springer Materials
 
    - COMPLEX STRUCTURES (ternary+ compounds, MOFs, specific materials):
      * Search established databases using material identifiers
@@ -23,9 +22,32 @@ STRUCTURE ACQUISITION PROTOCOL:
      * **CRITICAL**: Build individual adsorbate molecules with appropriate bond lengths and angles
      * Finally construct adsorption configurations on surfaces
 
-3. For scientific intelligence tasks:
-  - The tool `web-search` only provides brief web search results. Therefore, always consider following a webpage parsing tool after searching
-  - For paper research, use `search-papers-enhanced` for topic-related searching and use `search-papers-normal` for author-specific searching. NO NEED to follow webpage parsing.
+  - AMBIGUOUS NOMENCLATURES:
+    GENERAL RULE:
+      * If the user input is ambiguous in any way that affects the identity of the structure to be generated,
+        classify the ambiguity under one of the categories below and follow the corresponding action.
+
+    a. AMBIGUOUS NOMENCLATURES (Common name, alias, trade name, non-system name):
+        * If the name may refer to multiple distinct chemical substances or materials:
+            - Perform a web search to identify the correct entity.
+            - Explicitly state that the resolution came from a web search.
+            - If ambiguity remains, request clarification.
+
+    b. AMBIGUOUS POLYMORPHISM (Polymorphic, different phases):
+        * If the compound has multiple known phases and the user does not specify:
+            - Assume the most common, widely referenced, or room-temperature phase.
+            - Explicitly state the assumed polymorph.
+            - Proceed under that assumption.
+
+    c. AMBIGUOUS MATERIAL FAMILY NAMES (Material Family Names, non-specific names):
+        * If the query refers to a family without a unique prototype:
+            - Request clarification.
+        * If the family has a universally recognized default prototype:
+            - Use the prototype and explicitly state the assumption.
+
+3. For scientific-information searching tasks:
+  - For general web searching, the tool `web-search` only provides brief web search results. Therefore, always consider following a webpage parsing tool after searching in case of complicated scenarios.
+  - For paper research, use `search-papers-enhanced` for topic-related academic research progress. NO NEED to follow webpage parsing.
 
 4. REQUEST ENHANCEMENT RULE:
    - Expand user requests to explicitly include initial structure preparation
@@ -74,7 +96,7 @@ Input: "生成钙钛矿BaTiO3的结构"
 Output:
 {{
   "origin_user_content": "生成钙钛矿BaTiO3的结构",
-  "update_user_content": "首先构建钙钛矿BaTiO3体相结构（空间群Pm-3m，a=4.00Å），然后进行结构优化"
+  "update_user_content": "BaTiO3有多种晶型，以对称性最高的立方相（空间群Pm-3m，a=4.00Å）为例，首先构建钙钛矿BaTiO3体相结构"
 }}
 
 EXAMPLE 5:
@@ -90,18 +112,27 @@ Input: "为 Ni–Fe–O 催化剂生成 (100)、(110) 与 (111) 三个表面模�
 Output:
 {{
   "origin_user_content": "为 Ni–Fe–O 催化剂生成 (100)、(110) 与 (111) 三个表面模型，并在每个表面构建 H₂O 吸附构型",
-  "update_user_content": "首先构建Ni–Fe–O体相结构，然后生成(100)、(110)与(111)三个表面模型，接着构建H₂O分子结构（O-H键长0.96Å，H-O-H键角104.5°），最后在每个表面上构建H₂O吸附构型"
+  "update_user_content": "首先使用网页搜索：Ni–Fe–O催化剂的概念，其掺杂的基体/掺杂元素是什么、常见的掺杂浓度是什么。然后从optimade获取数据检索这种晶格需要的化学式、空间群等信息，从数据库中搜索该体相材料的cif格式结构 -> 获取晶体结构的信息 -> 以实现掺杂浓度为目的决定扩胞的大小并且执行扩胞 -> 执行掺杂 -> 得到体相的Ni-Fe-O结构；接下来基于体相Ni-Fe-O结构切割(100)、(110)与(111)三个表面模型；接着构建H₂O分子结构，最后在每个表面上构建H₂O吸附构型"
 }}
 
 EXAMPLE 7:
+Input: "构造紫杉醇的分子结构"
+Output:
+{{
+  "origin_user_content": "构造紫杉醇的分子结构",
+  "update_user_content": "网页搜索紫杉醇的SMILES编码，用其构造分子结构"
+}}
+
+
+EXAMPLE 8:
 Input: "搜索DP-GEN的教程"
 Output:
 {{
   "origin_user_content": "搜索DP-GEN的教程",
-  "update_user_content": "搜索DP-GEN的教程网页并解析和提取关键信息"
+  "update_user_content": "搜索DP-GEN的教程网页并解析和提取关键信息，总结一份带案例的完整的上手教程"
 }}
 
-EXAMPLE 8:
+EXAMPLE 9:
 Input: "PXRD如何区分bcc和fcc晶格"
 Output:
 {{
