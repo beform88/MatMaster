@@ -20,7 +20,7 @@ logger.setLevel(logging.INFO)
 
 
 def get_field_kwargs(field):
-    # 添加字段描述（如果有）
+    # 添加字段描述（ 如果有 ）
     field_kwargs = {}
     for key in ['description', 'title', 'min_items', 'max_items']:
         if key in field:
@@ -31,6 +31,7 @@ def get_field_kwargs(field):
 
 def get_field_type(field: Dict[str, Any]) -> Any:
     """递归获取字段类型，支持嵌套结构"""
+    logging.info('field = {}'.format(field))
     if 'type' not in field:
         raise ValueError(f'Field must have a type, {field}')
 

@@ -41,6 +41,13 @@ from agents.matmaster_agent.sub_agents.document_parser_agent.agent import (
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserAgentName,
 )
+from agents.matmaster_agent.sub_agents.doe_agent.agent import (
+    DoEAgent,
+    doe_toolset,
+)
+from agents.matmaster_agent.sub_agents.doe_agent.constant import (
+    DOE_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.agent import (
     DPACalculationsAgent,
     dpa_toolset,
@@ -242,6 +249,7 @@ ALL_TOOLSET_DICT = {
     'retrosyn_toolset': retrosyn_toolset,
     'uni_elf_toolset': uni_elf_toolset,
     'compdart_toolset': compdart_toolset,
+    'doe_toolset': doe_toolset,
     'document_parser_toolset': document_parser_toolset,
     'dpa_toolset': dpa_toolset,
     'finetune_dpa_toolset': finetune_dpa_toolset,
@@ -277,6 +285,7 @@ AGENT_CLASS_MAPPING = {
     ApexAgentName: ApexAgent,
     CHEMBRAIN_AGENT_NAME: ChemBrainAgent,
     COMPDART_AGENT_NAME: CompDARTAgent,
+    DOE_AGENT_NAME: DoEAgent,
     DocumentParserAgentName: DocumentParserAgentBase,
     DPACalulator_AGENT_NAME: DPACalculationsAgent,
     FinetuneDPAAgentName: FinetuneDPAAgent,
