@@ -1,4 +1,3 @@
-import copy
 import json
 import logging
 import os
@@ -10,7 +9,7 @@ from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.models import LlmResponse
 from google.adk.tools import ToolContext
-from google.genai.types import Part
+from google.genai.types import FunctionCall, Part
 from mcp.types import CallToolResult
 from pydantic import BaseModel
 from yaml.scanner import ScannerError
@@ -51,17 +50,17 @@ def update_llm_response(
         llm_response.content.parts = [
             Part(text='All Function Calls Are Occurred Before, Continue')
         ]
-    # elif len(new_indices) == len(current_function_calls):
-    #     pass
     else:
         llm_response.content.parts = [
-            part
-            for index, part in enumerate(copy.deepcopy(llm_response.content.parts))
-            if index in new_indices
+            Part(
+                function_call=FunctionCall(
+                    id=current_function_calls[new_indices[0]]['id'],
+                    args=current_function_calls[new_indices[0]]['args'],
+                    name=current_function_calls[new_indices[0]]['name'],
+                )
+            )
         ]
-    logger.info(
-        f"[{MATMASTER_AGENT_NAME}]:[update_llm_response] new_indices = {new_indices}"
-    )
+    logger.info(f"llm_response = {llm_response}")
 
     return llm_response
 
@@ -361,7 +360,7 @@ def function_calls_to_str(function_calls: List[dict]) -> str:
     for call in function_calls:
         # 确保 args 是字典或可 JSON 序列化的对象
         args_str = json.dumps(call['args'], indent=2) if call.get('args') else '{}'
-        line = f"{call['name']}({args_str})"
+        line = f"{call['name']}[{call['id']}]({args_str})"
         lines.append(line)
 
     return '\n'.join(lines)

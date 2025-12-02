@@ -142,6 +142,9 @@ def filter_function_calls(
                 logger.info(
                     f'{callback_context.session.id} state = {callback_context.state.to_dict()}'
                 )
+                logger.info(
+                    f"{callback_context.session.id} current_function_calls = {function_calls_to_str(current_function_calls)}"
+                )
 
                 return LlmResponse(
                     content=Content(
