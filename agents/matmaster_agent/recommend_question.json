@@ -24,21 +24,24 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "搜索PXRD如何用于区分bcc和fcc结构",
+        "question": "单手性的分子晶体在室温SC-XRD测试中flack ~ 1e-4而高温接近1e-1，解释原因",
+        "structure_url": null,
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adf9dae8e78daa6d229b8497adbe3"
+        }
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "学术情报",
+        "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途和局限性",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "介绍Sawyer-Tower铁电测试中的双波法的原理和用途",
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "学术情报",
-        "question": "解释某些非晶材料在DSC测试中Tg后出现冷结晶信号的原因",
+        "question": "解释某些非晶材料在DSC测试中玻璃转变温度后出现冷结晶信号的原因",
         "structure_url": null
       }
     },
