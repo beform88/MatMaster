@@ -36,7 +36,7 @@ _KNOWLEDGE_LIMITATIONS = """
 
 """
 
-_FORMAT_REQUIREMENT = f"""
+_FORMAT_REQUIREMENT = """
 
 # FORMAT INSTRUCTIONS:
 - Output in plain text, no bullet points unless necessary or user requests.
