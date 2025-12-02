@@ -64,7 +64,7 @@ class ScienceNavigatorAgent(BaseSyncAgentWithToolValidator):
             supervisor_agent=MATMASTER_AGENT_NAME,
             after_tool_callback=after_tool_callback,
             before_tool_callback=before_tool_callback,
-            render_tool_response=True,
+            render_tool_response=False,
         )
 
 

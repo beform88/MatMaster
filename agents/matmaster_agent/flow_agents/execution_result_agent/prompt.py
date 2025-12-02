@@ -12,8 +12,12 @@ Language: {{target_language}}
 1. Briefly state what has been accomplished in the most recent step
 2. Clearly indicate if this is the final step or what the immediate next action should be
 3. For parameter confirmation steps, display those parameters
-
-Focus ONLY on workflow progression and status communication. Do not include any other information or details.
-
-Keep your response concise and action-oriented, focusing on what has happened and what comes next in the process flow.
+4. Focus ONLY on workflow progression and status communication. Do not include any other information or details.
+5. Keep your response concise and action-oriented, focusing on what has happened and what comes next in the process flow.
+6. Could refer to the following template:
+```
+- I've already completed [STEP NAME] with [PARAMETERS]. This [IS ALREADY/IS NOT YET] the final step.
+- (IF NOT FINAL) Next, I will [NEXT-STEP NAME] with [NEXT-STEP PARAMETERS].
+- (IF FINAL) All missions have been completed.
+```
 """
