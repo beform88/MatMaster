@@ -74,3 +74,4 @@ class SceneEnum(DescriptiveEnum):
     SUPERCONDUCTOR = ('superconductor', '')
 
     THERMOELECTRIC = ('thermoelectric', '')
+    Electron_Microscope = ('electron_microscope', '')

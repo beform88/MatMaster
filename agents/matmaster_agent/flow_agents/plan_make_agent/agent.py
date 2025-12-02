@@ -26,6 +26,13 @@ class PlanMakeAgent(SchemaAgent):
         update_plan['feasibility'] = 'null'
         total_steps = len(update_plan['steps'])
         exist_step = 0
+        update_plan_steps = []
+        for step in update_plan['steps']:
+            if not step['tool_name']:
+                step['tool_name'] = 'llm_tool'
+            update_plan_steps.append(step)
+        update_plan['steps'] = update_plan_steps
+
         for index, step in enumerate(update_plan['steps']):
             if index == 0 and not step['tool_name']:
                 break

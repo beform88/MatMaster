@@ -51,8 +51,8 @@ def update_llm_response(
         llm_response.content.parts = [
             Part(text='All Function Calls Are Occurred Before, Continue')
         ]
-    elif len(new_indices) == len(current_function_calls):
-        pass
+    # elif len(new_indices) == len(current_function_calls):
+    #     pass
     else:
         llm_response.content.parts = [
             part

@@ -23,6 +23,10 @@ STRUCTURE ACQUISITION PROTOCOL:
      * **CRITICAL**: Build individual adsorbate molecules with appropriate bond lengths and angles
      * Finally construct adsorption configurations on surfaces
 
+3. For web searching
+  - The tool `web-search` only provides brief web search results
+  - Therefore, it must follows a webpage parsing tool after searching
+
 4. REQUEST ENHANCEMENT RULE:
    - Expand user requests to explicitly include initial structure preparation
    - Preserve all original specifications and requirements
@@ -39,6 +43,70 @@ OUTPUT REQUIREMENTS:
 {{
   "origin_user_content": "original user query",
   "update_user_content": "enhanced query with structure acquisition steps or original query if checking task results or user provided input file or query is explicit structure generation request"
+}}
+
+EXAMPLE 1:
+Input: "Generate Si(111) slab with 10Å thickness"
+Output:
+{{
+  "origin_user_content": "Generate Si(111) slab with 10Å thickness",
+  "update_user_content": "First build Si bulk structure (Fd-3m, a=5.43Å), then generate Si(111) slab with 10Å thickness"
+}}
+
+EXAMPLE 2:
+Input: "计算NaCl的能带结构"
+Output:
+{{
+  "origin_user_content": "计算NaCl的能带结构",
+  "update_user_content": "首先构建NaCl体相结构（空间群Fm-3m，a=5.64Å），然后计算能带结构"
+}}
+
+EXAMPLE 3:
+Input: "Calculate phonons for zinc blende ZnS"
+Output:
+{{
+  "origin_user_content": "Calculate phonons for zinc blende ZnS",
+  "update_user_content": "First construct zinc blende ZnS bulk structure (F-43m, a=5.41Å), then calculate phonon spectrum"
+}}
+
+EXAMPLE 4:
+Input: "生成钙钛矿BaTiO3的结构"
+Output:
+{{
+  "origin_user_content": "生成钙钛矿BaTiO3的结构",
+  "update_user_content": "首先构建钙钛矿BaTiO3体相结构（空间群Pm-3m，a=4.00Å），然后进行结构优化"
+}}
+
+EXAMPLE 5:
+Input: "在 15×15×15 Å³ 晶胞中生成混合气体盒子，包含 N₂ 分子和 O₂ 分子，比例为2:1, 返回结构文件 URL"
+Output:
+{{
+  "origin_user_content": "在 15×15×15 Å³ 晶胞中生成混合气体盒子，包含 N₂ 分子和 O₂ 分子，比例为2:1, 返回结构文件 URL",
+  "update_user_content": "首先构建N₂分子结构（键长1.10Å）和O₂分子结构（键长1.21Å），然后在15×15×15 Å³晶胞中按2:1比例生成混合气体盒子，返回结构文件URL"
+}}
+
+EXAMPLE 6:
+Input: "为 Ni–Fe–O 催化剂生成 (100)、(110) 与 (111) 三个表面模型，并在每个表面构建 H₂O 吸附构型"
+Output:
+{{
+  "origin_user_content": "为 Ni–Fe–O 催化剂生成 (100)、(110) 与 (111) 三个表面模型，并在每个表面构建 H₂O 吸附构型",
+  "update_user_content": "首先构建Ni–Fe–O体相结构，然后生成(100)、(110)与(111)三个表面模型，接着构建H₂O分子结构（O-H键长0.96Å，H-O-H键角104.5°），最后在每个表面上构建H₂O吸附构型"
+}}
+
+EXAMPLE 7:
+Input: "搜索DP-GEN的教程"
+Output:
+{{
+  "origin_user_content": "搜索DP-GEN的教程",
+  "update_user_content": "搜索DP-GEN的教程网页并解析和提取关键信息"
+}}
+
+EXAMPLE 8:
+Input: "PXRD如何区分bcc和fcc晶格"
+Output:
+{{
+  "origin_user_content": "PXRD如何区分bcc和fcc晶格",
+  "update_user_content": "搜索网页、解析和提取关键信息，回答PXRD如何区分bcc和fcc晶格"
 }}
 """
 # EXAMPLE 1:

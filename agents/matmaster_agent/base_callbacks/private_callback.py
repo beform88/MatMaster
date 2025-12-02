@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import traceback
+import uuid
 from functools import wraps
 from typing import Optional, Union
 
@@ -17,6 +18,7 @@ from google.adk.agents.llm_agent import (
 )
 from google.adk.models import LlmRequest, LlmResponse
 from google.adk.tools import BaseTool, ToolContext
+from google.genai.types import Content, FunctionCall, Part
 from mcp.types import CallToolResult, TextContent
 
 from agents.matmaster_agent.constant import (
@@ -25,6 +27,7 @@ from agents.matmaster_agent.constant import (
     LOCAL_EXECUTOR,
     MATMASTER_AGENT_NAME,
     SKU_MAPPING,
+    ModelRole,
     Transfer2Agent,
 )
 from agents.matmaster_agent.logger import PrefixFilter
@@ -75,6 +78,7 @@ def filter_function_calls(
     ) -> Optional[LlmResponse]:
         # 先调用被装饰的 after_model_callback
         await func(callback_context, llm_response)
+        logger.info(f'{callback_context.session.id} {llm_response}')
 
         # 检查响应是否有效
         if not (
@@ -87,14 +91,31 @@ def filter_function_calls(
 
         # 获取所有函数调用
         current_function_calls = [
-            {'name': part.function_call.name, 'args': part.function_call.args}
+            {
+                'name': part.function_call.name,
+                'args': part.function_call.args,
+                'id': part.function_call.id,
+            }
             for part in llm_response.content.parts
             if part.function_call
         ]
 
-        # 如果没有函数调用，直接返回
+        # 如果没有函数调用，手动创建一个
         if not current_function_calls:
-            return None
+            logger.warning(
+                f'{callback_context.session.id} current_function_calls empty， manually build one'
+            )
+            current_step = callback_context.state['plan']['steps'][
+                callback_context.state['plan_index']
+            ]
+            function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
+            current_function_calls = [
+                {
+                    'name': current_step['tool_name'],
+                    'args': None,
+                    'id': function_call_id,
+                }
+            ]
 
         if (
             not callback_context.state.get('invocation_id_with_tool_call')
@@ -120,6 +141,21 @@ def filter_function_calls(
                 }
                 logger.info(
                     f'{callback_context.session.id} state = {callback_context.state.to_dict()}'
+                )
+
+                return LlmResponse(
+                    content=Content(
+                        parts=[
+                            Part(
+                                function_call=FunctionCall(
+                                    id=current_function_calls[0]['id'],
+                                    args=current_function_calls[0]['args'],
+                                    name=current_function_calls[0]['name'],
+                                )
+                            )
+                        ],
+                        role=ModelRole,
+                    )
                 )
             else:
                 logger.warning('Multi Function Calls In One Turn')
@@ -173,7 +209,8 @@ def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
         callback_context: CallbackContext, llm_response: LlmResponse
     ) -> Optional[LlmResponse]:
         # 先调用被装饰的 after_model_callback
-        await func(callback_context, llm_response)
+        llm_response = await func(callback_context, llm_response)
+        logger.info(llm_response)
 
         # 检查响应是否有效
         if not (
@@ -216,6 +253,8 @@ def update_tool_args(func: AfterModelCallback) -> AfterModelCallback:
                     )
                 else:
                     logger.info(f'{callback_context.session.id} args unchanged')
+
+        return llm_response
 
     return wrapper
 
