@@ -241,6 +241,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.PEROVSKITE_RESEARCH],
         'description': 'Execute SQL queries against the perovskite solar cell database and return the first k rows. (ALWAYS call get_database_info() first to understand the schema and important columns.)',
     },
+    'Unimol_Predict_Perovskite_Additive': {
+        'belonging_agent': PerovskiteAgentName,
+        'scene': [SceneEnum.PEROVSKITE_RESEARCH],
+        'description': 'Predict the additive effect of a perovskite PCE change with a list of additives molecules.',
+    },
     'validate_smiles': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
         'scene': [SceneEnum.SMILES],
