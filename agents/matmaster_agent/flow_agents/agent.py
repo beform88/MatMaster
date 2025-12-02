@@ -303,10 +303,14 @@ class MatMasterFlowAgent(LlmAgent):
                     ctx.session.state['expand']['update_user_content']
                 )
                 SCENE_EXAMPLES_PROMPT = (
-                    self._icl_example_selector.scene_tags_from_examples(icl_update_examples)
+                    self._icl_example_selector.scene_tags_from_examples(
+                        icl_update_examples
+                    )
                 )
                 TOOLCHAIN_EXAMPLES_PROMPT = (
-                    self._icl_example_selector.toolchain_from_examples(icl_update_examples)
+                    self._icl_example_selector.toolchain_from_examples(
+                        icl_update_examples
+                    )
                 )
                 logger.info(f'{SCENE_EXAMPLES_PROMPT}')
                 logger.info(f'{TOOLCHAIN_EXAMPLES_PROMPT}')

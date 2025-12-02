@@ -1,8 +1,3 @@
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_core.example_selectors.semantic_similarity import (
-    SemanticSimilarityExampleSelector,
-)
 import requests
 
 # class ICLExampleSelector:
@@ -74,16 +69,23 @@ import requests
 #                     f"Original Input: {example['input']}\nExpanded Input: {example['update_input']}\n"
 #                 )
 #         return '\n'.join(expanded_inputs)
-    
+
+
 class ICLExampleSelector:
     def __init__(self):
-        self.ICL_SERVICE_URL='101.126.90.82:8001'
+        self.ICL_SERVICE_URL = '101.126.90.82:8001'
 
     def select_examples(self, query):
-        return requests.post(url=f"http://{self.ICL_SERVICE_URL}/api/v1/icl/select-examples", json={"query":query}).json()['data']
+        return requests.post(
+            url=f"http://{self.ICL_SERVICE_URL}/api/v1/icl/select-examples",
+            json={'query': query},
+        ).json()['data']
 
     def select_update_examples(self, query):
-        return requests.post(url=f"http://{self.ICL_SERVICE_URL}/api/v1/icl/select-update-examples", json={"query":query}).json()['data']
+        return requests.post(
+            url=f"http://{self.ICL_SERVICE_URL}/api/v1/icl/select-update-examples",
+            json={'query': query},
+        ).json()['data']
 
     def scene_tags_from_examples(self, examples):
         scene_prompts = ['\nSCENE_TAGS EXAMPLES:']
@@ -121,4 +123,3 @@ class ICLExampleSelector:
 
 def icl_example_selector():
     return ICLExampleSelector()
-
