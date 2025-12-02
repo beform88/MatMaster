@@ -305,22 +305,22 @@ ALL_TOOLS = {
     'query_heakb_literature': {
         'belonging_agent': HEA_KB_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY, SceneEnum.LITERATURE],
-        'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge base using RAG technology. Supports natural language queries about HEA research topics, vector similarity search across 1M+ document chunks, multi-document retrieval and analysis, parallel literature summarization, and comprehensive research report generation. The tool retrieves relevant literature chunks, extracts unique paper IDs, reads full texts in parallel, and generates literature summaries. Returns a list of literature summaries that must be synthesized into a comprehensive report.',
+        'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge.',
     },
     'query_ssekb_literature': {
         'belonging_agent': SSE_KB_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
-        'description': 'Query the SSEkb literature knowledge base using structured database search technology. Supports natural language queries that are converted to structured database filters, multi-table queries with complex filters, retrieval of relevant papers based on structured criteria, parallel literature summarization for papers with fulltext, and metadata entries for papers without fulltext. The tool analyzes user queries to identify relevant database tables and fields, constructs structured filters, queries database tables to find matching papers, retrieves unique paper DOIs, reads full texts in parallel (for papers with fulltext), and generates literature summaries. Returns a list of literature summaries (including both detailed summaries and metadata entries) that must be synthesized into a comprehensive report.',
+        'description': 'Query the SSEkb literature knowledge base.',
     },
     'query_polymerkb_literature': {
         'belonging_agent': POLYMER_KB_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
-        'description': 'Query the POLYMERkb polymer literature knowledge base using structured database search technology. Supports natural language queries that are converted to structured database filters, multi-table queries with complex filters based on polymer properties, monomers, and paper metadata, retrieval of relevant papers based on structured criteria, parallel literature summarization for papers with fulltext, and metadata entries for papers without fulltext. The tool analyzes user queries to identify relevant database tables and fields (polymer properties, monomers, paper metadata), constructs structured filters, queries database tables to find matching polymers/papers, retrieves unique paper DOIs, reads full texts in parallel (for papers with fulltext), and generates literature summaries. Returns a list of literature summaries (including both detailed summaries and metadata entries) that must be synthesized into a comprehensive report.',
+        'description': 'Query the POLYMERkb polymer literature knowledge base. ',
     },
     'query_steelkb_literature': {
         'belonging_agent': STEEL_KB_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
-        'description': 'Query the STEELkb literature knowledge base using RAG technology. Supports natural language queries about Stainless Steel research topics, vector similarity search across document chunks, multi-document retrieval and analysis, parallel literature summarization, and comprehensive research report generation. The tool retrieves relevant literature chunks, extracts unique paper IDs, reads full texts in parallel, and generates literature summaries. Returns a list of literature summaries that must be synthesized into a comprehensive report.',
+        'description': 'Query the STEELkb literature knowledge base. ',
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
@@ -439,9 +439,7 @@ ALL_TOOLS = {
     'build_bulk_structure_by_wyckoff': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
-        'description': 'Build bulk crystal by specifying space group and, for each *distinct* atomic species, exactly one Wyckoff position (e.g., "4a") with its representative coordinates (x, y, z). '
-        'CRITICAL RULE: A single Wyckoff position (e.g., "4a") defines a full, closed set of symmetry-equivalent points (an orbit); DO NOT assign multiple atoms to different points *within the same Wyckoff position*, and DO NOT assign atoms to Wyckoff positions that are symmetry-equivalent under the space group. '
-        'The multiplicity of each Wyckoff position (the number prefix) gives the count of atoms generated for that species; the total atom count is the sum of all multiplicities.',
+        'description': 'Build bulk crystal by specifying space group and, for each *distinct* atomic species, exactly one Wyckoff position (e.g., "4a") with its representative coordinates (x, y, z).',
         'args_setting': 'Parameter guidance: Space Group: Integer (e.g., 225) or Symbol (e.g., "Fm-3m"). Wyckoff Consistency: The provided coordinates must mathematically belong to the specific Wyckoff position (e.g., if using position 4a at (0,0,0), do not input (0.5, 0.5, 0) just because it\'s in the same unit cell; only input the canonical generator). Lattice: Angles in degrees, lengths in Å. Fractional Coordinates: Must be in [0, 1). Strictly Use the Asymmetric Unit: You must provide only the generating coordinates for each Wyckoff orbit. Do NOT Pre-calculate Symmetry: The function will automatically apply all space group operators to your input. If you manually input coordinates that are already symmetry-equivalent (e.g., providing both (x, y, z) and (-x, -y, -z) in a centrosymmetric structure), the function will generate them again, causing catastrophic atom overlapping. Redundancy Rule: Before adding a coordinate, check if it can be generated from an existing input coordinate via any operator in the Space Group. If yes, discard it. One Wyckoff letter = One coordinate triplet input.',
     },
     'build_molecule_structures_from_smiles': {

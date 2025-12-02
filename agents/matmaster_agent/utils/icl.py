@@ -357,19 +357,30 @@ examples = [
         ],
     },
     {
-        'input': '',
+        'input': '帮我随机生成500个SnTe结构并筛选出其中潜在的热电材料',
         'update_input':'',
         'toolchain': [
+            "generate_calypso_structures",
+            "screen_thermoelectric_candidate"
         ],
         'scene_tags': [
+            "structure_generate",
+            "thermoelectric"
         ],
     },
     {
-        'input': '',
+        'input': '帮我检索近年来热门的高温超导，构建其结构并预测其超导临界温度',
         'update_input':'',
         'toolchain': [
+            "search-papers-enhanced",
+            "build_bulk_structure_by_template",
+            "predict_superconductor_Tc"
         ],
         'scene_tags': [
+            "structure_generate",
+            "superconductor",
+            "literature"
+
         ],
     },
     {
