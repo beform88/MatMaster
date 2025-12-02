@@ -265,31 +265,31 @@ ALL_TOOLS = {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.OPTIMIZE_STRUCTURE],
         'description': 'Perform geometry optimization of a crystal or molecular structure. Supports relaxation of atomic positions and optionally the unit cell.',
-        'args_setting': f'{DPA_PRIOR_KNOWLEDGE}',
+        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'run_molecular_dynamics': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.MOLECULAR_DYNAMICS],
         'description': 'Run molecular dynamics simulations using ASE interface. CAN DO: run MD with DPA pretrained model or user-uploaded DeePMD mdoel; run NVE, NVT, NPT MD with logging basic thermodynamics and lattice parameters. CANNOT DO: run MD with classical force-field or ab initio (or DFT) methods; nor run complicated MD like shock conditions, or with complicated on-the-fly stastistics like RDF, MSD.',
-        'args_setting': f'{DPA_PRIOR_KNOWLEDGE}',
+        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'calculate_phonon': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.PHONON],
         'description': 'Compute phonon properties. Generates displaced supercells, calculates interatomic forces, and derives phonon dispersion, thermal properties, and optional total/projected DOS. Outputs band structures, entropy, free energy, heat capacity, and maximum phonon frequencies. Requires optimized structure as input.',
-        'args_setting': f'{DPA_PRIOR_KNOWLEDGE}',
+        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.ELASTIC_CONSTANT],
         'description': '',
-        'args_setting': f'{DPA_PRIOR_KNOWLEDGE}',
+        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'run_neb': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA],
         'description': '',
-        'args_setting': f'{DPA_PRIOR_KNOWLEDGE}',
+        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
@@ -299,7 +299,7 @@ ALL_TOOLS = {
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
-        'description': 'Split the HEA chemical formula into element ratios, and calculate VEC, delta, Hmix, Smix, Lambda parameters of the given composition.',
+        'description': 'Split the HEA chemical formula into element and corresponding ratios, and calculate VEC(valence electron consentration), delta(atom size factor), Hmix(mix enthalpy), Smix(mix entropy), Lambda parameters of the given composition.',
     },
     'HEA_predictor': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -309,17 +309,22 @@ ALL_TOOLS = {
     'HEA_comps_generator': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
-        'description': 'Based on a given initial High Entropy Alloy composition, Generate a series of High Entropy Alloy compositions by adjusting the molar ratio of one specific element.',
+        'description': 'Based on a given initial High Entropy Alloy composition, Generate a series of High Entropy Alloy compositions by adjusting the molar ratio of one specific element. Use this tool first for further High Entropy Alloy composition design and optimization.',
     },
     'HEA_data_extract': {
-        'belonging_agent': HEACALCULATOR_AGENT_NAME,
+        'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
-        'description': 'Extract High Entropy Alloy related data from provided literature in PDF format, including compositions, processing methods, micro-phasestructures, and properties.',
+        'description': 'Extract High Entropy Alloy related data from provided literature in PDF format, including compositions, heat treatment processing methods, micro-phasestructures, and mechanical/thermal properties.',
     },
     'HEA_paper_search': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
-        'description': 'Search for papers on arXiv by title, author or keywords related to High Entropy Alloys, download the original publications and save basic information.',
+        'description': 'Search for papers on arXiv by title, author or keywords related to High Entropy Alloys, download the original publications to the server and save basic information. provide search results and save direction for further data extraction and analysis.',
+    },
+    'HEA_bi_phase_Calc': {
+        'belonging_agent': HEA_assistant_AgentName,
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
+        'description': 'For all binary pairs in the High Entropy Alloy chemical system, calculate formation energies and generate binary phase diagram convex hulls',
     },
     'generate_binary_phase_diagram': {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
@@ -412,7 +417,7 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': 'Make supercell expansion based on structure file. Requires valid structure file input.',
-        'args_setting': 'Parameter guidance: Primarily follow user\'s instrucution. If not specified, firstly get structure information to understand the raw lattice. An ideal supercell for computation is isotropic. For example, the raw lattice is (4 A, 10 A, 12 A, 90 deg, 90 deg, 90 deg), the supercell should be 5 × 2 × 2. 30-50 angstrom is often appropriate for simulations. Avoid overly large cells unless needed for long-range interactions.',
+        'args_setting': "Parameter guidance: Primarily follow user's instrucution. If not specified, firstly get structure information to understand the raw lattice. An ideal supercell for computation is isotropic. For example, the raw lattice is (4 A, 10 A, 12 A, 90 deg, 90 deg, 90 deg), the supercell should be 5 × 2 × 2. 30-50 angstrom is often appropriate for simulations. Avoid overly large cells unless needed for long-range interactions.",
     },
     'build_bulk_structure_by_template': {
         'belonging_agent': StructureGenerateAgentName,
@@ -575,7 +580,7 @@ ALL_TOOLS = {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Standard version of searching academic papers based on author information',
-        'args_setting': f'If not specified, the starting year 2020, the ending time is {TODAY}.',
+        'args_setting': f"If not specified, the starting year 2020, the ending time is {TODAY}.",
         'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
     },
     'search-papers-enhanced': {
