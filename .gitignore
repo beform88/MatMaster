@@ -27,4 +27,5 @@ log
 *.csv
 *.txt
 *log*
+*.ipynb
 function_declaration

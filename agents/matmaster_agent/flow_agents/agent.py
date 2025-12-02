@@ -63,6 +63,13 @@ from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
+from agents.matmaster_agent.services.icl import (
+    expand_input_examples,
+    scene_tags_from_examples,
+    select_examples,
+    select_update_examples,
+    toolchain_from_examples,
+)
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -81,6 +88,8 @@ logger.setLevel(logging.INFO)
 
 
 class MatMasterFlowAgent(LlmAgent):
+    # store example selector as a private attribute to avoid pydantic field validation
+
     @model_validator(mode='after')
     def after_init(self):
         self._chat_agent = DisallowTransferLlmAgent(
@@ -273,11 +282,27 @@ class MatMasterFlowAgent(LlmAgent):
                     yield chat_event
             # research 模式
             else:
+                # 检索 ICL 示例
+                icl_examples = select_examples(ctx.user_content.parts[0].text)
+                EXPAND_INPUT_EXAMPLES_PROMPT = expand_input_examples(icl_examples)
+                logger.info(f'{ctx.session.id} {EXPAND_INPUT_EXAMPLES_PROMPT}')
                 # 扩写用户问题
+                self.expand_agent.instruction = (
+                    EXPAND_INSTRUCTION + EXPAND_INPUT_EXAMPLES_PROMPT
+                )
                 async for expand_event in self.expand_agent.run_async(ctx):
                     yield expand_event
 
+                icl_update_examples = select_update_examples(
+                    ctx.session.state['expand']['update_user_content']
+                )
+                SCENE_EXAMPLES_PROMPT = scene_tags_from_examples(icl_update_examples)
+                TOOLCHAIN_EXAMPLES_PROMPT = toolchain_from_examples(icl_update_examples)
+                logger.info(f'{ctx.session.id} {SCENE_EXAMPLES_PROMPT}')
+                logger.info(f'{ctx.session.id} {TOOLCHAIN_EXAMPLES_PROMPT}')
+
                 # 划分问题场景
+                self.scene_agent.instruction = SCENE_INSTRUCTION + SCENE_EXAMPLES_PROMPT
                 async for scene_event in self.scene_agent.run_async(ctx):
                     yield scene_event
 
@@ -323,7 +348,7 @@ class MatMasterFlowAgent(LlmAgent):
                         ]
                     )
                     self.plan_make_agent.instruction = get_plan_make_instruction(
-                        available_tools_with_info_str
+                        available_tools_with_info_str + TOOLCHAIN_EXAMPLES_PROMPT
                     )
                     self.plan_make_agent.output_schema = create_dynamic_plan_schema(
                         available_tools
