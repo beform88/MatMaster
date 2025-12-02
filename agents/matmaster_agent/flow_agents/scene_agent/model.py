@@ -75,3 +75,6 @@ class SceneEnum(DescriptiveEnum):
 
     THERMOELECTRIC = ('thermoelectric', '')
     Electron_Microscope = ('electron_microscope', '')
+
+    DOE = ('doe', '')
+    PILOTEYE_ELECTRO = ('piloteye_electro', '')
