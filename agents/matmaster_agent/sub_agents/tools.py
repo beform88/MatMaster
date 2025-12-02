@@ -242,7 +242,7 @@ ALL_TOOLS = {
     },
     'run_doe_task': {
         'belonging_agent': DOE_AGENT_NAME,
-        'scene': [],
+        'scene': [SceneEnum.DOE],
         'description': 'Run a Design of Experiments (DoE) task using one of the supported algorithms (Extreme Vertices, Simplex Centroid, Simplex Lattice, SDC).',
     },
     'extract_material_data_from_pdf': {
