@@ -3,14 +3,10 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "检索金属亚硝酰配合物光致异构的研究进展",
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "学术情报",
-        "question": "搜索DP-GEN的使用教程，并给出详细步骤",
+        "question": "搜索DP-GEN的技术文档，总结详细的教程",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
+        },
         "structure_url": ""
       }
     },
@@ -19,6 +15,13 @@
         "belonging": "学术情报",
         "question": "检索DeePMD在材料计算应用方面的研究",
         "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "学术情报",
+        "question": "检索金属亚硝酰配合物光致异构的研究进展",
+        "structure_url": ""
       }
     },
     {
