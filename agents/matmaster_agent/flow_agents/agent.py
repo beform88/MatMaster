@@ -58,6 +58,7 @@ from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     create_dynamic_plan_schema,
     get_tools_list,
+    should_bypass_confirmation,
 )
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
@@ -347,18 +348,34 @@ class MatMasterFlowAgent(LlmAgent):
                     update_plan['steps'] = actual_steps
                     yield update_state_event(ctx, state_delta={'plan': update_plan})
 
-                    # 询问用户是否确认计划
-                    for plan_ask_confirm_event in all_text_event(
-                        ctx, self.name, plan_ask_confirm_card(), ModelRole
-                    ):
-                        yield plan_ask_confirm_event
-                    if plan_confirm:
+                    # 检查是否应该跳过用户确认步骤
+                    if should_bypass_confirmation(ctx):
+                        # 自动设置计划确认状态
                         yield update_state_event(
                             ctx,
                             state_delta={
-                                'plan_confirm': {'flag': False, 'reason': ' New Plan'}
+                                'plan_confirm': {
+                                    'flag': True,
+                                    'reason': 'Auto confirmed for single bypass tool',
+                                }
                             },
                         )
+                    else:
+                        # 询问用户是否确认计划
+                        for plan_ask_confirm_event in all_text_event(
+                            ctx, self.name, plan_ask_confirm_card(), ModelRole
+                        ):
+                            yield plan_ask_confirm_event
+                        if plan_confirm:
+                            yield update_state_event(
+                                ctx,
+                                state_delta={
+                                    'plan_confirm': {
+                                        'flag': False,
+                                        'reason': ' New Plan',
+                                    }
+                                },
+                            )
 
                 # 计划未确认，暂停往下执行
                 if ctx.session.state['plan_confirm']['flag']:
