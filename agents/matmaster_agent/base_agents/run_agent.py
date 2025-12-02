@@ -241,6 +241,6 @@ class BaseAgentWithRecAndSum(
             self.summary_agent.instruction = ALL_TOOLS[current_step_tool_name].get(
                 'summary_prompt'
             )
-        if not ctx.session.state['error_occurred'] and not is_async_agent:
+        if not is_async_agent:
             async for summary_event in self.summary_agent.run_async(ctx):
                 yield summary_event
