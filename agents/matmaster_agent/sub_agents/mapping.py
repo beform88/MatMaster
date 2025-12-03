@@ -7,6 +7,18 @@ from agents.matmaster_agent.sub_agents.ABACUS_agent.agent import (
 from agents.matmaster_agent.sub_agents.ABACUS_agent.constant import ABACUS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.apex_agent.agent import ApexAgent, apex_toolset
 from agents.matmaster_agent.sub_agents.apex_agent.constant import ApexAgentName
+from agents.matmaster_agent.sub_agents.built_in_agent.file_parse_agent.agent import (
+    FileParseAgent,
+)
+from agents.matmaster_agent.sub_agents.built_in_agent.file_parse_agent.constant import (
+    FILE_PARSE_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.agent import (
+    LLMToolAgent,
+)
+from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant import (
+    TOOL_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.chembrain_agent.agent import ChemBrainAgent
 from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
     CHEMBRAIN_AGENT_NAME,
@@ -224,8 +236,6 @@ from agents.matmaster_agent.sub_agents.thermoelectric_agent.agent import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
-from agents.matmaster_agent.sub_agents.tool_agent.agent import ToolAgent
-from agents.matmaster_agent.sub_agents.tool_agent.constant import TOOL_AGENT_NAME
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
     TrajAnalysisAgent,
@@ -333,8 +343,9 @@ AGENT_CLASS_MAPPING = {
     NMR_AGENT_NAME: NMRAgent,
     XRD_AGENT_NAME: XRDAgent,
     Electron_Microscope_AGENT_NAME: ElectronMicroscopeAgent,
-    TOOL_AGENT_NAME: ToolAgent,
+    TOOL_AGENT_NAME: LLMToolAgent,
     Physical_Adsorption_AGENT_NAME: PhysicalAdsorptionAgent,
+    FILE_PARSE_AGENT_NAME: FileParseAgent,
 }
 
 
@@ -375,6 +386,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     XRDAgent = XRD_AGENT_NAME
     ElectronMicroscopeAgent = Electron_Microscope_AGENT_NAME
     ToolAgent = TOOL_AGENT_NAME
+    FileParseAgent = FILE_PARSE_AGENT_NAME
     PhysicalAdsorptionAgent = Physical_Adsorption_AGENT_NAME
 
 

@@ -4,6 +4,12 @@ from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.prompt import DPA_PRIOR_KNOWLEDGE
 from agents.matmaster_agent.sub_agents.ABACUS_agent.constant import ABACUS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.apex_agent.constant import ApexAgentName
+from agents.matmaster_agent.sub_agents.built_in_agent.file_parse_agent.constant import (
+    FILE_PARSE_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant import (
+    TOOL_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
     CHEMBRAIN_AGENT_NAME,
 )
@@ -97,7 +103,6 @@ from agents.matmaster_agent.sub_agents.superconductor_agent.constant import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
-from agents.matmaster_agent.sub_agents.tool_agent.constant import TOOL_AGENT_NAME
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
 )
@@ -655,5 +660,11 @@ ALL_TOOLS = {
         'belonging_agent': Physical_Adsorption_AGENT_NAME,
         'scene': [SceneEnum.PHYSICAL_ADSORPTION],
         'description': 'Analyze physical adsorption (gas adsorption) instrument reports.',
+    },
+    'file_parse': {
+        'belonging_agent': FILE_PARSE_AGENT_NAME,
+        'scene': [SceneEnum.WEB_PARSING],
+        'description': '',
+        'bypass_confirmation': True,
     },
 }
