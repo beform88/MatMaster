@@ -107,7 +107,15 @@ def create_tool_args_schema(missing_tool_args, function_declaration):
         __base__=BaseModel,
     )
 
-    return DynamicToolArgsSchema
+    ToolSchema = create_model(
+        'ToolSchema',
+        tool_name=(str, Field(...)),
+        tool_args=(DynamicToolArgsSchema, ...),
+        missing_tool_args=(List[str], Field(default_factory=lambda: missing_tool_args)),
+        __base__=BaseModel,
+    )
+
+    return DynamicToolArgsSchema, ToolSchema
 
 
 if __name__ == '__main__':
