@@ -27,7 +27,7 @@ DISCARD_KEYS = [
     'alltext',
 ]
 
-MAX_ABSTRACT_LEN = 600
+MAX_ABSTRACT_LEN = 300
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ def _process_search_papers_enhanced_response(tool_response):
             and isinstance(new_info['Abstract'], str)
             and len(new_info['Abstract']) > MAX_ABSTRACT_LEN
         ):
-            new_info['Abstract'] = new_info['Abstract'][:MAX_ABSTRACT_LEN]
+            new_info['Abstract'] = new_info['Abstract'][:MAX_ABSTRACT_LEN] + '...'
         filtered_papers.append(new_info)
 
     new_content = json.dumps({'data': filtered_papers})
