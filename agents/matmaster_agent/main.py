@@ -58,7 +58,7 @@ async def agent_main() -> None:
     # user_input = "高熵合金AlCoCr0.5FeNi2的可能结构是什么"
     # user_input = "调用 thermoelectric_agent 帮我生成10个具有Sn和Te元素的热电结构"
     # user_input = "plot perovstite 2021 to 2025"
-    user_input = '帮我创建一个 FCC Bulk Cu 的结构'
+    # user_input = '帮我创建一个 FCC Bulk Cu 的结构'
     # user_input = "帮我用DPA优化这个结构：https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/110663/12791/store/7ba41529-5af4-4e38-a6fb-c569cd769dd9/outputs/structure_paths/structure_bulk.cif"
     # user_input = "帮我检索TiO2"
     # user_input = "请你为我搭建一个氯化钠的结构"
@@ -71,6 +71,7 @@ async def agent_main() -> None:
     # user_input = '生成一个TiO2'
     # user_input = "请帮我根据nmr的谱图，分析一下对应的分子结构h_shifts = [2.16, 2.29, 2.29, 2.29, 2.41, 2.41, 2.41, 3.58, 3.58, 5.63, 7.17, 7.17, 7.17, 7.17, 7.17, 7.17, 7.39, 7.64]c_shifts = [19.1, 19.4, 23.5, 62.7, 82.1, 84.5, 126.27, 126.3, 126.5, 127, 128.36, 128.41, 130.2, 130.8, 134.8, 135.98, 136.02, 138.9]allowed_elements = ['C', 'H', 'O', 'N']formula = 'C18H18O' topk = 5"
     # user_input = '检索DeePMD在材料计算应用方面的研究'
+    user_input = '解析这个NMR的文件，https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBH22RH628YHKHJS2AJ5S8KK/nmr.txt'
     print(f"🧑 用户：{user_input}")
 
     # Create the initial content with user input

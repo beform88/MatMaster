@@ -10,11 +10,13 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import LLMConfig
-from agents.matmaster_agent.sub_agents.tool_agent.constant import TOOL_AGENT_NAME
+from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant import (
+    TOOL_AGENT_NAME,
+)
 from agents.matmaster_agent.utils.event_utils import update_state_event
 
 
-class ToolAgent(DisallowTransferLlmAgent):
+class LLMToolAgent(DisallowTransferLlmAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,
@@ -35,4 +37,4 @@ class ToolAgent(DisallowTransferLlmAgent):
 
 
 def init_tool_agent(llm_config) -> ErrorHandleLlmAgent:
-    return ToolAgent(llm_config)
+    return LLMToolAgent(llm_config)
