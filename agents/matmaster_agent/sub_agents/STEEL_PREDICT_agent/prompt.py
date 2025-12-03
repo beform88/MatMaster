@@ -29,7 +29,7 @@ Neural network-based prediction tool for stainless steel tensile strength (UTS).
 B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
 
 **Returns:**
-- Prediction result string in format: "预测结果: {value} MPa"
+- Prediction result string in format: "预测结果: [predicted_value] MPa" (e.g., "预测结果: 650.25 MPa")
 
 **Examples:**
 1) Predict tensile strength for Fe70Cr20Ni10:
@@ -53,7 +53,7 @@ B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
 - The model uses standardized input features, so the tool handles data preprocessing automatically
 
 **Output Format:**
-- The tool returns a string: "预测结果: {value} MPa"
+- The tool returns a string: "预测结果: [predicted_value] MPa" (e.g., "预测结果: 650.25 MPa")
 - Present this result clearly to the user
 - If the user asks for interpretation, explain what the predicted value means in context
 - Compare with typical stainless steel tensile strength ranges if relevant (e.g., 300-800 MPa for common grades)
