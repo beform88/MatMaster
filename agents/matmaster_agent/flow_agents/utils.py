@@ -90,7 +90,7 @@ def create_dynamic_plan_schema(available_tools: list):
 
 
 def should_bypass_confirmation(ctx: InvocationContext) -> bool:
-    """Determine whether to skip plan confirmation based on the tools in the plan."""    
+    """Determine whether to skip plan confirmation based on the tools in the plan."""
     plan_steps = ctx.session.state['plan'].get('steps', [])
     tool_count = len(
         plan_steps
@@ -100,7 +100,7 @@ def should_bypass_confirmation(ctx: InvocationContext) -> bool:
     if tool_count == 1:
         # Find the first (and only) tool name
         first_tool_name = plan_steps[0].get('tool_name', '')
-        
+
         # Check if this tool has bypass_confirmation set to True
         if ALL_TOOLS.get(first_tool_name, {}).get('bypass_confirmation') is True:
             return True
