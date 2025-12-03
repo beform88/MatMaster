@@ -63,7 +63,7 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "请搜索近期关于 MoTe₂ 相变（1T′–2H）调控的研究进展，并总结主流调控方法",
+        "question": "请搜索近期关于MoTe₂相变（1T′–2H）调控的研究进展，并总结主流调控方法",
         "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e8b6af706ab2ac632d8becdc85"
         },
