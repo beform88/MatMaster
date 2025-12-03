@@ -1,6 +1,6 @@
 import copy
 import logging
-from typing import AsyncGenerator, Optional, Union, override
+from typing import AsyncGenerator, List, Optional, Union, override
 
 from google.adk.agents import InvocationContext
 from google.adk.agents.llm_agent import (
@@ -10,6 +10,7 @@ from google.adk.agents.llm_agent import (
 )
 from google.adk.events import Event
 from google.adk.models import BaseLlm
+from google.genai.types import FunctionDeclaration
 from pydantic import computed_field
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
@@ -17,6 +18,22 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
 )
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleBaseAgent
 from agents.matmaster_agent.base_agents.mcp_agent import MCPInitMixin
+from agents.matmaster_agent.base_agents.recommend_summary_agent.recommend_params_agent.prompt import (
+    gen_recommend_params_agent_instruction,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.recommend_params_agent.schema import (
+    create_tool_args_schema,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.subagent_summary_agent.prompt import (
+    get_subagent_summary_prompt,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.tool_call_info_agent.prompt import (
+    gen_tool_call_info_instruction,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.tool_call_info_agent.utils import (
+    update_tool_call_info_with_function_declarations,
+    update_tool_call_info_with_recommend_params,
+)
 from agents.matmaster_agent.base_agents.schema_agent import (
     DisallowTransferSchemaAgent,
     SchemaAgent,
@@ -24,27 +41,12 @@ from agents.matmaster_agent.base_agents.schema_agent import (
 from agents.matmaster_agent.base_agents.subordinate_agent import (
     SubordinateFeaturesMixin,
 )
+from agents.matmaster_agent.base_agents.tool_connect_agent import ToolConnectAgent
 from agents.matmaster_agent.base_callbacks.private_callback import (
-    default_before_model_callback,
+    inject_function_declarations,
     remove_function_call,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-from agents.matmaster_agent.job_agents.recommend_params_agent.prompt import (
-    gen_recommend_params_agent_instruction,
-)
-from agents.matmaster_agent.job_agents.recommend_params_agent.schema import (
-    create_tool_args_schema,
-)
-from agents.matmaster_agent.job_agents.subagent_summary_agent.prompt import (
-    get_subagent_summary_prompt,
-)
-from agents.matmaster_agent.job_agents.tool_call_info_agent.prompt import (
-    gen_tool_call_info_instruction,
-)
-from agents.matmaster_agent.job_agents.tool_call_info_agent.utils import (
-    update_tool_call_info_with_function_declarations,
-    update_tool_call_info_with_recommend_params,
-)
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
@@ -70,12 +72,17 @@ class BaseAgentWithRecAndSum(
     def _after_init(self):
         agent_prefix = self.name.replace('_agent', '')
 
-        self._tool_call_info_agent = DisallowTransferSchemaAgent(
+        self._tool_connect_agent = ToolConnectAgent(
             model=self.model,
-            name=f"{agent_prefix}_tool_call_info_agent",
+            name=f"{agent_prefix}_tool_connect_agent",
             tools=self.tools,
-            before_model_callback=default_before_model_callback,
+            before_model_callback=inject_function_declarations,
             after_model_callback=remove_function_call,
+        )
+
+        self._tool_call_info_agent = DisallowTransferSchemaAgent(
+            model=MatMasterLlmConfig.tool_schema_model,
+            name=f"{agent_prefix}_tool_call_info_agent",
             output_schema=ToolCallInfoSchema,
             state_key='tool_call_info',
         )
@@ -114,6 +121,11 @@ class BaseAgentWithRecAndSum(
 
     @computed_field
     @property
+    def tool_connect_agent(self) -> ToolConnectAgent:
+        return self._tool_connect_agent
+
+    @computed_field
+    @property
     def tool_call_info_agent(self) -> SchemaAgent:
         return self._tool_call_info_agent
 
@@ -139,9 +151,26 @@ class BaseAgentWithRecAndSum(
             ctx.session.state['plan_index']
         ]
         current_step_tool_name = current_step['tool_name']
+
+        # 连接 tool-server，获取doc和函数声明
+        async for tool_connect_evenet in self.tool_connect_agent.run_async(ctx):
+            yield tool_connect_evenet
+
+        # 根据用户问题先推荐一轮
+        function_declarations: List[FunctionDeclaration] = ctx.session.state[
+            'function_declarations'
+        ]
+        current_function_declaration = [
+            item
+            for item in function_declarations
+            if item['name'] == current_step_tool_name
+        ]
+
         self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
             user_prompt=current_step['description'],
             agent_prompt=self.instruction,
+            tool_doc=current_function_declaration[0]['description'],
+            tool_schema=current_function_declaration[0]['parameters'],
             tool_args_recommend_prompt=ALL_TOOLS[current_step_tool_name].get(
                 'args_setting', ''
             ),
@@ -152,42 +181,41 @@ class BaseAgentWithRecAndSum(
         if ctx.session.state['error_occurred']:
             return
 
+        update_tool_call_info = copy.deepcopy(ctx.session.state['tool_call_info'])
+        update_tool_call_info['tool_name'] = update_tool_call_info.get('tool_name', '')
+        update_tool_call_info['tool_args'] = update_tool_call_info.get('tool_args', {})
+        update_tool_call_info['missing_tool_args'] = update_tool_call_info.get(
+            'missing_tool_args', []
+        )
+
+        # modify tool_name
         if (
-            not ctx.session.state['tool_call_info']
-            or ctx.session.state['tool_call_info']['tool_name']
+            ctx.session.state['tool_call_info']['tool_name']
             != current_step['tool_name']
         ):
-            update_tool_call_info = copy.deepcopy(ctx.session.state['tool_call_info'])
             update_tool_call_info['tool_name'] = current_step_tool_name
-            update_tool_call_info['tool_args'] = {}
-            update_tool_call_info['missing_tool_args'] = []
-            yield update_state_event(
-                ctx, state_delta={'tool_call_info': update_tool_call_info}
-            )
 
+        # remove functions. prefix
         if ctx.session.state['tool_call_info']['tool_name'].startswith('functions.'):
             logger.warning(
                 f'{ctx.session.id} Detect wrong tool_name: {ctx.session.state['tool_call_info']['tool_name']}'
             )
-            update_tool_call_info = copy.deepcopy(ctx.session.state['tool_call_info'])
             update_tool_call_info['tool_name'] = update_tool_call_info[
                 'tool_name'
             ].replace('functions.', '')
-            yield update_state_event(
-                ctx, state_delta={'tool_call_info': update_tool_call_info}
-            )
+
+        yield update_state_event(
+            ctx, state_delta={'tool_call_info': update_tool_call_info}
+        )
 
         tool_call_info = ctx.session.state['tool_call_info']
-        function_declarations = ctx.session.state['function_declarations']
         logger.info(
-            f'{ctx.session.id} tool_call_info = {tool_call_info}, function_declarations = {function_declarations}'
+            f'{ctx.session.id} tool_call_info = {tool_call_info}, function_declarations = {function_declarations},'
+            f'current_function_declaration = {current_function_declaration}'
         )
-        tool_call_info, current_function_declaration = (
-            update_tool_call_info_with_function_declarations(
-                tool_call_info, function_declarations
-            )
+        tool_call_info = update_tool_call_info_with_function_declarations(
+            tool_call_info, current_function_declaration
         )
-
         yield update_state_event(ctx, state_delta={'tool_call_info': tool_call_info})
 
         logger.info(
