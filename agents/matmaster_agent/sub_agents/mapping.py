@@ -183,6 +183,13 @@ from agents.matmaster_agent.sub_agents.SSEkb_agent.agent import (
 from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
     SSE_KB_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.agent import (
+    STEELPredictAgent,
+    steel_predict_toolset,
+)
+from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
+    STEEL_PREDICT_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.STEELkb_agent.agent import (
     STEELKbAgent,
     steel_kb_toolset,
@@ -266,6 +273,7 @@ ALL_TOOLSET_DICT = {
     'sse_kb_toolset': sse_kb_toolset,
     'polymer_kb_toolset': polymer_kb_toolset,
     'steel_kb_toolset': steel_kb_toolset,
+    'steel_predict_toolset': steel_predict_toolset,
     'optimade_toolset': optimade_toolset,
     'bohriumpublic_toolset': bohriumpublic_toolset,
     'openlam_toolset': openlam_toolset,
@@ -303,6 +311,7 @@ AGENT_CLASS_MAPPING = {
     SSE_KB_AGENT_NAME: SSEKbAgent,
     POLYMER_KB_AGENT_NAME: POLYMERKbAgent,
     STEEL_KB_AGENT_NAME: STEELKbAgent,
+    STEEL_PREDICT_AGENT_NAME: STEELPredictAgent,
     LAMMPS_AGENT_NAME: LAMMPSAgent,
     OPTIMADE_DATABASE_AGENT_NAME: Optimade_AgentBase,
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME: Bohriumpublic_AgentBase,
@@ -341,6 +350,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     SSEKbAgent = SSE_KB_AGENT_NAME
     POLYMERKbAgent = POLYMER_KB_AGENT_NAME
     STEELKbAgent = STEEL_KB_AGENT_NAME
+    STEELPredictAgent = STEEL_PREDICT_AGENT_NAME
     LAMMPSAgent = LAMMPS_AGENT_NAME
     CompDARTAgent = COMPDART_AGENT_NAME
     OptimadeDatabaseAgent = OPTIMADE_DATABASE_AGENT_NAME

@@ -82,6 +82,9 @@ from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
 from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
     SSE_KB_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
+    STEEL_PREDICT_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
     STEEL_KB_AGENT_NAME,
 )
@@ -358,6 +361,11 @@ ALL_TOOLS = {
         'belonging_agent': STEEL_KB_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Query the STEELkb literature knowledge base. ',
+    },
+    'predict_tensile_strength': {
+        'belonging_agent': STEEL_PREDICT_AGENT_NAME,
+        'scene': [SceneEnum.STEEL],
+        'description': 'Predict the ultimate tensile strength (UTS) of stainless steel based on chemical composition using a trained neural network model. Parses chemical formula string to extract element compositions, validates elements are within allowed set (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W), and returns predicted tensile strength in MPa. Formula format: ElementSymbol followed by numeric value (e.g., "Fe70Cr20Ni10" or "C0.1Si0.5Mn1.0Cr18.0Ni8.0").',
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
