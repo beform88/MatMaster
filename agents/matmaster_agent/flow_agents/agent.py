@@ -10,7 +10,7 @@ from pydantic import computed_field, model_validator
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
-from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent
+from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent, DisallowTransferSchemaAgent
 from agents.matmaster_agent.base_callbacks.private_callback import remove_function_call
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
@@ -170,11 +170,12 @@ class MatMasterFlowAgent(LlmAgent):
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
 
-        self._follow_up_agent = DisallowTransferLlmAgent(
+        self._follow_up_agent = DisallowTransferSchemaAgent(
             name='follow_up_agent',
             model=MatMasterLlmConfig.default_litellm_model,
             description='生成追问问题',
             instruction=FOLLOW_UP_PROMPT,
+            state_key='follow_up_questions',
         )
 
         self._execution_agent = MatMasterSupervisorAgent(
@@ -458,6 +459,26 @@ class MatMasterFlowAgent(LlmAgent):
                                 ctx
                             ):
                                 yield analysis_event
+
+            # 获取追问建议
+            follow_up_title = "继续追问："
+            follow_up_list = []
+
+            async for follow_up_event in self.follow_up_agent.run_async(ctx):
+                yield follow_up_event
+            
+            follow_up_list = ctx.session.state['follow_up_questions'].get("list", [])
+
+            for generate_follow_up_event in context_function_event(
+                ctx,
+                self.name,
+                'matmaster_generate_follow_up',
+                {},
+                ModelRole,
+                {'invocation_id': ctx.invocation_id, 'title': follow_up_title, 'list': follow_up_list},
+            ):
+                yield generate_follow_up_event
+
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
@@ -469,52 +490,6 @@ class MatMasterFlowAgent(LlmAgent):
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
-
-        # 获取追问建议
-        follow_up_title = ""
-        follow_up_list = []
-
-        try:
-            async for follow_up_event in self.follow_up_agent.run_async(ctx):
-                if follow_up_event.content and follow_up_event.content.parts:
-                    for part in follow_up_event.content.parts:
-                        try:
-                            text = part.text
-                            # 尝试去掉可能存在的 markdown 代码块标记
-                            if text.startswith('```json'):
-                                text = text[7:]
-                            elif text.startswith('```'):
-                                text = text[3:]
-                            if text.endswith('```'):
-                                text = text[:-3]
-                            
-                            import json
-                            data = json.loads(text.strip())
-                            if isinstance(data, dict):
-                                follow_up_title = data.get('title', '')
-                                follow_up_list = data.get('list', [])
-                        except Exception:
-                            # 如果解析失败，记录日志或保持默认空值
-                            logger.warning(f"[追问组件] 解析JSON失败: {part.text}")
-        except Exception as follow_up_err:
-            logger.warning(f"[追问组件] follow_up_agent 运行异常: {follow_up_err}")
-
-        # 兼容性兜底：如无追问，给出默认提示
-        if not follow_up_title:
-            follow_up_title = "继续追问："
-        if not isinstance(follow_up_list, list):
-            follow_up_list = [""]
-
-
-        for generate_follow_up_event in context_function_event(
-            ctx,
-            self.name,
-            'matmaster_generate_follow_up',
-            {},
-            ModelRole,
-            {'invocation_id': ctx.invocation_id, 'title': follow_up_title, 'list': follow_up_list},
-        ):
-            yield generate_follow_up_event
 
         # 评分组件
         for generate_nps_event in context_function_event(
