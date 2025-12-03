@@ -6,7 +6,7 @@ from pydantic import computed_field, model_validator
 from agents.matmaster_agent.base_agents.disallow_mcp_agent import (
     DisallowTransferSyncMCPAgent,
 )
-from agents.matmaster_agent.base_agents.run_agent import (
+from agents.matmaster_agent.base_agents.recommend_summary_agent.agent import (
     BaseAgentWithRecAndSum,
 )
 from agents.matmaster_agent.base_agents.subordinate_agent import (

@@ -18,6 +18,22 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
 )
 from agents.matmaster_agent.base_agents.error_agent import ErrorHandleBaseAgent
 from agents.matmaster_agent.base_agents.mcp_agent import MCPInitMixin
+from agents.matmaster_agent.base_agents.recommend_summary_agent.recommend_params_agent.prompt import (
+    gen_recommend_params_agent_instruction,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.recommend_params_agent.schema import (
+    create_tool_args_schema,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.subagent_summary_agent.prompt import (
+    get_subagent_summary_prompt,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.tool_call_info_agent.prompt import (
+    gen_tool_call_info_instruction,
+)
+from agents.matmaster_agent.base_agents.recommend_summary_agent.tool_call_info_agent.utils import (
+    update_tool_call_info_with_function_declarations,
+    update_tool_call_info_with_recommend_params,
+)
 from agents.matmaster_agent.base_agents.schema_agent import (
     DisallowTransferSchemaAgent,
     SchemaAgent,
@@ -31,22 +47,6 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_function_call,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
-from agents.matmaster_agent.job_agents.recommend_params_agent.prompt import (
-    gen_recommend_params_agent_instruction,
-)
-from agents.matmaster_agent.job_agents.recommend_params_agent.schema import (
-    create_tool_args_schema,
-)
-from agents.matmaster_agent.job_agents.subagent_summary_agent.prompt import (
-    get_subagent_summary_prompt,
-)
-from agents.matmaster_agent.job_agents.tool_call_info_agent.prompt import (
-    gen_tool_call_info_instruction,
-)
-from agents.matmaster_agent.job_agents.tool_call_info_agent.utils import (
-    update_tool_call_info_with_function_declarations,
-    update_tool_call_info_with_recommend_params,
-)
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
