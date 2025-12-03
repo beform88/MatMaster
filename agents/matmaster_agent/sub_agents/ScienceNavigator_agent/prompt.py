@@ -42,7 +42,7 @@ _FORMAT_REQUIREMENT = """
 - Output in plain text, no bullet points unless necessary or user requests.
 - Avoid starting with any preambles, acknowledgements, confirmations, or meta-statements such as "Sure, I will...", "Okay, I will...", or "I will now analyze...". Instead, directly output the substantive content.
 - Avoid statement without evidence from the papers, e.g. the first, the best, most popular, etc.
-- A space should be added between figures and units, e.g. 10 cm, 5 kg. An italic font should be used for physical quantities, e.g. *E*, *T*, *k*. A bold font should be used for vectors, e.g. **F**, **E**, and serial code names of compounds/materials, e.g. compound **1** etc.
+- A space should be added between figures and units, e.g. 10 cm, 5 kg. Avoid unnecessary space between Chinese characters and English characters. An italic font should be used for physical quantities, e.g. *E*, *T*, *k*. A bold font should be used for vectors, e.g. **F**, **E**, and serial code names of compounds/materials, e.g. compound **1** etc.
 - Any abbreviations of terminologies should be defined in the beginning of the output, and should be used consistently throughout the output.
 - The English journal name and ariticle title should be italized, NOT wrapped by book-title marks. e.g. *The Journal of Chemical Physics*, NOT《The Journal of Chemical Physics》
 - Every summary must include the reference link to the original `paperUrl`, displayed as clickable number with links. When inserting reference links, use ONLY the following exact HTML format:
@@ -112,6 +112,7 @@ The tool returns a whole content from a webpage.
    - Level 3: Synthesized reasoning that logically connects webpage content (clearly labeled as "based on integration of retrieved info").
 3. Avoid overgeneralization; do not infer domain knowledge beyond what webpages support.
 4. Cite each supporting sentence or phrase from the webpages with a numbered link: <a href="URL" target="_blank">[n]</a>
+5. If equations or formulas are provided, include them in Latex and explain the meaning and **EVERY** involved variables.
 
 ### Example template for mechanism-oriented answer:
 ```
@@ -126,6 +127,7 @@ Integrating these, the mechanism can be structured into: (1) ..., (2) ..., (3) .
 3. When webpages provide code samples, configuration blocks, commands, or scripts, reproduce them **verbatim** inside fenced code blocks.
     - Explain the purpose of each step setup;
     - Explain the meaning of variables in codes or scripts;
+    - Give examples of input scripts snippets or commands if possible.
 4. If multiple webpages provide overlapping or conflicting instructions, compare them explicitly and indicate which set of steps is more complete or reliable.
 5. If webpages contain insufficient procedural detail, state so clearly and provide only the steps supported by retrieved text; do not fabricate intermediate steps.
 
@@ -172,6 +174,7 @@ The tools returns a list of papers with metadata. You need to scan through the p
     3. Any inconsistencies, limitations, or gaps in the current research.
     4. Do not over-emphasize technical details (instrumental settings or computational software and parameter settings) unless necessary.
 - When the user requests querying or searching, you should consider the relevance and irrelevance between the search results and user needs, using positive and negative thinking to ensure the search results are highly relevant to user needs. You should also analyze the relevance and irrelevance when answering.
+- If equations or formulas are provided, include them in Latex and explain the meaning and **EVERY** involved variables.
 
 
 The overall abstract should be brief with less than 3 sentences, including and only including:
