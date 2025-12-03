@@ -63,7 +63,7 @@ from agents.matmaster_agent.flow_agents.utils import (
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
-from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
+from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT, FOLLOW_UP_PROMPT
 from agents.matmaster_agent.services.icl import (
     expand_input_examples,
     scene_tags_from_examples,
@@ -170,6 +170,13 @@ class MatMasterFlowAgent(LlmAgent):
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
 
+        self._follow_up_agent = DisallowTransferLlmAgent(
+            name='follow_up_agent',
+            model=MatMasterLlmConfig.default_litellm_model,
+            description='生成追问问题',
+            instruction=FOLLOW_UP_PROMPT,
+        )
+
         self._execution_agent = MatMasterSupervisorAgent(
             name='execution_agent',
             model=MatMasterLlmConfig.default_litellm_model,
@@ -199,6 +206,7 @@ class MatMasterFlowAgent(LlmAgent):
             self.plan_info_agent,
             self.plan_confirm_agent,
             self.execution_agent,
+            self.follow_up_agent,
             self.analysis_agent,
         ]
 
@@ -243,6 +251,11 @@ class MatMasterFlowAgent(LlmAgent):
     @property
     def execution_agent(self) -> LlmAgent:
         return self._execution_agent
+
+    @computed_field
+    @property
+    def follow_up_agent(self) -> LlmAgent:
+        return self._follow_up_agent
 
     @computed_field
     @property
@@ -457,6 +470,58 @@ class MatMasterFlowAgent(LlmAgent):
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
 
+        # TODO: 追问组件
+        # 运行 follow_up_agent，获取追问建议
+        follow_up_title = ""
+        follow_up_list = []
+
+        try:
+            async for follow_up_event in self.follow_up_agent.run_async(ctx):
+                if follow_up_event.content and follow_up_event.content.parts:
+                    for part in follow_up_event.content.parts:
+                        try:
+                            text = part.text
+                            # 尝试去掉可能存在的 markdown 代码块标记
+                            if text.startswith('```json'):
+                                text = text[7:]
+                            elif text.startswith('```'):
+                                text = text[3:]
+                            if text.endswith('```'):
+                                text = text[:-3]
+                            
+                            import json
+                            data = json.loads(text.strip())
+                            if isinstance(data, dict):
+                                follow_up_title = data.get('title', '')
+                                follow_up_list = data.get('list', [])
+                        except Exception:
+                            # 如果解析失败，记录日志或保持默认空值
+                            logger.warning(f"[追问组件] 解析JSON失败: {part.text}")
+        except Exception as follow_up_err:
+            logger.warning(f"[追问组件] follow_up_agent 运行异常: {follow_up_err}")
+
+        # 兼容性兜底：如无追问，给出默认提示
+        if not follow_up_title:
+            follow_up_title = "你可能还想问："
+        if not isinstance(follow_up_list, list):
+            follow_up_list = ["1", "2", "3"]
+
+
+        for generate_follow_up_event in context_function_event(
+            ctx,
+            self.name,
+            'matmaster_generate_follow_up',
+            {},
+            ModelRole,
+            {'invocation_id': ctx.invocation_id, 'title': follow_up_title, 'list': follow_up_list},
+        ):
+            yield generate_follow_up_event
+        ## {
+        #   'invocation_id': ctx.invocation_id,
+            # 'title': xxx,
+            # 'list': [xxx]
+        #  }
+
         # 评分组件
         for generate_nps_event in context_function_event(
             ctx,
@@ -467,3 +532,4 @@ class MatMasterFlowAgent(LlmAgent):
             {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},
         ):
             yield generate_nps_event
+

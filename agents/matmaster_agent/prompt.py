@@ -942,6 +942,19 @@ Built-in multi-task general-purpose pretrained models:
 
 """
 
+FOLLOW_UP_PROMPT = """
+You are a follow-up expert. Your task is to generate a follow-up questions based on the user's question and answer.
+
+Generate follow-up questions in the following format:
+{{"title": "你可能还想问：", "list": ["<string>", "<string>", "<string>"]}}
+
+length of each recommended question should be less than 10 letters.
+
+Example:
+- Title: "你可能还想问："
+- List: ["1", "2", "3"]
+"""
+
 
 def get_user_content_lang():
     return """
