@@ -14,6 +14,9 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "检索DeePMD在材料计算应用方面的研究",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2daabec7e9e85df7d277598a9d3"
+        },
         "structure_url": null
       }
     },
@@ -21,6 +24,9 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "检索金属亚硝酰配合物光致异构的研究进展",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2f938467f2baf634286b11dfd32"
+        },
         "structure_url": ""
       }
     },
@@ -29,7 +35,7 @@
         "belonging": "学术情报",
         "question": "单手性的分子晶体在室温SC-XRD测试中flack ~ 1e-4而高温接近1e-1，解释原因",
         "share_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adf9dae8e78daa6d229b8497adbe3"
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e996d176bf8c76e2860f35dbb1"
         },
         "structure_url": null
       }
@@ -38,6 +44,9 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途和局限性",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
+        },
         "structure_url": null
       }
     },
@@ -45,6 +54,9 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "解释某些非晶材料在DSC测试中玻璃转变温度后出现冷结晶信号的原因",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fc5a1c7475a86ae27f49da152a"
+        },
         "structure_url": null
       }
     },
@@ -52,76 +64,82 @@
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "请生成空间群为225的晶体结构，要求带隙（bandgap）小于0.5 eV，生成2个样本",
+        "share_url": {
+          "test_url": ""
+        },
         "structure_url": null
       }
     },
     {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "搭建最有代表性的fcc和hcp结构，切割其密置层的切面（切5层，真空层为1层），扩胞5×5×1",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae32380f973b1b1d88b769193cfba"
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "_comment": "TODO: Needs a better case.",
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "请根据给定的空间群和Wyckoff位置信息生成一个晶体结构：Pm-3m空间群（编号221），a = b = c = 3.90 Å, α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae312dda27594818e8f1da70f22eb"
+        },
         "structure_url": null
       }
     },
     {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "生成FCC Cu的2×2×2超胞",
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "生成Al的fcc晶体结构，晶格常数a = 5.0 Å",
-        "structure_url": null
-      }
-    },
-    {
+      "_comment": "TODO: Needs a better case.",
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "构建KCl的3*3超胞，将30%的K替换为Na、20%的Cl替换为Br",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae31717b47a78a5785bd890bbf682"
+        },
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "根据SMILES'C1=CC=CC=C1'生成苯分子结构",
+        "question": "搭建布洛芬的分子结构",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34580a07d2b90fba5c7d7d17d60"
+        },
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "为Si生成(111)表面slab，厚度10 Å，真空层15 Å",
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "搜索基于空间群和Wyckoff位置的信息，然后构建alpha-氧化铝的晶体结构",
+        "question": "搜索刚玉的Wyckoff位置信息，用其构建晶体结构",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
+        },
         "structure_url": ""
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
-        "question": "在Materials Project中检索并返回3个带隙大于 2 eV的氧化物结构",
+        "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
-        "question": "在Alexandria中查找并返回5个含 Li、Mn、O的材料",
+        "question": "在Alexandria中查找并返回5个含Li、Mn、O的材料",
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
-        "question": "在Materials Project中检索并返回不超过2个仅含 Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
+        "question": "在Materials Project中检索并返回不超过2个仅含Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
         "structure_url": null
       }
     },
@@ -163,35 +181,20 @@
     {
       "zhPrompt": {
         "belonging": "DPA计算",
-        "question": "帮我用DPA对上传结构进行优化",
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1758895146_POSCAR_1"
+        "question": "使用DPA对此Li₂O结构进行300 K、1 ps分子动力学模拟，时间步长1 fs",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34fe26974d5bb7fa5f973c3d92f"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHN3C8VXXJ6G2774KCGSS8B/dpa_md_Li2O.cif"
       }
     },
     {
       "zhPrompt": {
         "belonging": "DPA计算",
-        "question": "帮我用DPA计算一下这个结构的弹性常数",
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "DPA计算",
-        "question": "请使用DPA在300 K下对Li₂O 进行1 ps分子动力学模拟，时间步长1 fs",
-        "structure_url": " https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761029503_bohriumcrystal_65e5a9898d93f05838e25195_0.cif"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "DPA计算",
-        "question": "使用DPA计算Si结构的声子谱",
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "DPA计算",
-        "question": "请使用DPA计算MgO的弹性常数",
+        "question": "请使用DPA计算此MgO结构的弹性常数",
+        "share_url": {
+          "test_url": "请使用DPA计算此MgO结构的弹性常数"
+        },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761030016_bohriumcrystal_65e5a9a78d93f05838e28106_0.cif"
       }
     },
