@@ -40,11 +40,11 @@ from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
 from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
     SSE_KB_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
-    STEEL_KB_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
     STEEL_PREDICT_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
+    STEEL_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,

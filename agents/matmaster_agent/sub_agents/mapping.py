@@ -183,19 +183,19 @@ from agents.matmaster_agent.sub_agents.SSEkb_agent.agent import (
 from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
     SSE_KB_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.STEELkb_agent.agent import (
-    STEELKbAgent,
-    steel_kb_toolset,
-)
-from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
-    STEEL_KB_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.agent import (
     STEELPredictAgent,
     steel_predict_toolset,
 )
 from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
     STEEL_PREDICT_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.agent import (
+    STEELKbAgent,
+    steel_kb_toolset,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
+    STEEL_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.agent import (
     StructureGenerateAgent,

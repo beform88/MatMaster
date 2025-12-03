@@ -47,4 +47,3 @@ class STEELPredictAgent(BaseSyncAgentWithToolValidator):
 
 def init_steel_predict_agent(llm_config: LLMConfig, name_suffix='') -> BaseAgent:
     return STEELPredictAgent(llm_config, name_suffix)
-

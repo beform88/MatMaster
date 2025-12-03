@@ -8,4 +8,3 @@ if CURRENT_ENV in ['test', 'uat', 'prod']:
     STEEL_PREDICT_SERVER_URL = 'http://khag1410990.bohrium.tech:50001/sse'
 else:
     STEEL_PREDICT_SERVER_URL = 'http://khag1410990.bohrium.tech:50001/sse'  # Default to prod if env not recognized
-

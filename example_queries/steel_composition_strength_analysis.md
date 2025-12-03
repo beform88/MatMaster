@@ -115,4 +115,3 @@ MatMaster Agent 理解意图
 - Cr22%: "Fe60Cr22Ni12Mo2.5Mn2Si0.75C0.03"
 
 （注意：Fe含量需要相应调整以保持总和合理）
-

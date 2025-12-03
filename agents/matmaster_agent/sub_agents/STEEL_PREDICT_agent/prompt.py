@@ -40,11 +40,6 @@ B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
    → Tool: predict_tensile_strength
      formula: "C0.1Si0.5Mn1.0Cr18.0Ni8.0"
 
-3) Predict with custom model path:
-   → Tool: predict_tensile_strength
-     formula: "Fe70Cr20Ni10"
-     model_path: "custom_model.pth"
-
 **Usage Guidelines:**
 - Always provide the chemical formula in the correct format
 - Ensure all elements in the formula are from the allowed set
@@ -58,4 +53,3 @@ B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
 - If the user asks for interpretation, explain what the predicted value means in context
 - Compare with typical stainless steel tensile strength ranges if relevant (e.g., 300-800 MPa for common grades)
 """
-
