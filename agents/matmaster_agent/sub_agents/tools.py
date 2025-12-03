@@ -174,42 +174,42 @@ ALL_TOOLS = {
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.VACANCY_FORMATION_ENERGY],
-        'description': 'Evaluate vacancy formation energies by relaxing supercells with one atom removed',
+        'description': 'Evaluate vacancy formation energies by relaxing supercells with one atom removed. Based on DFT(Density functional theory).',
     },
     'apex_optimize_structure': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.OPTIMIZE_STRUCTURE, SceneEnum.APEX],
-        'description': 'Perform geometry optimization of a crystal(recommend alloy system), relaxing atomic positions and optionally the unit cell.',
+        'description': 'Perform geometry optimization of a crystal(recommend alloy system), relaxing atomic positions and optionally the unit cell. Based on DFT(Density functional theory).',
     },
     'apex_calculate_interstitial': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.INTERSTITIAL_FORMATION_ENERGY],
-        'description': 'Insert interstitial atoms into a host lattice to compute formation energies across candidate sites.',
+        'description': 'Insert interstitial atoms into a host lattice to compute formation energies across candidate sites. Based on DFT(Density functional theory).',
     },
     'apex_calculate_elastic': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.ELASTIC_CONSTANT],
-        'description': 'Apply small strains to the lattice to extract elastic constants and derived moduli.',
+        'description': 'Apply small strains to the lattice to extract elastic constants and derived moduli. Based on DFT(Density functional theory).',
     },
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.SURFACE_ENERGY],
-        'description': 'Execute a workflow of surfacce energy calculation. CANNOT build slab structures',
+        'description': 'Execute a workflow of surfacce energy calculation. CANNOT build slab structures. Based on DFT(Density functional theory).',
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.EOS],
-        'description': 'Scan volumes around equilibrium, relax internal coordinates, and build an equation-of-state energy–volume curve.',
+        'description': 'Scan volumes around equilibrium, relax internal coordinates, and build an equation-of-state energy–volume curve. Based on DFT(Density functional theory).',
     },
     'apex_calculate_phonon': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.PHONON],
-        'description': 'Perform supercell finite-displacement calculations, relax configurations, and assemble phonon spectra',
+        'description': 'Perform supercell finite-displacement calculations, relax configurations, and assemble phonon spectra. Based on DFT(Density functional theory).',
     },
     'apex_calculate_gamma': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.STACKING_FAULT_ENERGY],
-        'description': 'Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths.',
+        'description': 'Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths. Based on DFT(Density functional theory).',
     },
     'get_target_info': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
@@ -228,13 +228,13 @@ ALL_TOOLS = {
     },
     'convert_smiles_to_png': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.SMILES],
-        'description': '',
+        'scene': [SceneEnum.MOLECULAR],
+        'description': 'Convert molecular SMILES representation into 2D molecular images',
     },
     'convert_png_to_smiles': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.SMILES],
-        'description': '',
+        'scene': [SceneEnum.MOLECULAR],
+        'description': 'Convert 2D molecular images to SMILES representation',
     },
     # Perovskite solar cell literature/database tools
     'get_database_info': {
@@ -254,7 +254,7 @@ ALL_TOOLS = {
     },
     'validate_smiles': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.SMILES],
+        'scene': [SceneEnum.MOLECULAR],
         'description': '',
     },
     'run_ga': {
@@ -275,31 +275,31 @@ ALL_TOOLS = {
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.OPTIMIZE_STRUCTURE],
-        'description': 'Perform geometry optimization of a crystal or molecular structure. Supports relaxation of atomic positions and optionally the unit cell.',
+        'description': 'Perform geometry optimization of a crystal or molecular structure. Supports relaxation of atomic positions and optionally the unit cell. Based on machine learning potential.',
         'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'run_molecular_dynamics': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.MOLECULAR_DYNAMICS],
-        'description': 'Run molecular dynamics simulations using ASE interface. CAN DO: run MD with DPA pretrained model or user-uploaded DeePMD mdoel; run NVE, NVT, NPT MD with logging basic thermodynamics and lattice parameters. CANNOT DO: run MD with classical force-field or ab initio (or DFT) methods; nor run complicated MD like shock conditions, or with complicated on-the-fly stastistics like RDF, MSD.',
+        'description': 'Run molecular dynamics simulations using ASE interface. CAN DO: run MD with DPA pretrained model or user-uploaded DeePMD mdoel; run NVE, NVT, NPT MD with logging basic thermodynamics and lattice parameters. CANNOT DO: run MD with classical force-field or ab initio (or DFT) methods; nor run complicated MD like shock conditions, or with complicated on-the-fly stastistics like RDF, MSD. Based on machine learning potential.',
         'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'calculate_phonon': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.PHONON],
-        'description': 'Compute phonon properties. Generates displaced supercells, calculates interatomic forces, and derives phonon dispersion, thermal properties, and optional total/projected DOS. Outputs band structures, entropy, free energy, heat capacity, and maximum phonon frequencies. Requires optimized structure as input.',
+        'description': 'Compute phonon properties. Generates displaced supercells, calculates interatomic forces, and derives phonon dispersion, thermal properties, and optional total/projected DOS. Outputs band structures, entropy, free energy, heat capacity, and maximum phonon frequencies. Requires optimized structure as input. Based on machine learning potential.',
         'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.ELASTIC_CONSTANT],
-        'description': '',
+        'description': 'Based on machine learning potential.',
         'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'run_neb': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA],
-        'description': '',
+        'description': 'Based on machine learning potential.',
         'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
     },
     'finetune_dpa_model': {
@@ -344,22 +344,22 @@ ALL_TOOLS = {
     },
     'query_heakb_literature': {
         'belonging_agent': HEA_KB_AGENT_NAME,
-        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY, SceneEnum.LITERATURE],
+        'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge.',
     },
     'query_ssekb_literature': {
         'belonging_agent': SSE_KB_AGENT_NAME,
-        'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
+        'scene': [SceneEnum.Solid_State_Electrolyte],
         'description': 'Query the SSEkb literature knowledge base.',
     },
     'query_polymerkb_literature': {
         'belonging_agent': POLYMER_KB_AGENT_NAME,
-        'scene': [SceneEnum.LITERATURE, SceneEnum.DATABASE_SEARCH],
+        'scene': [SceneEnum.POLYMER],
         'description': 'Query the POLYMERkb polymer literature knowledge base. ',
     },
     'query_steelkb_literature': {
         'belonging_agent': STEEL_KB_AGENT_NAME,
-        'scene': [SceneEnum.LITERATURE],
+        'scene': [SceneEnum.STEEL],
         'description': 'Query the STEELkb literature knowledge base. ',
     },
     'predict_tensile_strength': {
@@ -504,7 +504,7 @@ ALL_TOOLS = {
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
-        'description': 'Perform geometry optimization for a given superconducting structure using DPA under ambient or high-pressure conditions; this tool is only for superconductor geometry relaxation with format of (e.g., CIF or POSCAR)',
+        'description': 'Perform geometry optimization for a given superconducting structure using DPA under ambient or high-pressure conditions; this tool is only for superconductor geometry relaxation with format of (e.g., CIF or POSCAR).',
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
@@ -604,7 +604,7 @@ ALL_TOOLS = {
     'NMR_search_tool': {
         'belonging_agent': NMR_AGENT_NAME,
         'scene': [SceneEnum.NMR],
-        'description': 'Database search for molecules based on NMR(nmr) spectroscopic data. ',
+        'description': 'Database search for molecules based on NMR(nmr) spectroscopic data.',
     },
     'NMR_predict_tool': {
         'belonging_agent': NMR_AGENT_NAME,
@@ -625,7 +625,7 @@ ALL_TOOLS = {
     },
     'web-search': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
-        'scene': [SceneEnum.WEB_SEARCH],
+        'scene': [SceneEnum.WEB_SEARCH, SceneEnum.LITERATURE],
         'description': 'Perform web searches specifically for what, why, and how question types, excluding command- or instruction-type queries. The tool returns only URL, title, and snippet, which makes it suitable for concise factual lookups (what-questions) and simple causal or explanatory lookups (basic why-questions). Should follow up by `extract_info_from_webpage` for completed contents.',
         'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,

@@ -4,7 +4,7 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "搜索DP-GEN的技术文档，总结详细的教程",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
         },
         "structure_url": ""
@@ -14,7 +14,7 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "检索DeePMD在材料计算应用方面的研究",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2daabec7e9e85df7d277598a9d3"
         },
         "structure_url": null
@@ -24,7 +24,7 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "检索金属亚硝酰配合物光致异构的研究进展",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2f938467f2baf634286b11dfd32"
         },
         "structure_url": ""
@@ -34,7 +34,7 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "单手性的分子晶体在室温SC-XRD测试中flack ~ 1e-4而高温接近1e-1，解释原因",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e996d176bf8c76e2860f35dbb1"
         },
         "structure_url": null
@@ -44,7 +44,7 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途和局限性",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
         "structure_url": null
@@ -54,7 +54,7 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "question": "解释某些非晶材料在DSC测试中玻璃转变温度后出现冷结晶信号的原因",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fc5a1c7475a86ae27f49da152a"
         },
         "structure_url": null
@@ -104,7 +104,7 @@
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "搭建最有代表性的fcc和hcp结构，切割其密置层的切面（切5层，真空层为1层），扩胞5×5×1",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae32380f973b1b1d88b769193cfba"
         },
         "structure_url": null
@@ -115,7 +115,7 @@
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "请根据给定的空间群和Wyckoff位置信息生成一个晶体结构：Pm-3m空间群（编号221），a = b = c = 3.90 Å, α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae312dda27594818e8f1da70f22eb"
         },
         "structure_url": null
@@ -125,7 +125,7 @@
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "基于fcc Ni的5×5×5超胞构建Fe-Ni-Co-Cr-V 0.635-0.165-0.1-0.05-0.05的合金结构",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae4356abe711eb8e8c90df0169639"
         },
         "structure_url": null
@@ -135,7 +135,7 @@
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "搭建布洛芬的分子结构",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34580a07d2b90fba5c7d7d17d60"
         },
         "structure_url": null
@@ -145,7 +145,7 @@
       "zhPrompt": {
         "belonging": "结构生成",
         "question": "搜索刚玉的Wyckoff位置信息，用其构建晶体结构",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
         },
         "structure_url": ""
@@ -211,7 +211,7 @@
       "zhPrompt": {
         "belonging": "DPA计算",
         "question": "使用DPA对此Li₂O结构进行300 K、1 ps分子动力学模拟，时间步长1 fs",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34fe26974d5bb7fa5f973c3d92f"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHN3C8VXXJ6G2774KCGSS8B/dpa_md_Li2O.cif"
@@ -221,7 +221,7 @@
       "zhPrompt": {
         "belonging": "DPA计算",
         "question": "请使用DPA计算此MgO结构的弹性常数",
-        "share_url": {
+        "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae465eb5e7069a508a031f5993baa"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBJ6C5PGJFHRWT9ZS1XVT3XQ/dpa_elastic_MgO.cif"
@@ -278,7 +278,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34cc59476edba7c3828950b16d9",
           "uat_url": ""
         },
-        "structure_url": "http://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/5400220b-ed66-477f-9f2a-95a2c2113768/Pt-C-TEM-image.jpg"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/5400220b-ed66-477f-9f2a-95a2c2113768/Pt-C-TEM-image.jpg"
       }
     },
     {
@@ -290,14 +290,14 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3a4fc5c7bb7bce1caac8d4b571e",
           "uat_url": ""
         },
-        "structure_url": "http://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/4301c84a-5150-4633-964d-f355d702262f/Pd-CuOx.txt"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/4301c84a-5150-4633-964d-f355d702262f/Pd-CuOx.txt"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并返回最低能量构型",
-        "structure_url": "http://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
+        "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
       }
     },
     {
@@ -421,7 +421,7 @@
         "question": "从数据库获取立方相 SrTiO₃（Pm-3m），用结构生成做 2×2×2 超胞并用 Nb 替换 1 个 Ti（≈12.5%），先用DPA做全几何优化与弹性常数/声子检查，再用 ABACUS 做 SCF、能带与 DOS/PDOS（关注 Nb/Ti-d 与 O-p），用默认计算参数，分布输出能带结构和DOS/PDOS。",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/019ae2dc9619755f98cb0e67654fd6c6",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2dc9619755f98cb0e67654fd6c6",
           "uat_url": ""
         },
         "structure_url": null
