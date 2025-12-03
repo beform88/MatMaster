@@ -15,12 +15,19 @@ class DescriptiveEnum(str, Enum):
 
 
 class SceneEnum(DescriptiveEnum):
-    STRUCTURE_GENERATE = ('structure_generate', '')
-    CONDITIONAL_GENERATE = ('conditional_generate', '')
-    STRUCTURAL_INFORMATICS = ('structural_informatics', '')
 
+    # database
     DATABASE_SEARCH = ('database_search', '')
 
+    # generate
+    STRUCTURE_GENERATE = ('structure_generate', '')
+    CONDITIONAL_GENERATE = ('conditional_generate', '')
+
+    # calc
+    DPA = ('DPA', 'Involving machine learning potentials and DPA')
+    APEX = ('APEX', 'Involving first-principles calculation methods using APEX.')
+    ABACUS = ('ABACUS', 'Involving first-principles calculation methods using ABACUS.')
+    LAMMPS = ('LAMMPS', 'involving LAMMPS-based methods.')
     OPTIMIZE_STRUCTURE = ('optimize_structure', '')
     VACANCY_FORMATION_ENERGY = ('vacancy_formation_energy', '')
     INTERSTITIAL_FORMATION_ENERGY = ('interstitial_formation_energy', '')
@@ -35,48 +42,58 @@ class SceneEnum(DescriptiveEnum):
     REACTION = ('reaction', '')
     BADER_CHARGE_ANALYSIS = ('bader_charge_analysis', '')
     WORK_FUNCTION = ('work_function', '')
-
     COMPOSITION_OPTIMIZATION = ('composition_optimization', '')
+    CONVEXHULL = ('convexhull', '')
 
-    VISUALIZE_DATA = ('visualize_data', '')
+    # tool&models
+    NMR = (
+        'NMR',
+        'Involves predicting the NMR spectra of organic molecules or deducing molecular structures from NMR spectra',
+    )
+    XRD = ('XRD', 'Involving XRD raw data analysis and phase identification')
 
-    SMILES = ('smiles', '')
-
+    # literatue
     LITERATURE = (
         'literature',
         'involving research papers retrieval, content extraction, or trend analysis.e.g. Search for research papers on [topic], Extract key findings from the paper at [URL], Analyze research trends in [field]',
     )
-
     WEB_SEARCH = (
         'general_web_search',
         'involving concept query or procedure query.e.g. `What is [concept]`, `How to do [procedure]`',
     )
-
     WEB_PARSING = (
         'webpage_parsing',
         'involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH.',
     )
 
-    JOB_RESULT_RETRIEVAL = ('job_result_retrieval', '')
+    # postprocess
+    STRUCTURAL_INFORMATICS = (
+        'structural_informatics',
+        'Involves extracting information from files',
+    )
+    VISUALIZE_DATA = (
+        'visualize_data',
+        'Involves visualization or charting requirements',
+    )
 
-    XRD = ('XRD', '')
-    DPA = ('DPA', '')
-    APEX = ('APEX', '')
-    ABACUS = ('ABACUS', '')
-    LAMMPS = ('LAMMPS', '')
-    NMR = ('NMR', '')
-
-    HIGH_ENTROPY_ALLOY = ('high_entropy_alloy', '')
-    POLYMER = ('polymer', '')
-    STEEL = ('steel', '')
-
-    CONVEXHULL = ('convexhull', '')
-
-    SUPERCONDUCTOR = ('superconductor', '')
-
-    THERMOELECTRIC = ('thermoelectric', '')
-    Electron_Microscope = ('electron_microscope', '')
-
+    # reaserch sence
+    MOLECULAR = (
+        'MOLECULE',
+        'Involving the generation, analysis, and SMILES representation of organic molecules',
+    )
+    HIGH_ENTROPY_ALLOY = ('high_entropy_alloy', 'Involving high-entropy alloys')
+    POLYMER = ('polymer', 'Involving polymers')
+    SUPERCONDUCTOR = ('superconductor', 'Involving superconducting materials')
+    THERMOELECTRIC = ('thermoelectric', 'Involving thermoelectric materials')
+    Electron_Microscope = (
+        'electron_microscope',
+        'Involving microscopic image analysis',
+    )
+    Solid_State_Electrolyte = (
+        'solid_state_electrolyte',
+        'Involving solid-state electrolyte materials',
+    )
+    STEEL = ('steel', 'Involving steel materials')
     DOE = ('doe', '')
     PILOTEYE_ELECTRO = ('piloteye_electro', '')
     PEROVSKITE_RESEARCH = (
