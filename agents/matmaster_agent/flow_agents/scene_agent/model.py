@@ -15,15 +15,15 @@ class DescriptiveEnum(str, Enum):
 
 
 class SceneEnum(DescriptiveEnum):
-    # universal sence
-    ## database
+  
+    # database
     DATABASE_SEARCH = ('database_search', '')
 
-    ## generate
+    # generate
     STRUCTURE_GENERATE = ('structure_generate', '')
     CONDITIONAL_GENERATE = ('conditional_generate', '')
 
-    ## calc
+    # calc
     DPA = ('DPA', 'Involving machine learning potentials and DPA')
     APEX = ('APEX', 'Involving first-principles calculation methods using APEX.')
     ABACUS = ('ABACUS', 'Involving first-principles calculation methods using ABACUS.')
@@ -45,14 +45,14 @@ class SceneEnum(DescriptiveEnum):
     COMPOSITION_OPTIMIZATION = ('composition_optimization', '')
     CONVEXHULL = ('convexhull', '')
 
-    ## tool&models
+    # tool&models
     NMR = (
         'NMR',
         'Involves predicting the NMR spectra of organic molecules or deducing molecular structures from NMR spectra',
     )
     XRD = ('XRD', 'Involving XRD raw data analysis and phase identification')
 
-    ## literatue
+    # literatue
     LITERATURE = (
         'literature',
         'involving research papers retrieval, content extraction, or trend analysis.e.g. Search for research papers on [topic], Extract key findings from the paper at [URL], Analyze research trends in [field]',
@@ -66,7 +66,7 @@ class SceneEnum(DescriptiveEnum):
         'involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH.',
     )
 
-    ## postprocess
+    # postprocess
     STRUCTURAL_INFORMATICS = (
         'structural_informatics',
         'Involves extracting information from files',
