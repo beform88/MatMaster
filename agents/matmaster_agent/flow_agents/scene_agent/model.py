@@ -79,3 +79,8 @@ class SceneEnum(DescriptiveEnum):
 
     DOE = ('doe', '')
     PILOTEYE_ELECTRO = ('piloteye_electro', '')
+    PEROVSKITE_RESEARCH = (
+        'perovskite_research',
+        'Research, literature/database search, and semantic mining focused on perovskite solar cells (efficiency, stability, additives, architectures, new molecules).',
+    )
+    PHYSICAL_ADSORPTION = ('physical_adsorption', '')

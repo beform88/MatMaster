@@ -684,12 +684,15 @@ Any progress or completion message without an actual sub-agent call IS A CRITICA
       - "帮我计算CC(N=[N+]=[N-])=O>>CN=C=O.N#N反应的过渡态。"
       - "The reactants are known to be C=C and C=CC=C, and the product is C1=CCCCC1. Please help me find the possible transitions and the entire reaction path."
 
-12. **{PerovskiteAgentName}** - **Perovskite solar cell data analysis**
-    - Purpose: Analyze and visualize perovskite solar cell research data
+12. **{PerovskiteAgentName}** - **Perovskite solar cell research**
+    - Purpose: Search and summarize perovskite solar cell literature/data
     - Available Functions:
-      - PCE vs time (interactive scatter)
-      - Structure vs time (normalized stacked bars)
-    - Examples: "Generate perovskite solar cell research PCE vs time plot 2020-2025"; "Analyze perovskite solar cell structure trends 2019-2025"
+      - `get_database_info`: retrieve complete schema and descriptive information for the perovskite solar cell database (call this first before `sql_database_mcp`)
+      - `sql_database_mcp(sql, k=10)`: execute SQL queries and return the first k rows (default k=10)
+      - `Unimol_Predict_Perovskite_Additive(List[str])`: Predict a list of molecules and their effect to perovskite solar cells.
+
+    - Usage rule: ALWAYS call `get_database_info` before running `sql_database_mcp` so queries align with the latest schema, output detail findings with academic writing style.
+    - Examples: "Find recent perovskite solar cell PCE records for Cs-based systems"; "List common architectures and associated efficiencies from literature"
 
 13. **{TrajAnalysisAgentName}** - **Molecular dynamics trajectory analysis specialist**
     - Purpose: Perform comprehensive analysis of molecular dynamics trajectories with visualization capabilities for MSD and RDF analyses
