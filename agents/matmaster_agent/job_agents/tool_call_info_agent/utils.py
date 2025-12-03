@@ -11,14 +11,8 @@ logger.setLevel(logging.INFO)
 
 
 def update_tool_call_info_with_function_declarations(
-    tool_call_info, function_declarations
+    tool_call_info, current_function_declaration
 ):
-    current_function_declaration = [
-        item
-        for item in function_declarations
-        if item['name'] == tool_call_info['tool_name']
-    ]
-
     required_params = []
     if current_function_declaration[0]['parameters'].get('required'):
         required_params = current_function_declaration[0]['parameters']['required']
@@ -33,7 +27,7 @@ def update_tool_call_info_with_function_declarations(
         else:
             tool_call_info['missing_tool_args'].append(param)
 
-    return tool_call_info, current_function_declaration
+    return tool_call_info
 
 
 def update_tool_call_info_with_recommend_params(tool_call_info, recommend_params):

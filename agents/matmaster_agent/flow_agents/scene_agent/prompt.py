@@ -31,7 +31,7 @@ Classification Guidelines:
 
 Return a valid, parseable JSON string using this exact structure:
 {{
-  "scenes": ["scene1", "scene2"],
+  "type": ["scene1", "scene2"],
   "reason": "A detailed, step-by-step explanation that justifies each scene classification by mapping it to a specific user instruction."
 }}
 

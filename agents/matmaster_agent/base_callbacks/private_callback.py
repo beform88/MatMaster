@@ -53,7 +53,7 @@ logger.setLevel(logging.INFO)
 
 
 # before_model_callback
-async def default_before_model_callback(
+async def inject_function_declarations(
     callback_context: CallbackContext, llm_request: LlmRequest
 ) -> Optional[LlmResponse]:
     callback_context.state['function_declarations'] = [
