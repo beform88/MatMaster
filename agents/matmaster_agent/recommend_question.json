@@ -335,6 +335,18 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
+        "question": "预测高熵合金CoCrFeMnNiTi0.3的混合焓，预测固溶体形成和晶体结构",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae350fe227bdf850d22a9732da471",
+          "uat_url": ""
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
         "question": "1. 我要设计效率大于26%的稳定的钙钛矿太阳能电池，请帮我查询钙钛矿数据库中2025年报道的高效率添加剂，推荐3种相似的添加剂配方；2. 根据你设计的3种添加剂中预测效率最高的分子，撰写开题报告草稿",
         "sharing_url": {
           "prod_url": "",
