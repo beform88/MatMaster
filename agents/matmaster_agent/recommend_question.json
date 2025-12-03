@@ -92,12 +92,11 @@
       }
     },
     {
-      "_comment": "TODO: Needs a better case.",
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "构建KCl的3*3超胞，将30%的K替换为Na、20%的Cl替换为Br",
+        "question": "基于fcc Ni的5×5×5超胞构建Fe-Ni-Co-Cr-V 0.635-0.165-0.1-0.05-0.05的合金结构",
         "share_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae31717b47a78a5785bd890bbf682"
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae4356abe711eb8e8c90df0169639"
         },
         "structure_url": null
       }
