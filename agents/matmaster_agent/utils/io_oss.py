@@ -1,16 +1,48 @@
 import asyncio
 import base64
 import os
+import re
 import shutil
 import tarfile
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
+from urllib.parse import unquote
 
 import aiofiles
 import aiohttp
 import oss2
 from oss2.credentials import EnvironmentVariableCredentialsProvider
+
+
+@asynccontextmanager
+async def temp_dir(path: str = './tmp'):
+    """异步上下文管理器创建/清理临时目录"""
+    temp_path = Path(path)
+    temp_path.mkdir(parents=True, exist_ok=True)
+    try:
+        yield temp_path
+    finally:
+        shutil.rmtree(temp_path, ignore_errors=True)
+
+
+async def get_filename_from_url(url: str) -> Optional[str]:
+    """
+    从 HTTP URL 异步获取文件名：
+    1. 尝试解析 Content-Disposition
+    2. fallback：从 URL 路径推断
+    """
+    FILENAME_RE = re.compile(r'filename\*?=(?:"?)([^";]+)')
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, allow_redirects=True) as resp:
+            cd = resp.headers.get('Content-Disposition')
+            if cd:
+                match = FILENAME_RE.search(cd)
+                if match:
+                    return unquote(match.group(1))
+
+    return None  # 无法确定文件名
 
 
 # Step1: download tgz -> unzip -> find jpg_files
@@ -57,12 +89,22 @@ async def extract_files_from_tgz_url(tgz_url: str, temp_path: Path) -> List[Path
         return await _find_all_files(temp_path)
 
 
+async def read_file_bytes(file_path: Path) -> bytes:
+    """异步读取文件内容并返回字节数据"""
+    async with aiofiles.open(file_path, 'rb') as f:
+        return await f.read()
+
+
+def bytes_to_base64(data: bytes) -> str:
+    """将字节数据转为 Base64 字符串"""
+    return base64.b64encode(data).decode('utf-8')
+
+
 # Step2: jpg -> base64
 async def file_to_base64(file_path: Path) -> Tuple[Path, str]:
-    """异步将JPG文件转换为Base64编码"""
-    async with aiofiles.open(file_path, 'rb') as f:
-        content = await f.read()
-        return (file_path, base64.b64encode(content).decode('utf-8'))
+    """组合调用：读取文件 + 转 Base64"""
+    content = await read_file_bytes(file_path)
+    return file_path, bytes_to_base64(content)
 
 
 # Step3: Upload to OSS
@@ -89,19 +131,13 @@ async def upload_to_oss_wrapper(
     return {filename: result}
 
 
-# Main Func
-async def extract_convert_and_upload(tgz_url: str, temp_dir: str = './tmp') -> dict:
+async def extract_convert_and_upload(
+    tgz_url: str, temp_dir_path: str = './tmp'
+) -> dict:
     """
-    使用当前目录下的临时文件夹处理文件
-    :param tgz_url: 要下载的tgz文件URL
-    :param temp_dir: 临时目录路径（默认当前目录下的tmp文件夹）
-    :return: 上传结果字典
+    下载 TGZ → 解压 → JPG 转 Base64 → 上传 OSS → 自动清理
     """
-    # 创建临时目录（如果不存在）
-    temp_path = Path(temp_dir)
-    temp_path.mkdir(exist_ok=True, parents=True)
-
-    try:
+    async with temp_dir(temp_dir_path) as temp_path:
         # 获取所有JPG文件的Base64编码
         files = await extract_files_from_tgz_url(tgz_url, temp_path)
         conversion_tasks = [file_to_base64(file) for file in files]
@@ -119,9 +155,6 @@ async def extract_convert_and_upload(tgz_url: str, temp_dir: str = './tmp') -> d
             for item in await asyncio.gather(*upload_tasks)
             for filename, result in item.items()
         }
-    finally:
-        # 清理临时目录
-        shutil.rmtree(temp_path, ignore_errors=True)
 
 
 async def update_tgz_dict(tool_result: dict):
@@ -134,3 +167,15 @@ async def update_tgz_dict(tool_result: dict):
             new_tool_result.update(**await extract_convert_and_upload(v))
 
     return tgz_flag, new_tool_result
+
+
+async def extract_file_content(file_url: str, temp_dir_path: str = './tmp') -> dict:
+    async with temp_dir(temp_dir_path) as tdir:
+        file_name = await get_filename_from_url(file_url)
+        temp_file_path = tdir / file_name
+
+        async with aiohttp.ClientSession() as session:
+            await _download_file(session, file_url, temp_file_path)
+
+        content = await read_file_bytes(temp_file_path)
+        return {'file_content': content}
