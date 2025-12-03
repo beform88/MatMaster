@@ -63,7 +63,7 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "请搜索近期关于 MoTe₂ 相变（1T′–2H）调控的研究进展，并总结主流调控方法",
+        "question": "请搜索近期关于MoTe₂相变（1T′–2H）调控的研究进展，并总结主流调控方法",
         "sharing_url": {
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e8b6af706ab2ac632d8becdc85"
         },
@@ -122,12 +122,11 @@
       }
     },
     {
-      "_comment": "TODO: Needs a better case.",
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "构建KCl的3*3超胞，将30%的K替换为Na、20%的Cl替换为Br",
+        "question": "基于fcc Ni的5×5×5超胞构建Fe-Ni-Co-Cr-V 0.635-0.165-0.1-0.05-0.05的合金结构",
         "share_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae31717b47a78a5785bd890bbf682"
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae4356abe711eb8e8c90df0169639"
         },
         "structure_url": null
       }
@@ -223,9 +222,9 @@
         "belonging": "DPA计算",
         "question": "请使用DPA计算此MgO结构的弹性常数",
         "share_url": {
-          "test_url": "请使用DPA计算此MgO结构的弹性常数"
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae465eb5e7069a508a031f5993baa"
         },
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1761030016_bohriumcrystal_65e5a9a78d93f05838e28106_0.cif"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBJ6C5PGJFHRWT9ZS1XVT3XQ/dpa_elastic_MgO.cif"
       }
     },
     {
