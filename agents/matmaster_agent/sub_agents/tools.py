@@ -589,6 +589,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.LITERATURE],
         'description': 'Standard version of searching academic papers based on author information',
         'args_setting': f"If not specified, the starting year 2020, the ending time is {TODAY}.",
+        'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
     },
     'search-papers-enhanced': {
