@@ -279,7 +279,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34cc59476edba7c3828950b16d9",
           "uat_url": ""
         },
-        "structure_url": "http://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/5400220b-ed66-477f-9f2a-95a2c2113768/Pt-C-TEM-image.jpg"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/5400220b-ed66-477f-9f2a-95a2c2113768/Pt-C-TEM-image.jpg"
       }
     },
     {
@@ -291,14 +291,14 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3a4fc5c7bb7bce1caac8d4b571e",
           "uat_url": ""
         },
-        "structure_url": "http://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/4301c84a-5150-4633-964d-f355d702262f/Pd-CuOx.txt"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/4301c84a-5150-4633-964d-f355d702262f/Pd-CuOx.txt"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并返回最低能量构型",
-        "structure_url": "http://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
+        "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
       }
     },
     {
@@ -422,7 +422,7 @@
         "question": "从数据库获取立方相 SrTiO₃（Pm-3m），用结构生成做 2×2×2 超胞并用 Nb 替换 1 个 Ti（≈12.5%），先用DPA做全几何优化与弹性常数/声子检查，再用 ABACUS 做 SCF、能带与 DOS/PDOS（关注 Nb/Ti-d 与 O-p），用默认计算参数，分布输出能带结构和DOS/PDOS。",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/019ae2dc9619755f98cb0e67654fd6c6",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2dc9619755f98cb0e67654fd6c6",
           "uat_url": ""
         },
         "structure_url": null
