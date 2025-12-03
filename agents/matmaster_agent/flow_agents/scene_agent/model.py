@@ -18,7 +18,7 @@ class SceneEnum(DescriptiveEnum):
     # universal sence
     ## database
     DATABASE_SEARCH = ('database_search', '')
-    
+
     ## generate
     STRUCTURE_GENERATE = ('structure_generate', '')
     CONDITIONAL_GENERATE = ('conditional_generate', '')
@@ -46,10 +46,10 @@ class SceneEnum(DescriptiveEnum):
     CONVEXHULL = ('convexhull', '')
 
     ## tool&models
-    # SMILES = (
-    #     'smiles', 
-    #     '涉及SMILES表示的工具，如从结构生成SMILES、从图像生成SMILES')
-    NMR = ('NMR', 'Involves predicting the NMR spectra of organic molecules or deducing molecular structures from NMR spectra')
+    NMR = (
+        'NMR',
+        'Involves predicting the NMR spectra of organic molecules or deducing molecular structures from NMR spectra',
+    )
     XRD = ('XRD', 'Involving XRD raw data analysis and phase identification')
 
     ## literatue
@@ -67,18 +67,33 @@ class SceneEnum(DescriptiveEnum):
     )
 
     ## postprocess
-    STRUCTURAL_INFORMATICS = ('structural_informatics', 'Involves extracting information from files')
-    VISUALIZE_DATA = ('visualize_data', 'Involves visualization or charting requirements')
+    STRUCTURAL_INFORMATICS = (
+        'structural_informatics',
+        'Involves extracting information from files',
+    )
+    VISUALIZE_DATA = (
+        'visualize_data',
+        'Involves visualization or charting requirements',
+    )
 
     # reaserch sence
-    MOLECULAR = ('MOLECULE','Involving the generation, analysis, and SMILES representation of organic molecules')
+    MOLECULAR = (
+        'MOLECULE',
+        'Involving the generation, analysis, and SMILES representation of organic molecules',
+    )
     HIGH_ENTROPY_ALLOY = ('high_entropy_alloy', 'Involving high-entropy alloys')
     POLYMER = ('polymer', 'Involving polymers')
     SUPERCONDUCTOR = ('superconductor', 'Involving superconducting materials')
     THERMOELECTRIC = ('thermoelectric', 'Involving thermoelectric materials')
-    Electron_Microscope = ('electron_microscope', 'Involving microscopic image analysis')
-    Solid_State_Electrolyte = ('solid_state_electrolyte','Involving solid-state electrolyte materials')
-    STEEL = ('steel','Involving steel materials')
+    Electron_Microscope = (
+        'electron_microscope',
+        'Involving microscopic image analysis',
+    )
+    Solid_State_Electrolyte = (
+        'solid_state_electrolyte',
+        'Involving solid-state electrolyte materials',
+    )
+    STEEL = ('steel', 'Involving steel materials')
     DOE = ('doe', '')
     PILOTEYE_ELECTRO = ('piloteye_electro', '')
     PEROVSKITE_RESEARCH = (
