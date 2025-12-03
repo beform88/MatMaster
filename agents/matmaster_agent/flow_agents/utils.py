@@ -90,15 +90,7 @@ def create_dynamic_plan_schema(available_tools: list):
 
 
 def should_bypass_confirmation(ctx: InvocationContext) -> bool:
-    """Determine whether to skip plan confirmation based on the tools in the plan."""
-    BYPASS_CONFIRMATION_TOOLS = [
-        'web-search',
-        'extract_info_from_webpage',
-        'search-papers-normal',
-        'search-papers-enhanced',
-        'llm_tool',
-    ]
-
+    """Determine whether to skip plan confirmation based on the tools in the plan."""    
     plan_steps = ctx.session.state['plan'].get('steps', [])
     tool_count = len(
         plan_steps
@@ -108,12 +100,12 @@ def should_bypass_confirmation(ctx: InvocationContext) -> bool:
     if tool_count == 1:
         # Find the first (and only) tool name
         first_tool_name = plan_steps[0].get('tool_name', '')
-
-        # Check if this tool is in the bypass list
-        if first_tool_name in BYPASS_CONFIRMATION_TOOLS:
+        
+        # Check if this tool has bypass_confirmation set to True
+        if ALL_TOOLS.get(first_tool_name, {}).get('bypass_confirmation') is True:
             return True
 
-    # Check if there are exactly two tools and they are web-search followed by extract_info_from_webpage
+    # TODO: Add more logic here for handling multiple tools in the plan
     elif tool_count == 2:
         first_tool_name = plan_steps[0].get('tool_name', '')
         second_tool_name = plan_steps[1].get('tool_name', '')

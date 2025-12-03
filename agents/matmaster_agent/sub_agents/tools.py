@@ -589,16 +589,17 @@ ALL_TOOLS = {
         'scene': [SceneEnum.LITERATURE],
         'description': 'Standard version of searching academic papers based on author information',
         'args_setting': f"If not specified, the starting year 2020, the ending time is {TODAY}.",
-        'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
+        'bypass_confirmation': True,
     },
     'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': 'Intelligent enhanced paper search system based on keywords and research questions',
         'args_setting': f"""
-            If not specified, the starting year 2020, the ending time is {TODAY}; the number of papers is 100. When constructing query words, (i) use English to fill the input queries to ensure professionality; (ii) avoid using broad keywords such as 'materials science', 'chemistry', 'progress'; (iii) extract the most specific and technically relevant keywords from the user's query, including material names, chemical formulas, molecular identifiers, mechanisms, properties, or application contexts; (iv) If the user\'s query is inherently broad and lacks specific entities, methods, or systems, you must decompose the conceptual domain into its technical intension and generate concrete, research-usable keywords. (v) When extracting or translating domain-specific terms, do not segment or re-group any composite technical noun phrase unless its decomposition is an established scientific usage; if a phrase is structurally ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering any refinement. This includes identifying: representative subfields, canonical mechanisms or processes, prototypical material classes or molecular systems, commonly studied performance metrics, key methodological or application contexts. These derived keywords must be specific enough to retrieve meaningful literature rather than triggering domain-level noise.
+            If not specified, the starting year 2020, the ending time is {TODAY}; the number of papers is 200. When constructing query words, (i) use English to fill the input queries to ensure professionality; (ii) avoid using broad keywords such as 'materials science', 'chemistry', 'progress'; (iii) extract the most specific and technically relevant keywords from the user's query, including material names, chemical formulas, molecular identifiers, mechanisms, properties, or application contexts; (iv) If the user\'s query is inherently broad and lacks specific entities, methods, or systems, you must decompose the conceptual domain into its technical intension and generate concrete, research-usable keywords. (v) When extracting or translating domain-specific terms, do not segment or re-group any composite technical noun phrase unless its decomposition is an established scientific usage; if a phrase is structurally ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering any refinement. This includes identifying: representative subfields, canonical mechanisms or processes, prototypical material classes or molecular systems, commonly studied performance metrics, key methodological or application contexts. These derived keywords must be specific enough to retrieve meaningful literature rather than triggering domain-level noise.
         """,
         'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
+        'bypass_confirmation': True,
     },
     'build_convex_hull': {
         'belonging_agent': ConvexHullAgentName,
@@ -625,12 +626,14 @@ ALL_TOOLS = {
         'scene': [SceneEnum.WEB_PARSING],
         'description': 'Extract key information from a given webpage URL, including scientific facts, data, and research findings.',
         'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
+        'bypass_confirmation': True,
     },
     'web-search': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.WEB_SEARCH],
         'description': 'Perform web searches specifically for what, why, and how question types, excluding command- or instruction-type queries. The tool returns only URL, title, and snippet, which makes it suitable for concise factual lookups (what-questions) and simple causal or explanatory lookups (basic why-questions). Should follow up by `extract_info_from_webpage` for completed contents.',
         'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
+        'bypass_confirmation': True,
     },
     'xrd_parse_file': {
         'belonging_agent': XRD_AGENT_NAME,
@@ -647,7 +650,12 @@ ALL_TOOLS = {
         'scene': [SceneEnum.Electron_Microscope],
         'description': 'Analyze electron microscope images (e.g., TEM, SEM) to detect and classify particles, assess morphology, and evaluate image quality. This tool identifies microstructural features such as particle boundaries, occlusions, and invalid regions, while extracting geometric properties like area, perimeter, diameter, and shape factors using advanced computer vision techniques.',
     },
-    'llm_tool': {'belonging_agent': TOOL_AGENT_NAME, 'scene': [], 'description': ''},
+    'llm_tool': {
+        'belonging_agent': TOOL_AGENT_NAME,
+        'scene': [],
+        'description': '',
+        'bypass_confirmation': True,
+    },
     'physical_adsorption_echart_data': {
         'belonging_agent': Physical_Adsorption_AGENT_NAME,
         'scene': [SceneEnum.PHYSICAL_ADSORPTION],
