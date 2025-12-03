@@ -175,6 +175,10 @@ class BaseAgentWithRecAndSum(
                 'args_setting', ''
             ),
         )
+        _, self.tool_call_info_agent.output_schema = create_tool_args_schema(
+            current_function_declaration[0]['parameters']['required'],
+            current_function_declaration,
+        )
         async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
             yield tool_call_info_event
 
@@ -235,8 +239,8 @@ class BaseAgentWithRecAndSum(
                 for item in missing_tool_args
                 if item not in ['executor', 'storage']
             ]
-            self.recommend_params_schema_agent.output_schema = create_tool_args_schema(
-                missing_tool_args, current_function_declaration
+            self.recommend_params_schema_agent.output_schema, _ = (
+                create_tool_args_schema(missing_tool_args, current_function_declaration)
             )
             async for (
                 recommend_params_schema_event
