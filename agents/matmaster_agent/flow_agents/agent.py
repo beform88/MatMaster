@@ -470,8 +470,7 @@ class MatMasterFlowAgent(LlmAgent):
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event
 
-        # TODO: 追问组件
-        # 运行 follow_up_agent，获取追问建议
+        # 获取追问建议
         follow_up_title = ""
         follow_up_list = []
 
@@ -502,9 +501,9 @@ class MatMasterFlowAgent(LlmAgent):
 
         # 兼容性兜底：如无追问，给出默认提示
         if not follow_up_title:
-            follow_up_title = "你可能还想问："
+            follow_up_title = "继续追问："
         if not isinstance(follow_up_list, list):
-            follow_up_list = ["1", "2", "3"]
+            follow_up_list = [""]
 
 
         for generate_follow_up_event in context_function_event(
@@ -516,11 +515,6 @@ class MatMasterFlowAgent(LlmAgent):
             {'invocation_id': ctx.invocation_id, 'title': follow_up_title, 'list': follow_up_list},
         ):
             yield generate_follow_up_event
-        ## {
-        #   'invocation_id': ctx.invocation_id,
-            # 'title': xxx,
-            # 'list': [xxx]
-        #  }
 
         # 评分组件
         for generate_nps_event in context_function_event(

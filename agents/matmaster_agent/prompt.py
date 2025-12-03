@@ -951,8 +951,8 @@ Generate follow-up questions in the following format:
 length of each recommended question should be less than 10 letters.
 
 Example:
-- Title: "你可能还想问："
-- List: ["1", "2", "3"]
+- Title: "继续追问："
+- List: ["晶格常数？", "空间群？", "原子数？"]
 """
 
 
