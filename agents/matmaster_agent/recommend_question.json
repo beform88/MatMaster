@@ -310,15 +310,49 @@
     },
     {
       "zhPrompt": {
-        "belonging": "NMR谱图预测",
+        "belonging": "场景案例",
         "question": "对这个结构Cc1cccc(CC#CC(O)c2ccccc2)c1C，预测一下NMR谱图。",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/019add311d937c65b937507dfb445d15",
+          "uat_url": ""
+        },
         "structure_url": null
       }
     },
     {
       "zhPrompt": {
-        "belonging": "NMR谱图预测",
+        "belonging": "场景案例",
         "question": "下面是我实验中测出的NMR的谱图，分析一下对应的分子结构可能是什么。氢原子化学位移为2.16, 2.29, 2.29, 2.29, 2.41, 2.41, 2.41, 3.58, 3.58, 5.63, 7.17, 7.17, 7.17, 7.17, 7.17, 7.17, 7.39, 7.64；碳原子化学位移为19.1, 19.4, 23.5, 62.7, 82.1, 84.5, 126.27, 126.3, 126.5, 127, 128.36, 128.41, 130.2, 130.8, 134.8, 135.98, 136.02, 138.9；分子的化学式为C18H18O",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/019add0a41f07124986a1d0d12875e25",
+          "uat_url": ""
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "question": "1. 我要设计效率大于26%的稳定的钙钛矿太阳能电池，请帮我查询钙钛矿数据库中2025年报道的高效率添加剂，推荐3种相似的添加剂配方；2. 根据你设计的3种添加剂中预测效率最高的分子，撰写开题报告草稿",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adf692e72773380551dd5216b9dd7",
+          "uat_url": ""
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "question": "从数据库获取立方相 SrTiO₃（Pm-3m），用结构生成做 2×2×2 超胞并用 Nb 替换 1 个 Ti（≈12.5%），先用DPA做全几何优化与弹性常数/声子检查，再用 ABACUS 做 SCF、能带与 DOS/PDOS（关注 Nb/Ti-d 与 O-p），用默认计算参数，分布输出能带结构和DOS/PDOS。",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/019ae2dc9619755f98cb0e67654fd6c6",
+          "uat_url": ""
+        },
         "structure_url": null
       }
     }
