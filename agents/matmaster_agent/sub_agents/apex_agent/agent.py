@@ -53,6 +53,7 @@ class ApexAgent(BaseAsyncJobAgent):
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             cost_func=apex_cost_func,
+            enable_tgz_unpack=False,
         )
 
 
