@@ -15,7 +15,7 @@ class DescriptiveEnum(str, Enum):
 
 
 class SceneEnum(DescriptiveEnum):
-  
+
     # database
     DATABASE_SEARCH = ('database_search', '')
 
