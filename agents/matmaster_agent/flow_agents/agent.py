@@ -10,7 +10,10 @@ from pydantic import computed_field, model_validator
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
-from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent
+from agents.matmaster_agent.base_agents.schema_agent import (
+    DisallowTransferSchemaAgent,
+    SchemaAgent,
+)
 from agents.matmaster_agent.base_callbacks.private_callback import remove_function_call
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
@@ -63,7 +66,10 @@ from agents.matmaster_agent.flow_agents.utils import (
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
-from agents.matmaster_agent.prompt import HUMAN_FRIENDLY_FORMAT_REQUIREMENT
+from agents.matmaster_agent.prompt import (
+    FOLLOW_UP_PROMPT,
+    HUMAN_FRIENDLY_FORMAT_REQUIREMENT,
+)
 from agents.matmaster_agent.services.icl import (
     expand_input_examples,
     scene_tags_from_examples,
@@ -170,6 +176,14 @@ class MatMasterFlowAgent(LlmAgent):
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
 
+        self._follow_up_agent = DisallowTransferSchemaAgent(
+            name='follow_up_agent',
+            model=MatMasterLlmConfig.default_litellm_model,
+            description='生成追问问题',
+            instruction=FOLLOW_UP_PROMPT,
+            state_key='follow_up_questions',
+        )
+
         self._execution_agent = MatMasterSupervisorAgent(
             name='execution_agent',
             model=MatMasterLlmConfig.default_litellm_model,
@@ -199,6 +213,7 @@ class MatMasterFlowAgent(LlmAgent):
             self.plan_info_agent,
             self.plan_confirm_agent,
             self.execution_agent,
+            self.follow_up_agent,
             self.analysis_agent,
         ]
 
@@ -243,6 +258,11 @@ class MatMasterFlowAgent(LlmAgent):
     @property
     def execution_agent(self) -> LlmAgent:
         return self._execution_agent
+
+    @computed_field
+    @property
+    def follow_up_agent(self) -> LlmAgent:
+        return self._follow_up_agent
 
     @computed_field
     @property
@@ -445,6 +465,30 @@ class MatMasterFlowAgent(LlmAgent):
                                 ctx
                             ):
                                 yield analysis_event
+
+            # 获取追问建议
+            follow_up_title = '继续追问：'
+            follow_up_list = []
+
+            async for follow_up_event in self.follow_up_agent.run_async(ctx):
+                yield follow_up_event
+
+            follow_up_list = ctx.session.state['follow_up_questions'].get('list', [])
+
+            for generate_follow_up_event in context_function_event(
+                ctx,
+                self.name,
+                'matmaster_generate_follow_up',
+                {},
+                ModelRole,
+                {
+                    'invocation_id': ctx.invocation_id,
+                    'title': follow_up_title,
+                    'list': follow_up_list,
+                },
+            ):
+                yield generate_follow_up_event
+
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
