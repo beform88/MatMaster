@@ -62,10 +62,40 @@
     },
     {
       "zhPrompt": {
+        "belonging": "学术情报",
+        "question": "请搜索近期关于 MoTe₂ 相变（1T′–2H）调控的研究进展，并总结主流调控方法",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e8b6af706ab2ac632d8becdc85"
+        },
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "学术情报",
+        "question": "请先帮我查找2024–2025 年钙钛矿太阳能电池的最新效率纪录，并查找主要研究工作或论文",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34228f07e6abf103befb80dd70c"
+        },
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "学术情报",
+        "question": "请帮我梳理近几年报道的、比表面积超过 5000 m²/g 的代表性 MOF 结构",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae371eea572d3810ce215e35a4e90"
+        },
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
         "belonging": "结构生成",
         "question": "请生成空间群为225的晶体结构，要求带隙（bandgap）小于0.5 eV，生成2个样本",
-        "share_url": {
-          "test_url": ""
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae41e541b7e0bb971b28bcecc45b3"
         },
         "structure_url": null
       }
@@ -320,14 +350,20 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "帮我检索近年来热门的高温超导，构建其结构并预测其超导临界温度",
-        "structure_url": ""
+        "question": "请提取文献中的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界问题",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "帮我随机生成500个SnTe结构并筛选出其中潜在的热电材料",
+        "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
+        },
         "structure_url": ""
       }
     },
