@@ -486,9 +486,11 @@ class MatMasterFlowAgent(LlmAgent):
                     {},
                     ModelRole,
                     {
-                        'invocation_id': ctx.invocation_id,
-                        'title': follow_up_title,
-                        'follow_up_list': follow_up_str,
+                        'follow_up_result': {
+                            'invocation_id': ctx.invocation_id,
+                            'title': follow_up_title,
+                            'follow_up_list': follow_up_str,
+                        }
                     },
                 ):
                     yield generate_follow_up_event
