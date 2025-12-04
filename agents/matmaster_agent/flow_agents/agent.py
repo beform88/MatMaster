@@ -1,11 +1,11 @@
 import copy
+import json
 import logging
 from typing import AsyncGenerator
 
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from google.adk.models.lite_llm import LiteLlm
-from google.genai.types import Content, Part
 from pydantic import computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
@@ -479,7 +479,6 @@ class MatMasterFlowAgent(LlmAgent):
                 pass
             else:
                 follow_up_list = _follow_up_questions.get('list', [])
-                ','.join(follow_up_list)
                 for generate_follow_up_event in context_function_event(
                     ctx,
                     self.name,
@@ -487,19 +486,16 @@ class MatMasterFlowAgent(LlmAgent):
                     {},
                     ModelRole,
                     {
-                        'follow_up_result': {
-                            'invocation_id': ctx.invocation_id,
-                            'title': follow_up_title,
-                            'follow_up_list': follow_up_list,
-                        }
+                        'follow_up_result': json.dumps(
+                            {
+                                'invocation_id': ctx.invocation_id,
+                                'title': follow_up_title,
+                                'list': follow_up_list,
+                            }
+                        )
                     },
                 ):
                     yield generate_follow_up_event
-            yield Event(
-                content=Content(parts=[Part(text='   ')]),
-                author=self.name,
-                invocation_id=ctx.invocation_id,
-            )
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
