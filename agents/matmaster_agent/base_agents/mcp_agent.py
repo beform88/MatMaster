@@ -54,12 +54,14 @@ from agents.matmaster_agent.utils.event_utils import (
     is_text,
     update_state_event,
 )
-from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
-    get_echarts_result,
-    get_markdown_image_result,
     is_mcp_result,
     load_tool_response,
+)
+from agents.matmaster_agent.utils.result_parse_utils import (
+    get_echarts_result,
+    get_kv_result,
+    get_markdown_image_result,
     parse_result,
 )
 
@@ -271,9 +273,7 @@ class MCPRunEventsMixin(BaseMixin):
                             yield parsed_tool_result_event
 
                     # Render Job Result Event
-                    job_result_comp_data = get_frontend_job_result_data(
-                        parsed_tool_result
-                    )
+                    job_result_comp_data = get_kv_result(parsed_tool_result)
                     if (
                         self.render_tool_response
                         and job_result_comp_data['eventData']['content'][JOB_RESULT_KEY]

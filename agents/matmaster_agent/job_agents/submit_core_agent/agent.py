@@ -32,14 +32,16 @@ from agents.matmaster_agent.utils.event_utils import (
     is_text,
     update_state_event,
 )
-from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
 from agents.matmaster_agent.utils.helper_func import (
-    get_markdown_image_result,
     is_mcp_result,
     load_tool_response,
-    parse_result,
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
+from agents.matmaster_agent.utils.result_parse_utils import (
+    get_kv_result,
+    get_markdown_image_result,
+    parse_result,
+)
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -123,7 +125,7 @@ class SubmitCoreMCPAgent(DisallowTransferMCPAgent):
                     new_tool_result = dict_result
                 parsed_result = await parse_result(new_tool_result)
                 markdown_image_result = get_markdown_image_result(parsed_result)
-                job_result_comp_data = get_frontend_job_result_data(parsed_result)
+                job_result_comp_data = get_kv_result(parsed_result)
 
                 for frontend_job_result_event in all_text_event(
                     ctx,
