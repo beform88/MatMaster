@@ -12,7 +12,7 @@ Allowed input types
 Output JSON schema (required fields)
 {
     "file_id": "<string: provided filename or generated id>",
-    "file_type": "<string: pdf|txt|docx|xlsx|csv|json|html|image>",
+    "file_type": "<string: pdf|txt|docx|xlsx|csv|json|html>",
     "extracted_text": "<string: raw textual content extracted (preserve whitespace/newlines)>",
     "metadata": {
         "pages": <int|null>,
