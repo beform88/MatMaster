@@ -44,6 +44,9 @@ from agents.matmaster_agent.flow_agents.plan_confirm_agent.prompt import (
 from agents.matmaster_agent.flow_agents.plan_confirm_agent.schema import (
     PlanConfirmSchema,
 )
+from agents.matmaster_agent.flow_agents.plan_confirm_options_agent.prompt import (
+    PLAN_CONFIRM_OPTIONS_PROMPT,
+)
 from agents.matmaster_agent.flow_agents.plan_info_agent.prompt import (
     PLAN_INFO_INSTRUCTION,
 )
@@ -56,7 +59,6 @@ from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
 from agents.matmaster_agent.flow_agents.style import (
     all_summary_card,
-    plan_ask_confirm_card,
 )
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
@@ -70,7 +72,6 @@ from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import (
     FOLLOW_UP_PROMPT,
     HUMAN_FRIENDLY_FORMAT_REQUIREMENT,
-    PLAN_CONFIRM_OPTIONS_PROMPT,
 )
 from agents.matmaster_agent.services.icl import (
     expand_input_examples,
@@ -178,17 +179,9 @@ class MatMasterFlowAgent(LlmAgent):
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
 
-        self._follow_up_agent = DisallowTransferSchemaAgent(
-            name='follow_up_agent',
-            model=MatMasterLlmConfig.default_litellm_model,
-            description='生成追问问题',
-            instruction=FOLLOW_UP_PROMPT,
-            state_key='follow_up_questions',
-        )
-
         self._plan_confirm_option_agent = DisallowTransferSchemaAgent(
             name='plan_confirm_option_agent',
-            model=MatMasterLlmConfig.default_litellm_model,
+            model=MatMasterLlmConfig.tool_schema_model,
             description='生成计划确认选项',
             instruction=PLAN_CONFIRM_OPTIONS_PROMPT,
             state_key='plan_confirm_options',
@@ -212,6 +205,14 @@ class MatMasterFlowAgent(LlmAgent):
             global_instruction='使用 {target_language} 回答',
             description=f'总结本轮的计划执行情况\n格式要求: \n{HUMAN_FRIENDLY_FORMAT_REQUIREMENT}',
             instruction='',
+        )
+
+        self._follow_up_agent = DisallowTransferSchemaAgent(
+            name='follow_up_agent',
+            model=MatMasterLlmConfig.tool_schema_model,
+            description='生成追问问题',
+            instruction=FOLLOW_UP_PROMPT,
+            state_key='follow_up_questions',
         )
 
         self.sub_agents = [
@@ -423,16 +424,10 @@ class MatMasterFlowAgent(LlmAgent):
                         )
                     else:
                         # 询问用户是否确认计划
-                        for plan_ask_confirm_event in all_text_event(
-                            ctx, self.name, plan_ask_confirm_card(), ModelRole
-                        ):
-                            yield plan_ask_confirm_event
-
-                        # 确认计划
                         async for (
-                            option_event
+                            plan_option_event
                         ) in self.plan_confirm_option_agent.run_async(ctx):
-                            yield option_event
+                            yield plan_option_event
 
                         _plan_options = ctx.session.state.get(
                             'plan_confirm_options', {}
@@ -441,7 +436,7 @@ class MatMasterFlowAgent(LlmAgent):
                         for generate_plan_confirm_event in context_function_event(
                             ctx,
                             self.name,
-                            'matmaster_generate_plan_confirm_options',
+                            'matmaster_generate_follow_up',
                             {},
                             ModelRole,
                             {
