@@ -1,4 +1,5 @@
 import copy
+import json
 import logging
 from typing import AsyncGenerator
 
@@ -478,7 +479,6 @@ class MatMasterFlowAgent(LlmAgent):
                 pass
             else:
                 follow_up_list = _follow_up_questions.get('list', [])
-                follow_up_str = ','.join(follow_up_list)
                 for generate_follow_up_event in context_function_event(
                     ctx,
                     self.name,
@@ -486,13 +486,16 @@ class MatMasterFlowAgent(LlmAgent):
                     {},
                     ModelRole,
                     {
-                        'invocation_id': ctx.invocation_id,
-                        'title': follow_up_title,
-                        'follow_up_list': follow_up_str,
+                        'follow_up_result': json.dumps(
+                            {
+                                'invocation_id': ctx.invocation_id,
+                                'title': follow_up_title,
+                                'list': follow_up_list,
+                            }
+                        )
                     },
                 ):
                     yield generate_follow_up_event
-
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
