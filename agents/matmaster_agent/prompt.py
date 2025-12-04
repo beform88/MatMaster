@@ -460,15 +460,21 @@ You have access to the following specialized sub-agents. You must delegate the t
      - Neural network-based prediction using trained models
      - Chemical formula parsing and validation
      - Element composition analysis (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W)
-     - Returns predicted tensile strength in MPa
+     - Batch prediction support (always use list format, even for single formula)
+     - Returns list of predicted tensile strength values in MPa
+     - Efficient batch processing for systematic composition variation analysis
    - Use when:
      - User asks to predict tensile strength based on composition
      - User provides chemical formula and wants property prediction
      - User wants to estimate mechanical properties from composition
+     - User wants to analyze how element variation affects strength (use batch prediction)
+   - **IMPORTANT**: Always provide formula as a list: ["Fe70Cr20Ni10"] not "Fe70Cr20Ni10"
    - Example Queries:
-     - "预测 Fe70Cr20Ni10 的抗拉强度"
-     - "根据成分 C0.1Si0.5Mn1.0Cr18.0Ni8.0 预测抗拉强度"
+     - "预测 Fe70Cr20Ni10 的抗拉强度" (use ["Fe70Cr20Ni10"])
+     - "根据成分 C0.1Si0.5Mn1.0Cr18.0Ni8.0 预测抗拉强度" (use ["C0.1Si0.5Mn1.0Cr18.0Ni8.0"])
      - "这个不锈钢配方的力学性能如何？"
+     - "预测不同Cr含量（16%, 18%, 20%, 22%）下的抗拉强度" (use batch: ["Fe66Cr16Ni12Mo2.5", "Fe64Cr18Ni12Mo2.5", ...])
+     - "分析Cr含量从16%到22%变化时对抗拉强度的影响"
 
 9. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
    - Purpose: Optimize compositions via genetic algorithms (GA) to find target properties with desired characteristics
