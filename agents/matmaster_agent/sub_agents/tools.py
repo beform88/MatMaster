@@ -331,6 +331,7 @@ ALL_TOOLS = {
         'belonging_agent': FinetuneDPAAgentName,
         'scene': [SceneEnum.DPA],
         'description': 'Fine-tune DPA2 or DPA3 pretrained models using user-provided DFT-labeled data (e.g., energies, forces, stresses) to adapt the potential to specific material systems; CANNOT DO: use DPA model to run calculations for material systems. ',
+        'args_setting': 'Do NOT omit parameters that have default values. If the user does not provide a value, you MUST use the default value defined in the input parameters and include that field in the tool call. Only parameters without defaults are truly required and must be filled from user input.',
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
