@@ -460,15 +460,21 @@ You have access to the following specialized sub-agents. You must delegate the t
      - Neural network-based prediction using trained models
      - Chemical formula parsing and validation
      - Element composition analysis (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W)
-     - Returns predicted tensile strength in MPa
+     - Batch prediction support (always use list format, even for single formula)
+     - Returns list of predicted tensile strength values in MPa
+     - Efficient batch processing for systematic composition variation analysis
    - Use when:
      - User asks to predict tensile strength based on composition
      - User provides chemical formula and wants property prediction
      - User wants to estimate mechanical properties from composition
+     - User wants to analyze how element variation affects strength (use batch prediction)
+   - **IMPORTANT**: Always provide formula as a list: ["Fe70Cr20Ni10"] not "Fe70Cr20Ni10"
    - Example Queries:
-     - "预测 Fe70Cr20Ni10 的抗拉强度"
-     - "根据成分 C0.1Si0.5Mn1.0Cr18.0Ni8.0 预测抗拉强度"
+     - "预测 Fe70Cr20Ni10 的抗拉强度" (use ["Fe70Cr20Ni10"])
+     - "根据成分 C0.1Si0.5Mn1.0Cr18.0Ni8.0 预测抗拉强度" (use ["C0.1Si0.5Mn1.0Cr18.0Ni8.0"])
      - "这个不锈钢配方的力学性能如何？"
+     - "预测不同Cr含量（16%, 18%, 20%, 22%）下的抗拉强度" (use batch: ["Fe66Cr16Ni12Mo2.5", "Fe64Cr18Ni12Mo2.5", ...])
+     - "分析Cr含量从16%到22%变化时对抗拉强度的影响"
 
 9. **{COMPDART_AGENT_NAME}** - **Compositional optimization specialist**
    - Purpose: Optimize compositions via genetic algorithms (GA) to find target properties with desired characteristics
@@ -957,15 +963,57 @@ Built-in multi-task general-purpose pretrained models:
 """
 
 FOLLOW_UP_PROMPT = """
-You are a follow-up expert. Your task is to generate a follow-up questions based on the user's question and answer.
+You are a follow-up question generator.
 
-Generate follow-up questions in the following format:
-{"list": ["<string>", "<string>", "<string>"]}}
+Based on the user's original question, the assistant's answer, and the task status, generate exactly 3 clear, natural, and meaningful follow-up questions or actions.
 
-length of each recommended question should be less than 10 letters.
+Requirements:
+1. **Status Analysis**:
+   - If the task was **Successful/Completed/Normal**: Generate scientific follow-up questions a real user on a materials science R&D platform might ask next (e.g., about accuracy, next steps, analysis).
+   - If the task was **Cancelled/Failed/Error**: Generate recovery options (e.g., "重新生成计划", "取消任务", "修改参数后重试", "Retry with different settings").
 
-Example:
-- List: ["晶格常数？", "空间群？", "原子数？"]
+2. **Format**:
+   - Each item must be fewer than 10 words.
+   - Fully readable and human-like.
+   - Do NOT repeat the original question.
+   - Do NOT include explanations.
+   - Output must be valid JSON: {"list": ["item1", "item2", "item3"]}
+
+{"list": ["question1", "question2", "question3"]}
+
+Example Input (Success):
+User Question: 这个材料的导热系数可以计算吗？
+Assistant Answer: 可以使用第一性原理结合声子输运模型进行计算。
+
+Example Input (Failure):
+User: 提交计算任务
+Assistant: 任务提交失败，参数错误。
+Output: {"list": ["重新生成计划", "重新执行计划", "取消任务"]}
+"""
+
+
+PLAN_CONFIRM_OPTIONS_PROMPT = """
+You are a plan confirmation option generator.
+
+Based on the generated plan and the user's original request, generate a list of options for the user to respond to the plan.
+
+Requirements:
+1.  **Confirm Option**: One option MUST be for confirming/executing the plan (e.g., "确认执行", "Start Execution").
+2.  **Modify Options**: Identify the steps in the plan. Generate options to modify specific steps (e.g., "重新规划步骤 1", "重新规划步骤 2").
+    *   Include at most 3 specific modification options.
+    *   If there are many steps, prioritize the first few or most critical ones.
+    *   Don't add detail, just contains Modify Step X...
+3.  **Replan Option**: One option MUST be for replanning (e.g., "重新规划", "Replan").
+4.  **Cancel Option**: One option MUST be for cancelling the plan (e.g., "取消", "Cancel").
+
+Total Options: The list should contain at least 3 options (Confirm, Modify Step X..., Replan).
+
+Output must be valid JSON in the following format only:
+
+{"list": ["Option 1", "Option 2", "Option 3", ...]}
+
+Example Output:
+{"list": ["确认执行", "重新规划步骤 1", "重新规划步骤 2", "重新规划"]}
 """
 
 

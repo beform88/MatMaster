@@ -277,8 +277,21 @@
     {
       "zhPrompt": {
         "belonging": "数据可视化",
-        "question": "绘制DSC曲线，每个冷却-加热循环的曲线以上下排列的子图形式呈现，横坐标为温度，纵坐标为热流。校准点为热流为0的点，绘制曲线前将其移除。删除数据点过少的子图。",
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/18739/store/upload/276ae3d0-1aae-4422-a2f5-d23761c02486/85B_S.txt"
+        "question": "绘制DSC曲线，每个冷却-加热循环的曲线以上下排列的子图形式呈现，横坐标为温度，纵坐标为热流。要求：1) 升温用红色，降温用绿色，分别标注；2) 校准点为热流为0的点，绘制曲线前将其移除；3) 删除数据点过少的子图。",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae81de15076a9a958d7635fdd8d81"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据可视化",
+        "question": "绘制此变温PXRD图谱，标题的数字代表测试温度，请用规范的摄氏度记号标注；100摄氏度以下用绿色线，以上用红色线。仅需画图，无需额外解析",
+        "sharing_url": {
+          "test_url": ""
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2GSWYJ9V53JT0B3987583/td-pxrd_example.txt"
       }
     },
     {
@@ -309,6 +322,11 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae75dbdd176d09bfab0935b382d68",
+          "uat_url": ""
+        },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
       }
     },
@@ -318,7 +336,7 @@
         "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adf11f5e77f3883d19bb7543c7819",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
         },
         "structure_url": ""
@@ -327,8 +345,13 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "使用APEX计算合金的状态方程（EOS）",
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
+        "question": "计算这个合金的状态方程（EOS）",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae89e1c8874a38f26a65a987ad30c",
+          "uat_url": ""
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif"
       }
     },
     {
@@ -355,7 +378,10 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
+        "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
+        },
         "structure_url": ""
       }
     },
@@ -406,10 +432,10 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "预测高熵合金CoCrFeMnNiTi0.3的混合焓，预测固溶体形成和晶体结构",
+        "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的“Cantor合金”)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae350fe227bdf850d22a9732da471",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
           "uat_url": ""
         },
         "structure_url": null

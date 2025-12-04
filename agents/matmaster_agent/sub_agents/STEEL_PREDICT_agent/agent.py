@@ -35,7 +35,7 @@ class STEELPredictAgent(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config: LLMConfig, name_suffix=''):
         super().__init__(
             model=llm_config.default_litellm_model,
-            doc_summary=True,
+            doc_summary=False,
             name=STEELPredictAgentName + name_suffix,
             description=STEELPredictAgentDescription,
             instruction=STEELPredictAgentInstruction,
