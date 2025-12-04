@@ -249,21 +249,21 @@ ALL_TOOLS = {
             '3. Highlight the best performing formulation.\n'
         ),
     },
-    'plan_and_visualize_reaction': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [],
-        'description': '',
-    },
-    'convert_smiles_to_png': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.MOLECULAR],
-        'description': 'Convert molecular SMILES representation into 2D molecular images',
-    },
-    'convert_png_to_smiles': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.MOLECULAR],
-        'description': 'Convert 2D molecular images to SMILES representation',
-    },
+    # 'plan_and_visualize_reaction': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [],
+    #     'description': '',
+    # },
+    # 'convert_smiles_to_png': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [SceneEnum.MOLECULAR],
+    #     'description': 'Convert molecular SMILES representation into 2D molecular images',
+    # },
+    # 'convert_png_to_smiles': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [SceneEnum.MOLECULAR],
+    #     'description': 'Convert 2D molecular images to SMILES representation',
+    # },
     # Perovskite solar cell literature/database tools
     'get_database_info': {
         'belonging_agent': PerovskiteAgentName,
@@ -280,11 +280,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.PEROVSKITE_RESEARCH],
         'description': 'Predict the additive effect of a perovskite PCE change with a list of additives molecules.',
     },
-    'validate_smiles': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.MOLECULAR],
-        'description': '',
-    },
+    # 'validate_smiles': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [SceneEnum.MOLECULAR],
+    #     'description': '',
+    # },
     'run_ga': {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
@@ -648,7 +648,7 @@ ALL_TOOLS = {
     'extract_info_from_webpage': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.WEB_PARSING],
-        'description': 'Extract key information from a given webpage URL, including scientific facts, data, and research findings.',
+        'description': 'Extract key information from a given WEBPAGE URL, including scientific facts, data, and research findings.',
         'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
     },
@@ -687,8 +687,8 @@ ALL_TOOLS = {
     },
     'file_parse': {
         'belonging_agent': FILE_PARSE_AGENT_NAME,
-        'scene': [SceneEnum.WEB_PARSING],
-        'description': '',
+        'scene': [SceneEnum.STRUCTURAL_INFORMATICS],
+        'description': 'Universal File Parsing Tool.Used to parse various file contents, including but not limited to TXT, PDF, Word, Excel, and text files, to extract key information and data.',
         'bypass_confirmation': True,
     },
 }
