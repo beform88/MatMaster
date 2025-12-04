@@ -175,8 +175,8 @@ class BaseAgentWithRecAndSum(
                 'args_setting', ''
             ),
         )
-        logging.info(
-            '****current_function_declaration: %s', current_function_declaration
+        logger.info(
+            f'{ctx.session.id} current_function_declaration = {current_function_declaration}'
         )
         current_function_declaration[0]['parameters']['required'] = (
             current_function_declaration[0]['parameters'].get('required', [])
