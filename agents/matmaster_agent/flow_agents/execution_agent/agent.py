@@ -115,19 +115,20 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                         FlowStatusEnum.NEW_PLAN,
                     ] and (not sync_single or is_async_agent):
                         # 检查之前的计划执行情况
-                        async for execution_result_event in self.sub_agents[
-                            -1
-                        ].run_async(ctx):
-                            if not execution_result_event.partial:
-                                for plan_ask_confirm_event in all_text_event(
-                                    ctx,
-                                    self.name,
-                                    get_execution_result_card(
-                                        execution_result_event.content.parts[0].text
-                                    ),
-                                    ModelRole,
-                                ):
-                                    yield plan_ask_confirm_event
+                        msg = f'<li>步骤 {index+1}：[{step['tool_name']}]，状态：[{ctx.session.state['plan']['steps'][index]['status'].value}]</li>'
+
+                        if index + 1 == len(steps):
+                            msg += '\n <li>无更多步骤</li>'
+                        else:
+                            msg += f"\n <li>下一步：[{ctx.session.state['plan']['steps'][index+1]['tool_name']}]</li>"
+
+                        for plan_ask_confirm_event in all_text_event(
+                            ctx,
+                            self.name,
+                            get_execution_result_card(msg),
+                            ModelRole,
+                        ):
+                            yield plan_ask_confirm_event
 
                     current_steps = ctx.session.state['plan']['steps']
                     if (
