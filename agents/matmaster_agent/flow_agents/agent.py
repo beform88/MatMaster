@@ -478,7 +478,7 @@ class MatMasterFlowAgent(LlmAgent):
                 pass
             else:
                 follow_up_list = _follow_up_questions.get('list', [])
-                follow_up_str = ",".join(follow_up_list)
+                follow_up_str = ','.join(follow_up_list)
                 for generate_follow_up_event in context_function_event(
                     ctx,
                     self.name,
