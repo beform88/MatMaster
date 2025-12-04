@@ -393,7 +393,7 @@ ALL_TOOLS = {
     'predict_tensile_strength': {
         'belonging_agent': STEEL_PREDICT_AGENT_NAME,
         'scene': [SceneEnum.STEEL],
-        'description': 'Predict the ultimate tensile strength (UTS) of stainless steel based on chemical composition using a trained neural network model. Parses chemical formula string to extract element compositions, validates elements are within allowed set (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W), and returns predicted tensile strength in MPa. Formula format: ElementSymbol followed by numeric value (e.g., "Fe70Cr20Ni10" or "C0.1Si0.5Mn1.0Cr18.0Ni8.0").',
+        'description': 'Predict the ultimate tensile strength (UTS) of steel based on chemical composition using a trained neural network model. Supports batch prediction. Takes a list of chemical formula strings (even for single formula, use a list with one element), validates elements are within allowed set (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W), and returns a list of predicted tensile strength values in MPa. Formula format: ElementSymbol followed by numeric value (e.g., ["Fe70Cr20Ni10"] for single or ["Fe70Cr20Ni10", "Fe68Cr22Ni10"] for batch). Batch prediction is recommended for systematic composition variation analysis.',
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
