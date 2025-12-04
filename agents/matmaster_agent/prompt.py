@@ -937,10 +937,10 @@ Examples for reference:
 
 HUMAN_FRIENDLY_FORMAT_REQUIREMENT = """
 
-A standardized output format is crucial for avoiding ambiguity; please strictly adhere to the following requirements.
+A standardized output format is crucial for avoiding ambiguity; please strictly adhere to the following requirements. No need to output these rules in your response. Do not output emojis or other non-textual elements.
 
 - **General requirement:** A space should be added between figures and units, e.g. 10 cm, 5 kg, except percentages and angular degrees.
-- An italic font should be used for **physical quantities**; A bold font should be used for **vectors**;
+- An italic font should be used for **physical quantities**; A bold font should be used for **vectors**; No need to use italic font or bold font for figures and units.
 - **Chemical formula** should be appropriately formatted using superscript and subscript, NOT plain text; DO NOT use italic font nor bold font for chemical formula.
 - **Space group** should be in the format of appropriate `H-M` notation. The Latin letters should be in intalics, numbers should NOT be italic; **Correct subscript for screw axis is extremely important to avoid misunderstanding!** No bold font should be used for space group.
 - **Phase notations** should be in italic font, e.g. α-Fe, β-RDX etc. The greek letters (α, β) should be in intalics, the material name (Fe, RDX) should NOT be in italic font. No bold font should be used for phase notation.
