@@ -271,7 +271,7 @@ ALL_TOOLSET_DICT = {
     'apex_toolset': apex_toolset,
     'smiles_conversion_toolset': smiles_conversion_toolset,
     'retrosyn_toolset': retrosyn_toolset,
-    'uni_elf_toolset': uni_elf_toolset,
+    'unielf_toolset': uni_elf_toolset,
     'compdart_toolset': compdart_toolset,
     'doe_toolset': doe_toolset,
     'document_parser_toolset': document_parser_toolset,

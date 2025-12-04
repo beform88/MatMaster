@@ -13,6 +13,9 @@ from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant im
 from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
     CHEMBRAIN_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.chembrain_agent.unielf_agent.constant import (
+    UniELFAgentName,
+)
 from agents.matmaster_agent.sub_agents.CompDART_agent.constant import (
     COMPDART_AGENT_NAME,
 )
@@ -217,12 +220,12 @@ ALL_TOOLS = {
         'description': 'Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths. Based on DFT(Density functional theory).',
     },
     'get_target_info': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [],
+        'belonging_agent': UniELFAgentName,
+        'scene': [SceneEnum.POLYMER],
         'description': '',
     },
     'unielf_inference': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
+        'belonging_agent': UniELFAgentName,
         'scene': [SceneEnum.POLYMER],
         'description': '',
     },

@@ -11,7 +11,7 @@ from .prompt import description, instruction_en
 
 # Configure SSE params
 sse_params = SseServerParams(url=UniELFServerUrl)
-uni_elf_toolset = CalculationMCPToolset(
+unielf_toolset = CalculationMCPToolset(
     connection_params=sse_params, storage=BohriumStorge
 )
 
@@ -24,7 +24,7 @@ def init_unielf_agent(llm_config):
         model=selected_model,
         instruction=instruction_en,
         description=description,
-        tools=[uni_elf_toolset],
+        tools=[unielf_toolset],
         supervisor_agent=CHEMBRAIN_AGENT_NAME,
     )
     return unielf_agent
