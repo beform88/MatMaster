@@ -10,9 +10,6 @@ from agents.matmaster_agent.sub_agents.built_in_agent.file_parse_agent.constant 
 from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant import (
     TOOL_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
-    CHEMBRAIN_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.chembrain_agent.unielf_agent.constant import (
     UniELFAgentName,
 )

@@ -18,7 +18,7 @@ class SceneEnum(DescriptiveEnum):
 
     # universal
     UNIVERSAL = ('universal', 'Applicable to all scenarios')
-    
+
     # database
     DATABASE_SEARCH = ('database_search', '')
 
