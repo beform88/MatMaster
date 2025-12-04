@@ -468,7 +468,6 @@ class MatMasterFlowAgent(LlmAgent):
                                 yield analysis_event
 
             # 获取追问建议
-            follow_up_title = '继续追问：'
 
             async for follow_up_event in self.follow_up_agent.run_async(ctx):
                 yield follow_up_event
@@ -477,16 +476,14 @@ class MatMasterFlowAgent(LlmAgent):
             if _follow_up_questions == []:
                 pass
             else:
-                follow_up_list = _follow_up_questions.get('list', [])
+                _follow_up_questions.get('list', [])
                 for generate_follow_up_event in context_function_event(
                     ctx,
                     self.name,
                     'matmaster_generate_follow_up',
                     {},
                     ModelRole,
-                    {
-                        'invocation_id': ctx.invocation_id
-                    },
+                    {'invocation_id': ctx.invocation_id},
                 ):
                     yield generate_follow_up_event
 
