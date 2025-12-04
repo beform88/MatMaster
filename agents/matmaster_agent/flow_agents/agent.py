@@ -440,7 +440,7 @@ class MatMasterFlowAgent(LlmAgent):
                             {},
                             ModelRole,
                             {
-                                'confirm_result': json.dumps(
+                                'follow_up_result': json.dumps(
                                     {
                                         'invocation_id': ctx.invocation_id,
                                         'title': '请确认计划：',
