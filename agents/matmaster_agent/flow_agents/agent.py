@@ -80,6 +80,7 @@ from agents.matmaster_agent.services.icl import (
     select_update_examples,
     toolchain_from_examples,
 )
+from agents.matmaster_agent.services.questions import get_random_questions
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -496,37 +497,35 @@ class MatMasterFlowAgent(LlmAgent):
                                 yield analysis_event
 
                         # 获取追问建议
-                        follow_up_title = '继续追问：'
-
-                        async for follow_up_event in self.follow_up_agent.run_async(
-                            ctx
+                        # async for follow_up_event in self.follow_up_agent.run_async(
+                        #     ctx
+                        # ):
+                        #     yield follow_up_event
+                        #
+                        # _follow_up_questions = ctx.session.state.get(
+                        #     'follow_up_questions', []
+                        # )
+                        # if _follow_up_questions == []:
+                        #     pass
+                        # else:
+                        follow_up_list = await get_random_questions()
+                        for generate_follow_up_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_generate_follow_up',
+                            {},
+                            ModelRole,
+                            {
+                                'follow_up_result': json.dumps(
+                                    {
+                                        'invocation_id': ctx.invocation_id,
+                                        'title': '你或许还对这些问题感兴趣：',
+                                        'list': follow_up_list,
+                                    }
+                                )
+                            },
                         ):
-                            yield follow_up_event
-
-                        _follow_up_questions = ctx.session.state.get(
-                            'follow_up_questions', []
-                        )
-                        if _follow_up_questions == []:
-                            pass
-                        else:
-                            follow_up_list = _follow_up_questions.get('list', [])
-                            for generate_follow_up_event in context_function_event(
-                                ctx,
-                                self.name,
-                                'matmaster_generate_follow_up',
-                                {},
-                                ModelRole,
-                                {
-                                    'follow_up_result': json.dumps(
-                                        {
-                                            'invocation_id': ctx.invocation_id,
-                                            'title': follow_up_title,
-                                            'list': follow_up_list,
-                                        }
-                                    )
-                                },
-                            ):
-                                yield generate_follow_up_event
+                            yield generate_follow_up_event
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
