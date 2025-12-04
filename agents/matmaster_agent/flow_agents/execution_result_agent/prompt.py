@@ -38,4 +38,6 @@ The currently completed step is <strong>[STEP NAME]</strong>, and the result is 
 (If you need to explain the next step, you can only write)
 The next step is <strong>[NEXT STEP NAME]</strong>, which has not been completed yet.
 ```
+
+Output in {{target_language}}
 """
