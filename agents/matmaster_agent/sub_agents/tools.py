@@ -574,22 +574,22 @@ ALL_TOOLS = {
     },
     'traj_analysis_rdf': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'traj_analysis_solvation': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'traj_analysis_bond': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'traj_analysis_react': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'visualize_data': {
