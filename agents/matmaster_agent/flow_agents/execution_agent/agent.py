@@ -12,16 +12,11 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
-from agents.matmaster_agent.flow_agents.execution_result_agent.style import (
-    get_execution_result_card,
-)
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     get_agent_name,
 )
-from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import MatMasterCheckTransferPrompt
@@ -29,7 +24,6 @@ from agents.matmaster_agent.sub_agents.mapping import (
     MatMasterSubAgentsEnum,
 )
 from agents.matmaster_agent.utils.event_utils import (
-    all_text_event,
     context_function_event,
     update_state_event,
 )
@@ -64,12 +58,12 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
         plan = ctx.session.state['plan']
         logger.info(f'{ctx.session.id} plan = {plan}')
         steps = plan['steps']
-        is_single_tool_plan = len(steps) == 1
+        # is_single_tool_plan = len(steps) == 1
 
         for index, step in enumerate(steps):
             if step.get('tool_name'):
                 target_agent = get_agent_name(step['tool_name'], self.sub_agents)
-                is_async_agent = isinstance(target_agent, BaseAsyncJobAgent)
+                # is_async_agent = isinstance(target_agent, BaseAsyncJobAgent)
                 logger.info(
                     f'{ctx.session.id} tool_name = {step['tool_name']}, target_agent = {target_agent.name}'
                 )
@@ -109,25 +103,26 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                         f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
                     )
 
-                    sync_single = is_single_tool_plan and not is_async_agent
-                    if check_plan(ctx) not in [
-                        FlowStatusEnum.NO_PLAN,
-                        FlowStatusEnum.NEW_PLAN,
-                    ] and (not sync_single or is_async_agent):
-                        # 检查之前的计划执行情况
-                        async for execution_result_event in self.sub_agents[
-                            -1
-                        ].run_async(ctx):
-                            if not execution_result_event.partial:
-                                for plan_ask_confirm_event in all_text_event(
-                                    ctx,
-                                    self.name,
-                                    get_execution_result_card(
-                                        execution_result_event.content.parts[0].text
-                                    ),
-                                    ModelRole,
-                                ):
-                                    yield plan_ask_confirm_event
+                    # sync_single = is_single_tool_plan and not is_async_agent
+                    # if check_plan(ctx) not in [
+                    #     FlowStatusEnum.NO_PLAN,
+                    #     FlowStatusEnum.NEW_PLAN,
+                    # ] and (not sync_single or is_async_agent):
+                    #     # 检查之前的计划执行情况
+                    #     msg = f'<li>步骤 {index+1}：[{step['tool_name']}]，状态：[{ctx.session.state['plan']['steps'][index]['status'].value}]</li>'
+                    #
+                    #     if index + 1 == len(steps):
+                    #         msg += '\n <li>无更多步骤</li>'
+                    #     else:
+                    #         msg += f"\n <li>下一步：[{ctx.session.state['plan']['steps'][index+1]['tool_name']}]</li>"
+
+                    # for plan_ask_confirm_event in all_text_event(
+                    #     ctx,
+                    #     self.name,
+                    #     get_execution_result_card(msg),
+                    #     ModelRole,
+                    # ):
+                    #     yield plan_ask_confirm_event
 
                     current_steps = ctx.session.state['plan']['steps']
                     if (
