@@ -30,7 +30,11 @@ from agents.matmaster_agent.sub_agents.chembrain_agent.smiles_conversion_agent.a
     smiles_conversion_toolset,
 )
 from agents.matmaster_agent.sub_agents.chembrain_agent.unielf_agent.agent import (
-    uni_elf_toolset,
+    UniELFAgent,
+    unielf_toolset,
+)
+from agents.matmaster_agent.sub_agents.chembrain_agent.unielf_agent.constant import (
+    UniELFAgentName,
 )
 from agents.matmaster_agent.sub_agents.CompDART_agent.agent import (
     CompDARTAgent,
@@ -271,7 +275,7 @@ ALL_TOOLSET_DICT = {
     'apex_toolset': apex_toolset,
     'smiles_conversion_toolset': smiles_conversion_toolset,
     'retrosyn_toolset': retrosyn_toolset,
-    'unielf_toolset': uni_elf_toolset,
+    'unielf_toolset': unielf_toolset,
     'compdart_toolset': compdart_toolset,
     'doe_toolset': doe_toolset,
     'document_parser_toolset': document_parser_toolset,
@@ -346,6 +350,7 @@ AGENT_CLASS_MAPPING = {
     TOOL_AGENT_NAME: LLMToolAgent,
     Physical_Adsorption_AGENT_NAME: PhysicalAdsorptionAgent,
     FILE_PARSE_AGENT_NAME: FileParseAgent,
+    UniELFAgentName: UniELFAgent,
 }
 
 
@@ -388,6 +393,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     ToolAgent = TOOL_AGENT_NAME
     FileParseAgent = FILE_PARSE_AGENT_NAME
     PhysicalAdsorptionAgent = Physical_Adsorption_AGENT_NAME
+    UniELFAgentNameEnum = UniELFAgentName
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())
