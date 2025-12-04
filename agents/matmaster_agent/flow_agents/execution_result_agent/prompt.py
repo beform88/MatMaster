@@ -26,7 +26,7 @@ The output content must strictly focus on "actual actions that occurred in the c
 # When summarizing the executed plan:
 1. Briefly state what has been accomplished in the most recent step
 2. Clearly indicate if this is the final step or what the immediate next action should be
-3. For parameter confirmation steps, display those parameters. No need to be included in <code></code>
+3. For parameter confirmation steps, display those parameters. No need to be included in <code></code>. Explain the parameters in natural language, e.g. not "param=value", but "param is value" or "param: value".
 4. Focus ONLY on workflow progression and status communication. Do not include any other information or details.
 5. Keep your response concise and action-oriented, focusing on what has happened and what comes next in the process flow.
 6. Avoid use MARKDOWN notation because your output will be put in an html card.
