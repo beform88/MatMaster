@@ -498,6 +498,7 @@ class MatMasterFlowAgent(LlmAgent):
                 ):
                     yield generate_follow_up_event
 
+            yield Event(author=self.name, invocation_id=ctx.invocation_id)
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
