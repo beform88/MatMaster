@@ -230,21 +230,20 @@
     {
       "zhPrompt": {
         "belonging": "ABACUS计算",
-        "question": "对GaN使用HSE06方法计算能带结构，并输出能带图与态密度（DOS）",
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "ABACUS计算",
-        "question": "使用ABACUS对Si立方晶体进行结构优化计算，获取收敛后的晶格参数与总能量",
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
+        "question": "请计算Si的能带",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae7eefaf771d6a6450c67d9a1c38f"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBKYY4QB25BH1A64CR5ZQJQS/Si-prim.cif"
       }
     },
     {
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算Si的声子色散曲线（需先进行结构优化）",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae373760373f1bbff92bfc5ac98ac"
+        },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
     },
@@ -252,6 +251,9 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
+        },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
       }
     },
@@ -260,6 +262,16 @@
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "ABACUS计算",
+        "question": "使用ABACUS计算Pd(111)面的功函数，真空层位于z方向上。",
+        "share_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3942ba07b8db65c325f1b2b3306"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHS8H8KVSG4FZC9S1WPAVGG/Pd111.cif"
       }
     },
     {
