@@ -55,7 +55,7 @@ class SceneEnum(DescriptiveEnum):
     # literatue
     LITERATURE = (
         'literature',
-        'involving research papers retrieval, content extraction, or trend analysis.e.g. Search for research papers on [topic], Extract key findings from the paper at [URL], Analyze research trends in [field]',
+        'involving research papers retrieval, content extraction, or progress/trends analysis. e.g. Search for research papers on [topic], Extract key findings from the paper at [URL], Analyze research progress/trends in [field]',
     )
     WEB_SEARCH = (
         'general_web_search',

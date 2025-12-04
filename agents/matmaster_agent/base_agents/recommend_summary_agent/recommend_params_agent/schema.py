@@ -31,11 +31,11 @@ def get_field_kwargs(field):
 
 def get_field_type(field: Dict[str, Any]) -> Any:
     """递归获取字段类型，支持嵌套结构"""
-    logging.info('field = {}'.format(field))
+    logger.info('field = {}'.format(field))
     if 'type' not in field:
-        raise ValueError(f'Field must have a type, {field}')
+        logger.warning(f'`{field}` dont have a type, default to object')
 
-    field_type = field['type']
+    field_type = field.get('type', types.Type.OBJECT)
 
     # 基本类型
     if field_type in GENAI_TYPE_TO_PYDANTIC_MAPPING:

@@ -1,4 +1,5 @@
 import copy
+import json
 import logging
 from typing import AsyncGenerator
 
@@ -428,10 +429,14 @@ class MatMasterFlowAgent(LlmAgent):
                             yield plan_ask_confirm_event
 
                         # 确认计划
-                        async for option_event in self.plan_confirm_option_agent.run_async(ctx):
+                        async for (
+                            option_event
+                        ) in self.plan_confirm_option_agent.run_async(ctx):
                             yield option_event
 
-                        _plan_options = ctx.session.state.get('plan_confirm_options', {}).get('list', ['确认计划', '修改计划', '重新规划'])
+                        _plan_options = ctx.session.state.get(
+                            'plan_confirm_options', {}
+                        ).get('list', ['确认计划', '修改计划', '重新规划'])
 
                         for generate_plan_confirm_event in context_function_event(
                             ctx,
@@ -440,9 +445,13 @@ class MatMasterFlowAgent(LlmAgent):
                             {},
                             ModelRole,
                             {
-                                'invocation_id': ctx.invocation_id,
-                                'title': '请确认计划：',
-                                'list': _plan_options,
+                                'confirm_result': json.dumps(
+                                    {
+                                        'invocation_id': ctx.invocation_id,
+                                        'title': '请确认计划：',
+                                        'list': _plan_options,
+                                    }
+                                ),
                             },
                         ):
                             yield generate_plan_confirm_event
@@ -494,10 +503,14 @@ class MatMasterFlowAgent(LlmAgent):
                         # 获取追问建议
                         follow_up_title = '继续追问：'
 
-                        async for follow_up_event in self.follow_up_agent.run_async(ctx):
+                        async for follow_up_event in self.follow_up_agent.run_async(
+                            ctx
+                        ):
                             yield follow_up_event
 
-                        _follow_up_questions = ctx.session.state.get('follow_up_questions', [])
+                        _follow_up_questions = ctx.session.state.get(
+                            'follow_up_questions', []
+                        )
                         if _follow_up_questions == []:
                             pass
                         else:
@@ -509,13 +522,16 @@ class MatMasterFlowAgent(LlmAgent):
                                 {},
                                 ModelRole,
                                 {
-                                    'invocation_id': ctx.invocation_id,
-                                    'title': follow_up_title,
-                                    'list': follow_up_list,
+                                    'follow_up_result': json.dumps(
+                                        {
+                                            'invocation_id': ctx.invocation_id,
+                                            'title': follow_up_title,
+                                            'list': follow_up_list,
+                                        }
+                                    )
                                 },
                             ):
                                 yield generate_follow_up_event
-
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event

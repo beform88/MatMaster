@@ -13,6 +13,9 @@ from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant im
 from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
     CHEMBRAIN_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.chembrain_agent.unielf_agent.constant import (
+    UniELFAgentName,
+)
 from agents.matmaster_agent.sub_agents.CompDART_agent.constant import (
     COMPDART_AGENT_NAME,
 )
@@ -217,14 +220,34 @@ ALL_TOOLS = {
         'description': 'Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths. Based on DFT(Density functional theory).',
     },
     'get_target_info': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [],
-        'description': '',
+        'belonging_agent': UniELFAgentName,
+        'scene': [SceneEnum.POLYMER],
+        'description': (
+            'Get target information from configuration settings. '
+            'This function retrieves comprehensive configuration information '
+            'needed for the Uni-ELF inference system, including background '
+            'documentation and available target model mappings.',
+        ),
     },
     'unielf_inference': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
+        'belonging_agent': UniELFAgentName,
         'scene': [SceneEnum.POLYMER],
-        'description': '',
+        'description': (
+            'Run Uni-ELF inference for formulation inputs (components and '
+            'ratios), a DP Technology model for predicting formulation '
+            'properties. Supports mixtures and pseudo-formulations '
+            '(e.g., copolymers with monomer ratios). This function performs '
+            'property prediction task.',
+        ),
+        'summary_prompt': (
+            'Summarize the Uni-ELF inference results based on the output:\n'
+            '1. Report the url to the full results CSV file (`result_csv`).\n'
+            '2. List the top 10 formulations from `top_10_results_dict`. '
+            'For each, display the `formulation_id`, the composition '
+            '(combine `smiles_i` and `ratio_i`), and the predicted property '
+            'value (key ending in `_pred`).\n'
+            '3. Highlight the best performing formulation.\n'
+        ),
     },
     'plan_and_visualize_reaction': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
@@ -370,7 +393,7 @@ ALL_TOOLS = {
     'predict_tensile_strength': {
         'belonging_agent': STEEL_PREDICT_AGENT_NAME,
         'scene': [SceneEnum.STEEL],
-        'description': 'Predict the ultimate tensile strength (UTS) of stainless steel based on chemical composition using a trained neural network model. Parses chemical formula string to extract element compositions, validates elements are within allowed set (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W), and returns predicted tensile strength in MPa. Formula format: ElementSymbol followed by numeric value (e.g., "Fe70Cr20Ni10" or "C0.1Si0.5Mn1.0Cr18.0Ni8.0").',
+        'description': 'Predict the ultimate tensile strength (UTS) of steel based on chemical composition using a trained neural network model. Supports batch prediction. Takes a list of chemical formula strings (even for single formula, use a list with one element), validates elements are within allowed set (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W), and returns a list of predicted tensile strength values in MPa. Formula format: ElementSymbol followed by numeric value (e.g., ["Fe70Cr20Ni10"] for single or ["Fe70Cr20Ni10", "Fe68Cr22Ni10"] for batch). Batch prediction is recommended for systematic composition variation analysis.',
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
@@ -575,6 +598,7 @@ ALL_TOOLS = {
         'belonging_agent': VisualizerAgentName,
         'scene': [SceneEnum.VISUALIZE_DATA],
         'description': 'Automatically analyze materials science data files (CSV, Excel, JSON, TXT, DAT), identify the data structure with regular expression, and visualize the data with plots.',
+        'bypass_confirmation': True,
     },
     'convert_lammps_structural_format': {
         'belonging_agent': LAMMPS_AGENT_NAME,
@@ -594,9 +618,9 @@ ALL_TOOLS = {
     'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
-        'description': 'Intelligent enhanced paper search system based on keywords and research questions',
+        'description': 'Search for research papers and recent progress related to a topic',
         'args_setting': f"""
-            If not specified, the starting year 2020, the ending time is {TODAY}; the number of papers is 200. When constructing query words, (i) use English to fill the input queries to ensure professionality; (ii) avoid using broad keywords such as 'materials science', 'chemistry', 'progress'; (iii) extract the most specific and technically relevant keywords from the user's query, including material names, chemical formulas, molecular identifiers, mechanisms, properties, or application contexts; (iv) If the user\'s query is inherently broad and lacks specific entities, methods, or systems, you must decompose the conceptual domain into its technical intension and generate concrete, research-usable keywords. (v) When extracting or translating domain-specific terms, do not segment or re-group any composite technical noun phrase unless its decomposition is an established scientific usage; if a phrase is structurally ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering any refinement. This includes identifying: representative subfields, canonical mechanisms or processes, prototypical material classes or molecular systems, commonly studied performance metrics, key methodological or application contexts. These derived keywords must be specific enough to retrieve meaningful literature rather than triggering domain-level noise.
+            If not specified, the starting year 2020, the ending time is {TODAY}; the number of papers (`page_size`) is 200. When constructing query words, (i) use English to fill the input queries to ensure professionality; (ii) avoid using broad keywords such as 'materials science', 'chemistry', 'progress'; (iii) extract the most specific and technically relevant keywords from the user's query, including material names, chemical formulas, molecular identifiers, mechanisms, properties, or application contexts; (iv) If the user\'s query is inherently broad and lacks specific entities, methods, or systems, you must decompose the conceptual domain into its technical intension and generate concrete, research-usable keywords. (v) When extracting or translating domain-specific terms, do not segment or re-group any composite technical noun phrase unless its decomposition is an established scientific usage; if a phrase is structurally ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering any refinement. This includes identifying: representative subfields, canonical mechanisms or processes, prototypical material classes or molecular systems, commonly studied performance metrics, key methodological or application contexts. These derived keywords must be specific enough to retrieve meaningful literature rather than triggering domain-level noise.
         """,
         'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,

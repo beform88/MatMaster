@@ -48,7 +48,7 @@ def setup_global_logger():
 
     # 创建格式化器并设置给处理器
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
     )
     file_handler.setFormatter(formatter)
 
