@@ -277,8 +277,21 @@
     {
       "zhPrompt": {
         "belonging": "数据可视化",
-        "question": "绘制DSC曲线，每个冷却-加热循环的曲线以上下排列的子图形式呈现，横坐标为温度，纵坐标为热流。校准点为热流为0的点，绘制曲线前将其移除。删除数据点过少的子图。",
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/18739/store/upload/276ae3d0-1aae-4422-a2f5-d23761c02486/85B_S.txt"
+        "question": "绘制DSC曲线，每个冷却-加热循环的曲线以上下排列的子图形式呈现，横坐标为温度，纵坐标为热流。要求：1) 升温用红色，降温用绿色，分别标注；2) 校准点为热流为0的点，绘制曲线前将其移除；3) 删除数据点过少的子图。",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae81de15076a9a958d7635fdd8d81"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据可视化",
+        "question": "绘制此变温PXRD图谱，标题的数字代表测试温度，请用规范的摄氏度记号标注；100摄氏度以下用绿色线，以上用红色线。仅需画图，无需额外解析",
+        "sharing_url": {
+          "test_url": ""
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2GSWYJ9V53JT0B3987583/td-pxrd_example.txt"
       }
     },
     {
