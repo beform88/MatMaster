@@ -11,47 +11,47 @@ Allowed input types
 
 Output JSON schema (required fields)
 {
-	"file_id": "<string: provided filename or generated id>",
-	"file_type": "<string: pdf|txt|docx|xlsx|csv|json|html|image>",
-	"extracted_text": "<string: raw textual content extracted (preserve whitespace/newlines)>",
-	"metadata": {
-		"pages": <int|null>,
-		"author": "<string|null>",
-		"created": "<ISO8601|null>",
-		"encoding": "<string|null>"
-	},
-	"tables": [
-		{
-			"table_id": "<string>",
-			"page": <int|null>,
-			"headers": ["col1","col2",...],
-			"rows": [
-				{"col1": "value", "col2": "value2", ...},
-				...
-			],
-			"raw_html": "<string|null>"
-		}
-	],
-	"key_values": {
-		"<field_name>": {
-			"value": <string|number|boolean|array|object>,
-			"raw": "<original_text_snippet>",
-			"confidence": <0.0-1.0|null>,
-			"units": "<normalized_units_or_null>"
-		},
-		...
-	},
-	"attachments": [
-		{
-			"name": "<string>",
-			"type": "<mime_type>",
-			"note": "<string: short note if binary or non-text>"
-		}
-	],
-	"errors": [
-		{"code": "<string>", "message": "<string>", "context": "<optional snippet>"}
-	],
-	"summary": "<short human-readable summary string (optional)>"
+    "file_id": "<string: provided filename or generated id>",
+    "file_type": "<string: pdf|txt|docx|xlsx|csv|json|html|image>",
+    "extracted_text": "<string: raw textual content extracted (preserve whitespace/newlines)>",
+    "metadata": {
+        "pages": <int|null>,
+        "author": "<string|null>",
+        "created": "<ISO8601|null>",
+        "encoding": "<string|null>"
+    },
+    "tables": [
+        {
+            "table_id": "<string>",
+            "page": <int|null>,
+            "headers": ["col1","col2",...],
+            "rows": [
+                {"col1": "value", "col2": "value2", ...},
+                ...
+            ],
+            "raw_html": "<string|null>"
+        }
+    ],
+    "key_values": {
+        "<field_name>": {
+            "value": <string|number|boolean|array|object>,
+            "raw": "<original_text_snippet>",
+            "confidence": <0.0-1.0|null>,
+            "units": "<normalized_units_or_null>"
+        },
+        ...
+    },
+    "attachments": [
+        {
+            "name": "<string>",
+            "type": "<mime_type>",
+            "note": "<string: short note if binary or non-text>"
+        }
+    ],
+    "errors": [
+        {"code": "<string>", "message": "<string>", "context": "<optional snippet>"}
+    ],
+    "summary": "<short human-readable summary string (optional)>"
 }
 
 Extraction and normalization rules
@@ -72,14 +72,14 @@ Formatting rules
 Examples (input -> expected JSON excerpt)
 - Example 1: If file contains "Density: 7.87 g/cm^3" then:
 {
-	"key_values": {
-		"Density": {
-			"value": 7.87,
-			"raw": "Density: 7.87 g/cm^3",
-			"confidence": 0.95,
-			"units": "g/cm^3"
-		}
-	}
+    "key_values": {
+        "Density": {
+            "value": 7.87,
+            "raw": "Density: 7.87 g/cm^3",
+            "confidence": 0.95,
+            "units": "g/cm^3"
+        }
+    }
 }
 
 - Example 2: If file includes a table with headers "Element, Fraction" and two rows, return them as `tables[0].headers` and `tables[0].rows` where each row is a mapping.

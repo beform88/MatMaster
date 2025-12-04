@@ -89,13 +89,6 @@ from agents.matmaster_agent.utils.event_utils import (
     send_error_event,
     update_state_event,
 )
-from agents.matmaster_agent.services.icl import (
-    select_examples,
-    select_update_examples,
-    scene_tags_from_examples,
-    toolchain_from_examples,
-    expand_input_examples
-)
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -337,7 +330,9 @@ class MatMasterFlowAgent(LlmAgent):
 
                 before_scenes = ctx.session.state['scenes']
                 single_scene = ctx.session.state['single_scenes']['type']
-                scenes = list(set(before_scenes + single_scene + ['structural_informatics']))
+                scenes = list(
+                    set(before_scenes + single_scene + ['structural_informatics'])
+                )
                 logger.info(f'{ctx.session.id} scenes = {scenes}')
                 yield update_state_event(
                     ctx, state_delta={'scenes': copy.deepcopy(scenes)}
