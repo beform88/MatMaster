@@ -69,6 +69,7 @@ from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import (
     FOLLOW_UP_PROMPT,
     HUMAN_FRIENDLY_FORMAT_REQUIREMENT,
+    PLAN_CONFIRM_OPTIONS_PROMPT,
 )
 from agents.matmaster_agent.services.icl import (
     expand_input_examples,
@@ -184,6 +185,14 @@ class MatMasterFlowAgent(LlmAgent):
             state_key='follow_up_questions',
         )
 
+        self._plan_confirm_option_agent = DisallowTransferSchemaAgent(
+            name='plan_confirm_option_agent',
+            model=MatMasterLlmConfig.default_litellm_model,
+            description='生成计划确认选项',
+            instruction=PLAN_CONFIRM_OPTIONS_PROMPT,
+            state_key='plan_confirm_options',
+        )
+
         self._execution_agent = MatMasterSupervisorAgent(
             name='execution_agent',
             model=MatMasterLlmConfig.default_litellm_model,
@@ -214,6 +223,7 @@ class MatMasterFlowAgent(LlmAgent):
             self.plan_confirm_agent,
             self.execution_agent,
             self.follow_up_agent,
+            self.plan_confirm_option_agent,
             self.analysis_agent,
         ]
 
@@ -263,6 +273,11 @@ class MatMasterFlowAgent(LlmAgent):
     @property
     def follow_up_agent(self) -> LlmAgent:
         return self._follow_up_agent
+
+    @computed_field
+    @property
+    def plan_confirm_option_agent(self) -> LlmAgent:
+        return self._plan_confirm_option_agent
 
     @computed_field
     @property
@@ -406,22 +421,31 @@ class MatMasterFlowAgent(LlmAgent):
                             },
                         )
                     else:
-                        # TODO：确认计划, 用follow up做确认计划
                         # 询问用户是否确认计划
                         for plan_ask_confirm_event in all_text_event(
                             ctx, self.name, plan_ask_confirm_card(), ModelRole
                         ):
                             yield plan_ask_confirm_event
-                        if plan_confirm:
-                            yield update_state_event(
-                                ctx,
-                                state_delta={
-                                    'plan_confirm': {
-                                        'flag': False,
-                                        'reason': ' New Plan',
-                                    }
-                                },
-                            )
+
+                        # 确认计划
+                        async for option_event in self.plan_confirm_option_agent.run_async(ctx):
+                            yield option_event
+
+                        _plan_options = ctx.session.state.get('plan_confirm_options', {}).get('list', ['确认计划', '修改计划', '重新规划'])
+
+                        for generate_plan_confirm_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_generate_plan_confirm_options',
+                            {},
+                            ModelRole,
+                            {
+                                'invocation_id': ctx.invocation_id,
+                                'title': '请确认计划：',
+                                'list': _plan_options,
+                            },
+                        ):
+                            yield generate_plan_confirm_event
 
                 # 计划未确认，暂停往下执行
                 if ctx.session.state['plan_confirm']['flag']:
@@ -467,30 +491,30 @@ class MatMasterFlowAgent(LlmAgent):
                             ):
                                 yield analysis_event
 
-            # 获取追问建议
-            follow_up_title = '继续追问：'
+                        # 获取追问建议
+                        follow_up_title = '继续追问：'
 
-            async for follow_up_event in self.follow_up_agent.run_async(ctx):
-                yield follow_up_event
+                        async for follow_up_event in self.follow_up_agent.run_async(ctx):
+                            yield follow_up_event
 
-            _follow_up_questions = ctx.session.state.get('follow_up_questions', [])
-            if _follow_up_questions == []:
-                pass
-            else:
-                follow_up_list = _follow_up_questions.get('list', [])
-                for generate_follow_up_event in context_function_event(
-                    ctx,
-                    self.name,
-                    'matmaster_generate_follow_up',
-                    {},
-                    ModelRole,
-                    {
-                        'invocation_id': ctx.invocation_id,
-                        'title': follow_up_title,
-                        'list': follow_up_list,
-                    },
-                ):
-                    yield generate_follow_up_event
+                        _follow_up_questions = ctx.session.state.get('follow_up_questions', [])
+                        if _follow_up_questions == []:
+                            pass
+                        else:
+                            follow_up_list = _follow_up_questions.get('list', [])
+                            for generate_follow_up_event in context_function_event(
+                                ctx,
+                                self.name,
+                                'matmaster_generate_follow_up',
+                                {},
+                                ModelRole,
+                                {
+                                    'invocation_id': ctx.invocation_id,
+                                    'title': follow_up_title,
+                                    'list': follow_up_list,
+                                },
+                            ):
+                                yield generate_follow_up_event
 
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
