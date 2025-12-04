@@ -24,6 +24,7 @@ class RenderTypeEnum(str, Enum):
     JOB_RESULT = 'job_result'
     LITERATURE = 'literature'
     WEB = 'web'
+    MATRIX = 'matrix'
 
 
 class JobResult(BaseModel):
@@ -79,6 +80,14 @@ class WebSearchItem(BaseModel):
     link: HttpUrl
     snippet: str
     meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = RenderTypeEnum.WEB
+
+
+class Matrix(BaseModel):
+    title: str
+    values: List[List[float]]
+    meta_type: Literal[tuple(RenderTypeEnum.__members__.values())] = (
+        RenderTypeEnum.MATRIX
+    )
 
 
 class ParamsCheckComplete(BaseModel):
