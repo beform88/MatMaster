@@ -487,7 +487,7 @@ class MatMasterFlowAgent(LlmAgent):
                     {
                         'invocation_id': ctx.invocation_id,
                         'title': follow_up_title,
-                        'list': follow_up_list,
+                        'follow_up_list': follow_up_list,
                     },
                 ):
                     yield generate_follow_up_event

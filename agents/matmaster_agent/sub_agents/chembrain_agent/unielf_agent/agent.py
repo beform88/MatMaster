@@ -1,6 +1,8 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools.mcp_tool.mcp_session_manager import (
+    StreamableHTTPServerParams,
+)
 
 from agents.matmaster_agent.base_agents.public_agent import (
     BaseSyncAgentWithToolValidator,
@@ -13,7 +15,7 @@ from .constant import UNIELF_SERVER_URL, UniELFAgentName
 from .prompt import description, instruction_en
 
 # Configure SSE params
-sse_params = SseServerParams(url=UNIELF_SERVER_URL)
+sse_params = StreamableHTTPServerParams(url=UNIELF_SERVER_URL)
 unielf_toolset = CalculationMCPToolset(
     connection_params=sse_params, storage=BohriumStorge
 )
