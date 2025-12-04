@@ -589,6 +589,7 @@ ALL_TOOLS = {
         'belonging_agent': VisualizerAgentName,
         'scene': [SceneEnum.VISUALIZE_DATA],
         'description': 'Automatically analyze materials science data files (CSV, Excel, JSON, TXT, DAT), identify the data structure with regular expression, and visualize the data with plots.',
+        'bypass_confirmation': True,
     },
     'convert_lammps_structural_format': {
         'belonging_agent': LAMMPS_AGENT_NAME,
