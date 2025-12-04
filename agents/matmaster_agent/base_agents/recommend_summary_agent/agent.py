@@ -175,6 +175,12 @@ class BaseAgentWithRecAndSum(
                 'args_setting', ''
             ),
         )
+        logging.info(
+            '****current_function_declaration: %s', current_function_declaration
+        )
+        current_function_declaration[0]['parameters']['required'] = (
+            current_function_declaration[0]['parameters'].get('required', [])
+        )
         _, self.tool_call_info_agent.output_schema = create_tool_args_schema(
             current_function_declaration[0]['parameters']['required'],
             current_function_declaration,
