@@ -1,5 +1,5 @@
 UniELFAgentName = 'unielf_agent'
-UNIELF_SERVER_URL = 'http://efpl1193834.bohrium.tech:50001/sse'
+UNIELF_SERVER_URL = 'http://efpl1193834.bohrium.tech:50001/mcp'
 
 # if CURRENT_ENV in ['test']:
 #     UNIELF_SERVER_URL = 'http://efpl1193834.bohrium.tech:50001/sse'

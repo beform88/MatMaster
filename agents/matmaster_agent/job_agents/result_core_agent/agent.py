@@ -34,12 +34,14 @@ from agents.matmaster_agent.utils.event_utils import (
     frontend_text_event,
     update_state_event,
 )
-from agents.matmaster_agent.utils.frontend import get_frontend_job_result_data
-from agents.matmaster_agent.utils.helper_func import (
+from agents.matmaster_agent.utils.io_oss import update_tgz_dict
+from agents.matmaster_agent.utils.result_parse_utils import (
+    get_kv_result,
     get_markdown_image_result,
+    get_matrix_result,
+    matrix_to_markdown_table,
     parse_result,
 )
-from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -182,7 +184,7 @@ class ResultMCPAgent(MCPAgent):
                         state_delta={'long_running_jobs': update_long_running_jobs},
                     )
                     markdown_image_result = get_markdown_image_result(parsed_result)
-                    job_result_comp_data = get_frontend_job_result_data(
+                    job_result_comp_data = get_kv_result(
                         ctx.session.state['long_running_jobs'][origin_job_id][
                             'job_result'
                         ]
@@ -212,6 +214,18 @@ class ResultMCPAgent(MCPAgent):
                                     ctx, self.name, item['data'], ModelRole
                                 ):
                                     yield markdown_image_event
+
+                        # 渲染 Matrix 结果
+                        matrix_result = get_matrix_result(parsed_result)
+                        if matrix_result:
+                            for item in matrix_result:
+                                for markdown_matrix_event in all_text_event(
+                                    ctx,
+                                    self.name,
+                                    matrix_to_markdown_table(item),
+                                    ModelRole,
+                                ):
+                                    yield markdown_matrix_event
 
                         # Only for debug
                         if os.getenv('MODE', None) == 'debug':
