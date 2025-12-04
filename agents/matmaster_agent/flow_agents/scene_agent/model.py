@@ -74,6 +74,10 @@ class SceneEnum(DescriptiveEnum):
         'visualize_data',
         'Involves visualization or charting requirements',
     )
+    POST_MD_ANALYSIS = (
+        'post_md_analysis',
+        'Based on molecular dynamics trajectory data, analyze the mean-squared displacement (MSD), radial distribution function (RDF), solvation structure analysis, bond evolution, reaction species and network analysis.',
+    )
 
     # reaserch sence
     MOLECULAR = (
