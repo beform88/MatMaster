@@ -483,7 +483,7 @@ class MatMasterFlowAgent(LlmAgent):
                     'matmaster_generate_follow_up',
                     {},
                     ModelRole,
-                    {'invocation_id': ctx.invocation_id},
+                    {'invocation_id': ctx.invocation_id, 'title': '继续追问: '},
                 ):
                     yield generate_follow_up_event
 
