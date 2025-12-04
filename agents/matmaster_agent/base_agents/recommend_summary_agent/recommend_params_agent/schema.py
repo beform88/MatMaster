@@ -31,7 +31,7 @@ def get_field_kwargs(field):
 
 def get_field_type(field: Dict[str, Any]) -> Any:
     """递归获取字段类型，支持嵌套结构"""
-    logging.info('field = {}'.format(field))
+    logger.info('field = {}'.format(field))
     if 'type' not in field:
         raise ValueError(f'Field must have a type, {field}')
 
