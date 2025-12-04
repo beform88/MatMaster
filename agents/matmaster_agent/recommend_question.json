@@ -322,6 +322,11 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae75dbdd176d09bfab0935b382d68",
+          "uat_url": ""
+        },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
       }
     },
@@ -331,7 +336,7 @@
         "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adf11f5e77f3883d19bb7543c7819",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
         },
         "structure_url": ""
@@ -340,8 +345,13 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "使用APEX计算合金的状态方程（EOS）",
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
+        "question": "计算这个合金的状态方程（EOS）",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae89e1c8874a38f26a65a987ad30c",
+          "uat_url": ""
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif"
       }
     },
     {
