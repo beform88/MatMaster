@@ -239,6 +239,15 @@ ALL_TOOLS = {
             '(e.g., copolymers with monomer ratios). This function performs '
             'property prediction task.',
         ),
+        'summary_prompt': (
+            'Summarize the Uni-ELF inference results based on the output:\n'
+            '1. Report the url to the full results CSV file (`result_csv`).\n'
+            '2. List the top 10 formulations from `top_10_results_dict`. '
+            'For each, display the `formulation_id`, the composition '
+            '(combine `smiles_i` and `ratio_i`), and the predicted property '
+            'value (key ending in `_pred`).\n'
+            '3. Highlight the best performing formulation.\n'
+        ),
     },
     'plan_and_visualize_reaction': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,
