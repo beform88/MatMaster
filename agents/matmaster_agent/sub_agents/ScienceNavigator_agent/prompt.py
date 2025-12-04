@@ -65,13 +65,14 @@ Should refer these Markdown format:
 lattice constant  $a$ = 3.5 Å,
 space group $P2_1$, $Pm\\bar\{3\}m$,
 chemical formula: C$_12$H$_24$O$_6$, $\\alpha$-Si, NH$_4^+$
-physical variables: Δ$H_\\text\{det\}$, Δ$_\\text\{c\}H_\\text\{det\}$, 
+physical variables: Δ$H_\\text\{det\}$, Δ$_\\text\{c\}H_\\text\{det\}$,
 sample **example**
 
 """
 
 
-WEB_SEARCH_AGENT_INSTRUCTION = f"""
+WEB_SEARCH_AGENT_INSTRUCTION = (
+    f"""
 {_GLOBAL_CONTEXT}
 {_LANGUAGE_REQUIREMENTS}
 {_KNOWLEDGE_LIMITATIONS}
@@ -96,9 +97,12 @@ When summarizing snippets from the 'web-search' tool:
 
 The ending should be a concise and clear one-sentence statement. NEVER ASK THE USER FOR NEXT STEPS.
 
-""" + _MARKDOWN_EXAMPLE
+"""
+    + _MARKDOWN_EXAMPLE
+)
 
-WEBPAGE_PARSING_AGENT_INSTRUCTION = f"""
+WEBPAGE_PARSING_AGENT_INSTRUCTION = (
+    f"""
 {_GLOBAL_CONTEXT}
 {_LANGUAGE_REQUIREMENTS}
 {_KNOWLEDGE_LIMITATIONS}
@@ -162,9 +166,12 @@ Provide a short follow-up section (≤3 sentences) suggesting:
 
 All suggestions must be grounded in actual webpage content; do not propose irrelevant or generic follow-up topics.
 
-""" + _MARKDOWN_EXAMPLE
+"""
+    + _MARKDOWN_EXAMPLE
+)
 
-PAPER_SEARCH_AGENT_INSTRUCTION = f"""
+PAPER_SEARCH_AGENT_INSTRUCTION = (
+    f"""
 {_GLOBAL_CONTEXT}
 {_LANGUAGE_REQUIREMENTS}
 {_KNOWLEDGE_LIMITATIONS}
@@ -218,7 +225,9 @@ Briefly suggest follow-up topics in one paragraph with no more than 3 sentences.
 If you want a deeper analysis of specific paper, you can also provide the corresponding papers by downloading the original paper PDFs and sending them to me. Based on these papers, potential computational materials studies could be conducted on **[specific topic]**, **[specific topic]**, or **[specific topic]**. Tell me if you want to explore these computational studies further. If you also want to know more about **[topic 1]**, **[topic 2]**, or **[topic 3]**, I can also offer you more detailed research findings on these topics.
 ```
 
-""" + _MARKDOWN_EXAMPLE
+"""
+    + _MARKDOWN_EXAMPLE
+)
 
 # FALLBACK INSTRUCTION
 SCIENCE_NAVIGATOR_AGENT_INSTRUCTION = """
