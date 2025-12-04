@@ -6,7 +6,7 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from google.adk.models.lite_llm import LiteLlm
-from pydantic import computed_field, model_validator
+from pydantic import PrivateAttr, computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
@@ -88,6 +88,13 @@ from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     send_error_event,
     update_state_event,
+)
+from agents.matmaster_agent.services.icl import (
+    select_examples,
+    select_update_examples,
+    scene_tags_from_examples,
+    toolchain_from_examples,
+    expand_input_examples
 )
 
 logger = logging.getLogger(__name__)
@@ -330,9 +337,7 @@ class MatMasterFlowAgent(LlmAgent):
 
                 before_scenes = ctx.session.state['scenes']
                 single_scene = ctx.session.state['single_scenes']['type']
-                scenes = list(
-                    set(before_scenes + single_scene + ['structural_informatics'])
-                )
+                scenes = list(set(before_scenes + single_scene + ['universal']))
                 logger.info(f'{ctx.session.id} scenes = {scenes}')
                 yield update_state_event(
                     ctx, state_delta={'scenes': copy.deepcopy(scenes)}
