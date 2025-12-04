@@ -1,4 +1,5 @@
 import copy
+import json
 import logging
 from typing import AsyncGenerator
 
@@ -486,11 +487,13 @@ class MatMasterFlowAgent(LlmAgent):
                     {},
                     ModelRole,
                     {
-                        'follow_up_result': {
-                            'invocation_id': ctx.invocation_id,
-                            'title': follow_up_title,
-                            'follow_up_list': follow_up_str,
-                        }
+                        'follow_up_result': json.dumps(
+                            {
+                                'invocation_id': ctx.invocation_id,
+                                'title': follow_up_title,
+                                'follow_up_list': follow_up_str,
+                            }
+                        )
                     },
                 ):
                     yield generate_follow_up_event
