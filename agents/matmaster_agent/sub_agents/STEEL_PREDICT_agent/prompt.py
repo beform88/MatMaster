@@ -20,7 +20,7 @@ Neural network-based prediction tool for stainless steel tensile strength (UTS).
 - Supports batch prediction for efficient analysis of multiple formulas
 
 **Arguments:**
-- formula (list[str], required): 
+- formula (list[str], required):
   - List of chemical formula strings (even for single formula, use a list with one element)
   - Format: ElementSymbol followed by numeric value
   - Example (single): ["Fe70Cr20Ni10"] means Fe=70%, Cr=20%, Ni=10%
