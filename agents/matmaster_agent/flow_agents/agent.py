@@ -345,7 +345,7 @@ class MatMasterFlowAgent(LlmAgent):
 
                 before_scenes = ctx.session.state['scenes']
                 single_scene = ctx.session.state['single_scenes']['type']
-                scenes = list(set(before_scenes + single_scene))
+                scenes = list(set(before_scenes + single_scene + ['universal']))
                 logger.info(f'{ctx.session.id} scenes = {scenes}')
                 yield update_state_event(
                     ctx, state_delta={'scenes': copy.deepcopy(scenes)}

@@ -16,6 +16,9 @@ class DescriptiveEnum(str, Enum):
 
 class SceneEnum(DescriptiveEnum):
 
+    # universal
+    UNIVERSAL = ('universal', 'Applicable to all scenarios')
+
     # database
     DATABASE_SEARCH = ('database_search', '')
 
@@ -67,10 +70,6 @@ class SceneEnum(DescriptiveEnum):
     )
 
     # postprocess
-    STRUCTURAL_INFORMATICS = (
-        'structural_informatics',
-        'Involves extracting information from files',
-    )
     VISUALIZE_DATA = (
         'visualize_data',
         'Involves visualization or charting requirements',
