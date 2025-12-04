@@ -10,7 +10,6 @@ Requirements:
     *   If there are many steps, prioritize the first few or most critical ones.
     *   Don't add detail, just contains Modify Step X...
 3.  **Replan Option**: One option MUST be for replanning (e.g., "重新规划", "Replan").
-4.  **Cancel Option**: One option MUST be for cancelling the plan (e.g., "取消", "Cancel").
 
 Total Options: The list should contain at least 3 options (Confirm, Modify Step X..., Replan).
 

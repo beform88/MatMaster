@@ -424,14 +424,14 @@ class MatMasterFlowAgent(LlmAgent):
                         )
                     else:
                         # 询问用户是否确认计划
-                        async for (
-                            plan_option_event
-                        ) in self.plan_confirm_option_agent.run_async(ctx):
-                            yield plan_option_event
+                        # async for (
+                        #     plan_option_event
+                        # ) in self.plan_confirm_option_agent.run_async(ctx):
+                        #     yield plan_option_event
 
-                        _plan_options = ctx.session.state.get(
-                            'plan_confirm_options', {}
-                        ).get('list', ['确认计划', '修改计划', '重新规划'])
+                        # _plan_options = ctx.session.state.get(
+                        #     'plan_confirm_options', {}
+                        # ).get('list', ['确认计划', '修改计划', '重新规划'])
 
                         for generate_plan_confirm_event in context_function_event(
                             ctx,
@@ -443,8 +443,8 @@ class MatMasterFlowAgent(LlmAgent):
                                 'follow_up_result': json.dumps(
                                     {
                                         'invocation_id': ctx.invocation_id,
-                                        'title': '请确认计划：',
-                                        'list': _plan_options,
+                                        'title': '请对上述计划进行操作：',
+                                        'list': ['确认计划', '重新规划'],
                                     }
                                 ),
                             },
