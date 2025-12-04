@@ -222,12 +222,23 @@ ALL_TOOLS = {
     'get_target_info': {
         'belonging_agent': UniELFAgentName,
         'scene': [SceneEnum.POLYMER],
-        'description': '',
+        'description': (
+            'Get target information from configuration settings. '
+            'This function retrieves comprehensive configuration information '
+            'needed for the Uni-ELF inference system, including background '
+            'documentation and available target model mappings.',
+        ),
     },
     'unielf_inference': {
         'belonging_agent': UniELFAgentName,
         'scene': [SceneEnum.POLYMER],
-        'description': '',
+        'description': (
+            'Run Uni-ELF inference for formulation inputs (components and '
+            'ratios), a DP Technology model for predicting formulation '
+            'properties. Supports mixtures and pseudo-formulations '
+            '(e.g., copolymers with monomer ratios). This function performs '
+            'property prediction task.',
+        ),
     },
     'plan_and_visualize_reaction': {
         'belonging_agent': CHEMBRAIN_AGENT_NAME,

@@ -9,11 +9,11 @@ from agents.matmaster_agent.constant import BohriumStorge
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 
 from ..constant import CHEMBRAIN_AGENT_NAME
-from .constant import UniELFAgentName, UniELFServerUrl
+from .constant import UNIELF_SERVER_URL, UniELFAgentName
 from .prompt import description, instruction_en
 
 # Configure SSE params
-sse_params = SseServerParams(url=UniELFServerUrl)
+sse_params = SseServerParams(url=UNIELF_SERVER_URL)
 unielf_toolset = CalculationMCPToolset(
     connection_params=sse_params, storage=BohriumStorge
 )
