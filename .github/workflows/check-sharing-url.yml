@@ -22,18 +22,24 @@ jobs:
 
           echo "Checking sharing_url fields in $FILE ..."
 
-          urls=$(jq -r '.questions[].zhPrompt.sharing_url | to_entries[]?.value' "$FILE")
+          # 仅提取 sharing_url 是 object 的情况
+          urls=$(jq -r '
+            .questions[].zhPrompt.sharing_url
+            | select(type == "object")
+            | to_entries[]
+            | .value
+          ' "$FILE")
 
           invalid_found=0
 
           while IFS= read -r url; do
-            if [[ "$url" == "null" || "$url" == "" ]]; then
-              echo "⚠️ Warning: Found empty sharing_url entry"
+            if [[ "$url" == "" || "$url" == "null" ]]; then
+              echo "⚠️ Warning: Found empty sharing_url value"
               continue
             fi
 
             if [[ "$url" != *"share"* ]]; then
-              echo "❌ Invalid URL (missing 'share'): $url"
+              echo "❌ Invalid URL (missing '\''share'\''): $url"
               invalid_found=1
             else
               echo "✔️ OK: $url"
@@ -41,7 +47,7 @@ jobs:
           done <<< "$urls"
 
           if [[ $invalid_found -ne 0 ]]; then
-            echo "❌ Some sharing_url entries do NOT contain 'share'."
+            echo "❌ Some sharing_url entries do NOT contain '\''share'\''."
             exit 1
           fi
 
