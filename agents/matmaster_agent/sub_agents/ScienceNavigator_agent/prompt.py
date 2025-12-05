@@ -263,7 +263,7 @@ The responses should be in {{target_language}}.
 - When citing, try to use the original expressions directly.
 
 ## FORMAT INSTRUCTIONS:
-- Output in plain text, no bullet points unless necessary or user requests.
+- Output in plain text, no bullet points unless user requests.
 - Avoid starting with any preambles, acknowledgements, confirmations, or meta-statements such as "Sure, I will...", "Okay, I will...", or "I will now analyze...". Instead, directly output the substantive content.
 - Avoid statement without evidence from the papers, e.g. the first, the best, most popular, etc.
 - A space should be added between figures and units, e.g. 10 cm, 5 kg. An italic font should be used for physical quantities, e.g. *E*, *T*, *k*. A bold font should be used for vectors, e.g. **F**, **E**, and serial code names of compounds/materials, e.g. compound **1** etc.
