@@ -991,6 +991,14 @@ Assistant: 任务提交失败，参数错误。
 Output: {"list": ["重新生成计划", "重新执行计划", "取消任务"]}
 """
 
+STRUCTURE_BUILDING_SAVENAME = """
+Use plain ASCII without spaces or special characters; Keep names concise; include only necessary distinctions. Output filename should be concise and self-explanatory; Use only .cif or .vasp for periodic structures, and .xyz for molecules; Recommend using format [structure_type]_[structure_name][suffix]
+
+Example: `bulk_fcc_Cu.cif`, `interface_Cu_111_Ni_111.cif`, `mol_benzene.xyz`
+
+Wrong: `structure.cif`, `bulk_fcc_Cu`, `bulk_fcc_Cu.json`
+"""
+
 
 def get_user_content_lang():
     return """
