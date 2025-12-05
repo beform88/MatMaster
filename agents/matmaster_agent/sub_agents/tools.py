@@ -10,9 +10,6 @@ from agents.matmaster_agent.sub_agents.built_in_agent.file_parse_agent.constant 
 from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant import (
     TOOL_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (
-    CHEMBRAIN_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.chembrain_agent.unielf_agent.constant import (
     UniELFAgentName,
 )
@@ -249,21 +246,21 @@ ALL_TOOLS = {
             '3. Highlight the best performing formulation.\n'
         ),
     },
-    'plan_and_visualize_reaction': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [],
-        'description': '',
-    },
-    'convert_smiles_to_png': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.MOLECULAR],
-        'description': 'Convert molecular SMILES representation into 2D molecular images',
-    },
-    'convert_png_to_smiles': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.MOLECULAR],
-        'description': 'Convert 2D molecular images to SMILES representation',
-    },
+    # 'plan_and_visualize_reaction': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [],
+    #     'description': '',
+    # },
+    # 'convert_smiles_to_png': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [SceneEnum.MOLECULAR],
+    #     'description': 'Convert molecular SMILES representation into 2D molecular images',
+    # },
+    # 'convert_png_to_smiles': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [SceneEnum.MOLECULAR],
+    #     'description': 'Convert 2D molecular images to SMILES representation',
+    # },
     # Perovskite solar cell literature/database tools
     'get_database_info': {
         'belonging_agent': PerovskiteAgentName,
@@ -280,11 +277,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.PEROVSKITE_RESEARCH],
         'description': 'Predict the additive effect of a perovskite PCE change with a list of additives molecules.',
     },
-    'validate_smiles': {
-        'belonging_agent': CHEMBRAIN_AGENT_NAME,
-        'scene': [SceneEnum.MOLECULAR],
-        'description': '',
-    },
+    # 'validate_smiles': {
+    #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
+    #     'scene': [SceneEnum.MOLECULAR],
+    #     'description': '',
+    # },
     'run_ga': {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
@@ -297,7 +294,7 @@ ALL_TOOLS = {
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
-        'scene': [SceneEnum.LITERATURE, SceneEnum.STRUCTURAL_INFORMATICS],
+        'scene': [SceneEnum.LITERATURE, SceneEnum.UNIVERSAL],
         'description': 'Read and extract contents from PDF-formatted document files. Outputs information of materials involved and methodologies, supporting additional information required by users. CANNOT retrieve data from the internet.',
     },
     'optimize_structure': {
@@ -520,13 +517,13 @@ ALL_TOOLS = {
     },
     'get_structure_info': {
         'belonging_agent': StructureGenerateAgentName,
-        'scene': [SceneEnum.STRUCTURAL_INFORMATICS],
+        'scene': [SceneEnum.UNIVERSAL],
         'description': 'Extract key structural descriptors from a given crystal structure file, including lattice parameters, chemical formula, atomic composition, cell volume, crystallographic density, and molar mass.',
         'args_setting': '',
     },
     'get_molecule_info': {
         'belonging_agent': StructureGenerateAgentName,
-        'scene': [SceneEnum.STRUCTURAL_INFORMATICS],
+        'scene': [SceneEnum.UNIVERSAL],
         'description': 'Extract key structural descriptors from a given molecular structure file.',
         'args_setting': '',
     },
@@ -577,27 +574,27 @@ ALL_TOOLS = {
     },
     'traj_analysis_rdf': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'traj_analysis_solvation': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'traj_analysis_bond': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'traj_analysis_react': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': '',
     },
     'visualize_data': {
         'belonging_agent': VisualizerAgentName,
-        'scene': [SceneEnum.VISUALIZE_DATA],
+        'scene': [SceneEnum.VISUALIZE_DATA, SceneEnum.UNIVERSAL],
         'description': 'Automatically analyze materials science data files (CSV, Excel, JSON, TXT, DAT), identify the data structure with regular expression, and visualize the data with plots.',
         'bypass_confirmation': True,
     },
@@ -648,14 +645,14 @@ ALL_TOOLS = {
     },
     'extract_info_from_webpage': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
-        'scene': [SceneEnum.WEB_PARSING],
-        'description': 'Extract key information from a given webpage URL, including scientific facts, data, and research findings.',
+        'scene': [SceneEnum.UNIVERSAL],
+        'description': 'Extract key information from a given WEBPAGE URL, including scientific facts, data, and research findings.',
         'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
     },
     'web-search': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
-        'scene': [SceneEnum.WEB_SEARCH, SceneEnum.LITERATURE],
+        'scene': [SceneEnum.UNIVERSAL],
         'description': 'Perform web searches specifically for what, why, and how question types, excluding command- or instruction-type queries. The tool returns only URL, title, and snippet, which makes it suitable for concise factual lookups (what-questions) and simple causal or explanatory lookups (basic why-questions). Should follow up by `extract_info_from_webpage` for completed contents.',
         'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
@@ -688,8 +685,8 @@ ALL_TOOLS = {
     },
     'file_parse': {
         'belonging_agent': FILE_PARSE_AGENT_NAME,
-        'scene': [SceneEnum.WEB_PARSING],
-        'description': '',
+        'scene': [SceneEnum.UNIVERSAL],
+        'description': 'Universal File Parsing Tool.Used to parse various file contents, including but not limited to TXT, PDF, Word, Excel, and text files, to extract key information and data.',
         'bypass_confirmation': True,
     },
 }

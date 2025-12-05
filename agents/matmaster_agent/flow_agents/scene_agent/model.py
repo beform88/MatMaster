@@ -16,6 +16,9 @@ class DescriptiveEnum(str, Enum):
 
 class SceneEnum(DescriptiveEnum):
 
+    # universal
+    UNIVERSAL = ('universal', 'Applicable to all scenarios')
+
     # database
     DATABASE_SEARCH = ('database_search', '')
 
@@ -67,13 +70,13 @@ class SceneEnum(DescriptiveEnum):
     )
 
     # postprocess
-    STRUCTURAL_INFORMATICS = (
-        'structural_informatics',
-        'Involves extracting information from files',
-    )
     VISUALIZE_DATA = (
         'visualize_data',
         'Involves visualization or charting requirements',
+    )
+    POST_MD_ANALYSIS = (
+        'post_md_analysis',
+        'Based on molecular dynamics trajectory data, analyze the mean-squared displacement (MSD), radial distribution function (RDF), solvation structure analysis, bond evolution, reaction species and network analysis.',
     )
 
     # reaserch sence

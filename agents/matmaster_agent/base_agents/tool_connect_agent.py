@@ -17,15 +17,16 @@ class ToolConnectAgent(DisallowTransferLlmAgent):
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         async for event in super()._run_events(ctx):
             if is_text(event):
-                msg = event.content.parts[0].text
-            else:
-                msg = 'Default Message'
+                if not event.partial:
+                    msg = event.content.parts[0].text
 
-            for system_job_result_event in context_function_event(
-                ctx,
-                self.name,
-                f'{self.name.replace('_agent', '')}',
-                {'msg': msg},
-                ModelRole,
-            ):
-                yield system_job_result_event
+                    for system_job_result_event in context_function_event(
+                        ctx,
+                        self.name,
+                        f'{self.name.replace('_agent', '')}',
+                        {'msg': msg},
+                        ModelRole,
+                    ):
+                        yield system_job_result_event
+            else:
+                yield event
