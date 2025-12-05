@@ -93,9 +93,9 @@
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "搭建布洛芬的分子结构",
+        "question": "构建咖啡因和腺苷的分子结构",
         "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34580a07d2b90fba5c7d7d17d60"
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec28add77e309dda7bddc3159d89"
         },
         "structure_url": null
       }
