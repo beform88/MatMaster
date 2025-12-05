@@ -202,6 +202,7 @@
         "belonging": "DPA计算",
         "question": "使用DPA对此Li₂O结构进行300 K、1 ps分子动力学模拟，时间步长1 fs",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeeb490ad7ebc8dcfa145979af736",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34fe26974d5bb7fa5f973c3d92f"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHN3C8VXXJ6G2774KCGSS8B/dpa_md_Li2O.cif"
