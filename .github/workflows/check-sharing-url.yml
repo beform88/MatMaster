@@ -1,0 +1,48 @@
+name: Check Sharing URLs
+
+on:
+  pull_request:
+    paths:
+      - "agents/matmaster_agent/recommend_question.json"
+
+jobs:
+  validate-sharing-url:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Validate sharing_url
+        run: |
+          FILE="agents/matmaster_agent/recommend_question.json"
+
+          echo "Checking sharing_url fields in $FILE ..."
+
+          urls=$(jq -r '.questions[].zhPrompt.sharing_url | to_entries[]?.value' "$FILE")
+
+          invalid_found=0
+
+          while IFS= read -r url; do
+            if [[ "$url" == "null" || "$url" == "" ]]; then
+              echo "⚠️ Warning: Found empty sharing_url entry"
+              continue
+            fi
+
+            if [[ "$url" != *"share"* ]]; then
+              echo "❌ Invalid URL (missing 'share'): $url"
+              invalid_found=1
+            else
+              echo "✔️ OK: $url"
+            fi
+          done <<< "$urls"
+
+          if [[ $invalid_found -ne 0 ]]; then
+            echo "❌ Some sharing_url entries do NOT contain 'share'."
+            exit 1
+          fi
+
+          echo "🎉 All sharing_url entries are valid!"
