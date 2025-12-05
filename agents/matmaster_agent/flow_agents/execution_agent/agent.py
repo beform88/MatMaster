@@ -13,6 +13,7 @@ from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
+from agents.matmaster_agent.flow_agents.style import step_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     get_agent_name,
@@ -24,6 +25,7 @@ from agents.matmaster_agent.sub_agents.mapping import (
     MatMasterSubAgentsEnum,
 )
 from agents.matmaster_agent.utils.event_utils import (
+    all_text_event,
     context_function_event,
     update_state_event,
 )
@@ -97,6 +99,11 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                     logger.info(
                         f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                     )
+                    for step_event in all_text_event(
+                        ctx, self.name, step_card(index + 1), ModelRole
+                    ):
+                        yield step_event
+
                     async for event in target_agent.run_async(ctx):
                         yield event
                     logger.info(
