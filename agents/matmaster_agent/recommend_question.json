@@ -83,11 +83,41 @@
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "请生成空间群为225的晶体结构，要求带隙（bandgap）小于0.5 eV，生成2个样本",
+        "question": "以超导临界温度大于40 K为条件，生成10个候选晶体结构",
         "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae41e541b7e0bb971b28bcecc45b3"
+          "test_url": ""
         },
         "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "搭建布洛芬的分子结构",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34580a07d2b90fba5c7d7d17d60"
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "基于fcc-Ni的5×5×5超胞模板构建合金Fe:Ni:Co:Cr:V=0.635:0.165:0.1:0.05:0.05的结构",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec06f6597f12a322658f53b9e2c5"
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "搜索刚玉的Wyckoff位置信息，用其构建晶体结构",
+        "sharing_url": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
+        },
+        "structure_url": ""
       }
     },
     {
@@ -109,36 +139,6 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae312dda27594818e8f1da70f22eb"
         },
         "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "基于fcc Ni的5×5×5超胞构建Fe-Ni-Co-Cr-V 0.635-0.165-0.1-0.05-0.05的合金结构",
-        "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae4356abe711eb8e8c90df0169639"
-        },
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "搭建布洛芬的分子结构",
-        "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34580a07d2b90fba5c7d7d17d60"
-        },
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "搜索刚玉的Wyckoff位置信息，用其构建晶体结构",
-        "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
-        },
-        "structure_url": ""
       }
     },
     {
