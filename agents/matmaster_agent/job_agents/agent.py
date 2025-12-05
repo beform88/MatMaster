@@ -96,12 +96,7 @@ class BaseAsyncJobAgent(BaseAgentWithRecAndSum):
             sub_agents=[result_core_agent],
         )
 
-        self.sub_agents = [
-            self.submit_agent,
-            self.result_agent,
-            self.recommend_params_agent,
-            self.tool_call_info_agent,
-        ]
+        self.sub_agents += [self.submit_agent, self.result_agent]
 
         return self
 

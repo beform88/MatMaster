@@ -6,6 +6,7 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from google.adk.models.lite_llm import LiteLlm
+from opik.integrations.adk import track_adk_agent_recursive
 from pydantic import computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
@@ -526,6 +527,8 @@ class MatMasterFlowAgent(LlmAgent):
                             },
                         ):
                             yield generate_follow_up_event
+            if ctx.session.state['error_occurred']:
+                raise
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
@@ -534,6 +537,10 @@ class MatMasterFlowAgent(LlmAgent):
                 name='error_handel_agent',
                 model=LiteLlm(model=DEFAULT_MODEL),
             )
+            track_adk_agent_recursive(
+                error_handel_agent, MatMasterLlmConfig.opik_tracer
+            )
+
             # 调用错误处理 Agent
             async for error_handel_event in error_handel_agent.run_async(ctx):
                 yield error_handel_event

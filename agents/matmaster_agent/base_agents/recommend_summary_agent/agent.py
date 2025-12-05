@@ -117,6 +117,13 @@ class BaseAgentWithRecAndSum(
                 instruction=get_subagent_summary_prompt(),
             )
 
+        self.sub_agents = [
+            self.tool_connect_agent,
+            self.tool_call_info_agent,
+            self.recommend_params_agent,
+            self.recommend_params_schema_agent,
+        ]
+
         return self
 
     @computed_field
@@ -160,6 +167,7 @@ class BaseAgentWithRecAndSum(
         function_declarations: List[FunctionDeclaration] = ctx.session.state[
             'function_declarations'
         ]
+        logger.info(f'{ctx.session.id} function_declarations = {function_declarations}')
         current_function_declaration = [
             item
             for item in function_declarations
@@ -187,9 +195,6 @@ class BaseAgentWithRecAndSum(
         )
         async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
             yield tool_call_info_event
-
-        if ctx.session.state['error_occurred']:
-            return
 
         update_tool_call_info = copy.deepcopy(ctx.session.state['tool_call_info'])
         update_tool_call_info['tool_name'] = update_tool_call_info.get('tool_name', '')
@@ -220,7 +225,7 @@ class BaseAgentWithRecAndSum(
 
         tool_call_info = ctx.session.state['tool_call_info']
         logger.info(
-            f'{ctx.session.id} tool_call_info = {tool_call_info}, function_declarations = {function_declarations},'
+            f'{ctx.session.id} tool_call_info = {tool_call_info}, '
             f'current_function_declaration = {current_function_declaration}'
         )
         tool_call_info = update_tool_call_info_with_function_declarations(
