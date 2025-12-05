@@ -5,6 +5,7 @@
         "belonging": "学术情报",
         "question": "搜索DP-GEN的技术文档，总结详细的教程",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed72d4f871f7a8e5a94db013a048",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
         },
         "structure_url": ""
@@ -15,6 +16,7 @@
         "belonging": "学术情报",
         "question": "检索DeePMD在材料计算应用方面的研究",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedebea0a7a6ebfa508247dc7a6c0",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2daabec7e9e85df7d277598a9d3"
         },
         "structure_url": null
@@ -23,8 +25,9 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "检索金属亚硝酰配合物光致异构的研究进展",
+        "question": "检索金属亚硝酰阳离子配合物光致异构的研究进展",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee5fd4a57e97ba8be70c25b47935",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2f938467f2baf634286b11dfd32"
         },
         "structure_url": ""
@@ -35,6 +38,7 @@
         "belonging": "学术情报",
         "question": "单手性的分子晶体在室温SC-XRD测试中flack ~ 1e-4而高温接近1e-1，解释原因",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee827bbd717982b5758a3a9a699a",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e996d176bf8c76e2860f35dbb1"
         },
         "structure_url": null
@@ -45,6 +49,7 @@
         "belonging": "学术情报",
         "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途和局限性",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
         "structure_url": null
@@ -53,8 +58,9 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "解释某些非晶材料在DSC测试中玻璃转变温度后出现冷结晶信号的原因",
+        "question": "解释某些非晶材料在DSC测试中玻璃化转变温度后出现冷结晶信号的原因",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee5ca6bc717295a1fa956518a464",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fc5a1c7475a86ae27f49da152a"
         },
         "structure_url": null
@@ -63,18 +69,9 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "请搜索近期关于MoTe₂相变（1T′–2H）调控的研究进展，并总结主流调控方法",
+        "question": "查找钙钛矿太阳能电池的最新效率纪录，并检索2024–2025年间相关研究论文",
         "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e8b6af706ab2ac632d8becdc85"
-        },
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "学术情报",
-        "question": "请先帮我查找2024–2025 年钙钛矿太阳能电池的最新效率纪录，并查找主要研究工作或论文",
-        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee504847757db30d58105fe5b1e7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34228f07e6abf103befb80dd70c"
         },
         "structure_url": ""
@@ -83,8 +80,9 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "请帮我梳理近几年报道的、比表面积超过 5000 m²/g 的代表性 MOF 结构",
+        "question": "检索比表面积超过5000 m²/g的MOF的研究工作",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee4518c671d6b3d70e5ed522cc73",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae371eea572d3810ce215e35a4e90"
         },
         "structure_url": ""
@@ -93,9 +91,10 @@
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "请生成空间群为225的晶体结构，要求带隙（bandgap）小于0.5 eV，生成2个样本",
+        "question": "以超导临界温度大于40 K、空间群编号225为条件生成10个候选的晶体结构",
         "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae41e541b7e0bb971b28bcecc45b3"
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee3de73b7b6f98252056c7530551",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec463c757f2d865582dc5058b287"
         },
         "structure_url": null
       }
@@ -103,8 +102,42 @@
     {
       "zhPrompt": {
         "belonging": "结构生成",
-        "question": "搭建最有代表性的fcc和hcp结构，切割其密置层的切面（切5层，真空层为1层），扩胞5×5×1",
+        "question": "构建咖啡因和腺苷的分子结构",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed7edd3b7c139a396a3040dab3ad",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec28add77e309dda7bddc3159d89"
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "基于fcc-Ni的5×5×5超胞模板构建合金Fe:Ni:Co:Cr:V=0.635:0.165:0.1:0.05:0.05的结构",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed7edd3b7c139a396a3040dab3ad",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec06f6597f12a322658f53b9e2c5"
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "搜索刚玉的Wyckoff位置信息，用其构建晶体结构",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed956db07a4a800172c302d91097",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
+        },
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "展示fcc和hcp两种最密堆积的差异：首先搭建fcc和hcp的晶体结构，切割其密置层的切面（切5层，真空层为1层），扩胞5×5×1",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee9f62bb7c4ca9f5cb98d99c27e9",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae32380f973b1b1d88b769193cfba"
         },
         "structure_url": null
@@ -116,39 +149,10 @@
         "belonging": "结构生成",
         "question": "请根据给定的空间群和Wyckoff位置信息生成一个晶体结构：Pm-3m空间群（编号221），a = b = c = 3.90 Å, α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed99d4ee77a49b4c8a2df844d108",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae312dda27594818e8f1da70f22eb"
         },
         "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "基于fcc Ni的5×5×5超胞构建Fe-Ni-Co-Cr-V 0.635-0.165-0.1-0.05-0.05的合金结构",
-        "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae4356abe711eb8e8c90df0169639"
-        },
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "搭建布洛芬的分子结构",
-        "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34580a07d2b90fba5c7d7d17d60"
-        },
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构生成",
-        "question": "搜索刚玉的Wyckoff位置信息，用其构建晶体结构",
-        "sharing_url": {
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
-        },
-        "structure_url": ""
       }
     },
     {
@@ -190,20 +194,6 @@
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "从Materials Project批量下载20个含锂材料的CIF文件，并统计其平均体积/原子",
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构检索",
-        "question": "从hMOF数据库中检索比表面积> 2000 m²/g且孔径在6–8 Å的MOF结构，并导出10个候选结构",
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构检索",
-        "question": "检索hMOF数据库中CO₂吸附量> 3 mmol/g的结构，并导出前5个候选结构与吸附等温线数据",
         "structure_url": null
       }
     },
@@ -279,6 +269,7 @@
         "belonging": "数据可视化",
         "question": "绘制DSC曲线，每个冷却-加热循环的曲线以上下排列的子图形式呈现，横坐标为温度，纵坐标为热流。要求：1) 升温用红色，降温用绿色，分别标注；2) 校准点为热流为0的点，绘制曲线前将其移除；3) 删除数据点过少的子图。",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee2d89337cc8a060eacf304f5881",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae81de15076a9a958d7635fdd8d81"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt"
@@ -287,11 +278,12 @@
     {
       "zhPrompt": {
         "belonging": "数据可视化",
-        "question": "绘制此变温PXRD图谱，标题的数字代表测试温度，请用规范的摄氏度记号标注；100摄氏度以下用绿色线，以上用红色线。仅需画图，无需额外解析",
+        "question": "绘制此变温PXRD图谱，标题的数字代表测试温度，请用规范的摄氏度记号标注，同温度不同数据需区分；100摄氏度以下用绿色线，以上用红色线。仅需画图，无需额外解析",
         "sharing_url": {
-          "test_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedbd81b1764bbc5917acfe3c4a4f",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2317f67a749779a9243094fcbc"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2GSWYJ9V53JT0B3987583/td-pxrd_example.txt"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBP28H5EQH5CJ2ECNVMG6N90/td-pxrd-example.txt"
       }
     },
     {
