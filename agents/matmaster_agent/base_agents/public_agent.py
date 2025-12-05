@@ -56,11 +56,7 @@ class BaseSyncAgentWithToolValidator(BaseAgentWithRecAndSum):
             sub_agents=[sync_mcp_agent, tool_validator_agent],
         )
 
-        self.sub_agents = [
-            self.tool_call_info_agent,
-            self.recommend_params_agent,
-            self.submit_agent,
-        ]
+        self.sub_agents += [self.submit_agent]
 
         return self
 
