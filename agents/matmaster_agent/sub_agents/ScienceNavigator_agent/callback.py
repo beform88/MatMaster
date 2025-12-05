@@ -183,7 +183,7 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
     words = args.get('words', [])
     page_size = args.get('page_size')
     if page_size is None:
-        page_size = MIN_page_size
+        return
     else:
         page_size = max(MIN_page_size, int(page_size))
     args['page_size'] = int(page_size)
