@@ -117,6 +117,13 @@ class BaseAgentWithRecAndSum(
                 instruction=get_subagent_summary_prompt(),
             )
 
+        self.sub_agents = [
+            self.tool_connect_agent,
+            self.tool_call_info_agent,
+            self.recommend_params_agent,
+            self.recommend_params_schema_agent,
+        ]
+
         return self
 
     @computed_field
@@ -187,9 +194,6 @@ class BaseAgentWithRecAndSum(
         )
         async for tool_call_info_event in self.tool_call_info_agent.run_async(ctx):
             yield tool_call_info_event
-
-        if ctx.session.state['error_occurred']:
-            return
 
         update_tool_call_info = copy.deepcopy(ctx.session.state['tool_call_info'])
         update_tool_call_info['tool_name'] = update_tool_call_info.get('tool_name', '')
