@@ -71,11 +71,7 @@ _FORMAT_REQUIREMENT = """
 _MARKDOWN_EXAMPLE = """
 Should refer these Markdown format:
 
-lattice constant *a* = 3.5 Å,
-space group *P*2₁, *Pm*-3*m*,
-chemical formula: C₁₂H₂₄O₆, *α*-Si, NH₄⁺
-physical variables: Δ*H*₍det₎, Δ₍c₎*H*₍det₎,
-sample name: **example**
+lattice constant *a* = 3.5 Å; space group *P*2₁, *Pm*-3*m*; chemical formula: C₁₂H₂₄O₆, *α*-Si, NH₄⁺; physical variables: Δ*H*₍det₎, Δ₍c₎*H*₍det₎; sample name: **example**
 """
 
 WEB_SEARCH_AGENT_INSTRUCTION = (
@@ -208,6 +204,14 @@ The overall abstract should be brief with less than 3 sentences, including and o
 1) Professional definition of the key concepts involved.
 2) Key breakthroughs in recent years.
 3) Main challenges that remain unsolved.
+
+For joints between each section or subsection, avoid using bullets or numbering.
+Consider this template:
+```
+There are [number] aspects. Firstly, [aspect 1]; secondly, [aspect 2]; ...
+```
+Adjust the conjunctions adapting parallel relationship, progressive relationship, causal relationship as needed.
+
 
 For each article, the format could be primarily referred but not limited to the following template:
 ```
