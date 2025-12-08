@@ -629,9 +629,7 @@ def catch_before_tool_callback_error(func: BeforeToolCallback) -> BeforeToolCall
                 logger.info(
                     f'[{MATMASTER_AGENT_NAME}]:[catch_before_tool_callback_error] executor={tool.executor}'
                 )
-            logger.info(
-                f'[{MATMASTER_AGENT_NAME}] update_tool_args = {tool_context.state['update_tool_args']}'
-            )
+            logger.info(f'{tool_context.session.id} actual_tool_args = {args}')
             return await tool.run_async(args=args, tool_context=tool_context)
         except Exception as e:
             return {
