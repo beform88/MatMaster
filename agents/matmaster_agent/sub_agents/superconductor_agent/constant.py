@@ -4,4 +4,4 @@ SuperconductorAgentName = 'superconductor_agent'
 if CURRENT_ENV in ['test', 'uat']:
     SuperconductorServerUrl = 'http://root@mllo1368252.bohrium.tech:50002/sse'
 else:
-    SuperconductorServerUrl = 'https://superconductor-ambient-010-uuid1750845273.app-space.dplink.cc/sse?token=48f4f42c8a14469b9729c98b4ce7f8f6'
+    SuperconductorServerUrl = 'https://superconductor-ambient-010-uuid1750845273.appspace.bohrium.com/sse?token=508f784b29d748af898819c6534a2fc2'
