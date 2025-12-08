@@ -74,6 +74,9 @@ from agents.matmaster_agent.sub_agents.Physical_adsorption_agent.constant import
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.piloteye_electro_agent.prompt import (
+    PiloteyeElectroAgentDescription,
+)
 from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
     POLYMER_KB_AGENT_NAME,
 )
@@ -437,7 +440,16 @@ ALL_TOOLS = {
     'run_piloteye': {
         'belonging_agent': PILOTEYE_ELECTRO_AGENT_NAME,
         'scene': [SceneEnum.PILOTEYE_ELECTRO],
-        'description': '',
+        'description': PiloteyeElectroAgentDescription
+        + (
+            ' Piloteye includes a built-in molecule library (thus no SMILES '
+            'required for these built-in molecules), a complete modeling '
+            'pipeline (structure setup, MD and DFT calculations), and '
+            'property post-processing, which means it does not depend on '
+            'other tools. With one params json as input, it can automatically'
+            ' finish the whole modeling and simulation workflow to get the '
+            'target properties.'
+        ),
     },
     'deep_research_agent': {
         'belonging_agent': SSEBRAIN_AGENT_NAME,

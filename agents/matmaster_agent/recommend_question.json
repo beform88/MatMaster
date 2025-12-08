@@ -223,7 +223,8 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "请计算Si的能带",
-        "share_url": {
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae7eefaf771d6a6450c67d9a1c38f"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBKYY4QB25BH1A64CR5ZQJQS/Si-prim.cif"
@@ -233,7 +234,8 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算Si的声子色散曲线（需先进行结构优化）",
-        "share_url": {
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae373760373f1bbff92bfc5ac98ac"
         },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
@@ -243,7 +245,8 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
-        "share_url": {
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
         },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
@@ -253,6 +256,10 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc253a8570c280725b19fad8fe38",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afca24cdf7dee8e4715762b20a75f"
+        },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
     },
@@ -260,7 +267,8 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算Pd(111)面的功函数，真空层位于z方向上。",
-        "share_url": {
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc17a8637eaa831bcd272a3e2862",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3942ba07b8db65c325f1b2b3306"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHS8H8KVSG4FZC9S1WPAVGG/Pd111.cif"
@@ -374,6 +382,7 @@
         "belonging": "场景案例",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
         "structure_url": ""
@@ -384,6 +393,7 @@
         "belonging": "场景案例",
         "question": "请提取文献中的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界问题",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4b5f86720c873eaedc917b89cf",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf"
@@ -394,6 +404,7 @@
         "belonging": "场景案例",
         "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
         "structure_url": ""
@@ -440,7 +451,7 @@
         "belonging": "场景案例",
         "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的“Cantor合金”)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd29a9197652a298a47d72a77457",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
           "uat_url": ""
         },
@@ -486,9 +497,9 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "帮我利用这组数据finetune dpa3 model 3000步",
+        "question": "帮我利用这组数据微调dpa3模型3000步",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd55301f75209a45ca7d768e47b1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
           "uat_url": ""
         },
@@ -500,7 +511,7 @@
         "belonging": "场景案例",
         "question": "请为这个CuCrZr合金构建convexhull",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4bafe87adb93dcce880710c2e7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae93a3e70774fa8a943fac30c5c29",
           "uat_url": ""
         },
