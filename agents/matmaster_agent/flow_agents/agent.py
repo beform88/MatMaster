@@ -455,7 +455,7 @@ class MatMasterFlowAgent(LlmAgent):
                                     {
                                         'invocation_id': ctx.invocation_id,
                                         'title': '请对上述计划进行操作：',
-                                        'list': ['确认计划', '重新规划'],
+                                        'list': ['确认计划', '更换工具重新规划'],
                                     }
                                 ),
                             },
