@@ -49,7 +49,7 @@ from agents.matmaster_agent.flow_agents.plan_confirm_options_agent.prompt import
     PLAN_CONFIRM_OPTIONS_PROMPT,
 )
 from agents.matmaster_agent.flow_agents.plan_info_agent.prompt import (
-    PLAN_INFO_INSTRUCTION,
+    get_plan_info_instruction,
 )
 from agents.matmaster_agent.flow_agents.plan_make_agent.agent import PlanMakeAgent
 from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
@@ -171,7 +171,7 @@ class MatMasterFlowAgent(LlmAgent):
             name='plan_info_agent',
             model=MatMasterLlmConfig.default_litellm_model,
             description='根据 materials_plan 返回的计划进行总结',
-            instruction=PLAN_INFO_INSTRUCTION,
+            # instruction=PLAN_INFO_INSTRUCTION,
         )
 
         execution_result_agent = DisallowTransferLlmAgent(
@@ -397,6 +397,15 @@ class MatMasterFlowAgent(LlmAgent):
                         yield plan_event
 
                     # 总结计划
+                    plan_steps = ctx.session.state['plan'].get('steps', [])
+                    tool_names = [
+                        step.get('tool_name')
+                        for step in plan_steps
+                        if step.get('tool_name')
+                    ]
+                    self.plan_info_agent.instruction = get_plan_info_instruction(
+                        tool_names
+                    )
                     async for plan_summary_event in self.plan_info_agent.run_async(ctx):
                         yield plan_summary_event
 
