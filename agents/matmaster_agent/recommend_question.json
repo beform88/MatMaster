@@ -429,7 +429,7 @@
         "question": "请在聚合物知识库中检索室温（25 °C）下黏度大于 100 Pa·s 的环氧树脂单体或预聚物。请汇总符合条件的化合物清单，并提供其标准化 SMILES 结构式。此外，请基于可用的预测模型，获取玻璃化转变温度所需的配置，对每个候选环氧树脂的玻璃化转变温度进行预测并给出合理解释。",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/019aec2ad033746dac6186f37eb7ef0d",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
           "uat_url": ""
         },
         "structure_url": null
@@ -453,7 +453,7 @@
         "question": "推荐含硫的固态电解质材料，能够在保持高离子电导率的同时改善与锂金属负极的界面稳定性。",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/019ae38206f776ad8b8f9087843c317a",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae38206f776ad8b8f9087843c317a",
           "uat_url": ""
         },
         "structure_url": null
@@ -477,7 +477,7 @@
         "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/019aeb751b2d76c88b6bc03becb94f90",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
         "structure_url": null
