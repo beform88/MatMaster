@@ -12,13 +12,14 @@ def select_examples(query, logger):
         ).json()['data']
     except Exception as e:
         logger.info(f"select_examples fallback due to error: {e}")
-        return [{
-        'input': '请为我构建一个铁的 bcc 结构',
-        'update_input': '请构建铁的体心立方（bcc）晶体结构，空间群为Im-3m，晶格常数为2.87Å',
-        'toolchain': ['build_bulk_structure_by_template', 'optimize_structure'],
-        'scene_tags': ['structure_generate', 'optimize_structure'],
-    }]
-        
+        return [
+            {
+                'input': '请为我构建一个铁的 bcc 结构',
+                'update_input': '请构建铁的体心立方（bcc）晶体结构，空间群为Im-3m，晶格常数为2.87Å',
+                'toolchain': ['build_bulk_structure_by_template', 'optimize_structure'],
+                'scene_tags': ['structure_generate', 'optimize_structure'],
+            }
+        ]
 
 
 def select_update_examples(query, logger):
@@ -30,12 +31,14 @@ def select_update_examples(query, logger):
         ).json()['data']
     except Exception as e:
         logger.info(f"select_update_examples fallback due to error: {e}")
-        return [{
-        'input': '请为我构建一个铁的 bcc 结构',
-        'update_input': '请构建铁的体心立方（bcc）晶体结构，空间群为Im-3m，晶格常数为2.87Å',
-        'toolchain': ['build_bulk_structure_by_template', 'optimize_structure'],
-        'scene_tags': ['structure_generate', 'optimize_structure'],
-    }]
+        return [
+            {
+                'input': '请为我构建一个铁的 bcc 结构',
+                'update_input': '请构建铁的体心立方（bcc）晶体结构，空间群为Im-3m，晶格常数为2.87Å',
+                'toolchain': ['build_bulk_structure_by_template', 'optimize_structure'],
+                'scene_tags': ['structure_generate', 'optimize_structure'],
+            }
+        ]
 
 
 def scene_tags_from_examples(examples):
@@ -46,6 +49,7 @@ def scene_tags_from_examples(examples):
                 f"User Input: {example['update_input']}\nScenes: {', '.join(example['scene_tags'])}\n"
             )
     return '\n'.join(scene_prompts)
+
 
 def toolchain_from_examples(examples):
     toolchain_prompts = ['\nToolchain EXAMPLES:']
@@ -61,6 +65,7 @@ def toolchain_from_examples(examples):
                 f"Input: {example['update_input']}\nToolchain: {toolchain_}\n"
             )
     return '\n'.join(toolchain_prompts)
+
 
 def expand_input_examples(examples):
     expanded_inputs = ['\nEXPAND EXAMPLES:']
