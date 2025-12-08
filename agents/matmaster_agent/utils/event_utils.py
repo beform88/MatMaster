@@ -307,7 +307,15 @@ def cherry_pick_events(ctx: InvocationContext):
 
 
 async def send_error_event(err, ctx: InvocationContext, author):
-    yield update_state_event(ctx, state_delta={'error_occurred': True})
+    # 更新 plan 为失败
+    update_plan = copy.deepcopy(ctx.session.state['plan'])
+    update_plan['steps'][ctx.session.state['plan_index']][
+        'status'
+    ] = PlanStepStatusEnum.FAILED
+
+    yield update_state_event(
+        ctx, state_delta={'plan': update_plan, 'error_occurred': True}
+    )
 
     # 判断是否是异常组
     if isinstance(err, BaseExceptionGroup):

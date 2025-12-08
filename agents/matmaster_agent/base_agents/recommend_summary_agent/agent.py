@@ -47,6 +47,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_function_call,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
@@ -278,12 +279,12 @@ class BaseAgentWithRecAndSum(
             if not ctx.session.state['tool_hallucination']:
                 break
 
-        is_async_agent = hasattr(self, 'sync_tools')
         # TODO: needs a better way to handle customized summary prompt
         if ALL_TOOLS[current_step_tool_name].get('summary_prompt') is not None:
             self.summary_agent.instruction = ALL_TOOLS[current_step_tool_name].get(
                 'summary_prompt'
             )
-        if not is_async_agent:
+
+        if current_step['status'] != PlanStepStatusEnum.SUBMITTED:
             async for summary_event in self.summary_agent.run_async(ctx):
                 yield summary_event

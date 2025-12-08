@@ -47,6 +47,7 @@ def get_field_type(field: Dict[str, Any]) -> Any:
             item_type = get_field_type(field['items'])
             return List[item_type]
         else:
+            logger.error(f'field = {field}')
             raise NotImplementedError
 
     # 处理对象类型

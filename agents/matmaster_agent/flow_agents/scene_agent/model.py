@@ -102,7 +102,10 @@ class SceneEnum(DescriptiveEnum):
     )
     STEEL = ('steel', 'Involving steel materials')
     DOE = ('doe', '')
-    PILOTEYE_ELECTRO = ('piloteye_electro', '')
+    PILOTEYE_ELECTRO = (
+        'piloteye_electro',
+        'Liquid electrolyte calculations for conductivity, rdf, diffusion coefficient and redox properties.',
+    )
     PEROVSKITE_RESEARCH = (
         'perovskite_research',
         'Research, literature/database search, and semantic mining focused on perovskite solar cells (efficiency, stability, additives, architectures, new molecules).',

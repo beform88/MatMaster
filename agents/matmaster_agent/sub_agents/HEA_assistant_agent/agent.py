@@ -2,7 +2,9 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgent
+from agents.matmaster_agent.base_agents.public_agent import (
+    BaseSyncAgentWithToolValidator,
+)
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.HEA_assistant_agent.prompt import (
     HEA_assistant_AgentDescription,
@@ -21,7 +23,7 @@ hea_assistant_toolset = CalculationMCPToolset(
 )
 
 
-class HEA_assistant_AgentBase(BaseSyncAgent):
+class HEA_assistant_AgentBase(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,

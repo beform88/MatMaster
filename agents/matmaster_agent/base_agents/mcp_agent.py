@@ -72,7 +72,7 @@ logger.setLevel(logging.INFO)
 
 class MCPInitMixin(BaseMixin):
     loading: bool = False  # Whether the agent display loading state
-    render_tool_response: bool = False  # Whether render tool response in frontend
+    render_tool_response: bool = True  # Whether render tool response in frontend
     enable_tgz_unpack: bool = True  # Whether unpack tgz files for tool_results
     cost_func: Optional[CostFuncType] = None
     enforce_single_function_call: bool = True  # 是否只允许单个 function_call

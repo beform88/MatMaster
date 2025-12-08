@@ -33,6 +33,8 @@ async def check_job_create_service(ctx):
             res = json.loads(await response.text())
             if res['code'] != 0:
                 if res['code'] == 140202:
-                    res['error']['msg'] = '钱包余额不足，请充值后重试。'
+                    res['error'][
+                        'msg'
+                    ] = '钱包余额不足，请在[此页面](https://www.bohrium.com/consume?menu=cash)充值后重试。'
 
                 return res
