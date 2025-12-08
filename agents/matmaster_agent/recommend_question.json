@@ -393,6 +393,7 @@
         "belonging": "场景案例",
         "question": "请提取文献中的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界问题",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4b5f86720c873eaedc917b89cf",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf"
@@ -403,6 +404,7 @@
         "belonging": "场景案例",
         "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
         "structure_url": ""
@@ -459,9 +461,9 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "帮我利用这组数据finetune dpa3 model 3000步",
+        "question": "帮我利用这组数据微调dpa3模型3000步",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd55301f75209a45ca7d768e47b1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
           "uat_url": ""
         },
@@ -473,7 +475,7 @@
         "belonging": "场景案例",
         "question": "请为这个CuCrZr合金构建convexhull",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4bafe87adb93dcce880710c2e7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae93a3e70774fa8a943fac30c5c29",
           "uat_url": ""
         },
