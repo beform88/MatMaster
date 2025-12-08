@@ -382,7 +382,7 @@
         "belonging": "场景案例",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
         "sharing_url": {
-          "prod_url":"https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
         "structure_url": ""
