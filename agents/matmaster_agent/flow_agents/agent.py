@@ -93,6 +93,13 @@ from agents.matmaster_agent.utils.event_utils import (
     send_error_event,
     update_state_event,
 )
+from agents.matmaster_agent.services.icl import (
+    select_examples,
+    select_update_examples,
+    scene_tags_from_examples,
+    toolchain_from_examples,
+    expand_input_examples
+)
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -176,7 +183,7 @@ class MatMasterFlowAgent(LlmAgent):
 
         execution_result_agent = DisallowTransferLlmAgent(
             name='execution_result_agent',
-            model=MatMasterLlmConfig.gpt_5_mini,
+            model=MatMasterLlmConfig.gpt_4o,
             description='汇总计划的执行情况',
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
@@ -323,7 +330,7 @@ class MatMasterFlowAgent(LlmAgent):
             # research 模式
             else:
                 # 检索 ICL 示例
-                icl_examples = select_examples(ctx.user_content.parts[0].text)
+                icl_examples = select_examples(ctx.user_content.parts[0].text, logger)
                 EXPAND_INPUT_EXAMPLES_PROMPT = expand_input_examples(icl_examples)
                 logger.info(f'{ctx.session.id} {EXPAND_INPUT_EXAMPLES_PROMPT}')
                 # 扩写用户问题
@@ -334,7 +341,7 @@ class MatMasterFlowAgent(LlmAgent):
                     yield expand_event
 
                 icl_update_examples = select_update_examples(
-                    ctx.session.state['expand']['update_user_content']
+                    ctx.session.state['expand']['update_user_content'], logger
                 )
                 SCENE_EXAMPLES_PROMPT = scene_tags_from_examples(icl_update_examples)
                 TOOLCHAIN_EXAMPLES_PROMPT = toolchain_from_examples(icl_update_examples)
