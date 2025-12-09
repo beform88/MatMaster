@@ -64,6 +64,9 @@ async def is_matmodeler_file(filename: str) -> bool:
                 '.sdf',
                 '.dump',
                 '.lammpstrj',
+                '.gro',
+                '.trr',
+                '.xtc',
             )
         )
         or filename.startswith('lammpstrj')

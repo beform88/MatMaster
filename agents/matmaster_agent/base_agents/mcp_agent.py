@@ -297,6 +297,7 @@ class MCPRunEventsMixin(BaseMixin):
                             ):
                                 yield markdown_image_event
 
+                    # 渲染 echarts
                     echarts_result = get_echarts_result(parsed_tool_result)
                     if echarts_result:
                         for echarts_event in context_function_event(
