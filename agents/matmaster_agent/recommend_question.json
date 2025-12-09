@@ -561,7 +561,7 @@
           "uat_url": ""
         },
         "structure_url": "",
-        "title": "合金材料弹性性质研究"
+        "title": "Ni–Co–Cr 合金材料弹性性质研究"
       }
     },
     {
@@ -575,7 +575,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
         "structure_url": "",
-        "title": "高熵合金体系系统分析"
+        "title": "高熵合金相图与相结构预测"
       }
     },
     {
@@ -589,7 +589,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf",
-        "title": "高温超导材料文献验证"
+        "title": "高温超导材料检索与预测"
       }
     },
     {
@@ -603,7 +603,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
         "structure_url": "",
-        "title": "候选热电材料筛选"
+        "title": "SnTe热电材料高通量筛选"
       }
     },
     {
@@ -618,7 +618,7 @@
           "uat_url": ""
         },
         "structure_url": null,
-        "title": "寻找高Tg高黏的环氧树脂材料"
+        "title": "高粘度高Tg环氧树脂解决方案推荐"
       }
     },
     {
@@ -633,7 +633,7 @@
           "uat_url": ""
         },
         "structure_url": null,
-        "title": "高熵合金组分优化建议"
+        "title": "Cantor合金性能优化组分设计"
       }
     },
     {
@@ -648,7 +648,7 @@
           "uat_url": ""
         },
         "structure_url": null,
-        "title": "含硫固态电解质推荐"
+        "title": "含硫固态电解质界面稳定性研究"
       }
     },
     {
@@ -663,7 +663,7 @@
           "uat_url": ""
         },
         "structure_url": null,
-        "title": "高效率钙钛矿添加剂研究&开题报告撰写"
+        "title": "高效钙钛矿太阳能电池添加剂设计与报告撰写"
       }
     },
     {
@@ -678,7 +678,7 @@
           "uat_url": ""
         },
         "structure_url": null,
-        "title": "双相不锈钢Ni含量作用深度分析"
+        "title": "双相不锈钢成分优化与强度预测"
       }
     },
     {
@@ -694,7 +694,21 @@
           "uat_url": ""
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip",
-        "title": "训练机器学习势函数"
+        "title": "机器学习势函数训练"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "belonging_en": "Scene Case",
+        "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途和局限性",
+        "question_en": "Introduce the principle, applications, and limitations of the double-wave method in Sawyer-Tower ferroelectric testing",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
+        },
+        "structure_url": null,
+        "title": "Sawyer-Tower双波法介绍"
       }
     },
     {
