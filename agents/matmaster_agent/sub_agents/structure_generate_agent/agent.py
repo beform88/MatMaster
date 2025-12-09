@@ -65,6 +65,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
                 'build_surface_adsorbate',
                 'build_surface_interface',
                 'get_structure_info',
+                'get_molecule_info',
             ],
             cost_func=cost_func,
         )
