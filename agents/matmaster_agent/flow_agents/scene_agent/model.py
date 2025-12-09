@@ -58,15 +58,15 @@ class SceneEnum(DescriptiveEnum):
     # literatue
     LITERATURE = (
         'literature',
-        'involving research papers retrieval, content extraction, or progress/trends analysis. e.g. Search for research papers on [topic], Extract key findings from the paper at [URL], Analyze research progress/trends in [field]',
+        'Involving research papers retrieval, content extraction, or progress/trends analysis. e.g. Search for research papers on [topic], extract key findings from the abstract of papers, analyze research progress/trends in [field], and finalize by in-depth discussion/summary',
     )
     WEB_SEARCH = (
         'general_web_search',
-        'involving concept query or procedure query.e.g. `What is [concept]`, `How to do [procedure]`',
+        'Involving concept query or procedure query. e.g. `What is [concept]`, `How to do [procedure]`, `Why is [phenomena]`. Not suitable for final research progress search tasks unless user requests.',
     )
     WEB_PARSING = (
         'webpage_parsing',
-        'involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH.',
+        'Involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH, but usually no need for literature search tasks unless user requests.',
     )
     PROPOSAL = (
         'proposal',
