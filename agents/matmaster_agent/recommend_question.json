@@ -444,142 +444,142 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "合金材料弹性性质研究",
         "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
         },
-        "structure_url": ""
+        "structure_url": "",
+        "title": "合金材料弹性性质研究"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "高熵合金体系系统分析",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "title": "高熵合金体系系统分析"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "高温超导材料文献验证",
         "question": "请提取文献中的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4b5f86720c873eaedc917b89cf",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf",
+        "title": "高温超导材料文献验证"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "候选热电材料筛选",
         "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "title": "候选热电材料筛选"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "寻找高Tg高黏的环氧树脂材料",
         "question": "寻找在室温(25℃)下具有高玻璃化转变温度（Tg）的高黏（黏度大于 100 Pa·s ）环氧树脂材料。",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "title": "寻找高Tg高黏的环氧树脂材料"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "高熵合金组分优化建议",
         "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的Cantor合金)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd29a9197652a298a47d72a77457",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "title": "高熵合金组分优化建议"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "含硫固态电解质推荐",
         "question": "推荐含硫的固态电解质材料，能够在保持高离子电导率的同时改善与锂金属负极的界面稳定性。",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae38206f776ad8b8f9087843c317a",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "title": "含硫固态电解质推荐"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "高效率钙钛矿添加剂研究&开题报告撰写",
         "question": "1. 我要设计效率大于26%的稳定的钙钛矿太阳能电池，请帮我查询钙钛矿数据库中2025年报道的高效率添加剂，推荐3种相似的添加剂配方；2. 根据你设计的3种添加剂中预测效率最高的分子，撰写开题报告草稿",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2c9deb67e18bbca95f4fec161f5",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "title": "高效率钙钛矿添加剂研究&开题报告撰写"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "双相不锈钢Ni含量作用深度分析",
         "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "title": "双相不锈钢Ni含量作用深度分析"
       }
     },
     {
       "_comment": "大原子模型微调",
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "训练机器学习势函数",
         "question": "我想基于这组数据微调一个机器学习势函数模型",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd55301f75209a45ca7d768e47b1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b00f2b1747bd09b0242476f99bd80",
           "uat_url": ""
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip",
+        "title": "训练机器学习势函数"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "title": "复杂掺杂结构搭建&多性质计算",
         "question": "从数据库获取立方相 SrTiO₃（Pm-3m），用结构生成做 2×2×2 超胞并用 Nb 替换 1 个 Ti（≈12.5%），先用DPA做全几何优化与弹性常数/声子检查，再用 ABACUS 做 SCF、能带与 DOS/PDOS（关注 Nb/Ti-d 与 O-p），用默认计算参数，分布输出能带结构和DOS/PDOS。",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2dc9619755f98cb0e67654fd6c6",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "title": "复杂掺杂结构搭建&多性质计算"
       }
     }
   ]
