@@ -400,7 +400,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "ABACUS计算",
+        "belonging": "性质预测",
         "belonging_en": "Property Prediction",
         "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
         "question_en": "Calculate elastic constants and bulk modulus of GaAs crystal using ABACUS",
