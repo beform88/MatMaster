@@ -163,7 +163,7 @@
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/019b01ab14d97b0fb312056c157d81d5"
         },
-        "structure_url":  null
+        "structure_url": null
       }
     },
     {
@@ -206,8 +206,8 @@
         "belonging": "结构检索",
         "question": "帮我从网页检索5个Heusler合金的结构文件或下载链接",
         "structure_url": {
-          "prod_url":"",
-          "test_url":"https://matmaster.test.bohrium.com/matmaster/share/019b019281a37c9aaab9b8f6f88f9ecf"
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b019281a37c9aaab9b8f6f88f9ecf"
         }
       }
     },
