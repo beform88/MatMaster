@@ -554,6 +554,7 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
+        "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr face-centered cubic alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
@@ -568,6 +569,7 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
+        "question_en": "Calculate valence electron concentration, mixing enthalpy, mixing entropy, binary formation energy and phase diagram data of AlCr0.8CoFeNi composition high-entropy alloy (HEA) system, and predict whether this system can form solid solution and possible crystal structures",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
@@ -581,6 +583,7 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "question": "请提取文献中核心的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
+        "question_en": "Please extract core high-temperature superconducting materials from the literature, find the structure from material databases, and predict their superconducting critical temperature",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0281172975edaade12e7c877cf49",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
@@ -594,6 +597,7 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
+        "question_en": "Randomly generate 50 SnTe structures and screen for potential thermoelectric materials among them",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
@@ -607,6 +611,7 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "question": "寻找在室温(25℃)下具有高玻璃化转变温度（Tg）的高黏（黏度大于 100 Pa·s ）环氧树脂材料。",
+        "question_en": "Find epoxy resin materials with high glass transition temperature (Tg) and high viscosity (viscosity > 100 Pa·s) at room temperature (25°C).",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
@@ -621,6 +626,7 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的Cantor合金)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
+        "question_en": "Research high-entropy alloy knowledge base to answer, based on CoCrFeMnNi (classic Cantor alloy) composition, how to optimize component ratios or introduce other components to adjust alloy structure and further improve mechanical properties? Please provide suggested compositions",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd29a9197652a298a47d72a77457",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
