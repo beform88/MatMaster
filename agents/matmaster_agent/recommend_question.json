@@ -553,6 +553,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/b415c05a-41de-4fd1-8b6c-d98067cedc44/alloy.jpeg",
         "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
         "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr face-centered cubic alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results",
         "sharing_url": {
@@ -568,6 +569,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/a3af50ea-b992-4e42-9b7a-fa4c5460b731/hea.png",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
         "question_en": "Calculate valence electron concentration, mixing enthalpy, mixing entropy, binary formation energy and phase diagram data of AlCr0.8CoFeNi composition high-entropy alloy (HEA) system, and predict whether this system can form solid solution and possible crystal structures",
         "sharing_url": {
@@ -582,6 +584,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/de4da4fe-6c09-4e92-ac83-dd4cbcb1c392/superconductor.png",
         "question": "请提取文献中核心的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
         "question_en": "Please extract core high-temperature superconducting materials from the literature, find the structure from material databases, and predict their superconducting critical temperature",
         "sharing_url": {
@@ -596,6 +599,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/21e73f08-a5d8-4182-9ec2-1d0a35625650/SnTe.png",
         "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
         "question_en": "Randomly generate 50 SnTe structures and screen for potential thermoelectric materials among them",
         "sharing_url": {
@@ -610,6 +614,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/4641720a-38f7-4f63-822c-b9b7d4a29ae3/epoxy.png",
         "question": "寻找在室温(25℃)下具有高玻璃化转变温度（Tg）的高黏（黏度大于 100 Pa·s ）环氧树脂材料。",
         "question_en": "Find epoxy resin materials with high glass transition temperature (Tg) and high viscosity (viscosity > 100 Pa·s) at room temperature (25°C).",
         "sharing_url": {
@@ -625,6 +630,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/7212eec8-a45c-44e9-badf-c8969df68c9e/Cantor.png",
         "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的Cantor合金)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
         "question_en": "Research high-entropy alloy knowledge base to answer, based on CoCrFeMnNi (classic Cantor alloy) composition, how to optimize component ratios or introduce other components to adjust alloy structure and further improve mechanical properties? Please provide suggested compositions",
         "sharing_url": {
@@ -640,6 +646,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/f7986b8e-526a-4372-9100-5b1d1d6196f5/LiS.png",
         "question": "推荐含硫的固态电解质材料，能够在保持高离子电导率的同时改善与锂金属负极的界面稳定性。",
         "question_en": "Recommend sulfur-containing solid electrolyte materials that can improve interface stability with lithium metal anode while maintaining high ionic conductivity",
         "sharing_url": {
@@ -655,6 +662,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/3586b951-97e6-4350-9549-1f96f8b4a270/perovskite.png",
         "question": "1. 我要设计效率大于26%的稳定的钙钛矿太阳能电池，请帮我查询钙钛矿数据库中2025年报道的高效率添加剂，推荐3种相似的添加剂配方；2. 根据你设计的3种添加剂中预测效率最高的分子，撰写开题报告草稿",
         "question_en": "1. I want to design a stable perovskite solar cell with efficiency > 26%, please help me query high-efficiency additives reported in 2025 in the perovskite database, recommend 3 similar additive formulations; 2. Based on the molecule with highest predicted efficiency among the 3 additives you designed, draft a research proposal",
         "sharing_url": {
@@ -670,6 +678,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/c906d6f9-590a-4832-b5ca-bd777266a2dc/steel.png",
         "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
         "question_en": "Research the chemical composition of duplex stainless steel 2209/ER2209, adjust Ni content, and use steel tensile strength prediction model to predict ultimate tensile strength of composition schemes. Based on this, analyze reasons for tensile strength changes with Ni content, including Ni effects on austenite/ferrite phase ratio, solid solution strengthening, and precipitation behavior",
         "sharing_url": {
@@ -686,6 +695,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/599bcafe-1064-4cd6-aefe-41fc592941a8/DPA.png",
         "question": "帮我利用这组数据微调dpa3模型3000步",
         "question_en": "Help me fine-tune the dpa3 model for 3000 steps using this dataset",
         "sharing_url": {
@@ -701,6 +711,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/11bd86db-c7a5-4cb2-974b-5c6470bf8dbb/Sawyer.png",
         "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途和局限性",
         "question_en": "Introduce the principle, applications, and limitations of the double-wave method in Sawyer-Tower ferroelectric testing",
         "sharing_url": {
@@ -715,6 +726,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/940c68a0-a986-4f5b-990f-670be488324d/SrTiO3.png",
         "question": "从数据库获取立方相 SrTiO₃（Pm-3m），用结构生成做 2×2×2 超胞并用 Nb 替换 1 个 Ti（≈12.5%），先用DPA做全几何优化与弹性常数/声子检查，再用 ABACUS 做 SCF、能带与 DOS/PDOS（关注 Nb/Ti-d 与 O-p），用默认计算参数，分布输出能带结构和DOS/PDOS。",
         "question_en": "Obtain cubic SrTiO₃ (Pm-3m) from database, create 2×2×2 supercell using structure generation and replace 1 Ti with Nb (≈12.5%), first perform full geometry optimization and elastic constant/phonon check using DPA, then perform SCF, band structure and DOS/PDOS using ABACUS (focus on Nb/Ti-d and O-p), use default calculation parameters, output band structure and DOS/PDOS separately",
         "sharing_url": {
