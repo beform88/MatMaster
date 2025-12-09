@@ -36,6 +36,7 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 from agents.matmaster_agent.utils.result_parse_utils import (
+    get_echarts_result,
     get_kv_result,
     get_markdown_image_result,
     get_matrix_result,
@@ -121,11 +122,9 @@ class ResultMCPAgent(MCPAgent):
                 f'status = {status}'
             )
             if status != 'Running':
+                # 更新状态
+                plan_status = 'success' if status == 'Succeeded' else 'failed'
                 update_plan = copy.deepcopy(ctx.session.state['plan'])
-                if status == 'Succeeded':
-                    plan_status = 'success'
-                else:
-                    plan_status = 'failed'
                 update_plan['steps'][ctx.session.state['plan_index']][
                     'status'
                 ] = plan_status
@@ -141,6 +140,8 @@ class ResultMCPAgent(MCPAgent):
                         'plan': update_plan,
                     },
                 )
+
+                # 获取任务结果
                 results_res = await self.tools[0].results_tool.run_async(
                     args={
                         'job_id': origin_job_id,
@@ -172,22 +173,20 @@ class ResultMCPAgent(MCPAgent):
                         tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
                     else:
                         new_tool_result = dict_result
+                    parsed_tool_result = await parse_result(new_tool_result)
+                    logger.info(
+                        f'{ctx.session.id} parsed_tool_result = {parsed_tool_result}'
+                    )
+
                     update_long_running_jobs = copy.deepcopy(
                         ctx.session.state['long_running_jobs']
                     )
-                    parsed_result = await parse_result(new_tool_result)
                     update_long_running_jobs[origin_job_id][
                         'job_result'
-                    ] = parsed_result
+                    ] = parsed_tool_result
                     yield update_state_event(
                         ctx,
                         state_delta={'long_running_jobs': update_long_running_jobs},
-                    )
-                    markdown_image_result = get_markdown_image_result(parsed_result)
-                    job_result_comp_data = get_kv_result(
-                        ctx.session.state['long_running_jobs'][origin_job_id][
-                            'job_result'
-                        ]
                     )
 
                     # Only for debug
@@ -200,6 +199,11 @@ class ResultMCPAgent(MCPAgent):
                     if origin_job_id == ctx.session.state[FRONTEND_STATE_KEY][
                         'biz'
                     ].get('origin_id', None):
+                        job_result_comp_data = get_kv_result(
+                            ctx.session.state['long_running_jobs'][origin_job_id][
+                                'job_result'
+                            ]
+                        )
                         for event in all_text_event(
                             ctx,
                             self.name,
@@ -208,6 +212,10 @@ class ResultMCPAgent(MCPAgent):
                         ):
                             yield event
 
+                        # 渲染 Markdown 图片
+                        markdown_image_result = get_markdown_image_result(
+                            parsed_tool_result
+                        )
                         if markdown_image_result:
                             for item in markdown_image_result:
                                 for markdown_image_event in all_text_event(
@@ -216,7 +224,7 @@ class ResultMCPAgent(MCPAgent):
                                     yield markdown_image_event
 
                         # 渲染 Matrix 结果
-                        matrix_result = get_matrix_result(parsed_result)
+                        matrix_result = get_matrix_result(parsed_tool_result)
                         if matrix_result:
                             for item in matrix_result:
                                 for markdown_matrix_event in all_text_event(
@@ -226,6 +234,23 @@ class ResultMCPAgent(MCPAgent):
                                     ModelRole,
                                 ):
                                     yield markdown_matrix_event
+
+                        # 渲染 echarts
+                        echarts_result = get_echarts_result(parsed_tool_result)
+                        if echarts_result:
+                            for echarts_event in context_function_event(
+                                ctx,
+                                self.name,
+                                'matmaster_echarts',
+                                None,
+                                ModelRole,
+                                {
+                                    'echarts_url': [
+                                        item['url'] for item in echarts_result
+                                    ]
+                                },
+                            ):
+                                yield echarts_event
 
                         # Only for debug
                         if os.getenv('MODE', None) == 'debug':
