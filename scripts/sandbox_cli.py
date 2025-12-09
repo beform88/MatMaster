@@ -4,16 +4,19 @@ import os
 import sys
 import time
 from datetime import datetime
-from pathlib import Path
 
 import jsonpickle
 import requests
 from dotenv import find_dotenv, load_dotenv
 from toolsy.logger import init_colored_logger
 
-from agents.matmaster_agent.constant import OPENAPI_FILE_TOKEN_API, OpenAPIJobAPI
+from agents.matmaster_agent.constant import OpenAPIJobAPI
 from agents.matmaster_agent.utils.job_utils import mapping_status
-from scripts.sandbox_api import kill_job
+from scripts.sandbox_api import (
+    check_status_and_download_file,
+    get_token_and_download_file,
+    kill_job,
+)
 
 load_dotenv(find_dotenv())
 
@@ -48,65 +51,6 @@ def get_duration(create_time, update_time):
 
     # 格式化为时-分-秒
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
-
-
-def check_status_and_download_file(response, file_download_path):
-    def download_file(response, output_path):
-        total_size = int(response.headers.get('content-length', 0))
-        downloaded_size = 0
-
-        with open(output_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-                    downloaded_size += len(chunk)
-                    if total_size > 0:
-                        progress = (downloaded_size / total_size) * 100
-                        print(
-                            f"\rDownload progress: {progress:.1f}%", end='', flush=True
-                        )
-
-        print()
-
-    status_code = response.status_code
-    if status_code == 400:
-        logger.error(f'`{file_download_path}` url returned 400 Bad Request')
-    elif status_code == 200:
-        download_file(response, file_download_path)
-        if Path(file_download_path).exists():
-            file_size = os.path.getsize(file_download_path)
-            logger.info(
-                f"Download `{file_download_path}` completed successfully! File size: {file_size} bytes"
-            )
-        else:
-            logger.error(
-                f"Error: Download `{file_download_path}` failed - file doesn't exist"
-            )
-    else:
-        logger.error(f'`{file_download_path}` url returned status code: {status_code}')
-
-
-def get_token_and_download_file(file_path, job_id):
-    # 获取log文件的token
-    request_body = {'filePath': file_path, 'jobId': job_id}
-    response = requests.post(
-        f"{OPENAPI_FILE_TOKEN_API}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}",
-        json=request_body,
-    )
-    response.raise_for_status()
-    response_data_json: dict = response.json().get('data', {})
-
-    response_file_token = response_data_json.get('token', '')
-    response_file_path = response_data_json.get('path', '')
-    response_file_host = response_data_json.get('host', '')
-
-    # 构建log文件URL并检查状态
-    if response_file_host and response_file_path and response_file_token:
-        file_url = f"{response_file_host}/api/download/{response_file_path}?token={response_file_token}"
-        file_response = requests.get(file_url, timeout=10)
-        check_status_and_download_file(file_response, file_path)
-    else:
-        logger.error(f'Incomplete {file_path} information - cannot construct file URL')
 
 
 def poll_job_status(job_id, interval=10):
@@ -204,7 +148,7 @@ def main():
 
         try:
             response = requests.get(
-                f"{OpenAPIJobAPI}/{args.job_id}?accessKey={os.getenv('MATERIALS_ACCESS_KEY')}"
+                f"{OpenAPIJobAPI}/{args.job_id}?accessKey={os.getenv('BOHRIUM_ACCESS_KEY')}"
             )
             response.raise_for_status()
             job_info = response.json()

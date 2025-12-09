@@ -82,6 +82,8 @@ MATERIALS_ORG_ID = int(os.getenv('MATERIALS_ORG_ID', -1))
 MATERIALS_ACCESS_KEY = str(os.getenv('MATERIALS_ACCESS_KEY', ''))
 MATERIALS_PROJECT_ID = int(os.getenv('MATERIALS_PROJECT_ID', -1))
 MATMASTER_SKU_ID = int(os.getenv('MATMASTER_SKU_ID', -1))
+BOHRIUM_ACCESS_KEY = str(os.getenv('BOHRIUM_ACCESS_KEY', ''))
+BOHRIUM_PROJECT_ID = int(os.getenv('BOHRIUM_PROJECT_ID', -1))
 
 # Constant-SKU
 SKU_MAPPING = {'matmaster': MATMASTER_SKU_ID}
