@@ -56,7 +56,7 @@
       "zhPrompt": {
         "belonging": "学术情报",
         "belonging_en": "Academic Intelligence",
-        "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途和局限性",
+        "question": "介绍Sawyer-Tower铁电测试中的双波法的原理、用途及局限性",
         "question_en": "Introduce the principle, applications, and limitations of the double-wave method in Sawyer-Tower ferroelectric testing",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
