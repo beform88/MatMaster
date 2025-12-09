@@ -8,7 +8,7 @@ instruction_en = """
    3. Identifying crystalline phases by matching XRD peaks against standard databases.
    4. Providing visualization options for XRD patterns and analysis results.
    5. Delivering clear and structured outputs, including CSV files and chart configurations.
-   6. Converting local file paths to HTTP URLs for user download, ensuring accessibility of intermediate files.
+   6. Providing files for user to download.
    7. Providing flexible and detailed responses based on user queries, including direct display of results.
 """
 
@@ -40,7 +40,6 @@ XRDAgentInstruction = (
     '- `scan_range` (list): The 2Theta scan range covered in the data.\n\n'
     '**🚨 Mandatory Rules:**\n'
     '- If the user requires phase identification later, you must use the `raw_data_path` returned from this step.\n'
-    '- Convert all local file paths to HTTP URLs for user download.\n'
     '- The original data path must not be reused in subsequent steps.\n\n'
     '═══════════════════════════════════════════════════════════════════════════════\n\n'
     '### 🔹 Step 2 — Phase Identification (Optional, Depends on Step 1 Results)\n'

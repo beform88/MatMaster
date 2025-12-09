@@ -323,7 +323,7 @@
         "belonging": "数据可视化",
         "question": "这张电镜图片上担载的颗粒的平均粒径是多少，能否给我相应的颗粒信息",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aff1b4cf771d0a6e6fad0e9135fd7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34cc59476edba7c3828950b16d9",
           "uat_url": ""
         },
@@ -335,7 +335,7 @@
         "belonging": "数据可视化",
         "question": "分析这个XRD文件，提供可视化的图像，并且分析其中是否含有氧化铜",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00e9c3367a88b905adaa0cbc3dd4",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3a4fc5c7bb7bce1caac8d4b571e",
           "uat_url": ""
         },

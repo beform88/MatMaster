@@ -683,7 +683,7 @@ ALL_TOOLS = {
     'xrd_parse_file': {
         'belonging_agent': XRD_AGENT_NAME,
         'scene': [SceneEnum.XRD],
-        'description': 'Parse raw XRD data files (e.g., .xrdml, .xy, .csv) from a URL. Performs preprocessing (baseline correction, smoothing), extracts features (peaks, FWHM, grain size), and saves processed data and visualization configurations to local files. Returns file paths for downstream tasks like phase identification.',
+        'description': 'Parse raw XRD data files (e.g., .xrdml, .xy, .csv). Performs preprocessing (baseline correction, smoothing), extracts features (peaks, FWHM, grain size), and saves processed data and visualization configurations to local files. Returns file paths for downstream tasks like phase identification.',
     },
     'xrd_phase_identification': {
         'belonging_agent': XRD_AGENT_NAME,
