@@ -223,7 +223,7 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "请计算Si的能带",
-        "share_url": {
+        "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae7eefaf771d6a6450c67d9a1c38f"
         },
@@ -234,7 +234,7 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算Si的声子色散曲线（需先进行结构优化）",
-        "share_url": {
+        "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae373760373f1bbff92bfc5ac98ac"
         },
@@ -245,7 +245,7 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
-        "share_url": {
+        "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
         },
@@ -256,7 +256,7 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
-        "share_url": {
+        "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc253a8570c280725b19fad8fe38",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afca24cdf7dee8e4715762b20a75f"
         },
@@ -267,7 +267,7 @@
       "zhPrompt": {
         "belonging": "ABACUS计算",
         "question": "使用ABACUS计算Pd(111)面的功函数，真空层位于z方向上。",
-        "share_url": {
+        "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc17a8637eaa831bcd272a3e2862",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3942ba07b8db65c325f1b2b3306"
         },
@@ -299,9 +299,31 @@
     {
       "zhPrompt": {
         "belonging": "数据可视化",
+        "question": "绘制此TG-DSC图，双y轴绘制于单图中，TG画左侧，紫色实线，DSC画右侧，深红色虚线",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b006210f771ed870cb953f93d5e69",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b005deee772ddb227e69bf446e3ba"
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC0648WPWXCSSNY99R4JNT32/tg-dsc-example.txt"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据可视化",
+        "question": "绘制此变温SHG测试图，画SHG随温度的变化，分升温和降温两段画在同一个图中，升温用红色线+红边白面方框，降温用绿色线+绿边白面方框，横坐标范围调整成25-130摄氏度",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00708d3d79e7bcc9d40a58e55b20",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0070e0477059b9e8a2fc8581301e"
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC06WERP5J0F5D5R1P48T37N/td-shg-example.txt"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据可视化",
         "question": "这张电镜图片上担载的颗粒的平均粒径是多少，能否给我相应的颗粒信息",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aff1b4cf771d0a6e6fad0e9135fd7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34cc59476edba7c3828950b16d9",
           "uat_url": ""
         },
@@ -313,7 +335,7 @@
         "belonging": "数据可视化",
         "question": "分析这个XRD文件，提供可视化的图像，并且分析其中是否含有氧化铜",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00e9c3367a88b905adaa0cbc3dd4",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3a4fc5c7bb7bce1caac8d4b571e",
           "uat_url": ""
         },
@@ -325,7 +347,7 @@
         "belonging": "场景案例",
         "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afe6b1e1975e6a12f684466ac7011",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae75dbdd176d09bfab0935b382d68",
           "uat_url": ""
         },
@@ -382,6 +404,7 @@
         "belonging": "场景案例",
         "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
         "structure_url": ""
@@ -414,7 +437,7 @@
         "belonging": "场景案例",
         "question": "对这个结构Cc1cccc(CC#CC(O)c2ccccc2)c1C，预测一下NMR谱图。",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afe7030cd7104bed579fdb9c756e7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019add311d937c65b937507dfb445d15",
           "uat_url": ""
         },
@@ -436,10 +459,34 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的“Cantor合金”)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
+        "question": "请在聚合物知识库中检索室温（25 °C）下黏度大于 100 Pa·s 的环氧树脂单体或预聚物。请汇总符合条件的化合物清单，并提供其标准化 SMILES 结构式。此外，请基于可用的预测模型，获取玻璃化转变温度所需的配置，对每个候选环氧树脂的玻璃化转变温度进行预测并给出合理解释。",
         "sharing_url": {
           "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
+          "uat_url": ""
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的“Cantor合金”)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd29a9197652a298a47d72a77457",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
+          "uat_url": ""
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "question": "推荐含硫的固态电解质材料，能够在保持高离子电导率的同时改善与锂金属负极的界面稳定性。",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae38206f776ad8b8f9087843c317a",
           "uat_url": ""
         },
         "structure_url": null
@@ -452,6 +499,18 @@
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2c9deb67e18bbca95f4fec161f5",
+          "uat_url": ""
+        },
+        "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
         "structure_url": null
