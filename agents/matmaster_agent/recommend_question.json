@@ -36,7 +36,7 @@
     {
       "zhPrompt": {
         "belonging": "学术情报",
-        "question": "单手性的分子晶体在室温SC-XRD测试中flack ~ 1e-4而高温接近1e-1，解释原因",
+        "question": "解释单手性的分子晶体在室温SC-XRD测试中flack ~ 1e-4而高温接近1e-1的原因",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee827bbd717982b5758a3a9a699a",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e996d176bf8c76e2860f35dbb1"
@@ -157,6 +157,17 @@
     },
     {
       "zhPrompt": {
+        "belonging": "结构生成",
+        "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/019b01ab14d97b0fb312056c157d81d5"
+        },
+        "structure_url":  null
+      }
+    },
+    {
+      "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
         "structure_url": null
@@ -193,13 +204,24 @@
     {
       "zhPrompt": {
         "belonging": "结构检索",
+        "question": "帮我从网页检索5个Heusler合金的结构文件或下载链接",
+        "structure_url": {
+          "prod_url":"",
+          "test_url":"https://matmaster.test.bohrium.com/matmaster/share/019b019281a37c9aaab9b8f6f88f9ecf"
+        }
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构检索",
         "question": "从Materials Project批量下载20个含锂材料的CIF文件，并统计其平均体积/原子",
         "structure_url": null
       }
     },
     {
+      "_comment": "机器学习势",
       "zhPrompt": {
-        "belonging": "DPA计算",
+        "belonging": "科学计算",
         "question": "使用DPA对此Li₂O结构进行300 K、1 ps分子动力学模拟，时间步长1 fs",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeeb490ad7ebc8dcfa145979af736",
@@ -209,8 +231,69 @@
       }
     },
     {
+      "_comment": "第一性原理",
       "zhPrompt": {
-        "belonging": "DPA计算",
+        "belonging": "科学计算",
+        "question": "使用ABACUS计算Pd(111)面的功函数，真空层位于z方向上。",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc17a8637eaa831bcd272a3e2862",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3942ba07b8db65c325f1b2b3306"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHS8H8KVSG4FZC9S1WPAVGG/Pd111.cif"
+      }
+    },
+    {
+      "_comment": "第一性原理",
+      "zhPrompt": {
+        "belonging": "科学计算",
+        "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
+        },
+        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
+      }
+    },
+    {
+      "_comment": "第一性原理",
+      "zhPrompt": {
+        "belonging": "科学计算",
+        "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afe6b1e1975e6a12f684466ac7011",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae75dbdd176d09bfab0935b382d68",
+          "uat_url": ""
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "科学计算",
+        "question": "计算这个合金的状态方程（EOS）",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae89e1c8874a38f26a65a987ad30c",
+          "uat_url": ""
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "科学计算",
+        "question": "请为这个CuCrZr合金构建convexhull",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4bafe87adb93dcce880710c2e7",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae93a3e70774fa8a943fac30c5c29",
+          "uat_url": ""
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBMKMHPQZ8B58JMF90ZHRF6P/CuCrZr.cif"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "性质预测",
         "question": "请使用DPA计算此MgO结构的弹性常数",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeebb8e3a70569d80ce1ec3c9b219",
@@ -221,7 +304,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "ABACUS计算",
+        "belonging": "性质预测",
         "question": "请计算Si的能带",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
@@ -232,7 +315,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "ABACUS计算",
+        "belonging": "性质预测",
         "question": "使用ABACUS计算Si的声子色散曲线（需先进行结构优化）",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
@@ -243,18 +326,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "ABACUS计算",
-        "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
-        },
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "ABACUS计算",
+        "belonging": "性质预测",
         "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc253a8570c280725b19fad8fe38",
@@ -265,13 +337,16 @@
     },
     {
       "zhPrompt": {
-        "belonging": "ABACUS计算",
-        "question": "使用ABACUS计算Pd(111)面的功函数，真空层位于z方向上。",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc17a8637eaa831bcd272a3e2862",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3942ba07b8db65c325f1b2b3306"
-        },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHS8H8KVSG4FZC9S1WPAVGG/Pd111.cif"
+        "belonging": "性质预测",
+        "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "性质预测",
+        "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
+        "structure_url": ""
       }
     },
     {
@@ -320,7 +395,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "数据可视化",
+        "belonging": "表征分析",
         "question": "这张电镜图片上担载的颗粒的平均粒径是多少，能否给我相应的颗粒信息",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aff1b4cf771d0a6e6fad0e9135fd7",
@@ -332,7 +407,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "数据可视化",
+        "belonging": "表征分析",
         "question": "分析这个XRD文件，提供可视化的图像，并且分析其中是否含有氧化铜",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00e9c3367a88b905adaa0cbc3dd4",
@@ -344,97 +419,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afe6b1e1975e6a12f684466ac7011",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae75dbdd176d09bfab0935b382d68",
-          "uat_url": ""
-        },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
-        "sharing_url": {
-          "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
-          "uat_url": ""
-        },
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "计算这个合金的状态方程（EOS）",
-        "sharing_url": {
-          "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae89e1c8874a38f26a65a987ad30c",
-          "uat_url": ""
-        },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化，TiO₂ bluk结构可以从bohrium数据库中检索",
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
-        },
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "请提取文献中的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界问题",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4b5f86720c873eaedc917b89cf",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
-        },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
-        "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
-        },
-        "structure_url": ""
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
+        "belonging": "表征分析",
         "question": "对这个结构Cc1cccc(CC#CC(O)c2ccccc2)c1C，预测一下NMR谱图。",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afe7030cd7104bed579fdb9c756e7",
@@ -446,7 +431,7 @@
     },
     {
       "zhPrompt": {
-        "belonging": "场景案例",
+        "belonging": "表征分析",
         "question": "下面是我实验中测出的NMR的谱图，分析一下对应的分子结构可能是什么。氢原子化学位移为2.16, 2.29, 2.29, 2.29, 2.41, 2.41, 2.41, 3.58, 3.58, 5.63, 7.17, 7.17, 7.17, 7.17, 7.17, 7.17, 7.39, 7.64；碳原子化学位移为19.1, 19.4, 23.5, 62.7, 82.1, 84.5, 126.27, 126.3, 126.5, 127, 128.36, 128.41, 130.2, 130.8, 134.8, 135.98, 136.02, 138.9；分子的化学式为C18H18O",
         "sharing_url": {
           "prod_url": "",
@@ -459,7 +444,57 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "请在聚合物知识库中检索室温（25 °C）下黏度大于 100 Pa·s 的环氧树脂单体或预聚物。请汇总符合条件的化合物清单，并提供其标准化 SMILES 结构式。此外，请基于可用的预测模型，获取玻璃化转变温度所需的配置，对每个候选环氧树脂的玻璃化转变温度进行预测并给出合理解释。",
+        "name": "合金材料弹性性质研究",
+        "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
+          "uat_url": ""
+        },
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "name": "高熵合金体系系统分析",
+        "question": "计算AlCr0.8CoFeNi组分的高熵合金（HEA）体系的价电子浓度、混合焓、混合熵，二元形成能和相图数据，并预测该体系是否可以形成固溶体，以及可能的晶体结构",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
+        },
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "name": "高温超导材料文献验证",
+        "question": "请提取文献中的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4b5f86720c873eaedc917b89cf",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "name": "候选热电材料筛选",
+        "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
+        },
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "场景案例",
+        "name": "寻找高Tg高黏的环氧树脂材料",
+        "question": "寻找在室温(25℃)下具有高玻璃化转变温度（Tg）的高黏（黏度大于 100 Pa·s ）环氧树脂材料。",
         "sharing_url": {
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
@@ -471,7 +506,8 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的“Cantor合金”)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
+        "name": "高熵合金组分优化建议",
+        "question": "调研高熵合金知识库回答，在CoCrFeMnNi (经典的Cantor合金)组分基础上，可以如何通过组元比例优化或引入其他组元来调整合金结构，进一步提升其力学性能？请给出建议的组分",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd29a9197652a298a47d72a77457",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
@@ -483,6 +519,7 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
+        "name": "含硫固态电解质推荐",
         "question": "推荐含硫的固态电解质材料，能够在保持高离子电导率的同时改善与锂金属负极的界面稳定性。",
         "sharing_url": {
           "prod_url": "",
@@ -495,6 +532,7 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
+        "name": "高效率钙钛矿添加剂研究&开题报告撰写",
         "question": "1. 我要设计效率大于26%的稳定的钙钛矿太阳能电池，请帮我查询钙钛矿数据库中2025年报道的高效率添加剂，推荐3种相似的添加剂配方；2. 根据你设计的3种添加剂中预测效率最高的分子，撰写开题报告草稿",
         "sharing_url": {
           "prod_url": "",
@@ -507,6 +545,7 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
+        "name": "双相不锈钢Ni含量作用深度分析",
         "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
         "sharing_url": {
           "prod_url": "",
@@ -517,12 +556,14 @@
       }
     },
     {
+      "_comment": "大原子模型微调",
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "帮我利用这组数据微调dpa3模型3000步",
+        "name": "训练机器学习势函数",
+        "question": "我想基于这组数据微调一个机器学习势函数模型",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd55301f75209a45ca7d768e47b1",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b00f2b1747bd09b0242476f99bd80",
           "uat_url": ""
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip"
@@ -531,18 +572,7 @@
     {
       "zhPrompt": {
         "belonging": "场景案例",
-        "question": "请为这个CuCrZr合金构建convexhull",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4bafe87adb93dcce880710c2e7",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae93a3e70774fa8a943fac30c5c29",
-          "uat_url": ""
-        },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBMKMHPQZ8B58JMF90ZHRF6P/CuCrZr.cif"
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "场景案例",
+        "name": "复杂掺杂结构搭建&多性质计算",
         "question": "从数据库获取立方相 SrTiO₃（Pm-3m），用结构生成做 2×2×2 超胞并用 Nb 替换 1 个 Ti（≈12.5%），先用DPA做全几何优化与弹性常数/声子检查，再用 ABACUS 做 SCF、能带与 DOS/PDOS（关注 Nb/Ti-d 与 O-p），用默认计算参数，分布输出能带结构和DOS/PDOS。",
         "sharing_url": {
           "prod_url": "",
