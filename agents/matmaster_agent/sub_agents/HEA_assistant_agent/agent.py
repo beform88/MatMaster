@@ -1,9 +1,14 @@
+import copy
+
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from agents.matmaster_agent.base_agents.public_agent import (
     BaseSyncAgentWithToolValidator,
+)
+from agents.matmaster_agent.constant import (
+    BohriumStorge,
 )
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.HEA_assistant_agent.prompt import (
@@ -14,10 +19,12 @@ from agents.matmaster_agent.sub_agents.HEA_assistant_agent.prompt import (
 
 from .constant import HEA_assistant_agent_ServerUrl
 
+HEA_assistant_BohriumStorge = copy.deepcopy(BohriumStorge)
 sse_params = SseServerParams(url=HEA_assistant_agent_ServerUrl)
 
 hea_assistant_toolset = CalculationMCPToolset(
     connection_params=sse_params,
+    storage=HEA_assistant_BohriumStorge,
     async_mode=False,
     wait=True,
 )
