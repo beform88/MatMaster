@@ -93,7 +93,7 @@
         "belonging": "结构生成",
         "question": "以超导临界温度大于40 K、空间群编号225为条件生成10个候选的晶体结构",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee3de73b7b6f98252056c7530551",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec463c757f2d865582dc5058b287"
         },
         "structure_url": null
@@ -194,7 +194,7 @@
         "question": "在Materials Project中检索并返回不超过2个仅含Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
         "sharing_url": {
           "prod_url": "",
-          "test_url": ""
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b02308e057628ad38635582370c97"
         },
         "structure_url": null
       }
@@ -213,20 +213,9 @@
     {
       "zhPrompt": {
         "belonging": "结构检索",
-        "question": "对比不同数据库中Fe₂O₃的带隙数据",
-        "sharing_url": {
-          "prod_url": "",
-          "test_url": ""
-        },
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构检索",
         "question": "帮我从网页检索5个Heusler合金的结构文件或下载链接",
         "structure_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b02520c5873f18a74ec22b1f390bb",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b019281a37c9aaab9b8f6f88f9ecf"
         }
       }
@@ -234,10 +223,10 @@
     {
       "zhPrompt": {
         "belonging": "结构检索",
-        "question": "从Materials Project批量下载20个含锂材料的CIF文件，并统计其平均体积/原子",
+        "question": "从Materials Project批量下载20个含锂材料的CIF文件",
         "sharing_url": {
           "prod_url": "",
-          "test_url": ""
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b02524780795a9f5b138bd04680f6"
         },
         "structure_url": null
       }
@@ -495,7 +484,7 @@
         "belonging": "场景案例",
         "question": "请提取文献中的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4b5f86720c873eaedc917b89cf",
+          "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf",
