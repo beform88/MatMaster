@@ -363,6 +363,18 @@ class MatMasterFlowAgent(LlmAgent):
                     ):
                         yield plan_confirm_event
 
+                    if ctx.user_content.parts[
+                        0
+                    ].text == '确认计划' and not ctx.session.state['plan_confirm'].get(
+                        'flag', False
+                    ):
+                        logger.warning(
+                            f'{ctx.session.id} 确认计划 not confirm, manually setting it'
+                        )
+                        yield update_state_event(
+                            ctx, state_delta={'plan_confirm': True}
+                        )
+
                 plan_confirm = ctx.session.state['plan_confirm'].get('flag', False)
 
                 # 判断要不要制定计划（1. 无计划；2. 计划未通过；3. 计划已完成）
@@ -434,16 +446,6 @@ class MatMasterFlowAgent(LlmAgent):
                             },
                         )
                     else:
-                        # 询问用户是否确认计划
-                        # async for (
-                        #     plan_option_event
-                        # ) in self.plan_confirm_option_agent.run_async(ctx):
-                        #     yield plan_option_event
-
-                        # _plan_options = ctx.session.state.get(
-                        #     'plan_confirm_options', {}
-                        # ).get('list', ['确认计划', '修改计划', '重新规划'])
-
                         for generate_plan_confirm_event in context_function_event(
                             ctx,
                             self.name,
@@ -506,18 +508,6 @@ class MatMasterFlowAgent(LlmAgent):
                             ):
                                 yield analysis_event
 
-                        # 获取追问建议
-                        # async for follow_up_event in self.follow_up_agent.run_async(
-                        #     ctx
-                        # ):
-                        #     yield follow_up_event
-                        #
-                        # _follow_up_questions = ctx.session.state.get(
-                        #     'follow_up_questions', []
-                        # )
-                        # if _follow_up_questions == []:
-                        #     pass
-                        # else:
                         follow_up_list = await get_random_questions()
                         for generate_follow_up_event in context_function_event(
                             ctx,
