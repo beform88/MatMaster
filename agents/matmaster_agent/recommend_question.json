@@ -10,7 +10,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed72d4f871f7a8e5a94db013a048",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
         },
-        "structure_url": ""
+        "structure_url": null
       }
     },
     {
@@ -36,7 +36,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee5fd4a57e97ba8be70c25b47935",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2f938467f2baf634286b11dfd32"
         },
-        "structure_url": ""
+        "structure_url": null
       }
     },
     {
@@ -88,7 +88,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee504847757db30d58105fe5b1e7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34228f07e6abf103befb80dd70c"
         },
-        "structure_url": ""
+        "structure_url": null
       }
     },
     {
@@ -101,7 +101,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee4518c671d6b3d70e5ed522cc73",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae371eea572d3810ce215e35a4e90"
         },
-        "structure_url": ""
+        "structure_url": null
       }
     },
     {
@@ -153,7 +153,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed956db07a4a800172c302d91097",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
         },
-        "structure_url": ""
+        "structure_url": null
       }
     },
     {
@@ -400,19 +400,6 @@
     },
     {
       "zhPrompt": {
-        "belonging": "性质预测",
-        "belonging_en": "Property Prediction",
-        "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
-        "question_en": "Perform Bader charge analysis on Al₂O₃ system using ABACUS and display charge transfer for each atom",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
-        },
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
-      }
-    },
-    {
-      "zhPrompt": {
         "belonging": "ABACUS计算",
         "belonging_en": "Property Prediction",
         "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
@@ -430,7 +417,7 @@
         "belonging_en": "Property Prediction",
         "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
         "question_en": "Calculate elastic constants for SrTiO3 and output full C11, C12, C44 tensors (obtain initial structure from open databases and set reasonable parameters)",
-        "structure_url": ""
+        "structure_url": null
       }
     },
     {
@@ -439,7 +426,7 @@
         "belonging_en": "Property Prediction",
         "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
         "question_en": "Retrieve an MgB2 structure from open databases and calculate its phonon spectrum",
-        "structure_url": ""
+        "structure_url": null
       }
     },
     {
@@ -562,7 +549,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
         },
-        "structure_url": "",
+        "structure_url": null,
         "title": "Ni–Co–Cr 合金材料弹性性质研究"
       }
     },
@@ -577,7 +564,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
-        "structure_url": "",
+        "structure_url": null,
         "title": "高熵合金相图与相结构预测"
       }
     },
@@ -607,7 +594,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
-        "structure_url": "",
+        "structure_url": null,
         "title": "SnTe热电材料高通量筛选"
       }
     },
