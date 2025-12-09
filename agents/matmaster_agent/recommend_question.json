@@ -299,6 +299,28 @@
     {
       "zhPrompt": {
         "belonging": "数据可视化",
+        "question": "绘制此TG-DSC图，双y轴绘制于单图中，TG画左侧，紫色实线，DSC画右侧，深红色虚线",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b006210f771ed870cb953f93d5e69",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b005deee772ddb227e69bf446e3ba"
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC0648WPWXCSSNY99R4JNT32/tg-dsc-example.txt"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据可视化",
+        "question": "绘制此变温SHG测试图，画SHG随温度的变化，分升温和降温两段画在同一个图中，升温用红色线+红边白面方框，降温用绿色线+绿边白面方框，横坐标范围调整成25-130摄氏度",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00708d3d79e7bcc9d40a58e55b20",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0070e0477059b9e8a2fc8581301e"
+        },
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC06WERP5J0F5D5R1P48T37N/td-shg-example.txt"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "数据可视化",
         "question": "这张电镜图片上担载的颗粒的平均粒径是多少，能否给我相应的颗粒信息",
         "sharing_url": {
           "prod_url": "",
