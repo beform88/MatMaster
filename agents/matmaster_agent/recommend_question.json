@@ -93,7 +93,7 @@
         "belonging": "结构生成",
         "question": "以超导临界温度大于40 K、空间群编号225为条件生成10个候选的晶体结构",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee3de73b7b6f98252056c7530551",
+          "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec463c757f2d865582dc5058b287"
         },
         "structure_url": null
@@ -585,8 +585,8 @@
         "belonging": "场景案例",
         "question": "我想基于这组数据微调一个机器学习势函数模型",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd55301f75209a45ca7d768e47b1",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b00f2b1747bd09b0242476f99bd80",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b01dca4aa7395863631719280ae9d",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
           "uat_url": ""
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip",
