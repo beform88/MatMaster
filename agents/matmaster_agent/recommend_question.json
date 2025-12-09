@@ -93,7 +93,7 @@
         "belonging": "结构生成",
         "question": "以超导临界温度大于40 K、空间群编号225为条件生成10个候选的晶体结构",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee3de73b7b6f98252056c7530551",
+          "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec463c757f2d865582dc5058b287"
         },
         "structure_url": null
@@ -521,7 +521,7 @@
         "belonging": "场景案例",
         "question": "帮我利用这组数据微调dpa3模型3000步",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd55301f75209a45ca7d768e47b1",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b01dca4aa7395863631719280ae9d",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
           "uat_url": ""
         },
