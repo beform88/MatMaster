@@ -8,7 +8,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed72d4f871f7a8e5a94db013a048",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Search DP-GEN technical documentation and summarize detailed tutorials"
       }
     },
     {
@@ -19,7 +21,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedebea0a7a6ebfa508247dc7a6c0",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2daabec7e9e85df7d277598a9d3"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Search for research on DeePMD applications in materials computation"
       }
     },
     {
@@ -30,7 +34,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee5fd4a57e97ba8be70c25b47935",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2f938467f2baf634286b11dfd32"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Search for research progress on photoinduced isomerization of metal nitrosyl cation complexes"
       }
     },
     {
@@ -41,7 +47,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee827bbd717982b5758a3a9a699a",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e996d176bf8c76e2860f35dbb1"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Explain why a chiral molecular crystal has Flack parameter ~ 1e-4 at room temperature SC-XRD but approaches 1e-1 at high temperature"
       }
     },
     {
@@ -52,7 +60,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Introduce the principle, applications, and limitations of the double-wave method in Sawyer-Tower ferroelectric testing"
       }
     },
     {
@@ -63,7 +73,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee5ca6bc717295a1fa956518a464",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fc5a1c7475a86ae27f49da152a"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Explain why some amorphous materials show cold crystallization signals after glass transition temperature in DSC testing"
       }
     },
     {
@@ -74,7 +86,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee504847757db30d58105fe5b1e7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34228f07e6abf103befb80dd70c"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Find the latest efficiency records for perovskite solar cells and search for related research papers from 2024-2025"
       }
     },
     {
@@ -85,7 +99,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee4518c671d6b3d70e5ed522cc73",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae371eea572d3810ce215e35a4e90"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Academic Intelligence",
+        "question_en": "Search for research work on MOFs with specific surface area exceeding 5000 m²/g"
       }
     },
     {
@@ -96,7 +112,9 @@
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec463c757f2d865582dc5058b287"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Generation",
+        "question_en": "Generate 10 candidate crystal structures with superconducting critical temperature > 40 K and space group number 225"
       }
     },
     {
@@ -107,7 +125,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed7edd3b7c139a396a3040dab3ad",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec28add77e309dda7bddc3159d89"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Generation",
+        "question_en": "Construct molecular structures of caffeine and adenosine"
       }
     },
     {
@@ -118,7 +138,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed7edd3b7c139a396a3040dab3ad",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec06f6597f12a322658f53b9e2c5"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Generation",
+        "question_en": "Construct an alloy structure Fe:Ni:Co:Cr:V=0.635:0.165:0.1:0.05:0.05 based on a 5×5×5 supercell template of fcc-Ni"
       }
     },
     {
@@ -129,7 +151,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed956db07a4a800172c302d91097",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Structure Generation",
+        "question_en": "Search for Wyckoff position information of corundum and use it to construct the crystal structure"
       }
     },
     {
@@ -140,7 +164,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee9f62bb7c4ca9f5cb98d99c27e9",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae32380f973b1b1d88b769193cfba"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Generation",
+        "question_en": "Demonstrate the differences between fcc and hcp close-packed structures: first construct fcc and hcp crystal structures, cut cross-sections of close-packed layers (5 layers, 1 layer vacuum), expand to 5×5×1 supercell"
       }
     },
     {
@@ -152,49 +178,63 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed99d4ee77a49b4c8a2df844d108",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae312dda27594818e8f1da70f22eb"
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Generation",
+        "question_en": "Generate a crystal structure based on given space group and Wyckoff position information: Pm-3m space group (No. 221), a = b = c = 3.90 Å, α = β = γ = 90°, Sr occupies 1b site (0.5, 0.5, 0.5), Ti occupies 1a site (0.0, 0.0, 0.0), O occupies 3d site (0.5, 0.0, 0.0)"
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Search",
+        "question_en": "Search and return 3 oxide structures with band gap > 2 eV from Materials Project"
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Alexandria中查找并返回5个含Li、Mn、O的材料",
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Search",
+        "question_en": "Find and return 5 materials containing Li, Mn, and O from Alexandria"
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Materials Project中检索并返回不超过2个仅含Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Search",
+        "question_en": "Search and return no more than 2 compounds containing only Ti, Al, O with space group 63 from Materials Project, and export CIF files"
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Materials Project中检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Search",
+        "question_en": "Search and return no more than 5 ternary compounds containing rare earth elements, transition metals, and oxygen, excluding Fe and Ni from Materials Project"
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "对比不同数据库中Fe₂O₃的带隙数据",
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Search",
+        "question_en": "Compare band gap data of Fe₂O₃ from different databases"
       }
     },
     {
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "从Materials Project批量下载20个含锂材料的CIF文件，并统计其平均体积/原子",
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Structure Search",
+        "question_en": "Batch download 20 CIF files of lithium-containing materials from Materials Project and calculate their average volume per atom"
       }
     },
     {
@@ -205,7 +245,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeeb490ad7ebc8dcfa145979af736",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34fe26974d5bb7fa5f973c3d92f"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHN3C8VXXJ6G2774KCGSS8B/dpa_md_Li2O.cif"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHN3C8VXXJ6G2774KCGSS8B/dpa_md_Li2O.cif",
+        "belonging_en": "DPA Calculation",
+        "question_en": "Perform 300 K, 1 ps molecular dynamics simulation on this Li₂O structure using DPA with 1 fs time step"
       }
     },
     {
@@ -216,7 +258,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeebb8e3a70569d80ce1ec3c9b219",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae465eb5e7069a508a031f5993baa"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBJ6C5PGJFHRWT9ZS1XVT3XQ/dpa_elastic_MgO.cif"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBJ6C5PGJFHRWT9ZS1XVT3XQ/dpa_elastic_MgO.cif",
+        "belonging_en": "DPA Calculation",
+        "question_en": "Calculate elastic constants of this MgO structure using DPA"
       }
     },
     {
@@ -227,7 +271,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae7eefaf771d6a6450c67d9a1c38f"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBKYY4QB25BH1A64CR5ZQJQS/Si-prim.cif"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBKYY4QB25BH1A64CR5ZQJQS/Si-prim.cif",
+        "belonging_en": "ABACUS Calculation",
+        "question_en": "Calculate the band structure of Si"
       }
     },
     {
@@ -238,7 +284,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae373760373f1bbff92bfc5ac98ac"
         },
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
+        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif",
+        "belonging_en": "ABACUS Calculation",
+        "question_en": "Calculate phonon dispersion curve of Si using ABACUS (structure optimization required first)"
       }
     },
     {
@@ -249,7 +297,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
         },
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
+        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif",
+        "belonging_en": "ABACUS Calculation",
+        "question_en": "Perform Bader charge analysis on Al₂O₃ system using ABACUS and display charge transfer for each atom"
       }
     },
     {
@@ -260,7 +310,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc253a8570c280725b19fad8fe38",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afca24cdf7dee8e4715762b20a75f"
         },
-        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
+        "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif",
+        "belonging_en": "ABACUS Calculation",
+        "question_en": "Calculate elastic constants and bulk modulus of GaAs crystal using ABACUS"
       }
     },
     {
@@ -271,7 +323,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc17a8637eaa831bcd272a3e2862",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3942ba07b8db65c325f1b2b3306"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHS8H8KVSG4FZC9S1WPAVGG/Pd111.cif"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHS8H8KVSG4FZC9S1WPAVGG/Pd111.cif",
+        "belonging_en": "ABACUS Calculation",
+        "question_en": "Calculate work function of Pd(111) surface using ABACUS, with vacuum layer in z direction"
       }
     },
     {
@@ -282,7 +336,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee2d89337cc8a060eacf304f5881",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae81de15076a9a958d7635fdd8d81"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt",
+        "belonging_en": "Data Visualization",
+        "question_en": "Plot DSC curves with each cooling-heating cycle displayed as vertically arranged subplots, x-axis as temperature, y-axis as heat flow. Requirements: 1) Heating in red, cooling in green, labeled separately; 2) Remove calibration points where heat flow is 0 before plotting; 3) Delete subplots with insufficient data points"
       }
     },
     {
@@ -293,7 +349,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedbd81b1764bbc5917acfe3c4a4f",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2317f67a749779a9243094fcbc"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBP28H5EQH5CJ2ECNVMG6N90/td-pxrd-example.txt"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBP28H5EQH5CJ2ECNVMG6N90/td-pxrd-example.txt",
+        "belonging_en": "Data Visualization",
+        "question_en": "Plot this variable-temperature PXRD pattern, numbers in title represent test temperature, use standard Celsius notation, distinguish different data at same temperature; use green lines below 100°C, red lines above. Plot only, no additional analysis needed"
       }
     },
     {
@@ -304,7 +362,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b006210f771ed870cb953f93d5e69",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b005deee772ddb227e69bf446e3ba"
         },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC0648WPWXCSSNY99R4JNT32/tg-dsc-example.txt"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC0648WPWXCSSNY99R4JNT32/tg-dsc-example.txt",
+        "belonging_en": "Data Visualization",
+        "question_en": "Plot this TG-DSC graph with dual y-axes in a single plot, TG on left in purple solid line, DSC on right in dark red dashed line"
       }
     },
     {
@@ -315,7 +375,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00708d3d79e7bcc9d40a58e55b20",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0070e0477059b9e8a2fc8581301e"
         },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC06WERP5J0F5D5R1P48T37N/td-shg-example.txt"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC06WERP5J0F5D5R1P48T37N/td-shg-example.txt",
+        "belonging_en": "Data Visualization",
+        "question_en": "Plot this variable-temperature SHG test graph showing SHG variation with temperature, plot heating and cooling segments in the same graph, heating in red line + red border white fill box, cooling in green line + green border white fill box, adjust x-axis range to 25-130°C"
       }
     },
     {
@@ -327,7 +389,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34cc59476edba7c3828950b16d9",
           "uat_url": ""
         },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/5400220b-ed66-477f-9f2a-95a2c2113768/Pt-C-TEM-image.jpg"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/5400220b-ed66-477f-9f2a-95a2c2113768/Pt-C-TEM-image.jpg",
+        "belonging_en": "Data Visualization",
+        "question_en": "What is the average particle size of the loaded particles in this TEM image, can you provide corresponding particle information"
       }
     },
     {
@@ -339,7 +403,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3a4fc5c7bb7bce1caac8d4b571e",
           "uat_url": ""
         },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/4301c84a-5150-4633-964d-f355d702262f/Pd-CuOx.txt"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/4301c84a-5150-4633-964d-f355d702262f/Pd-CuOx.txt",
+        "belonging_en": "Data Visualization",
+        "question_en": "Analyze this XRD file, provide visualization, and analyze whether it contains copper oxide"
       }
     },
     {
@@ -351,7 +417,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae75dbdd176d09bfab0935b382d68",
           "uat_url": ""
         },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif",
+        "belonging_en": "Scene Case",
+        "question_en": "Optimize the following alloy structure using APEX (Alloy Property EXplorer, Scene Case tool) and provide the optimized structure"
       }
     },
     {
@@ -363,7 +431,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Scene Case",
+        "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr face-centered cubic alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results"
       }
     },
     {
@@ -375,28 +445,36 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae89e1c8874a38f26a65a987ad30c",
           "uat_url": ""
         },
-        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif"
+        "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif",
+        "belonging_en": "Scene Case",
+        "question_en": "Calculate the equation of state (EOS) of this alloy"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
         "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Scene Case",
+        "question_en": "Calculate elastic constants of SrTiO₃ and output complete C₁₁, C₁₂, C₄₄ tensor (obtain initial structure from open-source database and set reasonable parameters)"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
         "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化，TiO₂ bluk结构可以从bohrium数据库中检索",
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Scene Case",
+        "question_en": "Help me construct a structure of H₂O adsorbed on TiO₂ (101) surface and perform structure optimization, TiO₂ bulk structure can be retrieved from bohrium database"
       }
     },
     {
       "zhPrompt": {
         "belonging": "场景案例",
         "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Scene Case",
+        "question_en": "Obtain a MgB₂ structure from open-source database and calculate its phonon spectrum"
       }
     },
     {
@@ -407,7 +485,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Scene Case",
+        "question_en": "Calculate valence electron concentration, mixing enthalpy, mixing entropy, binary formation energy and phase diagram data of AlCr0.8CoFeNi composition high-entropy alloy (HEA) system, and predict whether this system can form solid solution and possible crystal structures"
       }
     },
     {
@@ -418,7 +498,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd4b5f86720c873eaedc917b89cf",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf",
+        "belonging_en": "Scene Case",
+        "question_en": "Extract high-temperature superconducting materials from the literature, search for this structure in material databases, and predict its superconducting critical temperature"
       }
     },
     {
@@ -429,7 +511,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
-        "structure_url": ""
+        "structure_url": "",
+        "belonging_en": "Scene Case",
+        "question_en": "Help me randomly generate 50 SnTe structures and screen for potential thermoelectric materials"
       }
     },
     {
@@ -441,7 +525,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019add311d937c65b937507dfb445d15",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "Predict the NMR spectrum for this structure Cc1cccc(CC#CC(O)c2ccccc2)c1C"
       }
     },
     {
@@ -453,7 +539,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019add311d937c65b937507dfb445d15",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "Below is the NMR spectrum I measured in my experiment, analyze what the corresponding molecular structure might be. Hydrogen chemical shifts: 2.16, 2.29, 2.29, 2.29, 2.41, 2.41, 2.41, 3.58, 3.58, 5.63, 7.17, 7.17, 7.17, 7.17, 7.17, 7.17, 7.39, 7.64; Carbon chemical shifts: 19.1, 19.4, 23.5, 62.7, 82.1, 84.5, 126.27, 126.3, 126.5, 127, 128.36, 128.41, 130.2, 130.8, 134.8, 135.98, 136.02, 138.9; Molecular formula: C18H18O"
       }
     },
     {
@@ -465,7 +553,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "Search the polymer knowledge base for epoxy resin monomers or prepolymers with viscosity > 100 Pa·s at room temperature (25 °C). Summarize the list of qualified compounds and provide their standardized SMILES structures. Additionally, based on available prediction models, obtain configurations required for glass transition temperature, predict glass transition temperature for each candidate epoxy resin and provide reasonable explanations"
       }
     },
     {
@@ -477,7 +567,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "Based on a survey of high-entropy alloy knowledge bases, how can the composition of the classic "Cantor alloy" (CoCrFeMnNi) be adjusted—through optimization of constituent proportions or introduction of additional elements—to tailor the alloy structure and further enhance its mechanical properties? Suggested compositions are requested."
       }
     },
     {
@@ -489,7 +581,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae38206f776ad8b8f9087843c317a",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "Recommend sulfur-containing solid electrolyte materials that can improve interface stability with lithium metal anode while maintaining high ionic conductivity"
       }
     },
     {
@@ -501,7 +595,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2c9deb67e18bbca95f4fec161f5",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "1. I want to design a stable perovskite solar cell with efficiency > 26%, please help me query high-efficiency additives reported in 2025 in the perovskite database, recommend 3 similar additive formulations; 2. Based on the molecule with highest predicted efficiency among the 3 additives you designed, draft a research proposal"
       }
     },
     {
@@ -513,7 +609,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "Research the chemical composition of duplex stainless steel 2209/ER2209, adjust Ni content, and use steel tensile strength prediction model to predict ultimate tensile strength of composition schemes. Based on this, analyze reasons for tensile strength changes with Ni content, including Ni effects on austenite/ferrite phase ratio, solid solution strengthening, and precipitation behavior"
       }
     },
     {
@@ -525,7 +623,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
           "uat_url": ""
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip",
+        "belonging_en": "Scene Case",
+        "question_en": "Help me fine-tune the dpa3 model for 3000 steps using this dataset"
       }
     },
     {
@@ -537,7 +637,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae93a3e70774fa8a943fac30c5c29",
           "uat_url": ""
         },
-        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBMKMHPQZ8B58JMF90ZHRF6P/CuCrZr.cif"
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBMKMHPQZ8B58JMF90ZHRF6P/CuCrZr.cif",
+        "belonging_en": "Scene Case",
+        "question_en": "Construct a convex hull for this CuCrZr alloy"
       }
     },
     {
@@ -549,7 +651,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2dc9619755f98cb0e67654fd6c6",
           "uat_url": ""
         },
-        "structure_url": null
+        "structure_url": null,
+        "belonging_en": "Scene Case",
+        "question_en": "Obtain cubic SrTiO₃ (Pm-3m) from database, create 2×2×2 supercell using structure generation and replace 1 Ti with Nb (≈12.5%), first perform full geometry optimization and elastic constant/phonon check using DPA, then perform SCF, band structure and DOS/PDOS using ABACUS (focus on Nb/Ti-d and O-p), use default calculation parameters, output band structure and DOS/PDOS separately"
       }
     }
   ]
