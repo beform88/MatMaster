@@ -12,6 +12,6 @@ if CURRENT_ENV in ['test', 'uat']:
     # PEROVSKITE_RESEARCH_URL='http://dhxi1369865.bohrium.tech:50004/sse'
     # 'https://perovskite-rag-uuid1753420543.app-space.dplink.cc/sse?token=8d1cb39154134328a0caa1f55df84016'
 else:
-    PEROVSKITE_RESEARCH_URL = 'https://56d326d8139f904b679084778f1b3285.app-space.dplink.cc/sse?token=57bc01c18d6a4f71bb156f2ac0bbf0b8'
+    PEROVSKITE_RESEARCH_URL = 'https://perovskite-rag-uuid1753420543.appspace.bohrium.com/mcp?token=2034f102fe2e4eb99962dfa684058bf1'
     # PEROVSKITE_RESEARCH_URL='http://dhxi1369865.bohrium.tech:50004/sse'
     UNIMOL_SERVER_URL = 'https://uni-mol-perovskite-uuid1764902660.appspace.bohrium.com/mcp?token=e5e20302882246c0b5c56082665cb002'
