@@ -19,6 +19,7 @@ from agents.matmaster_agent.flow_agents.utils import (
     get_agent_name,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import MatMasterCheckTransferPrompt
 from agents.matmaster_agent.sub_agents.mapping import (
@@ -100,7 +101,7 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                         f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                     )
                     for step_event in all_text_event(
-                        ctx, self.name, step_card(index + 1), ModelRole
+                        ctx, self.name, step_card(index + 1, i18n), ModelRole
                     ):
                         yield step_event
 

@@ -13,7 +13,6 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
 from agents.matmaster_agent.base_agents.schema_agent import (
-    DisallowTransferSchemaAgent,
     SchemaAgent,
 )
 from agents.matmaster_agent.base_callbacks.private_callback import remove_function_call
@@ -45,9 +44,6 @@ from agents.matmaster_agent.flow_agents.plan_confirm_agent.prompt import (
 from agents.matmaster_agent.flow_agents.plan_confirm_agent.schema import (
     PlanConfirmSchema,
 )
-from agents.matmaster_agent.flow_agents.plan_confirm_options_agent.prompt import (
-    PLAN_CONFIRM_OPTIONS_PROMPT,
-)
 from agents.matmaster_agent.flow_agents.plan_info_agent.prompt import (
     get_plan_info_instruction,
 )
@@ -69,9 +65,9 @@ from agents.matmaster_agent.flow_agents.utils import (
 )
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
+from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import (
-    FOLLOW_UP_PROMPT,
     HUMAN_FRIENDLY_FORMAT_REQUIREMENT,
 )
 from agents.matmaster_agent.services.icl import (
@@ -181,14 +177,6 @@ class MatMasterFlowAgent(LlmAgent):
             instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
         )
 
-        self._plan_confirm_option_agent = DisallowTransferSchemaAgent(
-            name='plan_confirm_option_agent',
-            model=MatMasterLlmConfig.tool_schema_model,
-            description='生成计划确认选项',
-            instruction=PLAN_CONFIRM_OPTIONS_PROMPT,
-            state_key='plan_confirm_options',
-        )
-
         self._execution_agent = MatMasterSupervisorAgent(
             name='execution_agent',
             model=MatMasterLlmConfig.default_litellm_model,
@@ -209,14 +197,6 @@ class MatMasterFlowAgent(LlmAgent):
             instruction='',
         )
 
-        self._follow_up_agent = DisallowTransferSchemaAgent(
-            name='follow_up_agent',
-            model=MatMasterLlmConfig.tool_schema_model,
-            description='生成追问问题',
-            instruction=FOLLOW_UP_PROMPT,
-            state_key='follow_up_questions',
-        )
-
         self.sub_agents = [
             self.chat_agent,
             self.intent_agent,
@@ -226,8 +206,6 @@ class MatMasterFlowAgent(LlmAgent):
             self.plan_info_agent,
             self.plan_confirm_agent,
             self.execution_agent,
-            self.follow_up_agent,
-            self.plan_confirm_option_agent,
             self.analysis_agent,
         ]
 
@@ -275,16 +253,6 @@ class MatMasterFlowAgent(LlmAgent):
 
     @computed_field
     @property
-    def follow_up_agent(self) -> LlmAgent:
-        return self._follow_up_agent
-
-    @computed_field
-    @property
-    def plan_confirm_option_agent(self) -> LlmAgent:
-        return self._plan_confirm_option_agent
-
-    @computed_field
-    @property
     def analysis_agent(self) -> LlmAgent:
         return self._analysis_agent
 
@@ -296,7 +264,7 @@ class MatMasterFlowAgent(LlmAgent):
                 for quota_remaining_event in all_text_event(
                     ctx,
                     self.name,
-                    '每日免费次数不足，请填写[问卷](https://ucoyxk075n.feishu.cn/share/base/form/shrcn8gQigMyRhSut6vSshXAeKg)申请成功后重试',
+                    i18n.t('Questionnaire'),
                     ModelRole,
                 ):
                     yield quota_remaining_event
@@ -456,8 +424,11 @@ class MatMasterFlowAgent(LlmAgent):
                                 'follow_up_result': json.dumps(
                                     {
                                         'invocation_id': ctx.invocation_id,
-                                        'title': '请对上述计划进行操作：',
-                                        'list': ['确认计划', '更换工具重新规划'],
+                                        'title': i18n.t('PlanOperation'),
+                                        'list': [
+                                            i18n.t('ConfirmPlan'),
+                                            i18n.t('RePlan'),
+                                        ],
                                     }
                                 ),
                             },
@@ -497,7 +468,7 @@ class MatMasterFlowAgent(LlmAgent):
                         )
                         if tool_count > 1 or is_async_agent:
                             for all_summary_event in all_text_event(
-                                ctx, self.name, all_summary_card(), ModelRole
+                                ctx, self.name, all_summary_card(i18n), ModelRole
                             ):
                                 yield all_summary_event
                             self._analysis_agent.instruction = get_analysis_instruction(
@@ -519,7 +490,7 @@ class MatMasterFlowAgent(LlmAgent):
                                 'follow_up_result': json.dumps(
                                     {
                                         'invocation_id': ctx.invocation_id,
-                                        'title': '你或许还对这些问题感兴趣：',
+                                        'title': i18n.t('MoreQuestions'),
                                         'list': follow_up_list,
                                     }
                                 )
