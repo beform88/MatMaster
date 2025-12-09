@@ -2,7 +2,7 @@ from agents.matmaster_agent.constant import CURRENT_ENV
 
 HEA_KB_AGENT_NAME = 'HEAkb_agent'
 
-if CURRENT_ENV in ['test', 'uat', 'prod']:
+if CURRENT_ENV in ['test', 'uat']:
     HEA_SERVER_URL = 'http://lmnm1410647.bohrium.tech:50001/sse'
 else:
-    HEA_SERVER_URL = 'http://lmnm1410647.bohrium.tech:50001/sse'  # Default to prod if env not recognized
+    HEA_SERVER_URL = 'http://fwne1412142.bohrium.tech:50001/sse'  # Default to prod if env not recognized
