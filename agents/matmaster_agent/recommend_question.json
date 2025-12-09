@@ -161,7 +161,7 @@
         "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化",
         "sharing_url": {
           "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/019b01ab14d97b0fb312056c157d81d5"
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afcb8a5237b3ca2c6d712c12631b6"
         },
         "structure_url": null
       }
@@ -170,6 +170,10 @@
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b022a1aa17a48be5153c3effeda79"
+        },
         "structure_url": null
       }
     },
@@ -177,6 +181,10 @@
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Alexandria中查找并返回5个含Li、Mn、O的材料",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0229c63f7ab1bce3034385357091",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b022c7807701f92b1b34732458eb9"
+        },
         "structure_url": null
       }
     },
@@ -184,6 +192,10 @@
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Materials Project中检索并返回不超过2个仅含Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": ""
+        },
         "structure_url": null
       }
     },
@@ -191,6 +203,10 @@
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "在Materials Project中检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": ""
+        },
         "structure_url": null
       }
     },
@@ -198,6 +214,10 @@
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "对比不同数据库中Fe₂O₃的带隙数据",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": ""
+        },
         "structure_url": null
       }
     },
@@ -215,6 +235,10 @@
       "zhPrompt": {
         "belonging": "结构检索",
         "question": "从Materials Project批量下载20个含锂材料的CIF文件，并统计其平均体积/原子",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": ""
+        },
         "structure_url": null
       }
     },
