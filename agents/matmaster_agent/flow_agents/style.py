@@ -16,7 +16,7 @@ def plan_ask_confirm_card():
 """
 
 
-def step_card(index):
+def step_card(index, i18n):
     return f"""
 <div style="
     background-color: #f0f8ff;
@@ -30,13 +30,13 @@ def step_card(index):
     line-height: 1.3;
     display: inline-block;
 ">
-  <strong>步骤 {index}</strong>
+  <strong>{i18n.t('Step')} {index}</strong>
 </div>
 """
 
 
-def all_summary_card():
-    return """
+def all_summary_card(i18n):
+    return f"""
 <div style="
     background-color: #f0f9eb;
     border: 1px solid #e1f3d8;
@@ -49,6 +49,6 @@ def all_summary_card():
     line-height: 1.3;
     display: inline-block;
 ">
-  <strong>计划汇总概要</strong>
+  <strong>{i18n.t('PlanSummary')}</strong>
 </div>
 """
