@@ -479,7 +479,7 @@ class MatMasterFlowAgent(LlmAgent):
                             ):
                                 yield analysis_event
 
-                        follow_up_list = await get_random_questions()
+                        follow_up_list = await get_random_questions(i18n=i18n)
                         for generate_follow_up_event in context_function_event(
                             ctx,
                             self.name,

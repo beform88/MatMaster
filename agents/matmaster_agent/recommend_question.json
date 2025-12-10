@@ -10,6 +10,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed72d4f871f7a8e5a94db013a048",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
         },
+        "sharing_url_en": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b05fb0581741d8d9f4571a79f7af8"
+        },
         "structure_url": null
       }
     },
@@ -22,6 +25,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedebea0a7a6ebfa508247dc7a6c0",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2daabec7e9e85df7d277598a9d3"
+        },
+        "sharing_url_en": {
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0611b6c87b36a3a36d128ce7dd72"
         },
         "structure_url": null
       }
