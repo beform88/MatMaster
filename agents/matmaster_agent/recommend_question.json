@@ -106,8 +106,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构生成",
-        "belonging_en": "Structure Generation",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "以超导临界温度大于40 K、空间群编号225为条件生成10个候选的晶体结构",
         "question_en": "Generate 10 candidate crystal structures with superconducting critical temperature > 40 K and space group number 225",
         "sharing_url": {
@@ -119,8 +119,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构生成",
-        "belonging_en": "Structure Generation",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "构建咖啡因和腺苷的分子结构",
         "question_en": "Construct molecular structures of caffeine and adenosine",
         "sharing_url": {
@@ -132,8 +132,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构生成",
-        "belonging_en": "Structure Generation",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "基于fcc-Ni的5×5×5超胞模板构建合金Fe:Ni:Co:Cr:V=0.635:0.165:0.1:0.05:0.05的结构",
         "question_en": "Construct an alloy structure Fe:Ni:Co:Cr:V=0.635:0.165:0.1:0.05:0.05 based on a 5×5×5 supercell template of fcc-Ni",
         "sharing_url": {
@@ -145,8 +145,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构生成",
-        "belonging_en": "Structure Generation",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "搜索刚玉的Wyckoff位置信息，用其构建晶体结构",
         "question_en": "Search for Wyckoff position information of corundum and use it to construct the crystal structure",
         "sharing_url": {
@@ -158,8 +158,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构生成",
-        "belonging_en": "Structure Generation",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "展示fcc和hcp两种最密堆积的差异：首先搭建fcc和hcp的晶体结构，切割其密置层的切面（切5层，真空层为1层），扩胞5×5×1",
         "question_en": "Demonstrate the differences between fcc and hcp close-packed structures: first construct fcc and hcp crystal structures, cut cross-sections of close-packed layers (5 layers, 1 layer vacuum), expand to 5×5×1 supercell",
         "sharing_url": {
@@ -172,8 +172,8 @@
     {
       "_comment": "TODO: Needs a better case.",
       "zhPrompt": {
-        "belonging": "结构生成",
-        "belonging_en": "Structure Generation",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "请根据给定的空间群和Wyckoff位置信息生成一个晶体结构：Pm-3m空间群（编号221），a = b = c = 3.90 Å, α = β = γ = 90°，Sr占据1b位点(0.5, 0.5, 0.5)，Ti占据1a位点(0.0, 0.0, 0.0)，O占据3d位点(0.5, 0.0, 0.0)",
         "question_en": "Generate a crystal structure based on given space group and Wyckoff position information: Pm-3m space group (No. 221), a = b = c = 3.90 Å, α = β = γ = 90°, Sr occupies 1b site (0.5, 0.5, 0.5), Ti occupies 1a site (0.0, 0.0, 0.0), O occupies 3d site (0.5, 0.0, 0.0)",
         "sharing_url": {
@@ -185,8 +185,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构生成",
-        "belonging_en": "Structure Generation",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化",
         "question_en": "Build an adsorption structure of H2O on the TiO2 (101) surface and perform structural optimization",
         "sharing_url": {
@@ -198,8 +198,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构检索",
-        "belonging_en": "Structure Search",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
         "question_en": "Search and return 3 oxide structures with band gap > 2 eV from Materials Project",
         "sharing_url": {
@@ -211,8 +211,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构检索",
-        "belonging_en": "Structure Search",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "在Alexandria中查找并返回5个含Li、Mn、O的材料",
         "question_en": "Find and return 5 materials containing Li, Mn, and O from Alexandria",
         "sharing_url": {
@@ -224,8 +224,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构检索",
-        "belonging_en": "Structure Search",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "在Materials Project中检索并返回不超过2个仅含Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
         "question_en": "Search and return no more than 2 compounds containing only Ti, Al, O with space group 63 from Materials Project, and export CIF files",
         "sharing_url": {
@@ -237,8 +237,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构检索",
-        "belonging_en": "Structure Search",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "在Materials Project中检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
         "question_en": "Search and return no more than 5 ternary compounds containing rare earth elements, transition metals, and oxygen, excluding Fe and Ni from Materials Project",
         "sharing_url": {
@@ -250,8 +250,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构检索",
-        "belonging_en": "Structure Search",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "帮我从网页检索5个Heusler合金的结构文件或下载链接",
         "question_en": "Help me retrieve 5 Heusler alloy structure files or download links from the web",
         "sharing_url": {
@@ -263,8 +263,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "结构检索",
-        "belonging_en": "Structure Search",
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "从Materials Project批量下载20个含锂材料的CIF文件",
         "question_en": "Batch download 20 CIF files of lithium-containing materials from Materials Project and calculate their average volume per atom",
         "sharing_url": {
@@ -277,8 +277,8 @@
     {
       "_comment": "机器学习势",
       "zhPrompt": {
-        "belonging": "科学计算",
-        "belonging_en": "Scientific Calculation",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "使用DPA对此Li₂O结构进行300 K、1 ps分子动力学模拟，时间步长1 fs",
         "question_en": "Perform 300 K, 1 ps molecular dynamics simulation on this Li₂O structure using DPA with 1 fs time step",
         "sharing_url": {
@@ -291,8 +291,8 @@
     {
       "_comment": "第一性原理",
       "zhPrompt": {
-        "belonging": "科学计算",
-        "belonging_en": "Scientific Calculation",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "使用ABACUS计算Pd(111)面的功函数，真空层位于z方向上。",
         "question_en": "Calculate the work function of the Pd(111) surface using ABACUS, with the vacuum layer along the z direction.",
         "sharing_url": {
@@ -305,8 +305,8 @@
     {
       "_comment": "第一性原理",
       "zhPrompt": {
-        "belonging": "科学计算",
-        "belonging_en": "Scientific Calculation",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
         "question_en": "Perform Bader charge analysis on an Al2O3 system using ABACUS and display the charge transfer for each atom",
         "sharing_url": {
@@ -319,8 +319,8 @@
     {
       "_comment": "第一性原理",
       "zhPrompt": {
-        "belonging": "科学计算",
-        "belonging_en": "Scientific Calculation",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "使用APEX（Alloy Property EXplorer，场景案例工具）优化以下合金结构并给出优化后的结构",
         "question_en": "Optimize the following alloy structure using APEX (Alloy Property EXplorer) and provide the optimized structure",
         "sharing_url": {
@@ -333,8 +333,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "科学计算",
-        "belonging_en": "Scientific Calculation",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "计算这个合金的状态方程（EOS）",
         "question_en": "Compute the equation of state (EOS) for this alloy",
         "sharing_url": {
@@ -347,8 +347,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "科学计算",
-        "belonging_en": "Scientific Calculation",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "请为这个CuCrZr合金构建convexhull",
         "question_en": "Construct the convex hull for this CuCrZr alloy",
         "sharing_url": {
@@ -361,8 +361,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "性质预测",
-        "belonging_en": "Property Prediction",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "请使用DPA计算此MgO结构的弹性常数",
         "question_en": "Calculate elastic constants of this MgO structure using DPA",
         "sharing_url": {
@@ -374,8 +374,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "性质预测",
-        "belonging_en": "Property Prediction",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "请计算Si的能带",
         "question_en": "Calculate the band structure of Si",
         "sharing_url": {
@@ -387,8 +387,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "性质预测",
-        "belonging_en": "Property Prediction",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "使用ABACUS计算Si的声子色散曲线（需先进行结构优化）",
         "question_en": "Calculate phonon dispersion curve of Si using ABACUS (structure optimization required first)",
         "sharing_url": {
@@ -400,8 +400,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "性质预测",
-        "belonging_en": "Property Prediction",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "使用ABACUS计算GaAs晶体的弹性常数和体模量",
         "question_en": "Calculate elastic constants and bulk modulus of GaAs crystal using ABACUS",
         "sharing_url": {
@@ -413,8 +413,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "性质预测",
-        "belonging_en": "Property Prediction",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
         "question_en": "Calculate elastic constants for SrTiO3 and output full C11, C12, C44 tensors (obtain initial structure from open databases and set reasonable parameters)",
         "structure_url": null
@@ -422,8 +422,8 @@
     },
     {
       "zhPrompt": {
-        "belonging": "性质预测",
-        "belonging_en": "Property Prediction",
+        "belonging": "模拟预测",
+        "belonging_en": "Simulation & Prediction",
         "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
         "question_en": "Retrieve an MgB2 structure from open databases and calculate its phonon spectrum",
         "structure_url": null
