@@ -431,6 +431,10 @@
         "belonging": "模拟预测",
         "belonging_en": "Simulation & Prediction",
         "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b06eca81b7c6f9c31b8dca1204313"
+        },
         "question_en": "Retrieve an MgB2 structure from open databases and calculate its phonon spectrum",
         "structure_url": null
       }
