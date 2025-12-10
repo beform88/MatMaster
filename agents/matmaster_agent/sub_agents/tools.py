@@ -411,11 +411,13 @@ ALL_TOOLS = {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) combined with base filters from OPTIMADE-compatible databases.',
+        'args_setting': 'Combine with base filters for formula, elements, and other criteria.',
     },
     'fetch_structures_with_bandgap': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) combined with base filters (elements, formulas) from OPTIMADE-compatible databases that provide band gap data.',
+        'args_setting': 'Combine with base filters for formula, elements, and other criteria.',
     },
     'fetch_bohrium_crystals': {
         'belonging_agent': BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
