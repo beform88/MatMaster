@@ -530,7 +530,7 @@
         "question": "下面是我实验中测出的NMR的谱图，分析一下对应的分子结构可能是什么。氢原子化学位移为2.16, 2.29, 2.29, 2.29, 2.41, 2.41, 2.41, 3.58, 3.58, 5.63, 7.17, 7.17, 7.17, 7.17, 7.17, 7.17, 7.39, 7.64；碳原子化学位移为19.1, 19.4, 23.5, 62.7, 82.1, 84.5, 126.27, 126.3, 126.5, 127, 128.36, 128.41, 130.2, 130.8, 134.8, 135.98, 136.02, 138.9；分子的化学式为C18H18O",
         "question_en": "Below is the NMR spectrum I measured in my experiment, analyze what the corresponding molecular structure might be. Hydrogen chemical shifts: 2.16, 2.29, 2.29, 2.29, 2.41, 2.41, 2.41, 3.58, 3.58, 5.63, 7.17, 7.17, 7.17, 7.17, 7.17, 7.17, 7.39, 7.64; Carbon chemical shifts: 19.1, 19.4, 23.5, 62.7, 82.1, 84.5, 126.27, 126.3, 126.5, 127, 128.36, 128.41, 130.2, 130.8, 134.8, 135.98, 136.02, 138.9; Molecular formula: C18H18O",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0353526671639c01b4e4a068fb63",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019add311d937c65b937507dfb445d15",
           "uat_url": ""
         },
@@ -545,7 +545,7 @@
         "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
         "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr face-centered cubic alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b02e4fd927cc98cd6b2a217b29075",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
         },
@@ -683,7 +683,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
-        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/599bcafe-1064-4cd6-aefe-41fc592941a8/DPA.png",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/beaee412-7cc7-47b4-91df-16d207151c06/DPA.png",
         "question": "帮我利用这组数据微调dpa3模型3000步",
         "question_en": "Help me fine-tune the dpa3 model for 3000 steps using this dataset",
         "sharing_url": {
