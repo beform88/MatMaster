@@ -582,7 +582,7 @@
         "question": "请提取文献中核心的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
         "question_en": "Please extract core high-temperature superconducting materials from the literature, find the structure from material databases, and predict their superconducting critical temperature",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0281172975edaade12e7c877cf49",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0294675271309effcada64e5d9d9",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf",
