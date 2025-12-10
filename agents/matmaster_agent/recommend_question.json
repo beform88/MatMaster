@@ -344,7 +344,7 @@
         "question": "计算这个合金的状态方程（EOS）",
         "question_en": "Compute the equation of state (EOS) for this alloy",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b03573fda73b8b992da1985fa2dbe",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae89e1c8874a38f26a65a987ad30c",
           "uat_url": ""
         },
