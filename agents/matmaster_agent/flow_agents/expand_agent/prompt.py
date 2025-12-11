@@ -103,11 +103,11 @@ Output:
 }}
 
 EXAMPLE 7:
-Input: "构造紫杉醇的分子结构"
+Input: "构造布洛芬的分子结构"
 Output:
 {{
-  "origin_user_content": "构造紫杉醇的分子结构",
-  "update_user_content": "网页搜索紫杉醇的SMILES编码，用其构造分子结构"
+  "origin_user_content": "构造布洛芬的分子结构",
+  "update_user_content": "网页搜索布洛芬的SMILES编码，用其构造分子结构，保存为`ibuprofen.xyz`文件"
 }}
 
 
