@@ -209,7 +209,7 @@
         "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
         "question_en": "Search and return 3 oxide structures with band gap > 2 eV from Materials Project",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d0502cf7521adf94233d3b4f3f9",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b022a1aa17a48be5153c3effeda79"
         },
         "structure_url": null
@@ -684,7 +684,7 @@
         "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
         "question_en": "Research the chemical composition of duplex stainless steel 2209/ER2209, adjust Ni content, and use steel tensile strength prediction model to predict ultimate tensile strength of composition schemes. Based on this, analyze reasons for tensile strength changes with Ni content, including Ni effects on austenite/ferrite phase ratio, solid solution strengthening, and precipitation behavior",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d3986187bf59a9c552d882ab5b5",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d07735073d5bed91b9da9c1f2a8",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
