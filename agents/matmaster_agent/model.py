@@ -90,12 +90,6 @@ class Matrix(BaseModel):
     )
 
 
-class ParamsCheckComplete(BaseModel):
-    flag: bool
-    reason: str
-    analyzed_messages: List[str]
-
-
 class UserContent(BaseModel):
     language: str
 
