@@ -36,6 +36,8 @@ from agents.matmaster_agent.utils.event_utils import (
 )
 from agents.matmaster_agent.utils.io_oss import update_tgz_dict
 from agents.matmaster_agent.utils.result_parse_utils import (
+    csv_to_markdown_table,
+    get_csv_result,
     get_echarts_result,
     get_kv_result,
     get_markdown_image_result,
@@ -251,6 +253,18 @@ class ResultMCPAgent(MCPAgent):
                                 },
                             ):
                                 yield echarts_event
+
+                        # 渲染 csv
+                        csv_result = get_csv_result(parsed_tool_result)
+                        if csv_result:
+                            for item in csv_result:
+                                for csv_event in all_text_event(
+                                    ctx,
+                                    self.name,
+                                    await csv_to_markdown_table(item['url']),
+                                    ModelRole,
+                                ):
+                                    yield csv_event
 
                         # Only for debug
                         if os.getenv('MODE', None) == 'debug':

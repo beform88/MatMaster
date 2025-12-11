@@ -5,7 +5,7 @@ HEAKbAgentDescription = (
     'multi-document summarization, and in-depth research report generation.'
 )
 
-HEAKbAgentInstruction = """
+HEAKbAgentArgsSetting = """
 You can call one MCP tool exposed by the HEAkb RAG server:
 
 === TOOL: query_heakb_literature ===
@@ -124,3 +124,5 @@ The tool uses RAG (Retrieval-Augmented Generation) technology:
 
 4. **References**: List all cited sources [1], [2], [3], etc.
 """
+
+HEAKbAgentInstruction = ''

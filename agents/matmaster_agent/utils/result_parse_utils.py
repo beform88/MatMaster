@@ -1,6 +1,9 @@
+import csv
+import io
 import logging
 from typing import List, Union
 
+import aiohttp
 from pydantic import BaseModel
 
 from agents.matmaster_agent.constant import JOB_RESULT_KEY, MATMASTER_AGENT_NAME
@@ -288,84 +291,71 @@ def get_matrix_result(
     ]
 
 
-def matrix_to_markdown_table(matrix):
+def get_csv_result(parsed_tool_result: List[JobResult]) -> List[JobResult]:
+    return [
+        item
+        for item in parsed_tool_result
+        if item.get('data')
+        and type(item['data']) is str
+        and item['data'].endswith('csv')
+        and item['type'] == JobResultType.RegularFile
+    ]
+
+
+def matrix_to_markdown_table(matrix, auto_header=True):
     title, values = matrix['title'], matrix['values']
 
     if not values:
         return ''
 
-    col_count = len(values[0])
-    header = ' | '.join([f"Col{i + 1}" for i in range(col_count)])
-    separator = ' | '.join(['---'] * col_count)
+    data_rows = values
 
-    rows = '\n'.join(' | '.join(str(v) for v in row) for row in values)
+    if auto_header:
+        col_count = len(values[0])
+        header = [f"Col{i + 1}" for i in range(col_count)]
+    else:
+        header = values[0]
+        data_rows = values[1:]
 
-    table = f"{header}\n{separator}\n{rows}"
+    # markdown 拼接
+    lines = []
 
     if title:
-        return f"- {title}\n\n{table}"
-    else:
-        return table
+        lines.append(f"- {title}\n")
+
+    # header 行
+    if header:
+        sep = ['---'] * len(header)
+        lines.append(' | '.join(header))
+        lines.append(' | '.join(sep))
+
+    # 内容行
+    for row in data_rows:
+        lines.append(' | '.join(str(v) for v in row))
+
+    return '\n'.join(lines)
+
+
+async def csv_to_markdown_table(csv_url, title=None):
+    """
+    下载 CSV 文件并转换为 markdown 表格字符串
+    """
+    async with aiohttp.ClientSession() as session:
+        async with session.get(csv_url) as resp:
+            resp.raise_for_status()
+            content = await resp.text()
+
+    # 解析 CSV
+    reader = csv.reader(io.StringIO(content))
+    values = [row for row in reader]
+
+    matrix = {'title': title, 'values': values}
+
+    return matrix_to_markdown_table(matrix, auto_header=False)
 
 
 if __name__ == '__main__':
     import asyncio
 
-    result = {
-        'elastic_tensor': [
-            [
-                126.67322172600046,
-                34.44381584060013,
-                26.459989419200095,
-                11.290835605200044,
-                -7.436680000013668e-05,
-                -0.00010517060000019208,
-            ],
-            [
-                34.51137231640013,
-                126.57536433180044,
-                26.46490396520009,
-                -11.249254931600042,
-                -0.0008022412000001377,
-                -0.002352200200000196,
-            ],
-            [
-                27.197465286400107,
-                27.200289148200106,
-                133.25489116180051,
-                -0.0014687360000000815,
-                -0.002543925200000152,
-                -0.002445536800000209,
-            ],
-            [
-                10.5314041983,
-                -10.607130737500002,
-                -0.008035032099999876,
-                37.61116754140001,
-                0.00012512119999999013,
-                0.0013957529999999974,
-            ],
-            [
-                0.0009393182000000179,
-                -0.0004212151999997845,
-                -0.002185717099999327,
-                -0.00031142229999990724,
-                38.112387281800004,
-                11.281813003800004,
-            ],
-            [
-                0.0015451324000000208,
-                -0.0026245466999992575,
-                -0.0011686156999995213,
-                0.00020765799999999807,
-                10.4503386476,
-                44.8908194704,
-            ],
-        ]
-    }
-
-    parsed_result = asyncio.run(parse_result(result))
-    matrix_result: List[Matrix] = get_matrix_result(parsed_result)
-
-    for matrix in matrix_result:
-        markdown_matrix = matrix_to_markdown_table(matrix['title'], matrix['values'])
+    csv_url = 'https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/1760873/store/c1534529d88519fc8156c6c6e71207fdcac84f08/outputs/results_file/critical_temperature.csv'
+    result = asyncio.run(csv_to_markdown_table(csv_url))

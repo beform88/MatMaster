@@ -6,7 +6,7 @@ STEELPredictAgentDescription = (
     'Supports batch prediction for efficient analysis of multiple formulas.'
 )
 
-STEELPredictAgentInstruction = """
+STEELPredictAgentArgsSetting = """
 You can call one MCP tool exposed by the STEEL_PREDICT server:
 
 === TOOL: predict_tensile_strength ===
@@ -83,3 +83,5 @@ B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
 - When presenting batch results, organize them in a clear format (table, list, or trend analysis)
 - Match each prediction value with its corresponding formula from the input list
 """
+
+STEELPredictAgentInstruction = ''

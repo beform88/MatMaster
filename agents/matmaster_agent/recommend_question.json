@@ -235,7 +235,7 @@
         "question": "在Materials Project中检索并返回不超过2个仅含Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
         "question_en": "Search and return no more than 2 compounds containing only Ti, Al, O with space group 63 from Materials Project, and export CIF files",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b07369a6c7c3985ee062fcdea1280",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b02308e057628ad38635582370c97"
         },
         "structure_url": null
@@ -245,10 +245,10 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
-        "question": "在Materials Project中检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
+        "question": "检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
         "question_en": "Search and return no more than 5 ternary compounds containing rare earth elements, transition metals, and oxygen, excluding Fe and Ni from Materials Project",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b075193f17d6193c4fc98e2c68003",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0276961b74c0badd479b88ad56c8"
         },
         "structure_url": null
@@ -274,7 +274,7 @@
         "question": "从Materials Project批量下载20个含锂材料的CIF文件",
         "question_en": "Batch download 20 CIF files of lithium-containing materials from Materials Project and calculate their average volume per atom",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0757f4337a69a4f9949f56ecba8b",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b02524780795a9f5b138bd04680f6"
         },
         "structure_url": null
@@ -689,7 +689,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
-        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/beaee412-7cc7-47b4-91df-16d207151c06/DPA.png",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/8f864720-0dfd-4b08-882b-753957c8b4f0/DPA.png",
         "question": "帮我利用这组数据微调dpa3模型3000步",
         "question_en": "Help me fine-tune the dpa3 model for 3000 steps using this dataset",
         "sharing_url": {

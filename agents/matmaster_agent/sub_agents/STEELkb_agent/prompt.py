@@ -5,7 +5,7 @@ STEELKbAgentDescription = (
     'multi-document summarization, and in-depth research report generation.'
 )
 
-STEELKbAgentInstruction = """
+STEELKbAgentArgsSetting = """
 You can call one MCP tool exposed by the STEELkb RAG server:
 
 === TOOL: query_steelkb_literature ===
@@ -118,3 +118,5 @@ The tool uses RAG (Retrieval-Augmented Generation) technology:
 
 4. **References**: List all cited sources [1], [2], [3], etc.
 """
+
+STEELKbAgentInstruction = ''
