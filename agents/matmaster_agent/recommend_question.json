@@ -421,11 +421,11 @@
       "zhPrompt": {
         "belonging": "模拟预测",
         "belonging_en": "Simulation & Prediction",
-        "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
+        "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量",
         "question_en": "Calculate elastic constants for SrTiO3 and output full C11, C12, C44 tensors (obtain initial structure from open databases and set reasonable parameters)",
         "sharing_url": {
-          "prod_url": "",
-          "test_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d37f83d72d0a2b3b89c3b69b810",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0d38e430769f89ed346d11d31dbf"
         },
         "structure_url": null
       }
@@ -684,7 +684,7 @@
         "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
         "question_en": "Research the chemical composition of duplex stainless steel 2209/ER2209, adjust Ni content, and use steel tensile strength prediction model to predict ultimate tensile strength of composition schemes. Based on this, analyze reasons for tensile strength changes with Ni content, including Ni effects on austenite/ferrite phase ratio, solid solution strengthening, and precipitation behavior",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d3986187bf59a9c552d882ab5b5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
