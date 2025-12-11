@@ -620,7 +620,7 @@
         "question": "寻找在室温(25℃)下具有高玻璃化转变温度（Tg）的高黏（黏度大于 100 Pa·s ）环氧树脂材料。",
         "question_en": "Find epoxy resin materials with high glass transition temperature (Tg) and high viscosity (viscosity > 100 Pa·s) at room temperature (25°C).",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0ce2675a7e098a82a484ca2f49ec",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
           "uat_url": ""
         },
