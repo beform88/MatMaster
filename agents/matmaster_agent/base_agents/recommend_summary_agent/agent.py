@@ -51,6 +51,7 @@ from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
+from agents.matmaster_agent.state import RECOMMEND_PARAMS
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import update_state_event
 
@@ -99,7 +100,7 @@ class BaseAgentWithRecAndSum(
         self._recommend_params_schema_agent = SchemaAgent(
             model=MatMasterLlmConfig.tool_schema_model,
             name=f"{agent_prefix}_recommend_params_schema_agent",
-            state_key='recommend_params',
+            state_key=RECOMMEND_PARAMS,
         )
         if self.doc_summary:
             self._summary_agent = DisallowTransferLlmAgent(
@@ -239,18 +240,16 @@ class BaseAgentWithRecAndSum(
         )
 
         missing_tool_args = tool_call_info.get('missing_tool_args', None)
+        # 过滤 executor，storage 参数
+        missing_tool_args = [
+            item for item in missing_tool_args if item not in ['executor', 'storage']
+        ]
         if missing_tool_args:
             async for recommend_params_event in self.recommend_params_agent.run_async(
                 ctx
             ):
                 yield recommend_params_event
 
-            # 过滤 executor，storage 参数
-            missing_tool_args = [
-                item
-                for item in missing_tool_args
-                if item not in ['executor', 'storage']
-            ]
             self.recommend_params_schema_agent.output_schema, _ = (
                 create_tool_args_schema(missing_tool_args, current_function_declaration)
             )
@@ -259,7 +258,7 @@ class BaseAgentWithRecAndSum(
             ) in self.recommend_params_schema_agent.run_async(ctx):
                 yield recommend_params_schema_event
 
-            recommend_params = ctx.session.state['recommend_params']
+            recommend_params = ctx.session.state[RECOMMEND_PARAMS]
             tool_call_info = update_tool_call_info_with_recommend_params(
                 tool_call_info, recommend_params
             )
