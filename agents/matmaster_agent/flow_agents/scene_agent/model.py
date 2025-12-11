@@ -70,7 +70,7 @@ class SceneEnum(DescriptiveEnum):
     )
     PROPOSAL = (
         'proposal',
-        'Involving proposal writing, e.g. `Write a proposal on [topic]` and Context. Suitable for writing detail documents when explicitly asking for a proposal document. Especially with templates.',
+        'Use only when the user explicitly requests a proposal (e.g., “Write a proposal on [topic]”, “Draft a research proposal”, “I need a proposal for [purpose]”). Suitable for generating structured, detailed proposal documents—especially when templates, sections (e.g., background, objectives, methodology, timeline, budget), or formal academic/professional formats are expected. Do NOT activate for general essays, summaries, or planning discussions unless the word proposal (or clear equivalent like 开题报告) is explicitly used.',
     )
 
     # postprocess

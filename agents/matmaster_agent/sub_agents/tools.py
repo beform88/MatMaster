@@ -101,6 +101,10 @@ from agents.matmaster_agent.sub_agents.POLYMERkb_agent.prompt import (
 from agents.matmaster_agent.sub_agents.propos_master_agent.constant import (
     PROPOSMATER_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.propos_master_agent.prompt import (
+    PROPOSMATER_DESCRIPTION,
+    PROPOSMATER_INSTRUCTION,
+)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
 )
@@ -716,7 +720,9 @@ ALL_TOOLS = {
     'run_proposmaster': {
         'belonging_agent': PROPOSMATER_AGENT_NAME,
         'scene': [SceneEnum.PROPOSAL],
-        'description': 'Write a proposal for a project based on the context and the user\'s requirements',
+        'description': PROPOSMATER_DESCRIPTION,
+        'args_setting': 'Use any link as the argument, the flow will handle the data automatically.',
+        'summary_prompt': PROPOSMATER_INSTRUCTION,
     },
     'xrd_parse_file': {
         'belonging_agent': XRD_AGENT_NAME,

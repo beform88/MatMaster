@@ -32,7 +32,7 @@ proposmaster_toolset = CalculationMCPToolset(
     ),
     executor=PROPOSMATER_BOHRIUM_EXECUTOR,
     storage=PROPOSMATER_BOHRIUM_STORAGE,
-    async_mode=False,
+    async_mode=True,
     wait=False,
 )
 
@@ -49,7 +49,6 @@ class ProposMasterAgent(BaseSyncAgentWithToolValidator):
             supervisor_agent=MATMASTER_AGENT_NAME,
             after_tool_callback=after_tool_callback,
             before_tool_callback=before_tool_callback,
-            render_tool_response=False,
         )
 
 

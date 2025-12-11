@@ -1,10 +1,17 @@
 import copy
 
-from agents.matmaster_agent.constant import BohriumExecutor, BohriumStorge
+from agents.matmaster_agent.constant import (
+    CURRENT_ENV,
+    BohriumExecutor,
+    BohriumStorge,
+)
 
 PROPOSMATER_AGENT_NAME = 'proposmaster_agent'
 
-PROPOSMATER_MCP_SERVER_URL = 'http://iptk1405452.bohrium.tech:50004/sse'
+if CURRENT_ENV in ['test', 'uat']:
+    PROPOSMATER_MCP_SERVER_URL = 'http://iptk1405452.bohrium.tech:50002/sse'
+else:
+    PROPOSMATER_MCP_SERVER_URL = 'http://iptk1405452.bohrium.tech:50004/sse'
 
 PROPOSMATER_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 PROPOSMATER_BOHRIUM_EXECUTOR['machine']['remote_profile'][
