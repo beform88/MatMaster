@@ -45,13 +45,11 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
         self.instruction = 'AgentInstruction'
         self.description = 'AgentDescription'
         self.after_model_callback = [
-            # matmaster_check_job_status,
             check_transfer(
                 prompt=MatMasterCheckTransferPrompt,
                 target_agent_enum=MatMasterSubAgentsEnum,
             ),
             MatMasterLlmConfig.opik_tracer.after_model_callback,
-            # matmaster_hallucination_retry,
         ]
 
         return self
@@ -61,12 +59,10 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
         plan = ctx.session.state['plan']
         logger.info(f'{ctx.session.id} plan = {plan}')
         steps = plan['steps']
-        # is_single_tool_plan = len(steps) == 1
 
         for index, step in enumerate(steps):
             if step.get('tool_name'):
                 target_agent = get_agent_name(step['tool_name'], self.sub_agents)
-                # is_async_agent = isinstance(target_agent, BaseAsyncJobAgent)
                 logger.info(
                     f'{ctx.session.id} tool_name = {step['tool_name']}, target_agent = {target_agent.name}'
                 )
@@ -110,27 +106,6 @@ class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
                     logger.info(
                         f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
                     )
-
-                    # sync_single = is_single_tool_plan and not is_async_agent
-                    # if check_plan(ctx) not in [
-                    #     FlowStatusEnum.NO_PLAN,
-                    #     FlowStatusEnum.NEW_PLAN,
-                    # ] and (not sync_single or is_async_agent):
-                    #     # 检查之前的计划执行情况
-                    #     msg = f'<li>步骤 {index+1}：[{step['tool_name']}]，状态：[{ctx.session.state['plan']['steps'][index]['status'].value}]</li>'
-                    #
-                    #     if index + 1 == len(steps):
-                    #         msg += '\n <li>无更多步骤</li>'
-                    #     else:
-                    #         msg += f"\n <li>下一步：[{ctx.session.state['plan']['steps'][index+1]['tool_name']}]</li>"
-
-                    # for plan_ask_confirm_event in all_text_event(
-                    #     ctx,
-                    #     self.name,
-                    #     get_execution_result_card(msg),
-                    #     ModelRole,
-                    # ):
-                    #     yield plan_ask_confirm_event
 
                     current_steps = ctx.session.state['plan']['steps']
                     if (

@@ -1,32 +1,23 @@
 import inspect
 import json
 import logging
-import uuid
 from datetime import datetime
 from typing import Optional
 
 import litellm
 from google.adk.agents.callback_context import CallbackContext
-from google.adk.models import LlmResponse
 from google.genai import types
-from google.genai.types import FunctionCall, Part
+from google.genai.types import Part
 
 from agents.matmaster_agent.constant import (
     FRONTEND_STATE_KEY,
-    MATERIALS_ACCESS_KEY,
     MATMASTER_AGENT_NAME,
 )
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
 from agents.matmaster_agent.services.quota import check_quota_service, use_quota_service
-from agents.matmaster_agent.style import get_job_complete_card, hallucination_card
 from agents.matmaster_agent.utils.helper_func import get_user_id
-from agents.matmaster_agent.utils.job_utils import (
-    get_job_status,
-    get_running_jobs_detail,
-    has_job_running,
-)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -172,112 +163,6 @@ async def matmaster_check_quota(
         callback_context.state['quota_remaining'] = 0
     else:
         callback_context.state['quota_remaining'] = response['data']['remaining']
-
-
-# after_model_callback
-async def matmaster_check_job_status(
-    callback_context: CallbackContext, llm_response: LlmResponse
-) -> Optional[LlmResponse]:
-    """
-    场景梳理如下：
-    - 上一条为None，当前为True：说明是第一条消息
-    - 上一条为True，当前为True：说明同一条消息流式输出中
-    - 上一条为True，当前为False：说明流式消息输出即将结束
-    - 上一条为False，当前为True：说明新的一条消息开始了
-    """
-    if callback_context.state['error_occurred']:
-        return
-
-    if (jobs_dict := callback_context.state['long_running_jobs']) and has_job_running(
-        jobs_dict
-    ):  # 确认当前有在运行中的任务
-        running_job_ids = get_running_jobs_detail(jobs_dict)  # 从 state 里面拿
-        reset = False
-        for origin_job_id, job_id, agent_name in running_job_ids:
-            if not callback_context.state['last_llm_response_partial']:
-                logger.info(
-                    f'[{MATMASTER_AGENT_NAME}]:[matmaster_check_job_status] new LlmResponse, prepare call API'
-                )
-                job_status = await get_job_status(
-                    job_id, access_key=MATERIALS_ACCESS_KEY
-                )  # 查询任务的最新状态
-                callback_context.state['new_query_job_status'][
-                    'origin_job_id'
-                ] = job_status
-            else:
-                job_status = callback_context.state['new_query_job_status'][
-                    'origin_job_id'
-                ]  # 从 state 里取
-            logger.info(
-                f"[{MATMASTER_AGENT_NAME}]:[matmaster_check_job_status] last_llm_response_partial = "
-                f"{callback_context.state['last_llm_response_partial']}, "
-                f"job_id = {job_id}, job_status = {job_status}"
-            )
-            if job_status in ['Failed', 'Finished']:
-                if llm_response.partial:  # 原来消息的流式版本置空 None
-                    llm_response.content = None
-                    break
-                if not reset:
-                    # 标记开始处理原来消息的非流式版本
-                    callback_context.state['special_llm_response'] = True
-                    llm_response.content.parts = []
-                    reset = True
-                function_call_id = f"call_{str(uuid.uuid4()).replace('-', '')[:24]}"
-                callback_context.state['origin_job_id'] = origin_job_id
-                llm_response.content.parts.append(
-                    Part(text=get_job_complete_card(i18n=i18n, job_id=job_id))
-                )
-                llm_response.content.parts.append(
-                    Part(
-                        function_call=FunctionCall(
-                            id=function_call_id,
-                            name='transfer_to_agent',
-                            args={'agent_name': agent_name},
-                        )
-                    )
-                )
-        callback_context.state['last_llm_response_partial'] = llm_response.partial
-        # return llm_response
-
-    callback_context.state['last_llm_response_partial'] = llm_response.partial
-    return
-
-
-async def matmaster_hallucination_retry(
-    callback_context: CallbackContext, llm_response: LlmResponse
-) -> Optional[LlmResponse]:
-    hallucination_flag = callback_context.state['hallucination']
-    hallucination_agent = callback_context.state['hallucination_agent']
-
-    if not callback_context.state['hallucination']:
-        return
-
-    logger.info(
-        f'[{MATMASTER_AGENT_NAME}] hallucination_flag={hallucination_flag}, hallucination_agent={hallucination_agent}, i18n.language = {i18n.language}'
-    )
-
-    if llm_response.partial:  # 原来消息的流式版本置空 None
-        llm_response.content = None
-        return
-
-    # 标记开始处理原来消息的非流式版本
-    callback_context.state['special_llm_response'] = True
-    llm_response.content.parts = []
-
-    llm_response.content.parts.append(Part(text=hallucination_card(i18n=i18n)))
-    function_call_id = f"added_{str(uuid.uuid4()).replace('-', '')[:24]}"
-    llm_response.content.parts.append(
-        Part(
-            function_call=FunctionCall(
-                id=function_call_id,
-                name='transfer_to_agent',
-                args={'agent_name': callback_context.state['hallucination_agent']},
-            )
-        )
-    )
-    callback_context.state['hallucination'] = False
-
-    return llm_response
 
 
 async def matmaster_use_quota(
