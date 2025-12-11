@@ -181,13 +181,6 @@ from agents.matmaster_agent.sub_agents.POLYMERkb_agent.agent import (
 from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
     POLYMER_KB_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.propos_master_agent.agent import (
-    ProposMasterAgent,
-    proposmaster_toolset,
-)
-from agents.matmaster_agent.sub_agents.propos_master_agent.constant import (
-    PROPOSMATER_AGENT_NAME,
-)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.agent import (
     ScienceNavigatorAgent,
     science_navigator_toolset,
@@ -315,7 +308,6 @@ ALL_TOOLSET_DICT = {
     'xrd_toolset': xrd_toolset,
     'electron_microscope_toolset': electron_microscope_toolset,
     'physical_adsorption_toolset': physical_adsorption_toolset,
-    'propos_master_toolset': proposmaster_toolset,
 }
 
 AGENT_CLASS_MAPPING = {
@@ -359,7 +351,6 @@ AGENT_CLASS_MAPPING = {
     Physical_Adsorption_AGENT_NAME: PhysicalAdsorptionAgent,
     FILE_PARSE_AGENT_NAME: FileParseAgent,
     UniELFAgentName: UniELFAgent,
-    PROPOSMATER_AGENT_NAME: ProposMasterAgent,
 }
 
 
@@ -403,7 +394,6 @@ class MatMasterSubAgentsEnum(str, Enum):
     FileParseAgent = FILE_PARSE_AGENT_NAME
     PhysicalAdsorptionAgent = Physical_Adsorption_AGENT_NAME
     UniELFAgentNameEnum = UniELFAgentName
-    ProposMasterAgent = PROPOSMATER_AGENT_NAME
 
 
 ALL_AGENT_TOOLS_LIST = list(ALL_TOOLS.keys())
