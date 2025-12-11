@@ -603,7 +603,7 @@ ALL_TOOLS = {
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
-        'description': 'Predict thermoelectric-related properties for a given material using DPA , including band gap, Seebeck coefficient, power factor, effective mass, shear modulus, and bulk modulus; this tool does not compute thermal conductivity and is only for thermoelectric property prediction, not for generic structure optimization or unrelated property queries.',
+        'description': 'Predict thermoelectric-related properties for a given material using DPA , including band gap in eV, Seebeck coefficient in Volt/K, power factor in uW/cm.2K, effective mass, shear modulus GPa, and bulk modulus in GPa; this tool does not compute thermal conductivity and is only for thermoelectric property prediction, not for generic structure optimization or unrelated property queries.',
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
