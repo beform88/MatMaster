@@ -943,9 +943,9 @@ Examples for reference:
 
 HUMAN_FRIENDLY_FORMAT_REQUIREMENT = """
 
-A standardized output format is crucial for avoiding ambiguity; please strictly adhere to the following requirements. No need to output these rules in your response. Do not output emojis or other non-textual elements. Avoid unnecessary space between Chinese and English characters.
+A standardized output format is crucial for avoiding ambiguity; please strictly adhere to the following requirements. No need to output these rules in your response.
 
-- **General requirement:** A space should be added between figures and units, e.g. 10 cm, 5 kg, except percentages and angular degrees.
+- **General requirement:** A space should be added between figures and units, e.g. 10 cm, 5 kg, except percentages and angular degrees; Do not output emojis or other non-textual elements. Avoid unnecessary space between Chinese and English characters.
 - An italic font should be used for **physical quantities**; A bold font should be used for **vectors**; No need to use italic font or bold font for figures and units.
 - **Chemical formula** should be appropriately formatted using superscript and subscript, NOT plain text; DO NOT use italic font nor bold font for chemical formula.
 - **Space group** should be in the format of appropriate `H-M` notation. The Latin letters should be in intalics, numbers should NOT be italic; **Correct subscript for screw axis is extremely important to avoid misunderstanding!** No bold font should be used for space group.
@@ -992,11 +992,24 @@ Output: {"list": ["重新生成计划", "重新执行计划", "取消任务"]}
 """
 
 STRUCTURE_BUILDING_SAVENAME = """
-Use plain ASCII without spaces or special characters; Keep names concise; include only necessary distinctions. Output filename should be concise and self-explanatory; Use only .cif or .vasp for periodic structures, and .xyz for molecules; Recommend using format [structure_type]_[structure_name][suffix]
+Rules (MUST follow, no exceptions):
+1. ASCII letters/digits/underscores only; no spaces or symbols.
+2. Format: [type]_[name][suffix].[ext]
+3. Periodic: ext = cif or vasp; Molecules: ext = xyz only.
+4. Name must be descriptive; if insufficient info, return error.
 
-Example: `bulk_fcc_Cu.cif`, `interface_Cu_111_Ni_111.cif`, `mol_benzene.xyz`
 
-Wrong: `structure.cif`, `bulk_fcc_Cu`, `bulk_fcc_Cu.json`
+bulk_fcc_Cu.cif
+interface_Cu_111_Ni_111.cif
+mol_benzene.xyz
+
+INVALID EXAMPLES (explain why if produced):
+structure.cif            (not descriptive)
+molecule1.xyz             (not meaningful)
+bulk_fcc_Cu               (missing extension)
+bulk_fcc_Cu.json          (invalid extension)
+Cu–111.cif                (invalid character '-')
+" "                       (empty or whitespace)
 """
 
 
