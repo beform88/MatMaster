@@ -296,6 +296,7 @@ def get_csv_result(parsed_tool_result: List[JobResult]) -> List[JobResult]:
         item
         for item in parsed_tool_result
         if item.get('data')
+        and type(item['data']) is str
         and item['data'].endswith('csv')
         and item['type'] == JobResultType.RegularFile
     ]
