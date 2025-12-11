@@ -68,10 +68,6 @@ class SceneEnum(DescriptiveEnum):
         'webpage_parsing',
         'Involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH, but usually no need for literature search tasks unless user requests.',
     )
-    PROPOSAL = (
-        'proposal',
-        'Use only when the user explicitly requests a proposal (e.g., “Write a proposal on [topic]”, “Draft a research proposal”, “I need a proposal for [purpose]”). Suitable for generating structured, detailed proposal documents—especially when templates, sections (e.g., background, objectives, methodology, timeline, budget), or formal academic/professional formats are expected. Do NOT activate for general essays, summaries, or planning discussions unless the word proposal (or clear equivalent like 开题报告) is explicitly used.',
-    )
 
     # postprocess
     VISUALIZE_DATA = (

@@ -98,13 +98,6 @@ from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
 from agents.matmaster_agent.sub_agents.POLYMERkb_agent.prompt import (
     POLYMERKbAgentArgsSetting,
 )
-from agents.matmaster_agent.sub_agents.propos_master_agent.constant import (
-    PROPOSMATER_AGENT_NAME,
-)
-from agents.matmaster_agent.sub_agents.propos_master_agent.prompt import (
-    PROPOSMATER_DESCRIPTION,
-    PROPOSMATER_INSTRUCTION,
-)
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
 )
@@ -716,13 +709,6 @@ ALL_TOOLS = {
         'description': 'Perform web searches specifically for what, why, and how question types, excluding command- or instruction-type queries. The tool returns only URL, title, and snippet, which makes it suitable for concise factual lookups (what-questions) and simple causal or explanatory lookups (basic why-questions). Should follow up by `extract_info_from_webpage` for completed contents.',
         'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
-    },
-    'run_proposmaster': {
-        'belonging_agent': PROPOSMATER_AGENT_NAME,
-        'scene': [SceneEnum.PROPOSAL],
-        'description': PROPOSMATER_DESCRIPTION,
-        'args_setting': 'Use any link as the argument, the flow will handle the data automatically.',
-        'summary_prompt': PROPOSMATER_INSTRUCTION,
     },
     'xrd_parse_file': {
         'belonging_agent': XRD_AGENT_NAME,
