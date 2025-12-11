@@ -245,7 +245,7 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
-        "question": "在Materials Project中检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
+        "question": "检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
         "question_en": "Search and return no more than 5 ternary compounds containing rare earth elements, transition metals, and oxygen, excluding Fe and Ni from Materials Project",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b075193f17d6193c4fc98e2c68003",
@@ -697,7 +697,7 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
-        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/beaee412-7cc7-47b4-91df-16d207151c06/DPA.png",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/8f864720-0dfd-4b08-882b-753957c8b4f0/DPA.png",
         "question": "帮我利用这组数据微调dpa3模型3000步",
         "question_en": "Help me fine-tune the dpa3 model for 3000 steps using this dataset",
         "sharing_url": {

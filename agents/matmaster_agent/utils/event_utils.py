@@ -18,13 +18,17 @@ from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, M
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.style import (
+    no_found_structure_card,
     photon_consume_free_card,
     photon_consume_notify_card,
     photon_consume_success_card,
     tool_response_failed_card,
 )
 from agents.matmaster_agent.utils.finance import photon_consume
-from agents.matmaster_agent.utils.helper_func import is_algorithm_error
+from agents.matmaster_agent.utils.helper_func import (
+    is_algorithm_error,
+    no_found_structure_error,
+)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -399,26 +403,43 @@ async def display_future_consume_event(event, cost_func, ctx, author):
             yield photon_consume_notify_event
 
 
+def handle_tool_error(ctx, author, error_message, error_type):
+    """统一处理工具执行错误"""
+    # 发送错误提示事件
+    yield from all_text_event(
+        ctx,
+        author,
+        error_message,
+        ModelRole,
+    )
+
+    # 更新 plan 状态为失败
+    update_plan = copy.deepcopy(ctx.session.state['plan'])
+    update_plan['steps'][ctx.session.state['plan_index']][
+        'status'
+    ] = PlanStepStatusEnum.FAILED
+    yield update_state_event(ctx, state_delta={'plan': update_plan})
+
+    # 抛出相应的异常
+    raise RuntimeError(f'Tool Execution Error: {error_type}')
+
+
 async def display_failed_result_or_consume(
     dict_result: dict, ctx, author: str, event: Event
 ):
     if is_algorithm_error(dict_result):
-        for tool_response_failed_event in all_text_event(
+        for event in handle_tool_error(
+            ctx, author, f"{tool_response_failed_card(i18n=i18n)}", 'Algorithm Error'
+        ):
+            yield event
+    elif no_found_structure_error(dict_result):
+        for event in handle_tool_error(
             ctx,
             author,
-            f"{tool_response_failed_card(i18n=i18n)}",
-            ModelRole,
+            f"{no_found_structure_card(i18n=i18n)}",
+            'No found structure match',
         ):
-            yield tool_response_failed_event
-
-        # 更新 plan 为失败
-        update_plan = copy.deepcopy(ctx.session.state['plan'])
-        update_plan['steps'][ctx.session.state['plan_index']][
-            'status'
-        ] = PlanStepStatusEnum.FAILED
-        yield update_state_event(ctx, state_delta={'plan': update_plan})
-
-        raise RuntimeError('Tool Execution Error')
+            yield event
     else:
         # 更新 plan 为成功
         update_plan = copy.deepcopy(ctx.session.state['plan'])

@@ -19,6 +19,7 @@ translations = {
         'MoreQuestions': 'You may also be interested in these questions:',
         'Step': 'Step',
         'PlanSummary': 'Plan Summary',
+        'NoFoundStructure': 'No eligible structures found.',
     },
     'zh': {
         'JobStatus': '任务状态',
@@ -38,6 +39,7 @@ translations = {
         'MoreQuestions': '你或许还对这些问题感兴趣：',
         'Step': '步骤',
         'PlanSummary': '计划汇总概要',
+        'NoFoundStructure': '未找到符合条件的结构',
     },
 }
 

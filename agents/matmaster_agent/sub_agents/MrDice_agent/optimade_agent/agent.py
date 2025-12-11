@@ -31,7 +31,7 @@ class Optimade_AgentBase(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config, name_suffix=''):
         super().__init__(
             # model=llm_config.deepseek_chat,
-            model=llm_config.gpt_5_chat,
+            model=llm_config.default_litellm_model,
             name=OptimadeAgentName + name_suffix,
             description=OptimadeAgentDescription,
             instruction=OptimadeAgentInstruction,
