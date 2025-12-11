@@ -72,8 +72,16 @@ def is_mcp_result(tool_response: Optional[dict[str, Any]]):
     )
 
 
+def result_has_code(dict_result) -> bool:
+    return dict_result.get('code') is not None
+
+
 def is_algorithm_error(dict_result) -> bool:
-    return dict_result.get('code') is not None and dict_result['code'] != 0
+    return result_has_code(dict_result) and dict_result['code'] not in (0, -9999)
+
+
+def no_found_structure_error(dict_result) -> bool:
+    return result_has_code(dict_result) and dict_result['code'] == -9999
 
 
 def load_tool_response(part: Part):
