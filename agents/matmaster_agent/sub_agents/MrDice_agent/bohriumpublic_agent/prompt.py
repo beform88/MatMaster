@@ -83,12 +83,12 @@ If `n_found = 0`, clearly state that no matches were found, repeat the applied f
      match_mode: 1
      output_formats: ["json"]
 
-2) 用户：我要 5 个包含 Co 和 O 的材料，能隙小于 3 eV
+2) 用户：在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构
    → Tool: fetch_bohrium_crystals
-     elements: ["Co","O"]
+     elements: ["O"]
      match_mode: 0
-     band_gap_range: ["0","3"]
-     n_results: 5
+     band_gap_range: ["2","100"]
+     n_results: 3
 
 3) 用户：找出空间群编号 14，原子数 50–100 的晶体
    → Tool: fetch_bohrium_crystals
