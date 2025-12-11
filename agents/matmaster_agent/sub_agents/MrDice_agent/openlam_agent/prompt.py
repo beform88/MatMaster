@@ -5,7 +5,7 @@ OpenlamAgentDescription = (
     'Supports queries by formula, energy range, and submission time, with output in CIF or JSON format.'
 )
 
-OpenlamAgentInstruction = """
+OpenlamAgentArgsSetting = """
 You are a crystal structure retrieval assistant with access to MCP tools powered by the OpenLAM database.
 
 ## WHAT YOU CAN DO
@@ -79,3 +79,5 @@ If `n_found = 0`, clearly state no matches were found, repeat the applied filter
      n_results: 3
      output_formats: ["json"]
 """
+
+OpenlamAgentInstruction = ''

@@ -46,18 +46,33 @@ from agents.matmaster_agent.sub_agents.HEACalculator_agent.constant import (
 from agents.matmaster_agent.sub_agents.HEAkb_agent.constant import (
     HEA_KB_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.HEAkb_agent.prompt import (
+    HEAKbAgentArgsSetting,
+)
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import LAMMPS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
     BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.prompt import (
+    BohriumPublicAgentArgsSetting,
+)
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.constant import (
     MOFDB_DATABASE_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.prompt import (
+    MofdbAgentArgsSetting,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.constant import (
     OPENLAM_DATABASE_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.prompt import (
+    OpenlamAgentArgsSetting,
+)
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant import (
     OPTIMADE_DATABASE_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.prompt import (
+    OptimadeAgentArgsSetting,
 )
 from agents.matmaster_agent.sub_agents.NMR_agent.constant import (
     NMR_AGENT_NAME,
@@ -80,6 +95,9 @@ from agents.matmaster_agent.sub_agents.piloteye_electro_agent.prompt import (
 from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
     POLYMER_KB_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.POLYMERkb_agent.prompt import (
+    POLYMERKbAgentArgsSetting,
+)
 from agents.matmaster_agent.sub_agents.propos_master_agent.constant import (
     PROPOSMATER_AGENT_NAME,
 )
@@ -97,11 +115,20 @@ from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
 from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
     SSE_KB_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.SSEkb_agent.prompt import (
+    SSEKbAgentArgsSetting,
+)
 from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
     STEEL_PREDICT_AGENT_NAME,
 )
+from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.prompt import (
+    STEELPredictAgentArgsSetting,
+)
 from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
     STEEL_KB_AGENT_NAME,
+)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.prompt import (
+    STEELKbAgentArgsSetting,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,
@@ -381,58 +408,67 @@ ALL_TOOLS = {
         'belonging_agent': HEA_KB_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge.',
+        'args_setting': f"{HEAKbAgentArgsSetting}",
     },
     'query_ssekb_literature': {
         'belonging_agent': SSE_KB_AGENT_NAME,
         'scene': [SceneEnum.Solid_State_Electrolyte],
         'description': 'Query the SSEkb literature knowledge base.',
+        'args_setting': f"{SSEKbAgentArgsSetting}",
     },
     'query_polymerkb_literature': {
         'belonging_agent': POLYMER_KB_AGENT_NAME,
         'scene': [SceneEnum.POLYMER],
         'description': 'Query the POLYMERkb polymer literature knowledge base. ',
+        'args_setting': f"{POLYMERKbAgentArgsSetting}",
     },
     'query_steelkb_literature': {
         'belonging_agent': STEEL_KB_AGENT_NAME,
         'scene': [SceneEnum.STEEL],
         'description': 'Query the STEELkb literature knowledge base. ',
+        'args_setting': f"{STEELKbAgentArgsSetting}",
     },
     'predict_tensile_strength': {
         'belonging_agent': STEEL_PREDICT_AGENT_NAME,
         'scene': [SceneEnum.STEEL],
         'description': 'Predict the ultimate tensile strength (UTS) of steel based on chemical composition using a trained neural network model. Supports batch prediction. Takes a list of chemical formula strings (even for single formula, use a list with one element), validates elements are within allowed set (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W), and returns a list of predicted tensile strength values in MPa. Formula format: ElementSymbol followed by numeric value (e.g., ["Fe70Cr20Ni10"] for single or ["Fe70Cr20Ni10", "Fe68Cr22Ni10"] for batch). Batch prediction is recommended for systematic composition variation analysis.',
+        'args_setting': f"{STEELPredictAgentArgsSetting}",
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures from multiple OPTIMADE-compatible databases using raw OPTIMADE filter strings (elements, chemical formulas, logical combinations) across providers like alexandria, cod, mp, oqmd, tcod.',
+        'description': 'Retrieve crystal structures from OPTIMADE-compatible providers using full OPTIMADE filter language (logical operators, HAS ALL, HAS ANY, chemical_formula_anonymous, etc.). Supports logical filters and broad searches across multiple external providers (alexandria, cmr, cod, mcloud, mcloudarchive, mp, mpdd, mpds, nmd, odbx, omdb, oqmd, tcod, twodmatpedia). Use when logical filter expressions (OR, NOT, complex boolean logic) or anonymous formulas are required. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query (e.g., requires logical filters).',
+        'args_setting': f"{OptimadeAgentArgsSetting}",
     },
     'fetch_structures_with_spg': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) combined with base filters from OPTIMADE-compatible databases.',
-        'args_setting': 'Combine with base filters for formula, elements, and other criteria.',
+        'description': 'Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) from OPTIMADE-compatible databases. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
+        'args_setting': f"{OptimadeAgentArgsSetting}",
     },
     'fetch_structures_with_bandgap': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) combined with base filters (elements, formulas) from OPTIMADE-compatible databases that provide band gap data.',
-        'args_setting': 'Combine with base filters for formula, elements, and other criteria.',
+        'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) from OPTIMADE-compatible databases that provide band gap data. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
+        'args_setting': f"{OptimadeAgentArgsSetting}",
     },
     'fetch_bohrium_crystals': {
         'belonging_agent': BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures from the Bohrium Public database (includes Materials Project data) with flexible filtering by formula, elements, space group, atom counts, predicted formation energy range, and band gap range, supporting exact or contains match modes.',
+        'description': 'PREFERRED when both Bohrium and OPTIMADE can handle the query. Retrieve crystal structures from the Bohrium Public database (includes Materials Project / MP dataset). Supports formula, elements, spacegroup_number, atom_count_range, predicted_formation_energy_range, band_gap_range. Supports space group / atom count / band gap / formation energy queries. Supports formula fragment searches via match_mode=0. Can combine space group and band gap in a single request. Faster than OPTIMADE. Cannot handle logical filter expressions (OR, NOT, complex boolean logic).',
+        'args_setting': f"{BohriumPublicAgentArgsSetting}",
     },
     'fetch_openlam_structures': {
         'belonging_agent': OPENLAM_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures from the OpenLAM database filtered by chemical formula, energy range, and submission time, with output in CIF or JSON format.',
+        'description': 'Retrieve crystal structures from the OpenLAM internal database. Supports formula, min_energy, max_energy, min_submission_time, max_submission_time filters. Supports energy window searches and time-based filters. No support for space group, band gap, elements list, or logical filters.',
+        'args_setting': f"{OpenlamAgentArgsSetting}",
     },
     'fetch_mofs_sql': {
         'belonging_agent': MOFDB_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Execute SQL queries against the MOF database with support for complex multi-table joins, window functions, CTEs, and statistical analysis for advanced MOF property queries and composition analysis.',
+        'description': 'Execute SQL queries against the MOF database. Supports all MOF-related queries via SQL: MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area, element composition analysis, adsorption selectivity calculations, temperature sensitivity analysis, statistical ranking. Supports complex multi-table joins, window functions, CTEs, and statistical analysis. Any request clearly about MOFs should be handled by MOFdb.',
+        'args_setting': f"{MofdbAgentArgsSetting}",
     },
     'calculate_reaction_profile': {
         'belonging_agent': ORGANIC_REACTION_AGENT_NAME,

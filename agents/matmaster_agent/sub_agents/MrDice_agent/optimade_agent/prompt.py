@@ -6,7 +6,7 @@ OptimadeAgentDescription = (
     'across multiple materials databases.'
 )
 
-OptimadeAgentInstruction = """
+OptimadeAgentArgsSetting = """
 You are a crystal structure retrieval assistant with access to MCP tools powered by the OPTIMADE API.
 
 ## WHAT YOU CAN DO
@@ -154,3 +154,5 @@ If no results are found (`n_found = 0`), clearly state that no matching structur
      base_filter: chemical_formula_reduced="MgO"
      spg_number: 225
 """
+
+OptimadeAgentInstruction = ''

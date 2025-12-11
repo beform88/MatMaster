@@ -6,7 +6,7 @@ MofdbAgentDescription = (
     'and temperature sensitivity analysis.'
 )
 
-MofdbAgentInstruction = """
+MofdbAgentArgsSetting = """
 You are a MOF database query assistant with access to MCP tools powered by the **MOFdb SQL server**.
 
 ## WHAT YOU CAN DO
@@ -150,3 +150,5 @@ Main tables:
      ORDER BY sa_diff_percent DESC
      '''
 """
+
+MofdbAgentInstruction = ''
