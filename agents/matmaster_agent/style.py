@@ -341,6 +341,44 @@ def tool_response_failed_card(i18n: I18N):
 """
 
 
+def no_found_structure_card(i18n: I18N):
+    return f"""
+<div style="
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 1.5px solid #ffc107;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    box-shadow: 0 3px 8px rgba(255, 193, 7, 0.2);
+    text-align: left;
+    border-left: 4px solid #ff9800;
+">
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+    ">
+        <span style="
+            font-size: 18px;
+            color: #ff9800;
+        ">
+            ⚠
+        </span>
+        <p style="
+            font-size: 16px;
+            color: #856404;
+            margin: 0;
+            font-weight: bold;
+            line-height: 1.3;
+        ">
+            {i18n.t('NoFoundStructure')}
+        </p>
+    </div>
+</div>
+"""
+
+
 def running_job_card():
     return """
 <div style="
