@@ -136,7 +136,7 @@ The tool returns a whole content from a webpage.
 
 ### Example template for mechanism-oriented answer:
 ```
-According to webpage [n], "[quoted phrase]" <a href="URL"" target_blank">[n]</a>.
+According to webpage [n], "[quoted phrase]" <a href="URL" target="_blank">[n]</a>.
 Another source indicates that "[quoted phrase]" <a href="URL" target="_blank">[m]</a>.
 Integrating these, the mechanism can be structured into: (1) ..., (2) ..., (3) ... (derived solely from the above retrieved content).
 ```
