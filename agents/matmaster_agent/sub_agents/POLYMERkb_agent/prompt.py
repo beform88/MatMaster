@@ -135,4 +135,4 @@ The tool uses structured database search technology:
    - **CRITICAL**: Do NOT omit database entries from references - they are valid data sources and must be cited
 """
 
-POLYMERKbAgentInstruction = ""
+POLYMERKbAgentInstruction = ''

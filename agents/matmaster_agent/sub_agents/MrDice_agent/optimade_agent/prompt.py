@@ -155,4 +155,4 @@ If no results are found (`n_found = 0`), clearly state that no matching structur
      spg_number: 225
 """
 
-OptimadeAgentInstruction = ""
+OptimadeAgentInstruction = ''

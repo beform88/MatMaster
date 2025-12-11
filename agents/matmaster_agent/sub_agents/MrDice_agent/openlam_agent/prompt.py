@@ -80,4 +80,4 @@ If `n_found = 0`, clearly state no matches were found, repeat the applied filter
      output_formats: ["json"]
 """
 
-OpenlamAgentInstruction = ""
+OpenlamAgentInstruction = ''

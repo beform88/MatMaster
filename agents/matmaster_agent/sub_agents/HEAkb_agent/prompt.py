@@ -125,4 +125,4 @@ The tool uses RAG (Retrieval-Augmented Generation) technology:
 4. **References**: List all cited sources [1], [2], [3], etc.
 """
 
-HEAKbAgentInstruction = ""
+HEAKbAgentInstruction = ''

@@ -106,4 +106,4 @@ If `n_found = 0`, clearly state that no matches were found, repeat the applied f
      match_mode: 0
 """
 
-BohriumPublicAgentInstruction = ""
+BohriumPublicAgentInstruction = ''

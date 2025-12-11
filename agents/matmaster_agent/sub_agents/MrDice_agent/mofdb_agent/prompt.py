@@ -151,4 +151,4 @@ Main tables:
      '''
 """
 
-MofdbAgentInstruction = ""
+MofdbAgentInstruction = ''
