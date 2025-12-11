@@ -421,8 +421,12 @@
       "zhPrompt": {
         "belonging": "模拟预测",
         "belonging_en": "Simulation & Prediction",
-        "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量（从开源数据库获取初始结构并自行设定合理参数）",
+        "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量",
         "question_en": "Calculate elastic constants for SrTiO3 and output full C11, C12, C44 tensors (obtain initial structure from open databases and set reasonable parameters)",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d37f83d72d0a2b3b89c3b69b810",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0d38e430769f89ed346d11d31dbf"
+        },
         "structure_url": null
       }
     },
@@ -432,6 +436,10 @@
         "belonging_en": "Simulation & Prediction",
         "question": "从开源数据库获取一个MgB₂结构，并计算其声子谱",
         "question_en": "Retrieve an MgB2 structure from open databases and calculate its phonon spectrum",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b07e4aa8978bc96e89700b4995355",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b06eca81b7c6f9c31b8dca1204313"
+        },
         "structure_url": null
       }
     },
