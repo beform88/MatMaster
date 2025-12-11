@@ -5,7 +5,7 @@ POLYMERKbAgentDescription = (
     'multi-document summarization, and in-depth research report generation.'
 )
 
-POLYMERKbAgentInstruction = """
+POLYMERKbAgentArgsSetting = """
 You can call one MCP tool exposed by the POLYMERkb structured search server:
 
 === TOOL: query_polymerkb_literature ===
@@ -134,3 +134,5 @@ The tool uses structured database search technology:
    - For database entries: Format as [n] DOI: xxx (database entry - property data only)
    - **CRITICAL**: Do NOT omit database entries from references - they are valid data sources and must be cited
 """
+
+POLYMERKbAgentInstruction = ""

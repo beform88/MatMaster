@@ -6,7 +6,7 @@ BohriumPublicAgentDescription = (
     'Results can be exported in CIF or JSON format for further analysis.'
 )
 
-BohriumPublicAgentInstruction = """
+BohriumPublicAgentArgsSetting = """
 You are a crystal structure retrieval assistant with access to MCP tools powered by the **Bohrium Public database**.
 
 ## WHAT YOU CAN DO
@@ -105,3 +105,5 @@ If `n_found = 0`, clearly state that no matches were found, repeat the applied f
      formula: "SiO3"
      match_mode: 0
 """
+
+BohriumPublicAgentInstruction = ""

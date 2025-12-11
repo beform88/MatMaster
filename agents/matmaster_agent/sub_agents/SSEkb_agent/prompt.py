@@ -5,7 +5,7 @@ SSEKbAgentDescription = (
     'multi-document summarization, and in-depth research report generation.'
 )
 
-SSEKbAgentInstruction = """
+SSEKbAgentArgsSetting = """
 You can call one MCP tool exposed by the SSEkb structured search server:
 
 === TOOL: query_ssekb_literature ===
@@ -92,3 +92,5 @@ The tool uses structured database search technology:
 
 4. **References**: List all cited sources [1], [2], [3], etc.
 """
+
+SSEKbAgentInstruction = ""
