@@ -708,7 +708,10 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
-        
+        "sharing_url_en": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0629a9107d6ca8e27c02c63d9173"
+        },
         "structure_url": null,
         "title": "SnTe热电材料高通量筛选"
       }
@@ -836,7 +839,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
-         "sharing_url_en": {
+        "sharing_url_en": {
           "prod_url": ""
         },
         "structure_url": null,
