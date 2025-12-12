@@ -577,8 +577,8 @@
         "question": "请提取文献中核心的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
         "question_en": "Please extract core high-temperature superconducting materials from the literature, find the structure from material databases, and predict their superconducting critical temperature",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0294675271309effcada64e5d9d9",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b114183c875d091b88ad3dcc30e0b",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b118a68b476d8a83d529321856f41"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf",
         "title": "高温超导材料检索与预测"
@@ -589,11 +589,11 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/21e73f08-a5d8-4182-9ec2-1d0a35625650/SnTe.png",
-        "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
-        "question_en": "Randomly generate 50 SnTe structures and screen for potential thermoelectric materials among them",
+        "question": "帮我随机生成100个SnTe结构并筛选出其中潜在的热电材料",
+        "question_en": "Randomly generate 100 SnTe structures and screen for potential thermoelectric materials among them",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b11448bc6766385aeeffb6129c0e8",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b1183e4b474f593865e6e33ef811c"
         },
         "structure_url": null,
         "title": "SnTe热电材料高通量筛选"
