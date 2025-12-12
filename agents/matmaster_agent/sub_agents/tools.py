@@ -435,37 +435,37 @@ ALL_TOOLS = {
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures from OPTIMADE-compatible providers using full OPTIMADE filter language (logical operators, HAS ALL, HAS ANY, chemical_formula_anonymous, etc.). Supports logical filters and broad searches across multiple external providers (alexandria, cmr, cod, mcloud, mcloudarchive, mp, mpdd, mpds, nmd, odbx, omdb, oqmd, tcod, twodmatpedia). Use when logical filter expressions (OR, NOT, complex boolean logic) or anonymous formulas are required. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query (e.g., requires logical filters).',
+        'description': 'Internal database search tool. Retrieve crystal structures from OPTIMADE-compatible providers using full OPTIMADE filter language (logical operators, HAS ALL, HAS ANY, chemical_formula_anonymous, etc.). Supports logical filters and broad searches across multiple external providers (alexandria, cmr, cod, mcloud, mcloudarchive, mp, mpdd, mpds, nmd, odbx, omdb, oqmd, tcod, twodmatpedia). Use when logical filter expressions (OR, NOT, complex boolean logic) or anonymous formulas are required. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query (e.g., requires logical filters).',
         'args_setting': f"{OptimadeAgentArgsSetting}",
     },
     'fetch_structures_with_spg': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) from OPTIMADE-compatible databases. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
+        'description': 'Internal database search tool. Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) from OPTIMADE-compatible databases. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
         'args_setting': f"{OptimadeAgentArgsSetting}",
     },
     'fetch_structures_with_bandgap': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures filtered by band gap range (min/max in eV) from OPTIMADE-compatible databases that provide band gap data. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
+        'description': 'Internal database search tool. Retrieve crystal structures filtered by band gap range (min/max in eV) from OPTIMADE-compatible databases that provide band gap data. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
         'args_setting': f"{OptimadeAgentArgsSetting}",
     },
     'fetch_bohrium_crystals': {
         'belonging_agent': BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'PREFERRED when both Bohrium and OPTIMADE can handle the query. Retrieve crystal structures from the Bohrium Public database (includes Materials Project / MP dataset). Supports formula, elements, spacegroup_number, atom_count_range, predicted_formation_energy_range, band_gap_range. Supports space group / atom count / band gap / formation energy queries. Supports formula fragment searches via match_mode=0. Can combine space group and band gap in a single request. Faster than OPTIMADE. Cannot handle logical filter expressions (OR, NOT, complex boolean logic).',
+        'description': 'Internal database search tool. PREFERRED when both Bohrium and OPTIMADE can handle the query. Retrieve crystal structures from the Bohrium Public database (includes Materials Project / MP dataset). Supports formula, elements, spacegroup_number, atom_count_range, predicted_formation_energy_range, band_gap_range. Supports space group / atom count / band gap / formation energy queries. Supports formula fragment searches via match_mode=0. Can combine space group and band gap in a single request. Faster than OPTIMADE. Cannot handle logical filter expressions (OR, NOT, complex boolean logic).',
         'args_setting': f"{BohriumPublicAgentArgsSetting}",
     },
     'fetch_openlam_structures': {
         'belonging_agent': OPENLAM_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Retrieve crystal structures from the OpenLAM internal database. Supports formula, min_energy, max_energy, min_submission_time, max_submission_time filters. Supports energy window searches and time-based filters. No support for space group, band gap, elements list, or logical filters.',
+        'description': 'Internal database search tool. Retrieve crystal structures from the OpenLAM internal database. Supports formula, min_energy, max_energy, min_submission_time, max_submission_time filters. Supports energy window searches and time-based filters. No support for space group, band gap, elements list, or logical filters.',
         'args_setting': f"{OpenlamAgentArgsSetting}",
     },
     'fetch_mofs_sql': {
         'belonging_agent': MOFDB_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Execute SQL queries against the MOF database. Supports all MOF-related queries via SQL: MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area, element composition analysis, adsorption selectivity calculations, temperature sensitivity analysis, statistical ranking. Supports complex multi-table joins, window functions, CTEs, and statistical analysis. Any request clearly about MOFs should be handled by MOFdb.',
+        'description': 'Internal database search tool. Execute SQL queries against the MOF database. Supports all MOF-related queries via SQL: MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area, element composition analysis, adsorption selectivity calculations, temperature sensitivity analysis, statistical ranking. Supports complex multi-table joins, window functions, CTEs, and statistical analysis. Any request clearly about MOFs should be handled by MOFdb.',
         'args_setting': f"{MofdbAgentArgsSetting}",
     },
     'calculate_reaction_profile': {

@@ -206,19 +206,6 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
-        "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
-        "question_en": "Search and return 3 oxide structures with band gap > 2 eV from Materials Project",
-        "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d0502cf7521adf94233d3b4f3f9",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b022a1aa17a48be5153c3effeda79"
-        },
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构准备",
-        "belonging_en": "Structure Preparation",
         "question": "在Alexandria中查找并返回5个含Li、Mn、O的材料",
         "question_en": "Find and return 5 materials containing Li, Mn, and O from Alexandria",
         "sharing_url": {
@@ -258,8 +245,8 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
-        "question": "帮我从网页检索5个Heusler合金的结构文件或下载链接",
-        "question_en": "Help me retrieve 5 Heusler alloy structure files or download links from the web",
+        "question": "通过网络搜索获取5个Heusler合金的结构文件",
+        "question_en": "Obtain structure files of 5 Heusler alloys through web search",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b02520c5873f18a74ec22b1f390bb",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b019281a37c9aaab9b8f6f88f9ecf"
