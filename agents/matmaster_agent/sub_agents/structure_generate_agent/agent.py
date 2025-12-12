@@ -11,6 +11,9 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
+from agents.matmaster_agent.sub_agents.structure_generate_agent.callback import (
+    regulate_savename_suffix,
+)
 from agents.matmaster_agent.sub_agents.structure_generate_agent.prompt import (
     StructureGenerateAgentDescription,
     StructureGenerateAgentInstruction,
@@ -50,6 +53,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
             model=llm_config.default_litellm_model,
             tools=[structure_generate_toolset],
             name=StructureGenerateAgentName + name_suffix,
+            before_tool_callback=regulate_savename_suffix,
             description=StructureGenerateAgentDescription,
             instruction=StructureGenerateAgentInstruction,
             dflow_flag=False,

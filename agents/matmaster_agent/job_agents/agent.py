@@ -64,6 +64,8 @@ class BaseAsyncJobAgent(BaseAgentWithRecAndSum):
             enable_tgz_unpack=self.enable_tgz_unpack,
             cost_func=self.cost_func,
             enforce_single_function_call=True,
+            after_tool_callback=self.after_tool_callback,
+            before_tool_callback=self.before_tool_callback,
         )
 
         submit_render_agent = SubmitRenderAgent(

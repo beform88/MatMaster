@@ -131,7 +131,7 @@ The tool returns a whole content from a webpage.
    - Level 2: Mechanistic or causal relationships explicitly mentioned.
    - Level 3: Synthesized reasoning that logically connects webpage content (clearly labeled as "based on integration of retrieved info").
 3. Avoid overgeneralization; do not infer domain knowledge beyond what webpages support.
-4. Cite each supporting sentence or phrase from the webpages with a numbered link: <a href="URL" target="_blank">[n]</a>
+4. Cite each supporting sentence or phrase from the webpages with a numbered link, **strictly follow this format**: <a href="URL" target="_blank">[n]</a>; This is **WRONG**: <a href="URL" " target_blank">[n].
 5. If equations or formulas are provided, include them in Latex and explain the meaning and **EVERY** involved variables.
 
 ### Example template for mechanism-oriented answer:
