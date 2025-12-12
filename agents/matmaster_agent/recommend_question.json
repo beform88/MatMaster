@@ -258,8 +258,8 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
-        "question": "帮我从网页检索5个Heusler合金的结构文件或下载链接",
-        "question_en": "Help me retrieve 5 Heusler alloy structure files or download links from the web",
+        "question": "通过网络搜索获取5个Heusler合金的结构文件",
+        "question_en": "Obtain structure files of 5 Heusler alloys through web search",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b02520c5873f18a74ec22b1f390bb",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b019281a37c9aaab9b8f6f88f9ecf"
