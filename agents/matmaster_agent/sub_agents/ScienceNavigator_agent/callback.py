@@ -1,12 +1,18 @@
 import json
+import logging
 import re
 
 import litellm
 from google.adk.tools import ToolContext
 from mcp.types import CallToolResult, TextContent
 
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import LLMConfig
-from agents.matmaster_agent.logger import logger
+from agents.matmaster_agent.logger import PrefixFilter
+
+logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
 
 DISCARD_KEYS = [
     'paperId',

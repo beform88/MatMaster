@@ -1,6 +1,13 @@
+import logging
+
 from google.adk.tools import ToolContext
 
-from agents.matmaster_agent.logger import logger
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.logger import PrefixFilter
+
+logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
 
 BUILTIN_DPA2_HEADS = [
     'Domains_Alloy',
