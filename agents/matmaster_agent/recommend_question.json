@@ -836,8 +836,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
-        
-        "sharing_url_en": {
+         "sharing_url_en": {
           "prod_url": ""
         },
         "structure_url": null,
