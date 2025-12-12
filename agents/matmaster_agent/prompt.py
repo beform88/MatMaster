@@ -64,11 +64,12 @@ A standardized output format is crucial for avoiding ambiguity; please strictly 
 """
 
 DPA_PRIOR_KNOWLEDGE = """
-- For built-in pretrained models, both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system: Default is `Omat24` covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
-
 Built-in multi-task general-purpose pretrained models:
   'DPA2.4-7M': "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/cd12300a-d3e6-4de9-9783-dd9899376cae/dpa-2.4-7M.pt"
   DPA3.1-3M": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/18b8f35e-69f5-47de-92ef-af8ef2c13f54/DPA-3.1-3M.pt"
+
+- For built-in pretrained models, both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system. When specifying `head`, use the exact names below; do not use any other names unless users requires. Default is `Omat24`, covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
+- For custom models, follow the user-provided `head` directly.
 
 """
 

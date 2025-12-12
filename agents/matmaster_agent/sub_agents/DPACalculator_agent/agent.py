@@ -6,6 +6,9 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
+from agents.matmaster_agent.sub_agents.DPACalculator_agent.callback import (
+    before_tool_callback,
+)
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
     DPACalulator_BOHRIUM_EXECUTOR,
@@ -39,6 +42,7 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             cost_func=dpa_cost_func,
+            before_tool_callback=before_tool_callback,
         )
 
 

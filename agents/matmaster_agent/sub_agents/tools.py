@@ -329,6 +329,7 @@ ALL_TOOLS = {
         'belonging_agent': DocumentParserAgentName,
         'scene': [SceneEnum.LITERATURE, SceneEnum.UNIVERSAL],
         'description': 'Read and extract contents from PDF-formatted document files. Outputs information of materials involved and methodologies, supporting additional information required by users. CANNOT retrieve data from the internet.',
+        'bypass_confirmation': True,
     },
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
