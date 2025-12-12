@@ -90,9 +90,6 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
             print(
                 f"[before_tool_callback] Updated head to Omat24 for DPA2.4 model {head}, {args['head']}"
             )
-            from time import sleep
-
-            sleep(33)
     elif (
         model_path
         and 'https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/18b8f35e-69f5-47de-92ef-af8ef2c13f54/DPA-3.1-3M.pt'
