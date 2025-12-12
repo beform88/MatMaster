@@ -75,7 +75,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b115baf6d768584f96c2b9b2ece0f"
         },
         "structure_url": null
       }
@@ -123,7 +123,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae371eea572d3810ce215e35a4e90"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b116b9be47667ae955f31d056d6ba"
         },
         "structure_url": null
       }
@@ -444,6 +444,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeebb8e3a70569d80ce1ec3c9b219",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae465eb5e7069a508a031f5993baa"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b11f3c20a7e5e83dac996324900fc"
+        },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBJ6C5PGJFHRWT9ZS1XVT3XQ/dpa_elastic_MgO.cif"
       }
     },
@@ -456,6 +459,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae7eefaf771d6a6450c67d9a1c38f"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b11f70c487413b0bd8f964c22ce29"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBKYY4QB25BH1A64CR5ZQJQS/Si-prim.cif"
       }
@@ -482,6 +488,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc253a8570c280725b19fad8fe38",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afca24cdf7dee8e4715762b20a75f"
+        },
+        "sharing_url_en": {
+          "prod_url": ""
         },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
@@ -699,6 +708,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
         },
+        
         "structure_url": null,
         "title": "SnTe热电材料高通量筛选"
       }
@@ -714,6 +724,9 @@
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b12012fc577978259b32ba379ada1"
         },
         "structure_url": null,
         "title": "高粘度高Tg环氧树脂解决方案推荐"
@@ -731,6 +744,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1204b5fc731096e5d08c4a12ee4a"
+        },
         "structure_url": null,
         "title": "Cantor合金性能优化组分设计"
       }
@@ -746,6 +762,9 @@
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae38206f776ad8b8f9087843c317a",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1208b8857b42a4eafd6d463a3010"
         },
         "structure_url": null,
         "title": "含硫固态电解质界面稳定性研究"
@@ -763,6 +782,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2c9deb67e18bbca95f4fec161f5",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": ""
+        },
         "structure_url": null,
         "title": "高效钙钛矿太阳能电池添加剂设计与报告撰写"
       }
@@ -778,6 +800,9 @@
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1210e2847e9991af07e9039a8499"
         },
         "structure_url": null,
         "title": "双相不锈钢成分优化与强度预测"
@@ -811,6 +836,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
+         "sharing_url_en": {
+          "prod_url": ""
+        },
         "structure_url": null,
         "title": "Sawyer-Tower双波法介绍"
       }
@@ -826,6 +854,9 @@
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2dc9619755f98cb0e67654fd6c6",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b121c4d9d7bdd8c90e6c289beb649"
         },
         "structure_url": null,
         "title": "复杂掺杂结构搭建&多性质计算"
