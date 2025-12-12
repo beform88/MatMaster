@@ -1,5 +1,7 @@
 from google.adk.tools import ToolContext
 
+from agents.matmaster_agent.logger import logger
+
 BUILD_PERIODIC_TOOS = [
     'build_bulk_structure_by_template',
     'build_bulk_structure_by_wyckoff',
@@ -41,7 +43,7 @@ async def regulate_savename_suffix(tool, args, tool_context: ToolContext):
                 raw_output_file = 'structure'
             new_output_file = f"{raw_output_file.split('.')[0]}.cif"
             args['output_file'] = new_output_file
-            print(
+            logger.info(
                 f"[regulate_savename_suffix] Updated output_file to {new_output_file}"
             )
     elif tool_name in BUILD_NONPERIODIC_TOOLS:
@@ -51,7 +53,7 @@ async def regulate_savename_suffix(tool, args, tool_context: ToolContext):
                 raw_output_file = 'structure'
             new_output_file = f"{raw_output_file.split('.')[0]}.xyz"
             args['output_file'] = new_output_file
-            print(
+            logger.info(
                 f"[regulate_savename_suffix] Updated output_file to {new_output_file}"
             )
 

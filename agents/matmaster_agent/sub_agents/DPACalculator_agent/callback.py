@@ -1,5 +1,7 @@
 from google.adk.tools import ToolContext
 
+from agents.matmaster_agent.logger import logger
+
 BUILTIN_DPA2_HEADS = [
     'Domains_Alloy',
     'Domains_Anode',
@@ -87,7 +89,7 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
     ):
         if head not in BUILTIN_DPA2_HEADS:
             args['head'] = 'Omat24'
-            print(
+            logger.info(
                 f"[before_tool_callback] Updated head to Omat24 for DPA2.4 model {head}, {args['head']}"
             )
     elif (
@@ -97,6 +99,6 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
     ):
         if head not in BUILTIN_DPA3_HEADS:
             args['head'] = 'Omat24'
-            print(
+            logger.info(
                 f"[before_tool_callback] Updated head to Omat24 for DPA3.1 model {head}, {args['head']}"
             )
