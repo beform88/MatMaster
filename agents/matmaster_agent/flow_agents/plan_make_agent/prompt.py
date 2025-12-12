@@ -38,3 +38,30 @@ EXECUTION PRINCIPLES:
 - Ensure descriptions clearly communicate purpose
 - Validate tool compatibility before assignment
 """
+
+
+def get_multi_plan_make_instruction(
+    available_tools_with_info: str, candidate_count: int
+):
+    base_instruction = get_plan_make_instruction(available_tools_with_info)
+    return base_instruction + f"""
+
+Return multiple alternative options in a single JSON object to support a
+Tree-of-Thought style search. The response format must be:
+{{
+  "candidates": [
+    {{
+      "steps": [<same structure as the single-plan response>]
+    }}
+  ]
+}}
+
+STRICT REQUIREMENTS:
+- Provide exactly {candidate_count} diverse candidates whenever possible.
+- Each candidate can be either a full end-to-end plan or a short chain of
+  immediate next steps that can be expanded later.
+- Maintain independence between candidates; avoid duplicating identical first
+  actions unless clearly required by the task.
+- Preserve all constraints and formatting rules from the single-plan
+  instruction above for every candidate's steps array.
+"""
