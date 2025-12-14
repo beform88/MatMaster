@@ -63,7 +63,7 @@ A standardized output format is crucial for avoiding ambiguity; please strictly 
 -
 """
 
-DPA_PRIOR_KNOWLEDGE = """
+DPA_MODEL_BRANCH_SELECTION = """
 Built-in multi-task general-purpose pretrained models:
   'DPA2.4-7M': "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/cd12300a-d3e6-4de9-9783-dd9899376cae/dpa-2.4-7M.pt"
   DPA3.1-3M": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/18b8f35e-69f5-47de-92ef-af8ef2c13f54/DPA-3.1-3M.pt"

@@ -2,7 +2,7 @@ from datetime import date
 
 from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.prompt import (
-    DPA_PRIOR_KNOWLEDGE,
+    DPA_MODEL_BRANCH_SELECTION,
     STRUCTURE_BUILDING_SAVENAME,
 )
 from agents.matmaster_agent.sub_agents.ABACUS_agent.constant import ABACUS_AGENT_NAME
@@ -335,31 +335,31 @@ ALL_TOOLS = {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.OPTIMIZE_STRUCTURE],
         'description': 'Perform geometry optimization of a crystal or molecular structure. Supports relaxation of atomic positions and optionally the unit cell. Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'run_molecular_dynamics': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.MOLECULAR_DYNAMICS],
         'description': 'Run molecular dynamics simulations using ASE interface. CAN DO: run MD with DPA pretrained model or user-uploaded DeePMD mdoel; run NVE, NVT, NPT MD with logging basic thermodynamics and lattice parameters. CANNOT DO: run MD with classical force-field or ab initio (or DFT) methods; nor run complicated MD like shock conditions, or with complicated on-the-fly stastistics like RDF, MSD. Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'calculate_phonon': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.PHONON],
         'description': 'Compute phonon properties. Generates displaced supercells, calculates interatomic forces, and derives phonon dispersion, thermal properties, and optional total/projected DOS. Outputs band structures, entropy, free energy, heat capacity, and maximum phonon frequencies. Requires optimized structure as input. Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.ELASTIC_CONSTANT],
         'description': 'Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'run_neb': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA],
         'description': 'Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
