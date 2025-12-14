@@ -340,8 +340,22 @@ async def csv_to_markdown_table(csv_url, title=None):
     """
     下载 CSV 文件并转换为 markdown 表格字符串
     """
+    MAX_SIZE_BYTES = 1 * 1024 * 1024  # 1M
+
     async with aiohttp.ClientSession() as session:
         async with session.get(csv_url) as resp:
+            resp.raise_for_status()
+
+            # 检查 Content-Length 头部
+            content_length = resp.content_length
+
+            # 如果有 Content-Length 且超过限制，直接返回空字符串
+            if content_length and content_length > MAX_SIZE_BYTES:
+                logger.warning(
+                    f"CSV 文件过大: {content_length} 字节 > {MAX_SIZE_BYTES} 字节"
+                )
+                return ''
+
             resp.raise_for_status()
             content = await resp.text()
 
