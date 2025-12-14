@@ -11,6 +11,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
         },
         "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1cfe638973df82a02aa1fd7f0a75",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b05fb0581741d8d9f4571a79f7af8"
         },
         "structure_url": null
@@ -27,6 +28,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2daabec7e9e85df7d277598a9d3"
         },
         "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d042154796b9ea8b577956bc187",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0611b6c87b36a3a36d128ce7dd72"
         },
         "structure_url": null
@@ -139,7 +141,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec463c757f2d865582dc5058b287"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d075c9c710c8dd2fe28d6168d13"
         },
         "structure_url": null
       }
@@ -155,7 +157,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec28add77e309dda7bddc3159d89"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d0f77987dfea2f2b071fc4713fa"
         },
         "structure_url": null
       }
@@ -187,7 +189,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d137c0671538a844bed1faadcb3"
         },
         "structure_url": null
       }
@@ -203,7 +205,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae32380f973b1b1d88b769193cfba"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d15dad270469e14a088ed4e35a7"
         },
         "structure_url": null
       }
@@ -232,27 +234,11 @@
         "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化",
         "question_en": "Build an adsorption structure of H2O on the TiO2 (101) surface and perform structural optimization",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d28be837a16aa4b56bd75fafbe9",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afcb8a5237b3ca2c6d712c12631b6"
         },
         "sharing_url_en": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b106502957e0895d7b687d00be755"
-        },
-        "structure_url": null
-      }
-    },
-    {
-      "zhPrompt": {
-        "belonging": "结构准备",
-        "belonging_en": "Structure Preparation",
-        "question": "在Materials Project中检索并返回3个带隙大于2 eV的氧化物结构",
-        "question_en": "Search and return 3 oxide structures with band gap > 2 eV from Materials Project",
-        "sharing_url": {
-          "prod_url": "",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b022a1aa17a48be5153c3effeda79"
-        },
-        "sharing_url_en": {
-          "prod_url": ""
         },
         "structure_url": null
       }
@@ -299,6 +285,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b075193f17d6193c4fc98e2c68003",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0276961b74c0badd479b88ad56c8"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1dacded471a58e9fcb042429c0e8"
+        },
         "structure_url": null
       }
     },
@@ -327,6 +316,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0757f4337a69a4f9949f56ecba8b",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b02524780795a9f5b138bd04680f6"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d4000e87370b8b463a1cdc36d5a"
         },
         "structure_url": null
       }
@@ -395,7 +387,7 @@
           "uat_url": ""
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d478fc075c5a2e3692229f4738d"
         },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
       }
@@ -681,7 +673,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d7137027a2ba8953cfe9c6a85c7"
         },
         "structure_url": null,
         "title": "高熵合金相图与相结构预测"
@@ -717,11 +709,11 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b1183e4b474f593865e6e33ef811c"
         },
         "sharing_url_en": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d7451de72e48708050ed82c2106",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0629a9107d6ca8e27c02c63d9173"
         },
         "structure_url": null,
-        "title": "SnTe热电材料高通量筛选"
+        "title": "SnTe 热电材料高通量筛选"
       }
     },
     {
@@ -732,7 +724,7 @@
         "question": "寻找在室温(25℃)下具有高玻璃化转变温度（Tg）的高黏（黏度大于 100 Pa·s ）环氧树脂材料。",
         "question_en": "Find epoxy resin materials with high glass transition temperature (Tg) and high viscosity (viscosity > 100 Pa·s) at room temperature (25°C).",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0ce2675a7e098a82a484ca2f49ec",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
           "uat_url": ""
         },
@@ -740,7 +732,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b12012fc577978259b32ba379ada1"
         },
         "structure_url": null,
-        "title": "高粘度高Tg环氧树脂解决方案推荐"
+        "title": "高粘度高 Tg 环氧树脂解决方案推荐"
       }
     },
     {
@@ -759,7 +751,7 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1204b5fc731096e5d08c4a12ee4a"
         },
         "structure_url": null,
-        "title": "Cantor合金性能优化组分设计"
+        "title": "Cantor 合金性能优化组分设计"
       }
     },
     {
@@ -770,7 +762,7 @@
         "question": "推荐含硫的固态电解质材料，能够在保持高离子电导率的同时改善与锂金属负极的界面稳定性。",
         "question_en": "Recommend sulfur-containing solid electrolyte materials that can improve interface stability with lithium metal anode while maintaining high ionic conductivity",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0cdff18571e89874a1600d65452f",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae38206f776ad8b8f9087843c317a",
           "uat_url": ""
         },
@@ -786,15 +778,15 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/3586b951-97e6-4350-9549-1f96f8b4a270/perovskite.png",
-        "question": "1. 我要设计效率大于26%的稳定的钙钛矿太阳能电池，请帮我查询钙钛矿数据库中2025年报道的高效率添加剂，推荐3种相似的添加剂配方；2. 根据你设计的3种添加剂中预测效率最高的分子，撰写开题报告草稿",
-        "question_en": "1. I want to design a stable perovskite solar cell with efficiency > 26%, please help me query high-efficiency additives reported in 2025 in the perovskite database, recommend 3 similar additive formulations; 2. Based on the molecule with highest predicted efficiency among the 3 additives you designed, draft a research proposal",
+        "question": "我要设计效率大于26%的稳定的钙钛矿太阳能电池，请帮我查询钙钛矿数据库中2025年报道的高效率添加剂，推荐3种相似的添加剂配方；2. 根据你设计的3种添加剂中预测效率最高的分子，撰写开题报告草稿",
+        "question_en": "I want to design a stable perovskite solar cell with efficiency > 26%, please help me query high-efficiency additives reported in 2025 in the perovskite database, recommend 3 similar additive formulations; 2. Based on the molecule with highest predicted efficiency among the 3 additives you designed, draft a research proposal",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0ce7c81a769684523666134bfe46",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2c9deb67e18bbca95f4fec161f5",
           "uat_url": ""
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1da75e0b7dce8e2f110642be6f64"
         },
         "structure_url": null,
         "title": "高效钙钛矿太阳能电池添加剂设计与报告撰写"
@@ -808,7 +800,7 @@
         "question": "调研双相不锈钢 2209/ER2209 的化学成分，对其中 Ni 含量进行调整，并利用钢铁抗拉强度预测模型对成分方案的极限抗拉强度进行预测。在此基础上，分析抗拉强度随 Ni 含量变化的原因，包括 Ni 对奥氏体/铁素体相比例、固溶强化以及析出行为的影响。",
         "question_en": "Research the chemical composition of duplex stainless steel 2209/ER2209, adjust Ni content, and use steel tensile strength prediction model to predict ultimate tensile strength of composition schemes. Based on this, analyze reasons for tensile strength changes with Ni content, including Ni effects on austenite/ferrite phase ratio, solid solution strengthening, and precipitation behavior",
         "sharing_url": {
-          "prod_url": "",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d07735073d5bed91b9da9c1f2a8",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
@@ -848,7 +840,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d8b85997f3bbd99bd8054c566b8"
         },
         "structure_url": null,
         "title": "Sawyer-Tower双波法介绍"
