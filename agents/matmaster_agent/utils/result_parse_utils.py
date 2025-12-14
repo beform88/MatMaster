@@ -356,7 +356,6 @@ async def csv_to_markdown_table(csv_url, title=None):
                 )
                 return ''
 
-            resp.raise_for_status()
             content = await resp.text()
 
     # 解析 CSV
