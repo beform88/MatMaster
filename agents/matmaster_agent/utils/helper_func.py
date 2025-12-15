@@ -84,6 +84,10 @@ def no_found_structure_error(dict_result) -> bool:
     return result_has_code(dict_result) and dict_result['code'] == -9999
 
 
+def wallet_no_fee_error(dict_result) -> bool:
+    return result_has_code(dict_result) and dict_result['code'] == 140202
+
+
 def load_tool_response(part: Part):
     tool_response = part.function_response.response
     if is_mcp_result(tool_response):
