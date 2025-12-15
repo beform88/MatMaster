@@ -24,7 +24,7 @@ ThermoelectricBohriumExecutor = copy.deepcopy(BohriumExecutor)
 ThermoelectricBohriumStorge = copy.deepcopy(BohriumStorge)
 ThermoelectricBohriumExecutor['machine']['remote_profile'][
     'image_address'
-] = 'registry.dp.tech/dptech/dp/native/prod-435364/dpa-thermo-superconductor:20'
+] = 'registry.dp.tech/dptech/dp/native/prod-435364/dpa-thermo-superconductor:22'
 ThermoelectricBohriumExecutor['machine']['remote_profile'][
     'machine_type'
 ] = 'c16_m64_1 * NVIDIA 4090'
