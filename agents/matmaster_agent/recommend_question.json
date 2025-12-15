@@ -279,7 +279,7 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
-        "question": "在Materials Project中检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
+        "question": "检索并返回不超过5个含稀土、过渡金属和氧，并且不包含Fe和Ni的三元化合物",
         "question_en": "Search and return no more than 5 ternary compounds containing rare earth elements, transition metals, and oxygen, excluding Fe and Ni from Materials Project",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b075193f17d6193c4fc98e2c68003",
