@@ -523,6 +523,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee2d89337cc8a060eacf304f5881",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae81de15076a9a958d7635fdd8d81"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1f4b006773c3aea27190ff868519"
+        },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt"
       }
     },
@@ -569,7 +572,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0070e0477059b9e8a2fc8581301e"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1f4e8611745298a66e98748b0af8"
         },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC06WERP5J0F5D5R1P48T37N/td-shg-example.txt"
       }
