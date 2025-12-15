@@ -369,7 +369,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1fcd1ded7be58480a368a7355eec"
         },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
       }
@@ -404,7 +404,7 @@
           "uat_url": ""
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d4c805075dd97178b54c53f7d1d"
         },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif"
       }
@@ -468,6 +468,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae373760373f1bbff92bfc5ac98ac"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1fdf3a01717a998da562a17f333b"
+        },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
     },
@@ -509,6 +512,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b07e4aa8978bc96e89700b4995355",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b06eca81b7c6f9c31b8dca1204313"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1ff273757050bd4aa067c3dc55db"
         },
         "structure_url": null
       }
