@@ -20,6 +20,8 @@ translations = {
         'Step': 'Step',
         'PlanSummary': 'Plan Summary',
         'NoFoundStructure': 'No eligible structures found.',
+        'WalletNoFee': 'Insufficient wallet balance',
+        'WalletNoFeeAction': 'Insufficient wallet balance. Please top up your account on [this page](https://www.bohrium.com/consume?menu=cash) and try again.',
     },
     'zh': {
         'JobStatus': '任务状态',
@@ -40,6 +42,8 @@ translations = {
         'Step': '步骤',
         'PlanSummary': '计划汇总概要',
         'NoFoundStructure': '未找到符合条件的结构',
+        'WalletNoFee': '钱包余额不足',
+        'WalletNoFeeAction': '钱包余额不足，请在[此页面](https://www.bohrium.com/consume?menu=cash)充值后重试。',
     },
 }
 
