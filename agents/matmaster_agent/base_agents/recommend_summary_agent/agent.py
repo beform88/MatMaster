@@ -175,14 +175,16 @@ class BaseAgentWithRecAndSum(
             if item['name'] == current_step_tool_name
         ]
 
+        tool_doc = current_function_declaration[0]['description']
+        tool_args_recommend_prompt = ALL_TOOLS[current_step_tool_name].get(
+            'args_setting', ''
+        )
         self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
             user_prompt=current_step['description'],
             agent_prompt=self.instruction,
-            tool_doc=current_function_declaration[0]['description'],
+            tool_doc=tool_doc,
             tool_schema=current_function_declaration[0]['parameters'],
-            tool_args_recommend_prompt=ALL_TOOLS[current_step_tool_name].get(
-                'args_setting', ''
-            ),
+            tool_args_recommend_prompt=tool_args_recommend_prompt,
         )
         logger.info(
             f'{ctx.session.id} current_function_declaration = {current_function_declaration}'
@@ -249,6 +251,9 @@ class BaseAgentWithRecAndSum(
             ):
                 yield recommend_params_event
 
+            self.recommend_params_schema_agent.instruction = (
+                tool_doc + '\n' + tool_args_recommend_prompt
+            )
             self.recommend_params_schema_agent.output_schema, _ = (
                 create_tool_args_schema(missing_tool_args, current_function_declaration)
             )
