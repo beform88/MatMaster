@@ -2,6 +2,7 @@ from datetime import date
 
 from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.prompt import (
+    ALIAS_SEARCH_PROMPT,
     DPA_MODEL_BRANCH_SELECTION,
     STRUCTURE_BUILDING_SAVENAME,
 )
@@ -683,6 +684,9 @@ ALL_TOOLS = {
         'description': 'Search for research papers and recent progress related to a topic',
         'args_setting': f"""
             If not specified, apply start_time=2020-01-01, end_time={TODAY}, page_size not less than 150. When constructing query word list and question: (i) use English to ensure professionalism; (ii) avoid broad keywords like 'materials science', 'chemistry', 'progress'; (iii) extract specific, technically relevant keywords such as material names, molecular identifiers, mechanism names, property names, or application contexts; (iv) if the user's query is broad, decompose the concept into technical terms and generate concrete, research-usable keywords; (v) when translating, no segmenting composite technical noun phrases unless it is an established scientific usage. If ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering refinement, including identifying: representative subfields, canonical mechanisms, prototypical material classes, commonly studied performance metrics, key methodologies or application contexts. These keywords must be specific enough to retrieve meaningful literature and avoid domain-level noise.
+
+            Must be aware of these prior knowledge:
+            - {ALIAS_SEARCH_PROMPT}
         """,
         'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
