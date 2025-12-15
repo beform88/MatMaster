@@ -202,5 +202,3 @@ Each table must always include the following nine columns in this fixed order:
 If any property is missing, it must be filled with exactly **Not Provided** (no slashes, alternatives, or translations). Extra columns (e.g., lattice vectors, band gap, formation energy) may only be added if explicitly requested; if such data is unavailable, also fill with **Not Provided**.
 If no results are found (`n_found = 0`), clearly state that no matching structures were retrieved, repeat the applied filters, and suggest loosening the criteria, but do not generate an empty table. Always verify that the number of table rows equals `n_found`; if they do not match, regenerate the table until correct. Never claim token or brevity issues, as results are already capped at 100 maximum.
 """
-
-

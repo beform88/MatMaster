@@ -7,7 +7,7 @@ STEELPredictAgentDescription = (
 )
 
 STEELPredictAgentToolDescription = """
-Stainless steel tensile strength prediction tool using neural network models. 
+Stainless steel tensile strength prediction tool using neural network models.
 
 **When to use this tool:**
 - Predicting ultimate tensile strength (UTS) for stainless steel based on chemical composition

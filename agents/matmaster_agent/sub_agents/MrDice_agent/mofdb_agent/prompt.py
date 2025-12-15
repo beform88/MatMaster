@@ -7,7 +7,7 @@ MofdbAgentDescription = (
 )
 
 MofdbAgentToolDescription = """
-Internal database search tool. Execute SQL queries against the MOF database. 
+Internal database search tool. Execute SQL queries against the MOF database.
 
 **When to use this tool:**
 - Any request clearly about MOFs should be handled by MOFdb

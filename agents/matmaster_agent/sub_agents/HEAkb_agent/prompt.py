@@ -1,7 +1,7 @@
 HEAKbAgentName = 'HEAkb_agent'
 
 HEAKbAgentToolDescription = """
-Literature knowledge base query tool for HEA (High-Entropy Alloy) research. 
+Literature knowledge base query tool for HEA (High-Entropy Alloy) research.
 
 **When to use this tool:**
 - Querying HEA literature knowledge base with natural language questions

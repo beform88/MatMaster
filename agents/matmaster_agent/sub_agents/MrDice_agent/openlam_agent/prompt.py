@@ -6,7 +6,7 @@ OpenlamAgentDescription = (
 )
 
 OpenlamAgentToolDescription = """
-Internal database search tool. Retrieve crystal structures from the OpenLAM internal database. 
+Internal database search tool. Retrieve crystal structures from the OpenLAM internal database.
 
 **When to use this tool:**
 - Supports formula, min_energy, max_energy, min_submission_time, max_submission_time filters

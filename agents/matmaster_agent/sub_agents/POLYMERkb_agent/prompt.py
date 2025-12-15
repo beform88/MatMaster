@@ -1,7 +1,7 @@
 POLYMERKbAgentName = 'POLYMERkb_agent'
 
 POLYMERKbAgentToolDescription = """
-Literature knowledge base query tool for polymer research with structured database search. 
+Literature knowledge base query tool for polymer research with structured database search.
 
 **When to use this tool:**
 - Querying polymer literature using structured database queries

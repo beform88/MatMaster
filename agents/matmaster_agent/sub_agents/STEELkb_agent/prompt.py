@@ -1,7 +1,7 @@
 STEELKbAgentName = 'STEELkb_agent'
 
 STEELKbAgentToolDescription = """
-Literature knowledge base query tool for Stainless Steel research. 
+Literature knowledge base query tool for Stainless Steel research.
 
 **When to use this tool:**
 - Querying Stainless Steel literature knowledge base with natural language questions

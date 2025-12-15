@@ -80,11 +80,11 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant impo
     OPTIMADE_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.prompt import (
-    OptimadeFilterToolDescription,
-    OptimadeSpgToolDescription,
-    OptimadeBandgapToolDescription,
     OptimadeAgentArgsSetting,
     OptimadeAgentSummaryPrompt,
+    OptimadeBandgapToolDescription,
+    OptimadeFilterToolDescription,
+    OptimadeSpgToolDescription,
 )
 from agents.matmaster_agent.sub_agents.NMR_agent.constant import (
     NMR_AGENT_NAME,
