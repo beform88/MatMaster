@@ -263,6 +263,17 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
+        "question": "检索并返回3个带隙大于2 eV的氧化物结构",
+        "question_en": "Search and return 3 oxide structures with band gap greater than 2 eV",
+        "sharing_url": "",
+        "sharing_url_en": "",
+        "structure_url": ""
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
         "question": "在Materials Project中检索并返回不超过2个仅含Ti、Al、O且空间群为63的化合物，并导出 CIF 文件 ",
         "question_en": "Search and return no more than 2 compounds containing only Ti, Al, O with space group 63 from Materials Project, and export CIF files",
         "sharing_url": {
@@ -273,6 +284,17 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b107f46fb73b5a74c4d3a4b21caad"
         },
         "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
+        "question": "从CoREMOF 2019数据库查找原子数小于 50、比表面积大于 1000 m²/g，且含有 O 元素和 C 元素的 MOF",
+        "question_en": "Search and return no more than 5 MOFs with less than 50 atoms, greater than 1000 m²/g surface area, and containing O and C elements from CoREMOF 2019 database",
+        "sharing_url": "",
+        "sharing_url_en": "",
+        "structure_url": ""
       }
     },
     {
@@ -650,10 +672,10 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/b415c05a-41de-4fd1-8b6c-d98067cedc44/alloy.jpeg",
-        "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
-        "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr face-centered cubic alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results",
+        "question": "我想研究 Ni–Co–Cr 合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
+        "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b02e4fd927cc98cd6b2a217b29075",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b207c202d7c80b6186aa2fa0aa1a1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
         },

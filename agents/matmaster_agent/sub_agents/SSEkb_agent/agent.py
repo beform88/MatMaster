@@ -15,11 +15,7 @@ from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
     SSE_SERVER_URL,
 )
-from agents.matmaster_agent.sub_agents.SSEkb_agent.prompt import (
-    SSEKbAgentDescription,
-    SSEKbAgentInstruction,
-    SSEKbAgentName,
-)
+from agents.matmaster_agent.sub_agents.SSEkb_agent.prompt import SSEKbAgentName
 
 load_dotenv()
 
@@ -37,8 +33,8 @@ class SSEKbAgent(BaseSyncAgentWithToolValidator):
             model=llm_config.default_litellm_model,
             doc_summary=True,
             name=SSEKbAgentName + name_suffix,
-            description=SSEKbAgentDescription,
-            instruction=SSEKbAgentInstruction,
+            description='',
+            instruction='',
             tools=[sse_kb_toolset],
             render_tool_response=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

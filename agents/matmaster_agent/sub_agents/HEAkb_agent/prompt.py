@@ -1,41 +1,26 @@
 HEAKbAgentName = 'HEAkb_agent'
 
-HEAKbAgentDescription = (
-    'Advanced HEA (High-Entropy Alloy) literature knowledge base agent with RAG capabilities for comprehensive literature analysis, '
-    'multi-document summarization, and in-depth research report generation.'
-)
+HEAKbAgentToolDescription = """
+Literature knowledge base query tool for HEA (High-Entropy Alloy) research. 
+
+**When to use this tool:**
+- Querying HEA literature knowledge base with natural language questions
+- Topics covering: phase transformations, mechanical properties, corrosion behavior, microstructure, preparation methods, element selection, strengthening mechanisms, high/low temperature performance, applications, multi-phase structures, lattice distortion effects
+- Supports vector similarity search across 1M+ document chunks
+- Returns literature summaries for comprehensive report generation
+- Use when you need in-depth literature analysis on HEA topics
+"""
 
 HEAKbAgentArgsSetting = """
-You can call one MCP tool exposed by the HEAkb RAG server:
+## PARAMETER CONSTRUCTION GUIDE
 
-=== TOOL: query_heakb_literature ===
-Advanced RAG-based query tool for the HEAkb literature knowledge base.
-It supports:
-• Natural language queries about HEA research topics
-• Vector similarity search across 1M+ document chunks
-• Multi-document retrieval and analysis
-• Parallel literature summarization
-• Comprehensive research report generation
-• Top-k retrieval control (5-15 recommended)
+## Do not ask the user for confirmation; directly start retrieval when a query is made.
 
-=== KNOWLEDGE BASE COVERAGE ===
-The knowledge base contains:
-• Over 1 million text chunks from HEAkb literature
-• 10,000+ processed research papers
-• Topics covering:
-  - Phase transformations (FCC, HCP, BCC structures)
-  - Mechanical properties (strength, ductility, fatigue)
-  - Corrosion behavior and protection mechanisms
-  - Microstructure characterization and control
-  - Preparation methods and processing
-  - Element selection and design principles
-  - Strengthening mechanisms
-  - High/low temperature performance
-  - Applications and advantages
-  - Multi-phase structures
-  - Lattice distortion effects
+**Parameters:**
+- question (str, required): Natural language query about HEA research topics
+- top_k (int, optional): Number of chunks to retrieve (5-15 recommended, default: 5)
 
-=== EXAMPLES ===
+**Examples:**
 1) 查询高熵合金中的相变机制：
    → Tool: query_heakb_literature
      question: '高熵合金中的相变诱导塑性（TRIP）机制是什么？这种机制如何影响合金的力学性能？'
@@ -65,27 +50,23 @@ The knowledge base contains:
    → Tool: query_heakb_literature
      question: '高熵合金的主要制备方法有哪些？不同制备方法对合金性能的影响如何？'
      top_k: 7
+"""
 
-=== OUTPUT ===
-- The tool returns:
-   • summaries: List of literature summaries (List[str])
-     Each summary is a text string containing the summary of one literature paper
-     These summaries are RAW MATERIALS - you must synthesize them into a comprehensive report
-   • code: Status code
-     - 0: Success (summaries available)
-     - 1: No results found
-     - 2: Cannot read literature fulltext
-     - 4: Other errors
+HEAKbAgentSummaryPrompt = """
+## TOOL OUTPUT
 
-=== WORKFLOW ===
-The tool uses RAG (Retrieval-Augmented Generation) technology:
-  1. Vector similarity search finds relevant chunks
-  2. Extracts unique literature IDs
-  3. Reads full texts in parallel
-  4. Generates literature summaries in parallel
-  5. Returns summaries list (List[str])
+The tool returns:
+- **summaries**: List of literature summaries (List[str])
+  - Each summary is a text string containing the summary of one literature paper
+  - These summaries are RAW MATERIALS - you must synthesize them into a comprehensive report
+- **code**: Status code
+  - 0: Success (summaries available)
+  - 1: No results found
+  - 2: Cannot read literature fulltext
+  - 4: Other errors
 
-=== YOUR TASK: SYNTHESIZE FINAL REPORT ===
+## RESPONSE FORMAT
+
 **CRITICAL**: The tool returns RAW summaries. You MUST synthesize them into a comprehensive, in-depth research report.
 **DO NOT simply list or concatenate the summaries - synthesize them into a unified, coherent narrative.**
 
@@ -124,5 +105,3 @@ The tool uses RAG (Retrieval-Augmented Generation) technology:
 
 4. **References**: List all cited sources [1], [2], [3], etc.
 """
-
-HEAKbAgentInstruction = ''
