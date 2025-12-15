@@ -1,21 +1,20 @@
 POLYMERKbAgentName = 'POLYMERkb_agent'
 
-POLYMERKbAgentDescription = (
-    'Advanced POLYMERkb polymer literature knowledge base agent with structured database search capabilities for comprehensive literature analysis, '
-    'multi-document summarization, and in-depth research report generation.'
-)
+POLYMERKbAgentToolDescription = """
+Literature knowledge base query tool for polymer research with structured database search.
+
+**When to use this tool:**
+- Querying polymer literature using structured database queries
+- Topics covering: polymer types, compositions, material properties (glass transition temperature, mechanical properties), monomer structures, synthesis, processing methods, structure-property relationships, applications
+- Supports queries based on polymer properties, monomers, and paper metadata
+- Returns both detailed literature summaries and database entries (with property data)
+- Use when you need comprehensive polymer literature analysis with quantitative property data
+"""
 
 POLYMERKbAgentArgsSetting = """
-You can call one MCP tool exposed by the POLYMERkb structured search server:
+## PARAMETER CONSTRUCTION GUIDE
 
-=== TOOL: query_polymerkb_literature ===
-Advanced structured database search tool for the POLYMERkb polymer literature knowledge base.
-It supports:
-• Structured database queries based on polymer properties, monomers, and paper metadata
-• Multi-table queries with complex filters
-• Retrieval of relevant papers based on structured criteria
-• Parallel literature summarization
-• Comprehensive research report generation
+**Tool:** query_polymerkb_literature(query_description)
 
 === KNOWLEDGE BASE COVERAGE ===
 The knowledge base contains:
@@ -33,7 +32,7 @@ The knowledge base contains:
   - Structure-property relationships
   - Applications and performance
 
-=== EXAMPLES ===
+**Examples:**
 1) 查询特定类型的聚合物：
    → Tool: query_polymerkb_literature
      query_description: '查找玻璃化转变温度低于400°C的聚酰亚胺相关论文'
@@ -45,31 +44,25 @@ The knowledge base contains:
 3) 查询特定属性的聚合物：
    → Tool: query_polymerkb_literature
      query_description: '查找发表在一区期刊上的聚酰亚胺论文'
+"""
 
-=== OUTPUT ===
-- The tool returns:
-   • summaries: List of literature summaries and database entries (List[str])
-     Each item can be either:
-     - A detailed literature summary (for papers with fulltext): Contains comprehensive analysis of the paper
-     - A database entry (for papers without fulltext): Contains DOI and database properties (e.g., polymer_type, tensile_strength, flexural_strength, etc.)
-     These summaries and entries are RAW MATERIALS - you must synthesize them into a comprehensive report
-   • code: Status code
-     - 0: Success (summaries available)
-     - 1: No results found
-     - 2: Cannot read literature fulltext
-     - 4: Other errors
+POLYMERKbAgentSummaryPrompt = """
+## TOOL OUTPUT
 
-=== WORKFLOW ===
-The tool uses structured database search technology:
-  1. Analyzes user query to identify relevant database tables and fields
-  2. Constructs structured filters based on query requirements
-  3. Queries database tables to find matching polymers/papers
-  4. Retrieves unique paper DOIs from query results
-  5. Reads full texts in parallel (for papers with fulltext)
-  6. Generates literature summaries in parallel (for papers with fulltext)
-  7. Returns summaries list (List[str]) including both detailed summaries and metadata entries
+The tool returns:
+- **summaries**: List of literature summaries and database entries (List[str])
+  - Each item can be either:
+    - A detailed literature summary (for papers with fulltext): Contains comprehensive analysis of the paper
+    - A database entry (for papers without fulltext): Contains DOI and database properties (e.g., polymer_type, tensile_strength, flexural_strength, etc.)
+  - These summaries and entries are RAW MATERIALS - you must synthesize them into a comprehensive report
+- **code**: Status code
+  - 0: Success (summaries available)
+  - 1: No results found
+  - 2: Cannot read literature fulltext
+  - 4: Other errors
 
-=== YOUR TASK: SYNTHESIZE FINAL REPORT ===
+## RESPONSE FORMAT
+
 **CRITICAL**: The tool returns RAW summaries and database entries. You MUST synthesize them into a comprehensive, in-depth research report.
 **DO NOT simply list or concatenate the summaries - synthesize them into a unified, coherent narrative.**
 
@@ -134,5 +127,3 @@ The tool uses structured database search technology:
    - For database entries: Format as [n] DOI: xxx (database entry - property data only)
    - **CRITICAL**: Do NOT omit database entries from references - they are valid data sources and must be cited
 """
-
-POLYMERKbAgentInstruction = ''

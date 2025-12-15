@@ -15,11 +15,7 @@ from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.HEAkb_agent.constant import (
     HEA_SERVER_URL,
 )
-from agents.matmaster_agent.sub_agents.HEAkb_agent.prompt import (
-    HEAKbAgentDescription,
-    HEAKbAgentInstruction,
-    HEAKbAgentName,
-)
+from agents.matmaster_agent.sub_agents.HEAkb_agent.prompt import HEAKbAgentName
 
 load_dotenv()
 
@@ -37,8 +33,8 @@ class HEAKbAgent(BaseSyncAgentWithToolValidator):
             model=llm_config.default_litellm_model,
             doc_summary=True,
             name=HEAKbAgentName + name_suffix,
-            description=HEAKbAgentDescription,
-            instruction=HEAKbAgentInstruction,
+            description='',
+            instruction='',
             tools=[hea_kb_toolset],
             render_tool_response=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

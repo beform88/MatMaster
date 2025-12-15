@@ -1,40 +1,26 @@
 STEELKbAgentName = 'STEELkb_agent'
 
-STEELKbAgentDescription = (
-    'Advanced STEELkb literature knowledge base agent with RAG capabilities for comprehensive literature analysis, '
-    'multi-document summarization, and in-depth research report generation.'
-)
+STEELKbAgentToolDescription = """
+Literature knowledge base query tool for Stainless Steel research.
+
+**When to use this tool:**
+- Querying Stainless Steel literature knowledge base with natural language questions
+- Topics covering: corrosion behavior, protection mechanisms, mechanical properties, microstructure, preparation methods, alloy composition, design principles, strengthening mechanisms, high/low temperature performance, applications, phase transformations, surface treatment
+- Supports vector similarity search across document chunks
+- Returns literature summaries for comprehensive report generation
+- Use when you need in-depth literature analysis on Stainless Steel topics
+"""
 
 STEELKbAgentArgsSetting = """
-You can call one MCP tool exposed by the STEELkb RAG server:
+## PARAMETER CONSTRUCTION GUIDE
 
-=== TOOL: query_steelkb_literature ===
-Advanced RAG-based query tool for the STEELkb literature knowledge base.
-It supports:
-• Natural language queries about Stainless Steel research topics (via STEELkb)
-• Vector similarity search across document chunks
-• Multi-document retrieval and analysis
-• Parallel literature summarization
-• Comprehensive research report generation
-• Top-k retrieval control (5-15 recommended)
+**Tool:** query_steelkb_literature(question, top_k)
 
-=== KNOWLEDGE BASE COVERAGE ===
-The knowledge base contains:
-• Thousands of text chunks from STEELkb literature
-• Processed research papers on Stainless Steel
-• Topics covering:
-  - Corrosion behavior and protection mechanisms
-  - Mechanical properties (strength, ductility, fatigue)
-  - Microstructure characterization and control
-  - Preparation methods and processing
-  - Alloy composition and design principles
-  - Strengthening mechanisms
-  - High/low temperature performance
-  - Applications and advantages
-  - Phase transformations
-  - Surface treatment and modification
+**Parameters:**
+- question (str, required): Natural language query about Stainless Steel research topics
+- top_k (int, optional): Number of chunks to retrieve (5-15 recommended, default: 5)
 
-=== EXAMPLES ===
+**Examples:**
 1) 查询不锈钢的腐蚀机制：
    → Tool: query_steelkb_literature
      question: '不锈钢的腐蚀行为和防护机制是什么？不同元素对腐蚀性能的影响如何？'
@@ -54,32 +40,23 @@ The knowledge base contains:
    → Tool: query_steelkb_literature
      question: '不锈钢的主要制备方法有哪些？不同制备方法对合金性能的影响如何？'
      top_k: 5
+"""
 
-=== OUTPUT ===
-- The tool returns:
-   • summaries: List of literature summaries (List[str])
-     Each summary is a text string containing the summary of one literature paper
-     These summaries are RAW MATERIALS - you must synthesize them into a comprehensive report
-   • code: Status code
-     - 0: Success (summaries available)
-     - 1: No results found
-     - 2: Cannot read literature fulltext
-     - 4: Other errors
+STEELKbAgentSummaryPrompt = """
+## TOOL OUTPUT
 
-=== WORKFLOW ===
-The tool uses RAG (Retrieval-Augmented Generation) technology:
-  1. Vector similarity search finds relevant chunks
-  2. Extracts unique literature IDs
-  3. Reads full texts in parallel
-  4. Generates literature summaries in parallel
-  5. Returns summaries list (List[str])
+The tool returns:
+- **summaries**: List of literature summaries (List[str])
+  - Each summary is a text string containing the summary of one literature paper
+  - These summaries are RAW MATERIALS - you must synthesize them into a comprehensive report
+- **code**: Status code
+  - 0: Success (summaries available)
+  - 1: No results found
+  - 2: Cannot read literature fulltext
+  - 4: Other errors
 
-=== PARAMETERS ===
-- top_k controls the number of chunks to retrieve (5-15 recommended)
-- More chunks may find more relevant papers but increase processing time
-- The actual number of papers processed may be less than top_k (due to deduplication)
+## RESPONSE FORMAT
 
-=== YOUR TASK: SYNTHESIZE FINAL REPORT ===
 **CRITICAL**: The tool returns RAW summaries. You MUST synthesize them into a comprehensive, in-depth research report.
 **DO NOT simply list or concatenate the summaries - synthesize them into a unified, coherent narrative.**
 
@@ -118,5 +95,3 @@ The tool uses RAG (Retrieval-Augmented Generation) technology:
 
 4. **References**: List all cited sources [1], [2], [3], etc.
 """
-
-STEELKbAgentInstruction = ''

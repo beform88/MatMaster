@@ -16,8 +16,6 @@ from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
     STEEL_PREDICT_SERVER_URL,
 )
 from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.prompt import (
-    STEELPredictAgentDescription,
-    STEELPredictAgentInstruction,
     STEELPredictAgentName,
 )
 
@@ -37,8 +35,8 @@ class STEELPredictAgent(BaseSyncAgentWithToolValidator):
             model=llm_config.default_litellm_model,
             doc_summary=False,
             name=STEELPredictAgentName + name_suffix,
-            description=STEELPredictAgentDescription,
-            instruction=STEELPredictAgentInstruction,
+            description='',
+            instruction='',
             tools=[steel_predict_toolset],
             render_tool_response=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

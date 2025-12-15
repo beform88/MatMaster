@@ -15,11 +15,7 @@ from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
     STEEL_SERVER_URL,
 )
-from agents.matmaster_agent.sub_agents.STEELkb_agent.prompt import (
-    STEELKbAgentDescription,
-    STEELKbAgentInstruction,
-    STEELKbAgentName,
-)
+from agents.matmaster_agent.sub_agents.STEELkb_agent.prompt import STEELKbAgentName
 
 load_dotenv()
 
@@ -37,8 +33,8 @@ class STEELKbAgent(BaseSyncAgentWithToolValidator):
             model=llm_config.default_litellm_model,
             doc_summary=True,
             name=STEELKbAgentName + name_suffix,
-            description=STEELKbAgentDescription,
-            instruction=STEELKbAgentInstruction,
+            description='',
+            instruction='',
             tools=[steel_kb_toolset],
             render_tool_response=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
