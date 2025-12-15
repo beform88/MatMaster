@@ -259,6 +259,7 @@ def get_kv_result(parsed_tool_result: List[dict]):
                     and item.get('name')
                     and item.get('data')
                     and not (item.get('name') == 'code')
+                    and not (item['name'].startswith('markdown_image'))
                 ]
             },
         },

@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Any, AsyncGenerator, Optional, cast
 
@@ -29,7 +28,6 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
 )
 from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
-    JOB_RESULT_KEY,
     LOADING_DESC,
     LOADING_END,
     LOADING_START,
@@ -41,14 +39,14 @@ from agents.matmaster_agent.constant import (
 )
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
-from agents.matmaster_agent.model import CostFuncType, RenderTypeEnum
+from agents.matmaster_agent.model import CostFuncType
 from agents.matmaster_agent.style import tool_response_failed_card
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
-    context_function_event,
     context_multipart2function_event,
     display_failed_result_or_consume,
     display_future_consume_event,
+    frontend_render_event,
     is_function_call,
     is_function_response,
     is_text,
@@ -59,9 +57,6 @@ from agents.matmaster_agent.utils.helper_func import (
     load_tool_response,
 )
 from agents.matmaster_agent.utils.result_parse_utils import (
-    get_echarts_result,
-    get_kv_result,
-    get_markdown_image_result,
     parse_result,
 )
 
@@ -227,89 +222,14 @@ class MCPRunEventsMixin(BaseMixin):
                     logger.info(
                         f'{ctx.session.id} parsed_tool_result = {parsed_tool_result}'
                     )
-
-                    # 包装成function_call，来避免在历史记录中展示；同时模型可以在上下文中感知
-                    if (
-                        parsed_tool_result
-                        and parsed_tool_result[0].get('meta_type')
-                        == RenderTypeEnum.LITERATURE
+                    for _frontend_render_event in frontend_render_event(
+                        ctx,
+                        event,
+                        self.name,
+                        parsed_tool_result,
+                        render_tool_response=self.render_tool_response,
                     ):
-                        for parsed_tool_result_event in context_function_event(
-                            ctx,
-                            self.name,
-                            'matmaster_literature_list',
-                            None,
-                            ModelRole,
-                            {
-                                'tool_name': first_part.function_response.name,
-                                'literature_list_result': parsed_tool_result,
-                            },
-                        ):
-                            yield parsed_tool_result_event
-                    elif (
-                        parsed_tool_result
-                        and parsed_tool_result[0].get('meta_type') == RenderTypeEnum.WEB
-                    ):
-                        for parsed_tool_result_event in context_function_event(
-                            ctx,
-                            self.name,
-                            'matmaster_web_search_list',
-                            None,
-                            ModelRole,
-                            {
-                                'tool_name': first_part.function_response.name,
-                                'web_search_result': parsed_tool_result,
-                            },
-                        ):
-                            yield parsed_tool_result_event
-                    else:
-                        for parsed_tool_result_event in context_function_event(
-                            ctx,
-                            self.name,
-                            'matmaster_parsed_tool_result',
-                            {'parsed_tool_result': parsed_tool_result},
-                            ModelRole,
-                        ):
-                            yield parsed_tool_result_event
-
-                    # Render Job Result Event
-                    job_result_comp_data = get_kv_result(parsed_tool_result)
-                    if (
-                        self.render_tool_response
-                        and job_result_comp_data['eventData']['content'][JOB_RESULT_KEY]
-                    ):
-                        for result_event in all_text_event(
-                            ctx,
-                            self.name,
-                            f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
-                            ModelRole,
-                        ):
-                            yield result_event
-
-                    # 渲染 Markdown 图片
-                    markdown_image_result = get_markdown_image_result(
-                        parsed_tool_result
-                    )
-                    if markdown_image_result:
-                        for item in markdown_image_result:
-                            for markdown_image_event in all_text_event(
-                                ctx, self.name, item['data'], ModelRole
-                            ):
-                                yield markdown_image_event
-
-                    # 渲染 echarts
-                    echarts_result = get_echarts_result(parsed_tool_result)
-                    if echarts_result:
-                        for echarts_event in context_function_event(
-                            ctx,
-                            self.name,
-                            'matmaster_echarts',
-                            None,
-                            ModelRole,
-                            {'echarts_url': [item['url'] for item in echarts_result]},
-                        ):
-                            yield echarts_event
-
+                        yield _frontend_render_event
                 if is_text(event):
                     if not event.partial:
                         for multi_part_event in context_multipart2function_event(
