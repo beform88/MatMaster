@@ -1,4 +1,4 @@
-from matmaster_agent.prompt import MATERIAL_NAMING_RULES
+from agents.matmaster_agent.prompt import MATERIAL_NAMING_RULES
 
 SCIENCE_NAVIGATOR_AGENT_DESCRIPTION = """
 Science Navigator Agent is designed to help researchers search academic concepts or research papers. The agent must always produce comprehensive, deeply elaborated, and extended analytical outputs unless the user explicitly requests brevity.
