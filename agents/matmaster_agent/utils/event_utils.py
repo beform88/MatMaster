@@ -1,5 +1,6 @@
 import copy
 import inspect
+import json
 import logging
 import os
 import traceback
@@ -14,9 +15,15 @@ from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.config import USE_PHOTON
-from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.constant import (
+    CURRENT_ENV,
+    JOB_RESULT_KEY,
+    MATMASTER_AGENT_NAME,
+    ModelRole,
+)
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.locales import i18n
+from agents.matmaster_agent.model import RenderTypeEnum
 from agents.matmaster_agent.style import (
     no_found_structure_card,
     photon_consume_free_card,
@@ -28,6 +35,11 @@ from agents.matmaster_agent.utils.finance import photon_consume
 from agents.matmaster_agent.utils.helper_func import (
     is_algorithm_error,
     no_found_structure_error,
+)
+from agents.matmaster_agent.utils.result_parse_utils import (
+    get_echarts_result,
+    get_kv_result,
+    get_markdown_image_result,
 )
 
 logger = logging.getLogger(__name__)
@@ -477,3 +489,78 @@ async def handle_upload_file_event(ctx: InvocationContext, author):
                     yield event
 
                 yield update_state_event(ctx, state_delta={'upload_file': True})
+
+
+def frontend_render_event(ctx, event, author, parsed_tool_result, render_tool_response):
+    first_part = event.content.parts[0]
+    # 文献列表
+    if (
+        parsed_tool_result
+        and parsed_tool_result[0].get('meta_type') == RenderTypeEnum.LITERATURE
+    ):
+        yield from context_function_event(
+            ctx,
+            author,
+            'matmaster_literature_list',
+            None,
+            ModelRole,
+            {
+                'tool_name': first_part.function_response.name,
+                'literature_list_result': parsed_tool_result,
+            },
+        )
+    # Web 检索列表
+    elif (
+        parsed_tool_result
+        and parsed_tool_result[0].get('meta_type') == RenderTypeEnum.WEB
+    ):
+        yield from context_function_event(
+            ctx,
+            author,
+            'matmaster_web_search_list',
+            None,
+            ModelRole,
+            {
+                'tool_name': first_part.function_response.name,
+                'web_search_result': parsed_tool_result,
+            },
+        )
+    else:
+        yield from context_function_event(
+            ctx,
+            author,
+            'matmaster_parsed_tool_result',
+            {'parsed_tool_result': parsed_tool_result},
+            ModelRole,
+        )
+
+    # 渲染任务结果
+    job_result_comp_data = get_kv_result(parsed_tool_result)
+    if (
+        render_tool_response
+        and job_result_comp_data['eventData']['content'][JOB_RESULT_KEY]
+    ):
+        yield from all_text_event(
+            ctx,
+            author,
+            f"<bohrium-chat-msg>{json.dumps(job_result_comp_data)}</bohrium-chat-msg>",
+            ModelRole,
+        )
+
+    # 渲染 Markdown 图片
+    markdown_image_result = get_markdown_image_result(parsed_tool_result)
+    if markdown_image_result:
+        for item in markdown_image_result:
+            yield from all_text_event(ctx, author, item['data'], ModelRole)
+
+    # 渲染 echarts
+    echarts_result = get_echarts_result(parsed_tool_result)
+    if echarts_result:
+        yield from context_function_event(
+            ctx,
+            author,
+            'matmaster_echarts',
+            None,
+            ModelRole,
+            {'echarts_url': [item['url'] for item in echarts_result]},
+        )

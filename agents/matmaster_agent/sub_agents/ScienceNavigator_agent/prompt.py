@@ -1,3 +1,5 @@
+from agents.matmaster_agent.prompt import MATERIAL_NAMING_RULES
+
 SCIENCE_NAVIGATOR_AGENT_DESCRIPTION = """
 Science Navigator Agent is designed to help researchers search academic concepts or research papers. The agent must always produce comprehensive, deeply elaborated, and extended analytical outputs unless the user explicitly requests brevity.
 """
@@ -36,6 +38,10 @@ _KNOWLEDGE_LIMITATIONS = """
 
 """
 
+_PRIOR_KNOWLEDGE = f"""
+# Must follow these prior knowledge:
+{MATERIAL_NAMING_RULES}
+"""
 _FORMAT_REQUIREMENT = """
 
 # FORMAT INSTRUCTIONS:
@@ -78,6 +84,7 @@ WEB_SEARCH_AGENT_INSTRUCTION = (
     f"""
 {_GLOBAL_CONTEXT}
 {_LANGUAGE_REQUIREMENTS}
+{_PRIOR_KNOWLEDGE}
 {_KNOWLEDGE_LIMITATIONS}
 {_FORMAT_REQUIREMENT}
 
@@ -108,6 +115,7 @@ WEBPAGE_PARSING_AGENT_INSTRUCTION = (
     f"""
 {_GLOBAL_CONTEXT}
 {_LANGUAGE_REQUIREMENTS}
+{_PRIOR_KNOWLEDGE}
 {_KNOWLEDGE_LIMITATIONS}
 {_LONG_OUTPUT_REQUIRMENT}
 {_FORMAT_REQUIREMENT}
@@ -178,6 +186,7 @@ PAPER_SEARCH_AGENT_INSTRUCTION = (
 {_GLOBAL_CONTEXT}
 {_LANGUAGE_REQUIREMENTS}
 {_KNOWLEDGE_LIMITATIONS}
+{_PRIOR_KNOWLEDGE}
 {_LONG_OUTPUT_REQUIRMENT}
 {_FORMAT_REQUIREMENT}
 
