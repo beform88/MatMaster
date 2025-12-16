@@ -6,7 +6,13 @@ import litellm
 from google.adk.tools import ToolContext
 from mcp.types import CallToolResult, TextContent
 
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import LLMConfig
+from agents.matmaster_agent.logger import PrefixFilter
+
+logger = logging.getLogger(__name__)
+logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
+logger.setLevel(logging.INFO)
 
 DISCARD_KEYS = [
     'paperId',
@@ -29,7 +35,6 @@ DISCARD_KEYS = [
 
 MAX_ABSTRACT_LEN = 300
 MIN_page_size = 150
-logger = logging.getLogger(__name__)
 
 
 def _process_web_search_response(tool_response):
@@ -51,7 +56,7 @@ def _process_web_search_response(tool_response):
         )
         return new_response
     except Exception as e:
-        print(e)
+        logger.error(e)
         return tool_response
 
 
@@ -64,7 +69,7 @@ def _process_search_papers_enhanced_response(tool_response):
         output_json = json.loads(tool_output[0].text)
         output_paper_list = output_json['data']
     except Exception as e:
-        print(e)
+        logger.error(e)
         return tool_response
 
     filtered_papers = []
@@ -89,7 +94,7 @@ def _process_search_papers_enhanced_response(tool_response):
 
 
 async def after_tool_callback(tool, args, tool_context, tool_response):
-    print(f"[after_tool_callback] Tool '{tool.name}' executed.")
+    logger.info(f"[after_tool_callback] Tool '{tool.name}' executed.")
 
     # Only process specific tools
     if tool.name == 'web-search':
@@ -176,7 +181,7 @@ English translation (JSON list only):
 
 async def before_tool_callback(tool, args, tool_context: ToolContext):
     search_tools = ['search-papers-enhanced', 'web-search']
-    print(f"[before_tool_callback] Tool '{tool.name}' called with args: {args}")
+    logger.info(f"[before_tool_callback] Tool '{tool.name}' called with args: {args}")
     if tool.name not in search_tools:
         return
 
@@ -197,16 +202,16 @@ async def before_tool_callback(tool, args, tool_context: ToolContext):
         return
 
     if any(isinstance(w, str) and contains_chinese(w) for w in words):
-        print(f"[before_tool_callback] Detected Chinese words: {words}")
+        logger.info(f"[before_tool_callback] Detected Chinese words: {words}")
         try:
             translated_words = translate_word_list_to_english(words)
             if isinstance(translated_words, list):
                 args['words'] = translated_words
-                print(f"[before_tool_callback] Updated args: {args}")
+                logger.info(f"[before_tool_callback] Updated args: {args}")
                 return
         except Exception as e:
             logger.error(f"Unexpected error in translation flow: {e}")
-        print(f"[before_tool_callback] Translated words: {translated_words}")
+        logger.info(f"[before_tool_callback] Translated words: {translated_words}")
     return
 
 
@@ -214,4 +219,4 @@ if __name__ == '__main__':
     # DEBUG
     chinese_words = ['含能材料DAP-4', 'DeePMD势函数', 'DPA预训练模型']
     translated_words = translate_word_list_to_english(chinese_words)
-    print(f"[DEBUG] Translated words: {translated_words}")
+    logger.debug(f"[DEBUG] Translated words: {translated_words}")

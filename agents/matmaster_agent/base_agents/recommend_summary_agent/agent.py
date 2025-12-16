@@ -51,6 +51,7 @@ from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
+from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION
 from agents.matmaster_agent.state import RECOMMEND_PARAMS
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import update_state_event
@@ -104,11 +105,10 @@ class BaseAgentWithRecAndSum(
         )
         if self.doc_summary:
             self._summary_agent = DisallowTransferLlmAgent(
-                # TODO: change to gemini_2_5_pro (larger context window)
-                # model=MatMasterLlmConfig.deepseek_chat,
                 model=MatMasterLlmConfig.gemini_2_5_pro,
                 name=f"{agent_prefix}_summary_agent",
                 description=self.description,
+                global_instruction=GLOBAL_INSTRUCTION,
                 instruction=self.instruction,
             )
         else:
@@ -116,6 +116,7 @@ class BaseAgentWithRecAndSum(
                 model=MatMasterLlmConfig.default_litellm_model,
                 name=f"{agent_prefix}_summary_agent",
                 description='You are an assistant to summarize the task to aware the user.',
+                global_instruction=GLOBAL_INSTRUCTION,
                 instruction=get_subagent_summary_prompt(),
             )
 
@@ -124,6 +125,7 @@ class BaseAgentWithRecAndSum(
             self.tool_call_info_agent,
             self.recommend_params_agent,
             self.recommend_params_schema_agent,
+            self.summary_agent,
         ]
 
         return self
@@ -176,14 +178,16 @@ class BaseAgentWithRecAndSum(
             if item['name'] == current_step_tool_name
         ]
 
+        tool_doc = current_function_declaration[0]['description']
+        tool_args_recommend_prompt = ALL_TOOLS[current_step_tool_name].get(
+            'args_setting', ''
+        )
         self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
             user_prompt=current_step['description'],
             agent_prompt=self.instruction,
-            tool_doc=current_function_declaration[0]['description'],
+            tool_doc=tool_doc,
             tool_schema=current_function_declaration[0]['parameters'],
-            tool_args_recommend_prompt=ALL_TOOLS[current_step_tool_name].get(
-                'args_setting', ''
-            ),
+            tool_args_recommend_prompt=tool_args_recommend_prompt,
         )
         logger.info(
             f'{ctx.session.id} current_function_declaration = {current_function_declaration}'
@@ -250,6 +254,9 @@ class BaseAgentWithRecAndSum(
             ):
                 yield recommend_params_event
 
+            self.recommend_params_schema_agent.instruction = (
+                tool_doc + '\n' + tool_args_recommend_prompt
+            )
             self.recommend_params_schema_agent.output_schema, _ = (
                 create_tool_args_schema(missing_tool_args, current_function_declaration)
             )
@@ -283,7 +290,6 @@ class BaseAgentWithRecAndSum(
             self.summary_agent.instruction = ALL_TOOLS[current_step_tool_name].get(
                 'summary_prompt'
             )
-
         if current_step['status'] != PlanStepStatusEnum.SUBMITTED:
             async for summary_event in self.summary_agent.run_async(ctx):
                 yield summary_event

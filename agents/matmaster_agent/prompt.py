@@ -1,3 +1,10 @@
+GLOBAL_INSTRUCTION = """
+---
+Today's date is {current_time}.
+Language: When think and answer, always use this language ({target_language}).
+---
+"""
+
 MatMasterCheckTransferPrompt = """
 You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent').
 Analyze the provided RESPONSE TEXT to determine if it explicitly indicates a transfer action.
@@ -63,13 +70,70 @@ A standardized output format is crucial for avoiding ambiguity; please strictly 
 -
 """
 
-DPA_PRIOR_KNOWLEDGE = """
-- For built-in pretrained models, both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system: Default is `Omat24` covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
-
+DPA_MODEL_BRANCH_SELECTION = """
 Built-in multi-task general-purpose pretrained models:
   'DPA2.4-7M': "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/cd12300a-d3e6-4de9-9783-dd9899376cae/dpa-2.4-7M.pt"
   DPA3.1-3M": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/18b8f35e-69f5-47de-92ef-af8ef2c13f54/DPA-3.1-3M.pt"
 
+- For built-in pretrained models, both DPA2 and DPA3 are multi-task trained models, chose an appropriate model branch (or `head`) according to the material system. When specifying `head`, use the exact names below; do not use any other names unless users requires. Default is `Omat24`, covering broad range of inorganic materials; `OC22` is suitable for catalytic surfaces; `ODAC23` is suitable for air adsorption in metal-organic frameowrks (MOFs); `Alex2D` is suitable for 2D materials; `SPICE2` is suitable for drug-like molecules; `Organic_Reactions` is suitable for organic reactions; `solvated_protein_fragments` is suitable for protein fragments. `H2O_H2O_PD` is specialized in water diagram.
+- For custom models, follow the user-provided `head` directly.
+
+"""
+MATERIAL_NAMING_RULES = {
+    'ZIF-8_MAF-4': {
+        'keywords': ['ZIF-8', 'MAF-4', 'Zn(MeIm)2'],
+        'preferred_name': 'MAF-4',
+        'search_query': "('ZIF-8' OR 'MAF-4')",
+        'warning_msg': "Important: Althogh the structure commonly known as 'ZIF-8' was first reported by **Xiao-Ming Chen's (\u9648\u5c0f\u660e) group** (<a href=\"https://onlinelibrary.wiley.com/doi/10.1002/anie.200503778\" target=\"_blank\">[maf4]</a>), and renamed as MAF-4.",
+        'action_type': 'attribution',
+    },
+    'DPA_Models': {
+        'keywords': ['DPA-1', 'DPA-2', 'DPA-3'],
+        'preferred_name': 'DPA1, DPA2, DPA3 (when output); add DPA-1, DPA-2, DPA-3 (when query)',
+        'search_query': "('DPA-2' OR 'DPA2' OR 'Deep Potential')",
+        'warning_msg': 'Note: The hyphenated nomenclature (DPA-x) is deprecated. Please refer to the new standard (DPAx).',
+        'action_type': 'standardization',
+    },
+}
+
+
+def get_naming_rules_text():
+    rules_text = ''
+    for _, rule in MATERIAL_NAMING_RULES.items():
+        rules_text += f"- If user mentions {'or '.join(rule['keywords'])}, use preferred name '{rule['preferred_name']}'. **Explicitly output this warning** at appropriate place: \"{rule['warning_msg']}\"\n"
+
+    return rules_text
+
+
+ALIAS_SEARCH_PROMPT = f"""
+### KNOWLEDGE RETRIEVAL STRATEGY: SYNONYM EXPANSION
+You are equipped with a "Material Synonym Registry". When a user asks about a specific material, check if it falls under any known naming conflicts or aliases.
+
+**Registry Rules:**
+{get_naming_rules_text()}
+
+**Instructions:**
+1. **Identify**: Check if the user's query contains any keywords from the registry.
+2. **Expand**: If a match is found, you MUST use the explicitly defined `search_query` logic (e.g., OR logic) to ensure no literature is missed.
+   - *Example:* If the user asks for "ZIF-8", do NOT just search "ZIF-8". Search "('ZIF-8' OR 'MAF-4')" to capture all priority papers.
+3. **Merge**: Treat results from different aliases as the same entity.
+"""
+
+NOMENCLATURE_ENFORCE_PROMPT = f"""
+### SCIENTIFIC NOMENCLATURE & ATTRIBUTION PROTOCOL
+You must strictly adhere to the naming conventions defined in the Material Registry to ensure academic accuracy and respect for original discoveries.
+
+**Active Naming Rules:**
+{get_naming_rules_text()}
+
+**Generation Guidelines:**
+1. **Prioritize Preferred Names**: In your main explanation, always convert common aliases to the `preferred_name` defined in the rules (e.g., use MAF-4 over ZIF-8, DPA2 over DPA-2).
+2. **Mandatory Attribution/Warning**:
+   - The FIRST time you mention a material with a naming conflict, you MUST display the corresponding `warning_msg` explicitly.
+   - Use a blockquote or a distinct note format for this warning to highlight the academic contribution or standardization rule.
+3. **Contextual Accuracy**:
+   - Exception: If you are citing a specific paper title, keep the title EXACTLY as published (do not correct the author's title).
+   - Exception: If discussing a commercial product specifically sold under a trade name (e.g., "Sigma-Aldrich ZIF-8"), use the trade name but reference the scientific name in parentheses.
 """
 
 STRUCTURE_BUILDING_SAVENAME = """

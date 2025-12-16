@@ -12,8 +12,6 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.constant impor
     OPENLAM_URL,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.prompt import (
-    OpenlamAgentDescription,
-    OpenlamAgentInstruction,
     OpenlamAgentName,
 )
 
@@ -33,8 +31,8 @@ class Openlam_AgentBase(BaseSyncAgentWithToolValidator):
             # model=llm_config.deepseek_chat,
             model=llm_config.default_litellm_model,
             name=OpenlamAgentName + name_suffix,
-            description=OpenlamAgentDescription,
-            instruction=OpenlamAgentInstruction,
+            description='',
+            instruction='',
             tools=[openlam_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,

@@ -12,8 +12,6 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant impo
     OPTIMADE_URL,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.prompt import (
-    OptimadeAgentDescription,
-    OptimadeAgentInstruction,
     OptimadeAgentName,
 )
 
@@ -33,8 +31,8 @@ class Optimade_AgentBase(BaseSyncAgentWithToolValidator):
             # model=llm_config.deepseek_chat,
             model=llm_config.default_litellm_model,
             name=OptimadeAgentName + name_suffix,
-            description=OptimadeAgentDescription,
-            instruction=OptimadeAgentInstruction,
+            description='',
+            instruction='',
             tools=[optimade_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,

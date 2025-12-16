@@ -191,3 +191,47 @@ def no_found_structure_card(i18n: I18N):
     </div>
 </div>
 """
+
+
+def wallet_no_fee_card(i18n: I18N):
+    return f"""
+<div style="
+    background: linear-gradient(135deg, #ffecb3, #ffd54f);
+    border: 1.5px solid #ffb74d;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    box-shadow: 0 3px 10px rgba(255, 193, 7, 0.25);
+    text-align: left;
+">
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+    ">
+        <span style="
+            font-size: 18px;
+            color: #ff9800;
+        ">
+            ⚠️
+        </span>
+        <p style="
+            font-size: 16px;
+            color: #856404;
+            margin: 0;
+            font-weight: bold;
+        ">
+            {i18n.t('WalletNoFee')}
+        </p>
+    </div>
+    <p style="
+        font-size: 14px;
+        color: #664d03;
+        margin: 6px 0 12px 0;
+        line-height: 1.4;
+    ">
+        {i18n.t('WalletNoFeeAction')}
+    </p>
+</div>
+"""

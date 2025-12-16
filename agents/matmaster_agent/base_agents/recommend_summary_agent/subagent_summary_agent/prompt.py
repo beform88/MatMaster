@@ -5,8 +5,6 @@ def get_subagent_summary_prompt() -> str:
     return f"""
 As a specialized summary agent, your role is to provide domain-specific insights and technical interpretations of the results produced by the sub-agents.
 
-Language: {{target_language}}
-
 # Focus on:
 1. Interpreting the technical results in the context of materials science
 2. Highlighting significant findings or anomalies

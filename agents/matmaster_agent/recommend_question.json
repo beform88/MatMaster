@@ -11,6 +11,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019adfcb378078338a20de087e0a8360"
         },
         "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1cfe638973df82a02aa1fd7f0a75",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b05fb0581741d8d9f4571a79f7af8"
         },
         "structure_url": null
@@ -27,6 +28,7 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2daabec7e9e85df7d277598a9d3"
         },
         "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d042154796b9ea8b577956bc187",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0611b6c87b36a3a36d128ce7dd72"
         },
         "structure_url": null
@@ -42,6 +44,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee5fd4a57e97ba8be70c25b47935",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2f938467f2baf634286b11dfd32"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0b17ed447aa89b0d086e456884a2"
+        },
         "structure_url": null
       }
     },
@@ -54,6 +59,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee827bbd717982b5758a3a9a699a",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2e996d176bf8c76e2860f35dbb1"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0b2d20777b1a86ca00cd418a5918"
         },
         "structure_url": null
       }
@@ -68,6 +76,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b115baf6d768584f96c2b9b2ece0f"
+        },
         "structure_url": null
       }
     },
@@ -80,6 +91,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee5ca6bc717295a1fa956518a464",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fc5a1c7475a86ae27f49da152a"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0b3de58676f396a4b5eae70d8a7b"
         },
         "structure_url": null
       }
@@ -94,6 +108,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee504847757db30d58105fe5b1e7",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34228f07e6abf103befb80dd70c"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b115ff03f759baf7368b416c909a6"
+        },
         "structure_url": null
       }
     },
@@ -106,6 +123,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee4518c671d6b3d70e5ed522cc73",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae371eea572d3810ce215e35a4e90"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b116b9be47667ae955f31d056d6ba"
         },
         "structure_url": null
       }
@@ -120,6 +140,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee3de73b7b6f98252056c7530551",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec463c757f2d865582dc5058b287"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d075c9c710c8dd2fe28d6168d13"
+        },
         "structure_url": null
       }
     },
@@ -133,6 +156,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed7edd3b7c139a396a3040dab3ad",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec28add77e309dda7bddc3159d89"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d0f77987dfea2f2b071fc4713fa"
+        },
         "structure_url": null
       }
     },
@@ -143,8 +169,11 @@
         "question": "基于fcc-Ni的5×5×5超胞模板构建合金Fe:Ni:Co:Cr:V=0.635:0.165:0.1:0.05:0.05的结构",
         "question_en": "Construct an alloy structure Fe:Ni:Co:Cr:V=0.635:0.165:0.1:0.05:0.05 based on a 5×5×5 supercell template of fcc-Ni",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed7edd3b7c139a396a3040dab3ad",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b12fca74673e99b73f093a6c8cb32",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec06f6597f12a322658f53b9e2c5"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b104e739b7c859f4b28033a5a8459"
         },
         "structure_url": null
       }
@@ -159,6 +188,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed956db07a4a800172c302d91097",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae349b43a71cf976f2d50c7ecac6d"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d137c0671538a844bed1faadcb3"
+        },
         "structure_url": null
       }
     },
@@ -171,6 +203,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee9f62bb7c4ca9f5cb98d99c27e9",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae32380f973b1b1d88b769193cfba"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d15dad270469e14a088ed4e35a7"
         },
         "structure_url": null
       }
@@ -186,6 +221,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aed99d4ee77a49b4c8a2df844d108",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae312dda27594818e8f1da70f22eb"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b105f9a547412b9a6e085325df27a"
+        },
         "structure_url": null
       }
     },
@@ -196,8 +234,11 @@
         "question": "帮我建一个H₂O在 TiO₂ (101)表面吸附的结构，并进行结构优化",
         "question_en": "Build an adsorption structure of H2O on the TiO2 (101) surface and perform structural optimization",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0c9bd062746f896ed45615d435a0",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d28be837a16aa4b56bd75fafbe9",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afcb8a5237b3ca2c6d712c12631b6"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b106502957e0895d7b687d00be755"
         },
         "structure_url": null
       }
@@ -212,7 +253,26 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0229c63f7ab1bce3034385357091",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b022c7807701f92b1b34732458eb9"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b107cafb870f5a23ed528c48c65dc"
+        },
         "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
+        "question": "检索并返回3个带隙大于2 eV的氧化物结构",
+        "question_en": "Search and return 3 oxide structures with band gap greater than 2 eV",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2572b7407da9ba0e090955e10b8a",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b24c6ad4171428bc1bb6323aff6c6"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b258256bc74fc9baf69a8bae84ee3"
+        },
+        "structure_url": ""
       }
     },
     {
@@ -225,7 +285,26 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b07369a6c7c3985ee062fcdea1280",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b02308e057628ad38635582370c97"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b107f46fb73b5a74c4d3a4b21caad"
+        },
         "structure_url": null
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "结构准备",
+        "belonging_en": "Structure Preparation",
+        "question": "从CoREMOF 2019数据库查找原子数小于 50、比表面积大于 1000 m²/g，且含有 O 元素和 C 元素的 MOF",
+        "question_en": "Search and return no more than 5 MOFs with less than 50 atoms, greater than 1000 m²/g surface area, and containing O and C elements from CoREMOF 2019 database",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2584e5687e5496b93d7cf4cc0477",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b24d768f87c9186b707f3d7ffeb10"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2583a9507d0891d2e20ddb91476d"
+        },
+        "structure_url": ""
       }
     },
     {
@@ -238,6 +317,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b075193f17d6193c4fc98e2c68003",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0276961b74c0badd479b88ad56c8"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1dacded471a58e9fcb042429c0e8"
+        },
         "structure_url": null
       }
     },
@@ -245,11 +327,14 @@
       "zhPrompt": {
         "belonging": "结构准备",
         "belonging_en": "Structure Preparation",
-        "question": "通过网络搜索获取5个Heusler合金的结构文件",
-        "question_en": "Obtain structure files of 5 Heusler alloys through web search",
+        "question": "帮我从网页检索5个Heusler合金的结构文件或下载链接",
+        "question_en": "Help me retrieve 5 Heusler alloy structure files or download links from the web",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b02520c5873f18a74ec22b1f390bb",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b019281a37c9aaab9b8f6f88f9ecf"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b108aa1d47bcfb7c812e6d702d49c"
         },
         "structure_url": null
       }
@@ -263,6 +348,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0757f4337a69a4f9949f56ecba8b",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b02524780795a9f5b138bd04680f6"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d4000e87370b8b463a1cdc36d5a"
         },
         "structure_url": null
       }
@@ -278,6 +366,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeeb490ad7ebc8dcfa145979af736",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34fe26974d5bb7fa5f973c3d92f"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10922d427b2d88a438c2229df609"
+        },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHN3C8VXXJ6G2774KCGSS8B/dpa_md_Li2O.cif"
       }
     },
@@ -292,6 +383,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc17a8637eaa831bcd272a3e2862",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3942ba07b8db65c325f1b2b3306"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b109866cb78fd8414ff2e8781b644"
+        },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHS8H8KVSG4FZC9S1WPAVGG/Pd111.cif"
       }
     },
@@ -303,8 +397,11 @@
         "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
         "question_en": "Perform Bader charge analysis on an Al2O3 system using ABACUS and display the charge transfer for each atom",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b24e50a6a7a8bbfbac5cbf5fbb47c",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b24e1e50c70bba4a751871cd52630"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1fcd1ded7be58480a368a7355eec"
         },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689671_oqmd_org_optimade_4848852_0.cif"
       }
@@ -321,6 +418,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae75dbdd176d09bfab0935b382d68",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d478fc075c5a2e3692229f4738d"
+        },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/03d3bc32-b6a7-450d-b3ee-65f4cbdfdc9a/GaAs.cif"
       }
     },
@@ -334,6 +434,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b03573fda73b8b992da1985fa2dbe",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae89e1c8874a38f26a65a987ad30c",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d4c805075dd97178b54c53f7d1d"
         },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/be0862ba-43ef-4f3a-992d-a0531d945340/Ti₃AlC.cif"
       }
@@ -349,6 +452,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae93a3e70774fa8a943fac30c5c29",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": ""
+        },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBMKMHPQZ8B58JMF90ZHRF6P/CuCrZr.cif"
       }
     },
@@ -361,6 +467,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aeebb8e3a70569d80ce1ec3c9b219",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae465eb5e7069a508a031f5993baa"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b11f3c20a7e5e83dac996324900fc"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBJ6C5PGJFHRWT9ZS1XVT3XQ/dpa_elastic_MgO.cif"
       }
@@ -375,6 +484,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae7eefaf771d6a6450c67d9a1c38f"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b11f70c487413b0bd8f964c22ce29"
+        },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBKYY4QB25BH1A64CR5ZQJQS/Si-prim.cif"
       }
     },
@@ -387,6 +499,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afce5339e7ec7ab6ece7856951cd2",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae373760373f1bbff92bfc5ac98ac"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1fdf3a01717a998da562a17f333b"
         },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760686797_bohriumcrystal_65e5a9338d93f05838e1c9d4_0.cif"
       }
@@ -401,6 +516,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc253a8570c280725b19fad8fe38",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019afca24cdf7dee8e4715762b20a75f"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1fe4be5b7005a7f1c3da700ec4db"
+        },
         "structure_url": "https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/1760689265_oqmd_org_optimade_4063731_0.cif"
       }
     },
@@ -409,10 +527,13 @@
         "belonging": "模拟预测",
         "belonging_en": "Simulation & Prediction",
         "question": "对SrTiO₃进行弹性常数计算并输出完整的C₁₁、C₁₂、C₄₄张量",
-        "question_en": "Calculate elastic constants for SrTiO3 and output full C11, C12, C44 tensors (obtain initial structure from open databases and set reasonable parameters)",
+        "question_en": "Calculate elastic constants for SrTiO3 and output full C11, C12, C44 tensors",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d37f83d72d0a2b3b89c3b69b810",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0d38e430769f89ed346d11d31dbf"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b258ec99e7ce0bf0f0e69d427e083"
         },
         "structure_url": null
       }
@@ -427,6 +548,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b07e4aa8978bc96e89700b4995355",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b06eca81b7c6f9c31b8dca1204313"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1ff273757050bd4aa067c3dc55db"
+        },
         "structure_url": null
       }
     },
@@ -439,6 +563,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aee2d89337cc8a060eacf304f5881",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae81de15076a9a958d7635fdd8d81"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1f4b006773c3aea27190ff868519"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt"
       }
@@ -453,6 +580,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedbd81b1764bbc5917acfe3c4a4f",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2317f67a749779a9243094fcbc"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10c4ed667065956790f52270a5e5"
+        },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBP28H5EQH5CJ2ECNVMG6N90/td-pxrd-example.txt"
       }
     },
@@ -466,6 +596,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b006210f771ed870cb953f93d5e69",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b005deee772ddb227e69bf446e3ba"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10c783c37ca4a1280b24024a3ee0"
+        },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC0648WPWXCSSNY99R4JNT32/tg-dsc-example.txt"
       }
     },
@@ -478,6 +611,9 @@
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00708d3d79e7bcc9d40a58e55b20",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0070e0477059b9e8a2fc8581301e"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1f4e8611745298a66e98748b0af8"
         },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/bohrium/feedback/attachment/01KC06WERP5J0F5D5R1P48T37N/td-shg-example.txt"
       }
@@ -493,6 +629,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae34cc59476edba7c3828950b16d9",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10cdc199727fa209b7d76f4e3fe6"
+        },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/5400220b-ed66-477f-9f2a-95a2c2113768/Pt-C-TEM-image.jpg"
       }
     },
@@ -506,6 +645,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b00e9c3367a88b905adaa0cbc3dd4",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3a4fc5c7bb7bce1caac8d4b571e",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10cfcfa3760d80b24f9ebf9babb1"
         },
         "structure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/1001765/0/store/1003041/upload/4301c84a-5150-4633-964d-f355d702262f/Pd-CuOx.txt"
       }
@@ -521,6 +663,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019add311d937c65b937507dfb445d15",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10d5a70f7c34b26385aa52f059b7"
+        },
         "structure_url": null
       }
     },
@@ -535,6 +680,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019add311d937c65b937507dfb445d15",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10d92cc0701db46d050260b1d438"
+        },
         "structure_url": null
       }
     },
@@ -543,12 +691,15 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/b415c05a-41de-4fd1-8b6c-d98067cedc44/alloy.jpeg",
-        "question": "我想研究 Ni–Co–Cr 面心立方合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
-        "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr face-centered cubic alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results",
+        "question": "我想研究 Ni–Co–Cr 合金的室温弹性性质（C11, C12, C44 和体积模量 B）。1）先在材料数据库里看看类似成分合金的弹性常数以及结构；2）用 APEX合金性质计算工具做从头算弹性常数；3）对比一下apex计算的结果以及数据库里的弹性常数结果",
+        "question_en": "I want to study room-temperature elastic properties (C11, C12, C44, and bulk modulus B) of Ni–Co–Cr alloy. 1) First check elastic constants and structures of similar composition alloys in material databases; 2) Use APEX alloy property calculation tool for ab initio elastic constants; 3) Compare APEX calculation results with database elastic constant results",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b02e4fd927cc98cd6b2a217b29075",
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b207c202d7c80b6186aa2fa0aa1a1",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae76489cc7d9bb174bfe6be639c0b",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2590f8b37e49ba301b8d8c3f1c91"
         },
         "structure_url": null,
         "title": "Ni–Co–Cr 合金材料弹性性质研究"
@@ -565,6 +716,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afced31047089b94a445e75d020bc",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae824899b77eea05d8fcd51a7394d"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d7137027a2ba8953cfe9c6a85c7"
+        },
         "structure_url": null,
         "title": "高熵合金相图与相结构预测"
       }
@@ -577,8 +731,11 @@
         "question": "请提取文献中核心的高温超导材料，并从材料数据库中查找该结构，并预测其超导临界温度",
         "question_en": "Please extract core high-temperature superconducting materials from the literature, find the structure from material databases, and predict their superconducting critical temperature",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0294675271309effcada64e5d9d9",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae3de8d867210b3b4aecec99d1969"
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b114183c875d091b88ad3dcc30e0b",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b118a68b476d8a83d529321856f41"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b10e01cd27e36846ecd266829fb42"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBHXX6MVM5NVQXX3X1ERRZX2/PhysRevLett.128.167001.pdf",
         "title": "高温超导材料检索与预测"
@@ -589,14 +746,18 @@
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
         "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/21e73f08-a5d8-4182-9ec2-1d0a35625650/SnTe.png",
-        "question": "帮我随机生成50个SnTe结构并筛选出其中潜在的热电材料",
-        "question_en": "Randomly generate 50 SnTe structures and screen for potential thermoelectric materials among them",
+        "question": "帮我随机生成100个SnTe结构并筛选出其中潜在的热电材料",
+        "question_en": "Randomly generate 100 SnTe structures and screen for potential thermoelectric materials among them",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afd34158b7bcd9acd3b6826be86e1",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae40c877a7453b9abc9c9e3ac086a"
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b11448bc6766385aeeffb6129c0e8",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b1183e4b474f593865e6e33ef811c"
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d7451de72e48708050ed82c2106",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0629a9107d6ca8e27c02c63d9173"
         },
         "structure_url": null,
-        "title": "SnTe热电材料高通量筛选"
+        "title": "SnTe 热电材料高通量筛选"
       }
     },
     {
@@ -611,8 +772,11 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aec2ad033746dac6186f37eb7ef0d",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b12012fc577978259b32ba379ada1"
+        },
         "structure_url": null,
-        "title": "高粘度高Tg环氧树脂解决方案推荐"
+        "title": "高粘度高 Tg 环氧树脂解决方案推荐"
       }
     },
     {
@@ -627,8 +791,11 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae77dbbfb729a88b471424a3ab1c0",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1204b5fc731096e5d08c4a12ee4a"
+        },
         "structure_url": null,
-        "title": "Cantor合金性能优化组分设计"
+        "title": "Cantor 合金性能优化组分设计"
       }
     },
     {
@@ -642,6 +809,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0cdff18571e89874a1600d65452f",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae38206f776ad8b8f9087843c317a",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1208b8857b42a4eafd6d463a3010"
         },
         "structure_url": null,
         "title": "含硫固态电解质界面稳定性研究"
@@ -659,6 +829,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2c9deb67e18bbca95f4fec161f5",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1da75e0b7dce8e2f110642be6f64"
+        },
         "structure_url": null,
         "title": "高效钙钛矿太阳能电池添加剂设计与报告撰写"
       }
@@ -675,6 +848,9 @@
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019aeb751b2d76c88b6bc03becb94f90",
           "uat_url": ""
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1210e2847e9991af07e9039a8499"
+        },
         "structure_url": null,
         "title": "双相不锈钢成分优化与强度预测"
       }
@@ -684,13 +860,16 @@
       "zhPrompt": {
         "belonging": "场景案例",
         "belonging_en": "Scene Case",
-        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/8f864720-0dfd-4b08-882b-753957c8b4f0/DPA.png",
+        "figure_url": "https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/16599/13529/store/upload/5a344a6f-a7ec-41ba-a7c1-763ab642ed53/DPA.png",
         "question": "帮我利用这组数据微调dpa3模型3000步",
         "question_en": "Help me fine-tune the dpa3 model for 3000 steps using this dataset",
         "sharing_url": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b01dca4aa7395863631719280ae9d",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2594dd9c70e9a83e81367a25e757"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip",
         "title": "机器学习势函数训练"
@@ -707,6 +886,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019aedb8c4287b7f90839d143f2688f5",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2fb043d7d1c9329c3180eea1a36"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1d8b85997f3bbd99bd8054c566b8"
+        },
         "structure_url": null,
         "title": "Sawyer-Tower双波法介绍"
       }
@@ -722,6 +904,9 @@
           "prod_url": "",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae2dc9619755f98cb0e67654fd6c6",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b121c4d9d7bdd8c90e6c289beb649"
         },
         "structure_url": null,
         "title": "复杂掺杂结构搭建&多性质计算"

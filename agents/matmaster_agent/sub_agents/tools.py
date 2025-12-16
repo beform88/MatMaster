@@ -2,7 +2,8 @@ from datetime import date
 
 from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.prompt import (
-    DPA_PRIOR_KNOWLEDGE,
+    ALIAS_SEARCH_PROMPT,
+    DPA_MODEL_BRANCH_SELECTION,
     STRUCTURE_BUILDING_SAVENAME,
 )
 from agents.matmaster_agent.sub_agents.ABACUS_agent.constant import ABACUS_AGENT_NAME
@@ -48,6 +49,8 @@ from agents.matmaster_agent.sub_agents.HEAkb_agent.constant import (
 )
 from agents.matmaster_agent.sub_agents.HEAkb_agent.prompt import (
     HEAKbAgentArgsSetting,
+    HEAKbAgentSummaryPrompt,
+    HEAKbAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import LAMMPS_AGENT_NAME
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant import (
@@ -55,24 +58,34 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.constant
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.prompt import (
     BohriumPublicAgentArgsSetting,
+    BohriumPublicAgentSummaryPrompt,
+    BohriumPublicAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.constant import (
     MOFDB_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.prompt import (
     MofdbAgentArgsSetting,
+    MofdbAgentSummaryPrompt,
+    MofdbAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.constant import (
     OPENLAM_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.openlam_agent.prompt import (
     OpenlamAgentArgsSetting,
+    OpenlamAgentSummaryPrompt,
+    OpenlamAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant import (
     OPTIMADE_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.prompt import (
     OptimadeAgentArgsSetting,
+    OptimadeAgentSummaryPrompt,
+    OptimadeBandgapToolDescription,
+    OptimadeFilterToolDescription,
+    OptimadeSpgToolDescription,
 )
 from agents.matmaster_agent.sub_agents.NMR_agent.constant import (
     NMR_AGENT_NAME,
@@ -97,6 +110,8 @@ from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
 )
 from agents.matmaster_agent.sub_agents.POLYMERkb_agent.prompt import (
     POLYMERKbAgentArgsSetting,
+    POLYMERKbAgentSummaryPrompt,
+    POLYMERKbAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.constant import (
     SCIENCE_NAVIGATOR_AGENT_NAME,
@@ -114,18 +129,24 @@ from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
 )
 from agents.matmaster_agent.sub_agents.SSEkb_agent.prompt import (
     SSEKbAgentArgsSetting,
+    SSEKbAgentSummaryPrompt,
+    SSEKbAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.constant import (
     STEEL_PREDICT_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.STEEL_PREDICT_agent.prompt import (
     STEELPredictAgentArgsSetting,
+    STEELPredictAgentSummaryPrompt,
+    STEELPredictAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.STEELkb_agent.constant import (
     STEEL_KB_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.STEELkb_agent.prompt import (
     STEELKbAgentArgsSetting,
+    STEELKbAgentSummaryPrompt,
+    STEELKbAgentToolDescription,
 )
 from agents.matmaster_agent.sub_agents.structure_generate_agent.constant import (
     StructureGenerateAgentName,
@@ -329,36 +350,37 @@ ALL_TOOLS = {
         'belonging_agent': DocumentParserAgentName,
         'scene': [SceneEnum.LITERATURE, SceneEnum.UNIVERSAL],
         'description': 'Read and extract contents from PDF-formatted document files. Outputs information of materials involved and methodologies, supporting additional information required by users. CANNOT retrieve data from the internet.',
+        'bypass_confirmation': True,
     },
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.OPTIMIZE_STRUCTURE],
         'description': 'Perform geometry optimization of a crystal or molecular structure. Supports relaxation of atomic positions and optionally the unit cell. Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'run_molecular_dynamics': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.MOLECULAR_DYNAMICS],
         'description': 'Run molecular dynamics simulations using ASE interface. CAN DO: run MD with DPA pretrained model or user-uploaded DeePMD mdoel; run NVE, NVT, NPT MD with logging basic thermodynamics and lattice parameters. CANNOT DO: run MD with classical force-field or ab initio (or DFT) methods; nor run complicated MD like shock conditions, or with complicated on-the-fly stastistics like RDF, MSD. Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'calculate_phonon': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.PHONON],
         'description': 'Compute phonon properties. Generates displaced supercells, calculates interatomic forces, and derives phonon dispersion, thermal properties, and optional total/projected DOS. Outputs band structures, entropy, free energy, heat capacity, and maximum phonon frequencies. Requires optimized structure as input. Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.ELASTIC_CONSTANT],
         'description': 'Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'run_neb': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA],
         'description': 'Based on machine learning potential.',
-        'args_setting': f"{DPA_PRIOR_KNOWLEDGE}",
+        'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
@@ -404,68 +426,79 @@ ALL_TOOLS = {
     'query_heakb_literature': {
         'belonging_agent': HEA_KB_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
-        'description': 'Query the HEAkb (High-Entropy Alloy) literature knowledge.',
+        'description': HEAKbAgentToolDescription,
         'args_setting': f"{HEAKbAgentArgsSetting}",
+        'summary_prompt': HEAKbAgentSummaryPrompt,
     },
     'query_ssekb_literature': {
         'belonging_agent': SSE_KB_AGENT_NAME,
         'scene': [SceneEnum.Solid_State_Electrolyte],
-        'description': 'Query the SSEkb literature knowledge base.',
+        'description': SSEKbAgentToolDescription,
         'args_setting': f"{SSEKbAgentArgsSetting}",
+        'summary_prompt': SSEKbAgentSummaryPrompt,
     },
     'query_polymerkb_literature': {
         'belonging_agent': POLYMER_KB_AGENT_NAME,
         'scene': [SceneEnum.POLYMER],
-        'description': 'Query the POLYMERkb polymer literature knowledge base. ',
+        'description': POLYMERKbAgentToolDescription,
         'args_setting': f"{POLYMERKbAgentArgsSetting}",
+        'summary_prompt': POLYMERKbAgentSummaryPrompt,
     },
     'query_steelkb_literature': {
         'belonging_agent': STEEL_KB_AGENT_NAME,
         'scene': [SceneEnum.STEEL],
-        'description': 'Query the STEELkb literature knowledge base. ',
+        'description': STEELKbAgentToolDescription,
         'args_setting': f"{STEELKbAgentArgsSetting}",
+        'summary_prompt': STEELKbAgentSummaryPrompt,
     },
     'predict_tensile_strength': {
         'belonging_agent': STEEL_PREDICT_AGENT_NAME,
         'scene': [SceneEnum.STEEL],
-        'description': 'Predict the ultimate tensile strength (UTS) of steel based on chemical composition using a trained neural network model. Supports batch prediction. Takes a list of chemical formula strings (even for single formula, use a list with one element), validates elements are within allowed set (B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W), and returns a list of predicted tensile strength values in MPa. Formula format: ElementSymbol followed by numeric value (e.g., ["Fe70Cr20Ni10"] for single or ["Fe70Cr20Ni10", "Fe68Cr22Ni10"] for batch). Batch prediction is recommended for systematic composition variation analysis.',
+        'description': STEELPredictAgentToolDescription,
         'args_setting': f"{STEELPredictAgentArgsSetting}",
+        'summary_prompt': STEELPredictAgentSummaryPrompt,
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Internal database search tool. Retrieve crystal structures from OPTIMADE-compatible providers using full OPTIMADE filter language (logical operators, HAS ALL, HAS ANY, chemical_formula_anonymous, etc.). Supports logical filters and broad searches across multiple external providers (alexandria, cmr, cod, mcloud, mcloudarchive, mp, mpdd, mpds, nmd, odbx, omdb, oqmd, tcod, twodmatpedia). Use when logical filter expressions (OR, NOT, complex boolean logic) or anonymous formulas are required. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query (e.g., requires logical filters).',
+        'description': OptimadeFilterToolDescription,
         'args_setting': f"{OptimadeAgentArgsSetting}",
+        'summary_prompt': OptimadeAgentSummaryPrompt,
     },
     'fetch_structures_with_spg': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Internal database search tool. Retrieve crystal structures filtered by specific space group numbers (1-230) or mineral/structure types (e.g., rutile, spinel, perovskite) from OPTIMADE-compatible databases. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
+        'description': OptimadeSpgToolDescription,
         'args_setting': f"{OptimadeAgentArgsSetting}",
+        'summary_prompt': OptimadeAgentSummaryPrompt,
     },
     'fetch_structures_with_bandgap': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Internal database search tool. Retrieve crystal structures filtered by band gap range (min/max in eV) from OPTIMADE-compatible databases that provide band gap data. Supports broad searches across multiple external providers. Cannot combine space group and band gap in a single request. Use as alternative when Bohrium cannot handle the query.',
+        'description': OptimadeBandgapToolDescription,
         'args_setting': f"{OptimadeAgentArgsSetting}",
+        'summary_prompt': OptimadeAgentSummaryPrompt,
     },
     'fetch_bohrium_crystals': {
         'belonging_agent': BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Internal database search tool. PREFERRED when both Bohrium and OPTIMADE can handle the query. Retrieve crystal structures from the Bohrium Public database (includes Materials Project / MP dataset). Supports formula, elements, spacegroup_number, atom_count_range, predicted_formation_energy_range, band_gap_range. Supports space group / atom count / band gap / formation energy queries. Supports formula fragment searches via match_mode=0. Can combine space group and band gap in a single request. Faster than OPTIMADE. Cannot handle logical filter expressions (OR, NOT, complex boolean logic).',
+        'description': BohriumPublicAgentToolDescription,
         'args_setting': f"{BohriumPublicAgentArgsSetting}",
+        'summary_prompt': BohriumPublicAgentSummaryPrompt,
     },
     'fetch_openlam_structures': {
         'belonging_agent': OPENLAM_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Internal database search tool. Retrieve crystal structures from the OpenLAM internal database. Supports formula, min_energy, max_energy, min_submission_time, max_submission_time filters. Supports energy window searches and time-based filters. No support for space group, band gap, elements list, or logical filters.',
+        'description': OpenlamAgentToolDescription,
         'args_setting': f"{OpenlamAgentArgsSetting}",
+        'summary_prompt': OpenlamAgentSummaryPrompt,
     },
     'fetch_mofs_sql': {
         'belonging_agent': MOFDB_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
-        'description': 'Internal database search tool. Execute SQL queries against the MOF database. Supports all MOF-related queries via SQL: MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area, element composition analysis, adsorption selectivity calculations, temperature sensitivity analysis, statistical ranking. Supports complex multi-table joins, window functions, CTEs, and statistical analysis. Any request clearly about MOFs should be handled by MOFdb.',
+        'description': MofdbAgentToolDescription,
         'args_setting': f"{MofdbAgentArgsSetting}",
+        'summary_prompt': MofdbAgentSummaryPrompt,
     },
     'calculate_reaction_profile': {
         'belonging_agent': ORGANIC_REACTION_AGENT_NAME,
@@ -682,6 +715,9 @@ ALL_TOOLS = {
         'description': 'Search for research papers and recent progress related to a topic',
         'args_setting': f"""
             If not specified, apply start_time=2020-01-01, end_time={TODAY}, page_size not less than 150. When constructing query word list and question: (i) use English to ensure professionalism; (ii) avoid broad keywords like 'materials science', 'chemistry', 'progress'; (iii) extract specific, technically relevant keywords such as material names, molecular identifiers, mechanism names, property names, or application contexts; (iv) if the user's query is broad, decompose the concept into technical terms and generate concrete, research-usable keywords; (v) when translating, no segmenting composite technical noun phrases unless it is an established scientific usage. If ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering refinement, including identifying: representative subfields, canonical mechanisms, prototypical material classes, commonly studied performance metrics, key methodologies or application contexts. These keywords must be specific enough to retrieve meaningful literature and avoid domain-level noise.
+
+            Must be aware of these prior knowledge:
+            - {ALIAS_SEARCH_PROMPT}
         """,
         'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
