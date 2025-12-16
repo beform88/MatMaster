@@ -15,11 +15,7 @@ from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
     POLYMER_SERVER_URL,
 )
-from agents.matmaster_agent.sub_agents.POLYMERkb_agent.prompt import (
-    POLYMERKbAgentDescription,
-    POLYMERKbAgentInstruction,
-    POLYMERKbAgentName,
-)
+from agents.matmaster_agent.sub_agents.POLYMERkb_agent.prompt import POLYMERKbAgentName
 
 load_dotenv()
 
@@ -37,8 +33,8 @@ class POLYMERKbAgent(BaseSyncAgentWithToolValidator):
             model=llm_config.default_litellm_model,
             doc_summary=True,
             name=POLYMERKbAgentName + name_suffix,
-            description=POLYMERKbAgentDescription,
-            instruction=POLYMERKbAgentInstruction,
+            description='',
+            instruction='',
             tools=[polymer_kb_toolset],
             render_tool_response=False,
             supervisor_agent=MATMASTER_AGENT_NAME,

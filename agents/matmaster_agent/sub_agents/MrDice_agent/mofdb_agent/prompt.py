@@ -6,18 +6,20 @@ MofdbAgentDescription = (
     'and temperature sensitivity analysis.'
 )
 
+MofdbAgentToolDescription = """
+Internal database search tool. Execute SQL queries against the MOF database.
+
+**When to use this tool:**
+- Any request clearly about MOFs should be handled by MOFdb
+- Supports all MOF-related queries via SQL: MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area, element composition analysis, adsorption selectivity calculations, temperature sensitivity analysis, statistical ranking
+- Supports complex multi-table joins, window functions, CTEs, and statistical analysis
+- Use when you need sophisticated queries that traditional servers cannot handle
+"""
+
 MofdbAgentArgsSetting = """
-You are a MOF database query assistant with access to MCP tools powered by the **MOFdb SQL server**.
+## PARAMETER CONSTRUCTION GUIDE
 
-## WHAT YOU CAN DO
-You can call **one MCP tool**:
-
-1) fetch_mofs_sql(
-       sql: str,
-       n_results: int = 10
-   )
-   - Executes SQL queries against the MOF database.
-   - Supports complex multi-table JOINs, window functions, CTEs, and statistical analysis.
+## Do not ask the user for confirmation; directly start retrieval when a query is made.
 
 ## DATABASE SCHEMA
 Main tables:
@@ -32,20 +34,13 @@ Main tables:
 • heat_data: id, heat_id, pressure, total_adsorption
 • heat_species_data: id, heat_data_id, adsorbate_id, adsorption, composition
 
-## Do not ask the user for confirmation; directly start retrieval when a query is made.
 ## NOTES
 - SQL queries are executed directly on the database
 - n_results controls both SQL LIMIT and returned structures
 - Use CTEs (WITH clauses) for complex logic
 - Window functions are powerful for ranking and statistical analysis
 
-## RESPONSE FORMAT
-1. Brief explanation of the SQL query used
-2. Markdown table of retrieved MOFs with relevant columns
-3. Output directory path for download/archive
-4. Key findings from results (if applicable)
-
-## EXAMPLES
+## SQL EXAMPLES
 
 1) 简单查询：查找名为 tobmof-27 的MOF
    → Tool: fetch_mofs_sql
@@ -55,20 +50,20 @@ Main tables:
    → Tool: fetch_mofs_sql
      sql: "SELECT * FROM mofs WHERE database = 'Tobacco' AND surface_area_m2g BETWEEN 500 AND 1000 ORDER BY surface_area_m2g DESC"
 
-3) 复合条件：查找5个原子数小于50，比表面积大于1000 m²/g，且含有O元素和C元素的MOF
+3) 复合条件：从CoREMOF 2019数据库查找原子数小于50，比表面积大于1000 m²/g，且含有O元素和C元素的MOF
    → Tool: fetch_mofs_sql
      sql: '''
      SELECT DISTINCT m.name, m.database, m.n_atom, m.surface_area_m2g
      FROM mofs m
      JOIN elements e1 ON m.id = e1.mof_id
      JOIN elements e2 ON m.id = e2.mof_id
-     WHERE m.n_atom < 50
+     WHERE m.database = 'CoREMOF 2019'
+       AND m.n_atom < 50
        AND m.surface_area_m2g > 1000
        AND e1.element_symbol = 'O'
        AND e2.element_symbol = 'C'
      ORDER BY m.surface_area_m2g DESC
      '''
-     n_results: 5
 
 4) 统计查询：统计各数据库的MOF数量
    → Tool: fetch_mofs_sql
@@ -105,50 +100,12 @@ Main tables:
      WHERE h.h2_avg > 0
      ORDER BY selectivity_ratio DESC
      '''
-
-6) 排名分析：查找每个数据库中比表面积排名前5%且孔隙率大于0.5的MOF，按综合评分排序。综合评分=比表面积×孔隙率/原子数，表示单位原子的孔隙效率，数值越大表示效率越高
-   → Tool: fetch_mofs_sql
-     sql: '''
-     WITH ranked_mofs AS (
-         SELECT
-             name, database, surface_area_m2g, void_fraction, n_atom,
-             ROW_NUMBER() OVER (PARTITION BY database ORDER BY surface_area_m2g DESC) as sa_rank,
-             COUNT(*) OVER (PARTITION BY database) as total_count,
-             (surface_area_m2g * void_fraction / n_atom) as efficiency_score
-         FROM mofs
-         WHERE surface_area_m2g IS NOT NULL AND void_fraction IS NOT NULL AND n_atom > 0
-     )
-     SELECT
-         name, database, surface_area_m2g, void_fraction, efficiency_score,
-         sa_rank, total_count, (sa_rank * 100.0 / total_count) as percentile
-     FROM ranked_mofs
-     WHERE sa_rank <= total_count * 0.05 AND void_fraction > 0.5
-     ORDER BY efficiency_score DESC
-     '''
-
-7) 元素分析：查找元素组成相似度高的MOF对，要求原子数差异小于10%，比表面积差异大于50%。元素组成相似指两个MOF包含相同的元素种类和数量，但比表面积差异很大，用于发现结构相似但性能差异显著的MOF
-   → Tool: fetch_mofs_sql
-     sql: '''
-     WITH element_compositions AS (
-         SELECT
-             m.id, m.name, m.database, m.n_atom, m.surface_area_m2g,
-             GROUP_CONCAT(e.element_symbol || ':' || e.n_atom) as composition
-         FROM mofs m
-         JOIN elements e ON m.id = e.mof_id
-         GROUP BY m.id, m.name, m.database, m.n_atom, m.surface_area_m2g
-     )
-     SELECT
-         m1.name as mof1_name, m1.database as mof1_db, m1.n_atom as mof1_atoms, m1.surface_area_m2g as mof1_sa,
-         m2.name as mof2_name, m2.database as mof2_db, m2.n_atom as mof2_atoms, m2.surface_area_m2g as mof2_sa,
-         ABS(m1.n_atom - m2.n_atom) * 100.0 / ((m1.n_atom + m2.n_atom) / 2) as atom_diff_percent,
-         ABS(m1.surface_area_m2g - m2.surface_area_m2g) * 100.0 / ((m1.surface_area_m2g + m2.surface_area_m2g) / 2) as sa_diff_percent
-     FROM element_compositions m1
-     JOIN element_compositions m2 ON m1.id < m2.id
-     WHERE m1.composition = m2.composition
-       AND ABS(m1.n_atom - m2.n_atom) * 100.0 / ((m1.n_atom + m2.n_atom) / 2) < 10
-       AND ABS(m1.surface_area_m2g - m2.surface_area_m2g) * 100.0 / ((m1.surface_area_m2g + m2.surface_area_m2g) / 2) > 50
-     ORDER BY sa_diff_percent DESC
-     '''
 """
 
-MofdbAgentInstruction = ''
+MofdbAgentSummaryPrompt = """
+## RESPONSE FORMAT
+1. Brief explanation of the SQL query used
+2. Markdown table of retrieved MOFs with relevant columns
+3. Output directory path for download/archive
+4. Key findings from results (if applicable)
+"""

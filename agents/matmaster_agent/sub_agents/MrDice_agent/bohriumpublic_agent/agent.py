@@ -14,8 +14,6 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.finance 
     cost_func,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.prompt import (
-    BohriumPublicAgentDescription,
-    BohriumPublicAgentInstruction,
     BohriumPublicAgentName,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.constant import MrDice_Agent_Name
@@ -36,8 +34,8 @@ class Bohriumpublic_AgentBase(BaseSyncAgentWithToolValidator):
             # model=llm_config.deepseek_chat,
             model=llm_config.default_litellm_model,
             name=BohriumPublicAgentName + name_suffix,
-            description=BohriumPublicAgentDescription,
-            instruction=BohriumPublicAgentInstruction,
+            description='',
+            instruction='',
             tools=[bohriumpublic_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,

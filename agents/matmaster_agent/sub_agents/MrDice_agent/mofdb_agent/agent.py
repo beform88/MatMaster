@@ -12,8 +12,6 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.constant import 
     MOFDB_URL,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.mofdb_agent.prompt import (
-    MofdbAgentDescription,
-    MofdbAgentInstruction,
     MofdbAgentName,
 )
 
@@ -33,8 +31,8 @@ class Mofdb_AgentBase(BaseSyncAgentWithToolValidator):
             # model=llm_config.deepseek_chat,
             model=llm_config.default_litellm_model,
             name=MofdbAgentName + name_suffix,
-            description=MofdbAgentDescription,
-            instruction=MofdbAgentInstruction,
+            description='',
+            instruction='',
             tools=[mofdb_toolset],
             render_tool_response=True,
             supervisor_agent=MrDice_Agent_Name,

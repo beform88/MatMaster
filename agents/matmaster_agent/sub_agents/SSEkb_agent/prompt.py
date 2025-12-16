@@ -1,29 +1,25 @@
 SSEKbAgentName = 'SSEkb_agent'
 
-SSEKbAgentDescription = (
-    'Advanced SSEkb literature knowledge base agent with structured database search capabilities for comprehensive literature analysis, '
-    'multi-document summarization, and in-depth research report generation.'
-)
+SSEKbAgentToolDescription = """
+Literature knowledge base query tool with structured database search capabilities.
+
+**When to use this tool:**
+- Querying materials science literature using structured database queries
+- Supports queries based on material properties and paper metadata
+- Multi-table queries with complex filters
+- Returns literature summaries for comprehensive report generation
+- Use when you need structured search across materials science literature
+"""
 
 SSEKbAgentArgsSetting = """
-You can call one MCP tool exposed by the SSEkb structured search server:
+## PARAMETER CONSTRUCTION GUIDE
 
-=== TOOL: query_ssekb_literature ===
-Advanced structured database search tool for the SSEkb literature knowledge base.
-It supports:
-• Structured database queries based on material properties and paper metadata
-• Multi-table queries with complex filters
-• Retrieval of relevant papers based on structured criteria
-• Parallel literature summarization
-• Comprehensive research report generation
+**Tool:** query_ssekb_literature(query_description)
 
-=== KNOWLEDGE BASE COVERAGE ===
-The knowledge base contains:
-• Structured database with material properties and paper metadata
-• Multiple tables including material properties, paper metadata, and full text
-• Topics covering various materials science and engineering research
+**Parameters:**
+- query_description (str, required): Natural language description of the query
 
-=== EXAMPLES ===
+**Examples:**
 1) 查询特定材料属性：
    → Tool: query_ssekb_literature
      query_description: '查找具有特定性能的材料相关论文'
@@ -31,31 +27,38 @@ The knowledge base contains:
 2) 查询特定材料类型：
    → Tool: query_ssekb_literature
      query_description: '查找特定材料类型的相关论文'
+"""
 
-=== OUTPUT ===
-- The tool returns:
-   • summaries: List of literature summaries (List[str])
-     Each summary is a text string containing the summary of one literature paper
-     These summaries are RAW MATERIALS - you must synthesize them into a comprehensive report
-   • code: Status code
-     - 0: Success (summaries available)
-     - 1: No results found
-     - 2: Cannot read literature fulltext
-     - 4: Other errors
+SSEKbAgentSummaryPrompt = """
+## TOOL OUTPUT
 
-=== WORKFLOW ===
-The tool uses structured database search technology:
-  1. Analyzes user query to identify relevant database tables and fields
-  2. Constructs structured filters based on query requirements
-  3. Queries database tables to find matching papers
-  4. Retrieves unique paper DOIs from query results
-  5. Reads full texts in parallel (for papers with fulltext)
-  6. Generates literature summaries in parallel (for papers with fulltext)
-  7. Returns summaries list (List[str]) including both detailed summaries and metadata entries
+The tool returns:
+- **summaries**: List of literature summaries and database entries (List[str])
+  - Each item can be either:
+    - A detailed literature summary (for papers with fulltext): Contains comprehensive analysis of the paper
+    - A database entry (for papers without fulltext): Contains DOI and database properties (e.g., material properties, experimental data, etc.)
+  - These summaries and entries are RAW MATERIALS - you must synthesize them into a comprehensive report
+- **code**: Status code
+  - 0: Success (summaries available)
+  - 1: No results found
+  - 2: Cannot read literature fulltext
+  - 4: Other errors
 
-=== YOUR TASK: SYNTHESIZE FINAL REPORT ===
-**CRITICAL**: The tool returns RAW summaries. You MUST synthesize them into a comprehensive, in-depth research report.
+## RESPONSE FORMAT
+
+**CRITICAL**: The tool returns RAW summaries and database entries. You MUST synthesize them into a comprehensive, in-depth research report.
 **DO NOT simply list or concatenate the summaries - synthesize them into a unified, coherent narrative.**
+
+**IMPORTANT**: The summaries list may contain two types of entries:
+1. **Detailed literature summaries** (from papers with fulltext): These contain comprehensive analysis
+2. **Database entries** (from papers without fulltext): These contain DOI and database properties (e.g., material properties, experimental data, etc.)
+
+**YOU MUST**:
+- Include BOTH types of entries in your synthesis
+- For database entries, extract and cite the quantitative data (properties, values, DOI)
+- Integrate database property data into your analysis (e.g., compare property ranges, identify trends)
+- Cite database entries using their DOI: [n] (DOI: xxx)
+- Do NOT ignore database entries - they provide valuable quantitative data even without full text
 
 ## EXPRESSION STYLE:
 - Tone: Academic, rational, but enlightening
@@ -78,19 +81,31 @@ The tool uses structured database search technology:
 - Cite sources using [1], [2], [3] format (number refers to summary order) throughout the text
 
 ## REPORT STRUCTURE:
-1. **Introduction**: Professional definition of key concepts, key breakthroughs in recent years, main challenges that remain unsolved, number of papers analyzed
+1. **Introduction**: Professional definition of key concepts, key breakthroughs in recent years, main challenges that remain unsolved, number of papers analyzed (including both detailed summaries and database entries)
 
 2. **Main Content**: Organize into logical sections with subsections (##, ###). For each section:
-   - Integrate findings from multiple summaries with detailed explanations
-   - Include specific quantitative data, experimental conditions, and results
+   - Integrate findings from multiple summaries AND database entries with detailed explanations
+   - Include specific quantitative data from both detailed summaries and database entries
+   - **For database entries**: Extract and cite property data (e.g., material properties, experimental values, DOI)
+   - **Use database entries for statistical analysis**: Group by material type or property type, calculate property ranges, identify trends, create property distributions
+   - Use database entries to provide statistical overviews, property ranges, and material comparisons
    - Explain mechanisms and processes in depth (HOW things work, not just WHAT happens)
    - Compare findings across studies, highlighting agreements and disagreements
-   - Use tables to compare data from different studies when applicable
+   - Use tables to compare data from different studies when applicable (include data from database entries)
    - Address contradictions or gaps in current understanding
+   - **CRITICAL**: Database entries provide valuable quantitative data - always cite them with their DOI, even if they lack full text context
 
-3. **Summary of Key Findings**: Synthesize the most important insights
+3. **Property Data Summary** (if database entries are present):
+   - Create a dedicated section summarizing quantitative data from database entries
+   - Group entries by material type or property type
+   - Present property ranges, typical values, and distributions
+   - Use tables to organize property data from multiple database entries
+   - Cite each database entry: [n] (DOI: xxx)
 
-4. **References**: List all cited sources [1], [2], [3], etc.
+4. **Summary of Key Findings**: Synthesize the most important insights from both detailed summaries and database entries
+
+5. **References**: List all cited sources [1], [2], [3], etc.
+   - For detailed summaries: Include title, authors, journal if available
+   - For database entries: Format as [n] DOI: xxx (database entry - property data only)
+   - **CRITICAL**: Do NOT omit database entries from references - they are valid data sources and must be cited
 """
-
-SSEKbAgentInstruction = ''

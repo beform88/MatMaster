@@ -6,36 +6,31 @@ STEELPredictAgentDescription = (
     'Supports batch prediction for efficient analysis of multiple formulas.'
 )
 
-STEELPredictAgentArgsSetting = """
-You can call one MCP tool exposed by the STEEL_PREDICT server:
+STEELPredictAgentToolDescription = """
+Stainless steel tensile strength prediction tool using neural network models.
 
-=== TOOL: predict_tensile_strength ===
-Neural network-based prediction tool for stainless steel tensile strength (UTS).
-
-**What this tool does:**
-- Parses chemical formula strings to extract element compositions
-- Validates that all elements are within the allowed set
-- Uses a trained neural network model to predict tensile strength
-- Returns the predicted values in MPa as a list
+**When to use this tool:**
+- Predicting ultimate tensile strength (UTS) for stainless steel based on chemical composition
 - Supports batch prediction for efficient analysis of multiple formulas
+- Use when you need to predict or analyze tensile strength for stainless steel compositions
+- Use for systematic composition variation analysis (e.g., analyzing effect of element variation on strength)
+"""
 
-**Arguments:**
-- formula (list[str], required):
-  - List of chemical formula strings (even for single formula, use a list with one element)
+STEELPredictAgentArgsSetting = """
+## PARAMETER CONSTRUCTION GUIDE
+
+**Tool:** predict_tensile_strength(formula)
+
+**Parameters:**
+- formula (list[str], required): List of chemical formula strings
+  - **IMPORTANT**: Always provide a list, even for a single formula
   - Format: ElementSymbol followed by numeric value
   - Example (single): ["Fe70Cr20Ni10"] means Fe=70%, Cr=20%, Ni=10%
   - Example (single): ["C0.1Si0.5Mn1.0Cr18.0Ni8.0"] means C=0.1%, Si=0.5%, Mn=1.0%, Cr=18.0%, Ni=8.0%
   - Example (batch): ["Fe70Cr20Ni10", "Fe68Cr22Ni10", "Fe66Cr24Ni10"] for multiple predictions
-  - **IMPORTANT**: Always provide a list, even for a single formula
 
 **Allowed Elements:**
 B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
-
-**Returns:**
-- List of float values: List of predicted tensile strength values in MPa
-- The order matches the input formula list
-- Example: [650.25, 680.50, 695.30] for three formulas
-- For single formula: Returns a list with one value, e.g., [650.25]
 
 **Examples:**
 1) Predict tensile strength for a single formula (use list with one element):
@@ -69,11 +64,18 @@ B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
 - The model uses standardized input features, so the tool handles data preprocessing automatically
 - **For systematic analysis**: Use batch prediction when analyzing element variation effects (e.g., changing Cr from 16% to 22%)
 - **Batch prediction is more efficient**: When predicting multiple formulas, include all in one list
+"""
 
-**Output Format:**
-- The tool returns a list of float values in MPa: [value1, value2, ...]
-- The order of values matches the order of input formulas
+STEELPredictAgentSummaryPrompt = """
+## RESPONSE FORMAT
+
+**Returns:**
+- List of float values: List of predicted tensile strength values in MPa
+- The order matches the input formula list
+- Example: [650.25, 680.50, 695.30] for three formulas
 - For single formula: Returns a list with one value, e.g., [650.25]
+
+**Presentation Guidelines:**
 - Present results clearly to the user:
   - For single formula: "预测结果: 650.25 MPa"
   - For batch: Create a table or list showing formula → prediction mapping
@@ -83,5 +85,3 @@ B, C, N, O, Al, Si, P, S, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Nb, Mo, W
 - When presenting batch results, organize them in a clear format (table, list, or trend analysis)
 - Match each prediction value with its corresponding formula from the input list
 """
-
-STEELPredictAgentInstruction = ''
