@@ -30,11 +30,13 @@ from agents.matmaster_agent.style import (
     photon_consume_notify_card,
     photon_consume_success_card,
     tool_response_failed_card,
+    wallet_no_fee_card,
 )
 from agents.matmaster_agent.utils.finance import photon_consume
 from agents.matmaster_agent.utils.helper_func import (
     is_algorithm_error,
     no_found_structure_error,
+    wallet_no_fee_error,
 )
 from agents.matmaster_agent.utils.result_parse_utils import (
     get_echarts_result,
@@ -439,7 +441,12 @@ def handle_tool_error(ctx, author, error_message, error_type):
 async def display_failed_result_or_consume(
     dict_result: dict, ctx, author: str, event: Event
 ):
-    if is_algorithm_error(dict_result):
+    if wallet_no_fee_error(dict_result):
+        for event in handle_tool_error(
+            ctx, author, f"{wallet_no_fee_card(i18n=i18n)}", 'Wallet No Fee Error'
+        ):
+            yield event
+    elif is_algorithm_error(dict_result):
         for event in handle_tool_error(
             ctx, author, f"{tool_response_failed_card(i18n=i18n)}", 'Algorithm Error'
         ):
