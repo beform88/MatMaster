@@ -2,7 +2,7 @@ import copy
 
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerParams
 
 from agents.matmaster_agent.constant import (
     BohriumExecutor,
@@ -32,13 +32,11 @@ StructureGenerateBohriumExecutor['machine']['remote_profile'][
     'machine_type'
 ] = 'c8_m32_1 * NVIDIA 4090'
 
-sse_params = SseServerParams(
+mcp_params = StreamableHTTPServerParams(
     url=StructureGenerateServerUrl,
-    timeout=120,
 )
-
 structure_generate_toolset = CalculationMCPToolset(
-    connection_params=sse_params,
+    connection_params=mcp_params,
     storage=StructureGenerateBohriumStorge,
     executor=StructureGenerateBohriumExecutor,
     async_mode=True,
