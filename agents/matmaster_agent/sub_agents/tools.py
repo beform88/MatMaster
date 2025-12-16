@@ -318,7 +318,7 @@ ALL_TOOLS = {
     'run_ga': {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
-        'description': 'CAN DO: composition optimization targeting specific properties; CANNOT DO: build doping structures based on given composition',
+        'description': 'Requires reliance on prior steps or the user to prepare the proxy model file. CAN DO: composition optimization targeting specific properties; CANNOT DO: build doping structures based on given composition',
     },
     'run_doe_task': {
         'belonging_agent': DOE_AGENT_NAME,
@@ -658,7 +658,7 @@ ALL_TOOLS = {
     'visualize_data': {
         'belonging_agent': VisualizerAgentName,
         'scene': [SceneEnum.VISUALIZE_DATA, SceneEnum.UNIVERSAL],
-        'description': 'Automatically analyze materials science data files (CSV, Excel, JSON, TXT, DAT), identify the data structure with regular expression, and visualize the data with plots.',
+        'description': 'Visualize the data infiles (CSV, Excel, JSON, TXT, DAT) with plots. Requires prior steps or the user to prepare the data file url.',
         'bypass_confirmation': True,
     },
     'convert_lammps_structural_format': {
