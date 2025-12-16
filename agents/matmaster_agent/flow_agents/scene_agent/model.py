@@ -31,7 +31,7 @@ class SceneEnum(DescriptiveEnum):
     APEX = ('APEX', 'Involving first-principles calculation methods using APEX.')
     ABACUS = ('ABACUS', 'Involving first-principles calculation methods using ABACUS.')
     LAMMPS = ('LAMMPS', 'involving LAMMPS-based methods.')
-    OPTIMIZE_STRUCTURE = ('optimize_structure', '')
+    OPTIMIZE_STRUCTURE = ('optimize_structure', '3D structure optimization and relaxation')
     VACANCY_FORMATION_ENERGY = ('vacancy_formation_energy', '')
     INTERSTITIAL_FORMATION_ENERGY = ('interstitial_formation_energy', '')
     ELASTIC_CONSTANT = ('elastic_constant', '')
@@ -96,7 +96,7 @@ class SceneEnum(DescriptiveEnum):
         'solid_state_electrolyte',
         'Involving solid-state electrolyte materials',
     )
-    STEEL = ('steel', 'Involving steel materials')
+    STEEL = ('steel', 'Scenarios for predicting properties of steel materials or conducting literature research.')
     DOE = ('doe', '')
     PILOTEYE_ELECTRO = (
         'piloteye_electro',

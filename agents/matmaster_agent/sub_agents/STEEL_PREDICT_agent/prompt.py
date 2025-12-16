@@ -14,6 +14,10 @@ Stainless steel tensile strength prediction tool using neural network models.
 - Supports batch prediction for efficient analysis of multiple formulas
 - Use when you need to predict or analyze tensile strength for stainless steel compositions
 - Use for systematic composition variation analysis (e.g., analyzing effect of element variation on strength)
+
+**Returns:**
+- List of predicted tensile strength values in MPa
+- Will not return any files, only numerical predictions
 """
 
 STEELPredictAgentArgsSetting = """
