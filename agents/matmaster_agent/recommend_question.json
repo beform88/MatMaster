@@ -391,8 +391,8 @@
         "question": "使用ABACUS对Al₂O₃体系进行Bader电荷分析，并展示每个原子的电荷转移量",
         "question_en": "Perform Bader charge analysis on an Al2O3 system using ABACUS and display the charge transfer for each atom",
         "sharing_url": {
-          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019afc09e651728cac849ff3f0cffe76",
-          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae36182ad7df5a66c39806393310c"
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b24e50a6a7a8bbfbac5cbf5fbb47c",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b24e1e50c70bba4a751871cd52630"
         },
         "sharing_url_en": {
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b1fcd1ded7be58480a368a7355eec"
