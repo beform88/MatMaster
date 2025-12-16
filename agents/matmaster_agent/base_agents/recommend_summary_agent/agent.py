@@ -51,6 +51,7 @@ from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
+from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION
 from agents.matmaster_agent.state import RECOMMEND_PARAMS
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import update_state_event
@@ -107,6 +108,7 @@ class BaseAgentWithRecAndSum(
                 model=MatMasterLlmConfig.gemini_2_5_pro,
                 name=f"{agent_prefix}_summary_agent",
                 description=self.description,
+                global_instruction=GLOBAL_INSTRUCTION,
                 instruction=self.instruction,
             )
         else:
@@ -114,6 +116,7 @@ class BaseAgentWithRecAndSum(
                 model=MatMasterLlmConfig.default_litellm_model,
                 name=f"{agent_prefix}_summary_agent",
                 description='You are an assistant to summarize the task to aware the user.',
+                global_instruction=GLOBAL_INSTRUCTION,
                 instruction=get_subagent_summary_prompt(),
             )
 

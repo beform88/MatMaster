@@ -1,3 +1,10 @@
+GLOBAL_INSTRUCTION = """
+---
+Today's date is {current_time}.
+Language: When think and answer, always use this language ({target_language}).
+---
+"""
+
 MatMasterCheckTransferPrompt = """
 You are an expert judge tasked with evaluating whether the previous LLM's response contains a clear and explicit request or instruction to transfer the conversation to a specific agent (e.g., 'xxx agent').
 Analyze the provided RESPONSE TEXT to determine if it explicitly indicates a transfer action.
