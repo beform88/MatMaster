@@ -46,24 +46,24 @@ Main tables:
    → Tool: fetch_mofs_sql
      sql: "SELECT * FROM mofs WHERE name = 'tobmof-27'"
 
-2) 范围查询：从CoREMOF 2019数据库查找比表面积在500-1000 m²/g之间的MOF
+2) 范围查询：从Tobacco数据库查找比表面积在500-1000 m²/g之间的MOF
    → Tool: fetch_mofs_sql
-     sql: "SELECT * FROM mofs WHERE database = 'CoREMOF 2019' AND surface_area_m2g BETWEEN 500 AND 1000 ORDER BY surface_area_m2g DESC"
+     sql: "SELECT * FROM mofs WHERE database = 'Tobacco' AND surface_area_m2g BETWEEN 500 AND 1000 ORDER BY surface_area_m2g DESC"
 
-3) 复合条件：查找5个原子数小于50，比表面积大于1000 m²/g，且含有O元素和C元素的MOF
+3) 复合条件：从CoREMOF 2019数据库查找原子数小于50，比表面积大于1000 m²/g，且含有O元素和C元素的MOF
    → Tool: fetch_mofs_sql
      sql: '''
      SELECT DISTINCT m.name, m.database, m.n_atom, m.surface_area_m2g
      FROM mofs m
      JOIN elements e1 ON m.id = e1.mof_id
      JOIN elements e2 ON m.id = e2.mof_id
-     WHERE m.n_atom < 50
+     WHERE m.database = 'CoREMOF 2019'
+       AND m.n_atom < 50
        AND m.surface_area_m2g > 1000
        AND e1.element_symbol = 'O'
        AND e2.element_symbol = 'C'
      ORDER BY m.surface_area_m2g DESC
      '''
-     n_results: 5
 
 4) 统计查询：统计各数据库的MOF数量
    → Tool: fetch_mofs_sql
