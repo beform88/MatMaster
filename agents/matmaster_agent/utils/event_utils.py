@@ -8,10 +8,13 @@ import uuid
 from typing import Iterable, Optional
 
 from deepmerge import always_merger
+from google.adk.agents import LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools import BaseTool
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
+from opik.integrations.adk import track_adk_agent_recursive
 
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.config import USE_PHOTON
@@ -22,8 +25,11 @@ from agents.matmaster_agent.constant import (
     ModelRole,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
+from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import RenderTypeEnum
+from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION
+from agents.matmaster_agent.state import PLAN
 from agents.matmaster_agent.style import (
     no_found_structure_card,
     photon_consume_free_card,
@@ -326,13 +332,14 @@ def cherry_pick_events(ctx: InvocationContext):
 
 async def send_error_event(err, ctx: InvocationContext, author):
     # 更新 plan 为失败
-    update_plan = copy.deepcopy(ctx.session.state['plan'])
-    update_plan['steps'][ctx.session.state['plan_index']][
-        'status'
-    ] = PlanStepStatusEnum.FAILED
+    update_plan = copy.deepcopy(ctx.session.state[PLAN])
+    if update_plan.get('steps'):
+        update_plan['steps'][ctx.session.state['plan_index']][
+            'status'
+        ] = PlanStepStatusEnum.FAILED
 
     yield update_state_event(
-        ctx, state_delta={'plan': update_plan, 'error_occurred': True}
+        ctx, state_delta={PLAN: update_plan, 'error_occurred': True}
     )
 
     # 判断是否是异常组
@@ -371,6 +378,20 @@ async def send_error_event(err, ctx: InvocationContext, author):
         ctx, author, 'system_detail_error', {'msg': detailed_error}, ModelRole
     ):
         yield event
+
+    # Agent 分析错误原因
+    error_handel_agent = LlmAgent(
+        name='error_handel_agent',
+        description='仅分析错误原因',
+        global_instruction=GLOBAL_INSTRUCTION,
+        model=LiteLlm(model=DEFAULT_MODEL),
+    )
+
+    track_adk_agent_recursive(error_handel_agent, MatMasterLlmConfig.opik_tracer)
+
+    # 调用错误处理 Agent
+    async for error_handel_event in error_handel_agent.run_async(ctx):
+        yield error_handel_event
 
 
 async def photon_consume_event(ctx, event, author):

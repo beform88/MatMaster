@@ -51,7 +51,7 @@ from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
-from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION
+from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION, GLOBAL_SCHEMA_INSTRUCTION
 from agents.matmaster_agent.state import RECOMMEND_PARAMS
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import update_state_event
@@ -101,6 +101,7 @@ class BaseAgentWithRecAndSum(
         self._recommend_params_schema_agent = SchemaAgent(
             model=MatMasterLlmConfig.tool_schema_model,
             name=f"{agent_prefix}_recommend_params_schema_agent",
+            global_instruction=GLOBAL_SCHEMA_INSTRUCTION,
             state_key=RECOMMEND_PARAMS,
         )
         if self.doc_summary:

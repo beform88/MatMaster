@@ -5,8 +5,6 @@ from typing import AsyncGenerator
 
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
-from google.adk.models.lite_llm import LiteLlm
-from opik.integrations.adk import track_adk_agent_recursive
 from pydantic import computed_field, model_validator
 
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
@@ -64,7 +62,7 @@ from agents.matmaster_agent.flow_agents.utils import (
     should_bypass_confirmation,
 )
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
-from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
+from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import (
@@ -501,18 +499,6 @@ class MatMasterFlowAgent(LlmAgent):
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
-
-            error_handel_agent = LlmAgent(
-                name='error_handel_agent',
-                model=LiteLlm(model=DEFAULT_MODEL),
-            )
-            track_adk_agent_recursive(
-                error_handel_agent, MatMasterLlmConfig.opik_tracer
-            )
-
-            # 调用错误处理 Agent
-            async for error_handel_event in error_handel_agent.run_async(ctx):
-                yield error_handel_event
 
         # 评分组件
         for generate_nps_event in context_function_event(
