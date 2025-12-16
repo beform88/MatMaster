@@ -266,9 +266,12 @@
         "question": "检索并返回3个带隙大于2 eV的氧化物结构",
         "question_en": "Search and return 3 oxide structures with band gap greater than 2 eV",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2572b7407da9ba0e090955e10b8a",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b24c6ad4171428bc1bb6323aff6c6"
         },
-        "sharing_url_en": "",
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b258256bc74fc9baf69a8bae84ee3"
+        },
         "structure_url": ""
       }
     },
@@ -295,9 +298,12 @@
         "question": "从CoREMOF 2019数据库查找原子数小于 50、比表面积大于 1000 m²/g，且含有 O 元素和 C 元素的 MOF",
         "question_en": "Search and return no more than 5 MOFs with less than 50 atoms, greater than 1000 m²/g surface area, and containing O and C elements from CoREMOF 2019 database",
         "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2584e5687e5496b93d7cf4cc0477",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b24d768f87c9186b707f3d7ffeb10"
         },
-        "sharing_url_en": "",
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2583a9507d0891d2e20ddb91476d"
+        },
         "structure_url": ""
       }
     },
@@ -526,6 +532,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b0d37f83d72d0a2b3b89c3b69b810",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b0d38e430769f89ed346d11d31dbf"
         },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b258ec99e7ce0bf0f0e69d427e083"
+        },
         "structure_url": null
       }
     },
@@ -690,7 +699,7 @@
           "uat_url": ""
         },
         "sharing_url_en": {
-          "prod_url": ""
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2590f8b37e49ba301b8d8c3f1c91"
         },
         "structure_url": null,
         "title": "Ni–Co–Cr 合金材料弹性性质研究"
@@ -858,6 +867,9 @@
           "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b01dca4aa7395863631719280ae9d",
           "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019ae90f4f0473b490f84b0256aeec9f",
           "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share/019b2594dd9c70e9a83e81367a25e757"
         },
         "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM2S0B42TZ5Z9STNBFGEC4J/data.zip",
         "title": "机器学习势函数训练"
