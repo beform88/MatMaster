@@ -2,6 +2,13 @@ GLOBAL_INSTRUCTION = """
 ---
 Today's date is {current_time}.
 Language: When think and answer, always use this language ({target_language}).
+Important: Do not end with any question or prompt for user action.
+---
+"""
+
+GLOBAL_SCHEMA_INSTRUCTION = """
+---
+Return ONLY valid JSON object - no additional text, explanations, or formatting
 ---
 """
 
