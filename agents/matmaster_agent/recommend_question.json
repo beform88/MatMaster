@@ -265,7 +265,10 @@
         "belonging_en": "Structure Preparation",
         "question": "检索并返回3个带隙大于2 eV的氧化物结构",
         "question_en": "Search and return 3 oxide structures with band gap greater than 2 eV",
-        "sharing_url": "",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b22b2e89e7527a10cae14fc8918ca"
+        },
         "sharing_url_en": "",
         "structure_url": ""
       }
@@ -292,7 +295,10 @@
         "belonging_en": "Structure Preparation",
         "question": "从CoREMOF 2019数据库查找原子数小于 50、比表面积大于 1000 m²/g，且含有 O 元素和 C 元素的 MOF",
         "question_en": "Search and return no more than 5 MOFs with less than 50 atoms, greater than 1000 m²/g surface area, and containing O and C elements from CoREMOF 2019 database",
-        "sharing_url": "",
+        "sharing_url": {
+          "prod_url": "",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019b22b6b83f7cd7ad2844a2492158fa"
+        },
         "sharing_url_en": "",
         "structure_url": ""
       }
