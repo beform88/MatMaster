@@ -4,12 +4,12 @@ from agents.matmaster_agent.constant import CURRENT_ENV, BohriumExecutor, Bohriu
 
 DPACalulator_AGENT_NAME = 'dpa_calculator_agent'
 if CURRENT_ENV == 'test':
-    DPAMCPServerUrl = 'http://qpus1389933.bohrium.tech:50001/sse'
+    DPAMCPServerUrl = 'http://qpus1389933.bohrium.tech:50001/mcp'
 elif CURRENT_ENV == 'uat':
-    DPAMCPServerUrl = 'https://1415fe9fea0fa1e45dddcff5682239a0.appspace.uat.bohrium.com/sse?token=f812b4cc79ef47b4b2a1bb81c415367d'
+    DPAMCPServerUrl = 'https://1415fe9fea0fa1e45dddcff5682239a0.appspace.uat.bohrium.com/sse?token=f812b4cc79ef47b4b2a1bb81c415367d'  # TODO: update uat url to mcp
 else:
-    # DPAMCPServerUrl = 'http://pfmx1355864.bohrium.tech:50001/sse'
-    DPAMCPServerUrl = 'https://dpa-uuid1750659890.appspace.bohrium.com/sse?token=b2b94c52d10141e992514f9d17bcca23'
+    # DPAMCPServerUrl = 'http://pfmx1355864.bohrium.tech:50001/sse' # TODO: update backup prod url to mcp
+    DPAMCPServerUrl = 'https://dpa-uuid1750659890.appspace.bohrium.com/mcp?token=b2b94c52d10141e992514f9d17bcca23'
 DPACalulator_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 DPACalulator_BOHRIUM_EXECUTOR['machine']['remote_profile'][
     'image_address'

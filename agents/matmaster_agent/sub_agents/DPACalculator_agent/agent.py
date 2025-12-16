@@ -1,6 +1,6 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerParams
 
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
@@ -22,7 +22,7 @@ from agents.matmaster_agent.sub_agents.DPACalculator_agent.prompt import (
 )
 
 dpa_toolset = CalculationMCPToolset(
-    connection_params=SseServerParams(url=DPAMCPServerUrl),
+    connection_params=StreamableHTTPServerParams(url=DPAMCPServerUrl),
     storage=DPACalulator_BOHRIUM_STORAGE,
     executor=DPACalulator_BOHRIUM_EXECUTOR,
     async_mode=True,
