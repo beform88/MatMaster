@@ -78,6 +78,7 @@ from agents.matmaster_agent.services.icl import (
     toolchain_from_examples,
 )
 from agents.matmaster_agent.services.questions import get_random_questions
+from agents.matmaster_agent.state import EXPAND
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -128,7 +129,7 @@ class MatMasterFlowAgent(LlmAgent):
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
             output_schema=ExpandSchema,
-            state_key='expand',
+            state_key=EXPAND,
         )
 
         self._scene_agent = SchemaAgent(
