@@ -663,30 +663,30 @@ ALL_TOOLS = {
         'scene': [SceneEnum.THERMOELECTRIC],
         'description': 'Screen potential thermoelectric materials from a user-provided set of candidate structures using DPA under a specified pressure, internally predicting all required thermoelectric properties to identify promising candidates; this tool requires the user to supply multiple input structures and does not perform screening without provided candidates.',
     },
-    'traj_analysis_msd': {
+    'traj_analysis_diffusion': {
         'belonging_agent': TrajAnalysisAgentName,
-        'scene': [],
-        'description': '',
+        'scene': [SceneEnum.POST_MD_ANALYSIS],
+        'description': 'Calculate mean squared displacement (MSD), diffusion coefficients and ion conductivity from MD trajectories.',
     },
     'traj_analysis_rdf': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
-        'description': '',
+        'description': 'Calculate radial distribution function (RDF) from MD trajectories.',
     },
     'traj_analysis_solvation': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
-        'description': '',
+        'description': 'Calculate solvation structure and solvation shell properties from MD trajectories.',
     },
     'traj_analysis_bond': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
-        'description': '',
+        'description': 'Calculate evolution of bond lengths from MD trajectories.',
     },
     'traj_analysis_react': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
-        'description': '',
+        'description': 'Calculate reaction species and network analysis from MD trajectories.',
     },
     'visualize_data': {
         'belonging_agent': VisualizerAgentName,
