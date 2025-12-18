@@ -2,7 +2,9 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgent
+from agents.matmaster_agent.base_agents.public_agent import (
+    BaseSyncAgentWithToolValidator,
+)
 from agents.matmaster_agent.constant import BohriumStorge
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
@@ -16,7 +18,7 @@ traj_analysis_toolset = CalculationMCPToolset(
 )
 
 
-class TrajAnalysisAgent(BaseSyncAgent):
+class TrajAnalysisAgent(BaseSyncAgentWithToolValidator):
     def __init__(self, llm_config):
         super().__init__(
             model=llm_config.default_litellm_model,
