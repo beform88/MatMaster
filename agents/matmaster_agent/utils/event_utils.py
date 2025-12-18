@@ -29,7 +29,7 @@ from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import RenderTypeEnum
 from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION
-from agents.matmaster_agent.state import PLAN
+from agents.matmaster_agent.state import ERROR_DETAIL, PLAN
 from agents.matmaster_agent.style import (
     no_found_structure_card,
     photon_consume_free_card,
@@ -351,14 +351,19 @@ async def send_error_event(err, ctx: InvocationContext, author):
         ]
         exceptions: Optional[Iterable[BaseException]] = err.exceptions
     else:
+        error_type = type(err).__name__
+        error_message = str(err)
         error_details = [
             'Single Exception caught:',
-            f"Type: {type(err).__name__}",
-            f"Message: {str(err)}",
+            f"Type: {error_type}",
+            f"Message: {error_message}",
             '\nTraceback:',
             ''.join(traceback.format_tb(err.__traceback__)),
         ]
         exceptions = None  # 单一异常时不再循环子异常
+        yield update_state_event(
+            ctx, state_delta={ERROR_DETAIL: f'{error_type}: {error_message}'}
+        )
 
     # 如果是异常组，逐个子异常处理
     if exceptions:
