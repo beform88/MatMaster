@@ -17,7 +17,7 @@ from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
 from agents.matmaster_agent.services.quota import check_quota_service, use_quota_service
-from agents.matmaster_agent.state import PLAN
+from agents.matmaster_agent.state import ERROR_DETAIL, PLAN
 from agents.matmaster_agent.utils.helper_func import get_user_id
 
 logger = logging.getLogger(__name__)
@@ -36,6 +36,8 @@ async def matmaster_prepare_state(
         '%Y-%m-%d %H:%M:%S'
     )
     callback_context.state['error_occurred'] = False
+    # 记录用户错误详情
+    callback_context.state[ERROR_DETAIL] = callback_context.state.get(ERROR_DETAIL, '')
     callback_context.state['origin_job_id'] = None
     callback_context.state['special_llm_response'] = False
 
