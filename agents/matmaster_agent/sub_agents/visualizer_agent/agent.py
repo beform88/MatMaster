@@ -1,6 +1,6 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerParams
 
 from agents.matmaster_agent.base_agents.public_agent import (
     BaseSyncAgentWithToolValidator,
@@ -12,9 +12,9 @@ from .callback import validate_visualization_url
 from .constant import VisualizerAgentName, VisualizerServerUrl
 from .prompt import VisualizerAgentDescription, VisualizerAgentInstruction
 
-sse_params = SseServerParams(url=VisualizerServerUrl)
+MCP_params = StreamableHTTPServerParams(url=VisualizerServerUrl)
 visualizer_toolset = CalculationMCPToolset(
-    connection_params=sse_params, storage=BohriumStorge
+    connection_params=MCP_params, storage=BohriumStorge
 )
 
 

@@ -2,6 +2,7 @@ from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool import McpToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import (
     SseServerParams,
+    StreamableHTTPServerParams,
 )
 
 from agents.matmaster_agent.base_agents.public_agent import (
@@ -43,7 +44,7 @@ science_navigator_toolset = McpToolset(
     tool_filter=sn_tools,
 )
 web_parser_toolset = McpToolset(
-    connection_params=SseServerParams(
+    connection_params=StreamableHTTPServerParams(
         url=DocumentParserServerUrl,
         timeout=360,
     ),
