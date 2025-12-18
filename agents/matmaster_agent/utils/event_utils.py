@@ -361,19 +361,26 @@ async def send_error_event(err, ctx: InvocationContext, author):
             ''.join(traceback.format_tb(err.__traceback__)),
         ]
         exceptions = None  # 单一异常时不再循环子异常
-        yield update_state_event(
-            ctx, state_delta={ERROR_DETAIL: f'{error_type}: {error_message}'}
-        )
+        if not ctx.session.state.get(ERROR_DETAIL):  # 仅记录第一条 Error
+            yield update_state_event(
+                ctx, state_delta={ERROR_DETAIL: f'{error_type}: {error_message}'}
+            )
 
     # 如果是异常组，逐个子异常处理
     if exceptions:
         for i, exc in enumerate(exceptions, 1):
+            error_type = type(exc).__name__
+            error_message = str(exc)
             error_details.append(f"\nException #{i}:")
             error_details.append(f"Type: {type(exc).__name__}")
             error_details.append(f"Message: {str(exc)}")
             error_details.append(
                 f"Traceback: {''.join(traceback.format_tb(exc.__traceback__))}"
             )
+            if not ctx.session.state.get(ERROR_DETAIL):  # 仅记录第一条 Error
+                yield update_state_event(
+                    ctx, state_delta={ERROR_DETAIL: f'{error_type}: {error_message}'}
+                )
 
     # 合并错误信息
     detailed_error = '\n'.join(error_details)
