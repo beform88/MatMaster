@@ -1,5 +1,6 @@
 from typing import Any
 
+from google.adk.agents import LlmAgent
 from pydantic import model_validator
 
 from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
@@ -26,3 +27,7 @@ class ContentLimitMixin(BaseMixin):
     @classmethod
     def decorate_callbacks(cls, data: Any) -> Any:
         return content_limit_callback_mixin(data)
+
+
+class ContentLimitLlmAgent(ContentLimitMixin, LlmAgent):
+    pass

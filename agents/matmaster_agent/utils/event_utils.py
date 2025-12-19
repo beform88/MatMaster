@@ -8,7 +8,6 @@ import uuid
 from typing import Iterable, Optional
 
 from deepmerge import always_merger
-from google.adk.agents import LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.adk.models.lite_llm import LiteLlm
@@ -16,6 +15,7 @@ from google.adk.tools import BaseTool
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 from opik.integrations.adk import track_adk_agent_recursive
 
+from agents.matmaster_agent.base_agents.ctx_limit_agent import ContentLimitLlmAgent
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
@@ -392,7 +392,7 @@ async def send_error_event(err, ctx: InvocationContext, author):
         yield event
 
     # Agent 分析错误原因
-    error_handel_agent = LlmAgent(
+    error_handel_agent = ContentLimitLlmAgent(
         name='error_handel_agent',
         description='仅分析错误原因',
         global_instruction=GLOBAL_INSTRUCTION,

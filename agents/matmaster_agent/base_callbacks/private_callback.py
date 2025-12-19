@@ -88,6 +88,14 @@ def filter_safety_content(func: BeforeModelCallback) -> BeforeModelCallback:
                 )
                 break
 
+        if not contents:
+            contents = [
+                Content(
+                    role=ModelRole,
+                    parts=[Part(text='History Context Too Long, Exceed Max Tokens')],
+                )
+            ]
+
         llm_request.contents = contents
 
     return wrapper
