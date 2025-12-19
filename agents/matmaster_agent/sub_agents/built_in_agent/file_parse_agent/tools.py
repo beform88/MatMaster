@@ -11,7 +11,7 @@ class FileParseResponse(TypedDict):
 
 async def file_parse(file_url: str) -> FileParseResponse:
     """解析文件url，返回总结内容"""
-    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+    MAX_FILE_SIZE = 1 * 1024 * 1024  # 1 MB
 
     async with aiohttp.ClientSession() as session:
         try:
