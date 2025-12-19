@@ -13,7 +13,9 @@ from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
 from agents.matmaster_agent.base_agents.schema_agent import (
     SchemaAgent,
 )
-from agents.matmaster_agent.base_callbacks.private_callback import remove_function_call
+from agents.matmaster_agent.base_callbacks.private_callback import (
+    remove_function_call,
+)
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
     get_analysis_instruction,

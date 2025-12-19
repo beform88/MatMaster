@@ -5,7 +5,7 @@ from google.adk.agents import InvocationContext
 from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
 from agents.matmaster_agent.base_agents.error_agent import (
     ErrorHandelSequentialAgent,
-    ErrorHandleLlmAgent,
+    ErrorHandleAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.constant import ModelRole
 from agents.matmaster_agent.utils.event_utils import (
@@ -33,5 +33,5 @@ class SubordinateSequentialAgent(SubordinateFeaturesMixin, ErrorHandelSequential
     pass
 
 
-class SubordinateLlmAgent(SubordinateFeaturesMixin, ErrorHandleLlmAgent):
+class SubordinateLlmAgent(SubordinateFeaturesMixin, ErrorHandleAndContentLimitLlmAgent):
     pass

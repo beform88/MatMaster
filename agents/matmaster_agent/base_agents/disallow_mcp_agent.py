@@ -6,7 +6,9 @@ from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     disallow_transfer_model_validator,
 )
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
+from agents.matmaster_agent.base_agents.error_agent import (
+    ErrorHandleAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.base_agents.mcp_agent import (
     MCPInitMixin,
     MCPRunEventsMixin,
@@ -22,7 +24,9 @@ class CombinedDisallowTransferAndMCPCallbackMixin(BaseMixin):
 
 
 class DisallowTransferMCPAgent(
-    MCPInitMixin, CombinedDisallowTransferAndMCPCallbackMixin, ErrorHandleLlmAgent
+    MCPInitMixin,
+    CombinedDisallowTransferAndMCPCallbackMixin,
+    ErrorHandleAndContentLimitLlmAgent,
 ):
     pass
 
@@ -31,6 +35,6 @@ class DisallowTransferSyncMCPAgent(
     MCPInitMixin,
     CombinedDisallowTransferAndMCPCallbackMixin,
     MCPRunEventsMixin,
-    ErrorHandleLlmAgent,
+    ErrorHandleAndContentLimitLlmAgent,
 ):
     pass

@@ -7,6 +7,7 @@ import uuid
 from functools import wraps
 from typing import Optional, Union
 
+import tiktoken
 from deepdiff import DeepDiff
 from dp.agent.adapter.adk import CalculationMCPTool
 from google.adk.agents.callback_context import CallbackContext
@@ -14,6 +15,7 @@ from google.adk.agents.invocation_context import InvocationContext
 from google.adk.agents.llm_agent import (
     AfterModelCallback,
     AfterToolCallback,
+    BeforeModelCallback,
     BeforeToolCallback,
 )
 from google.adk.models import LlmRequest, LlmResponse
@@ -21,6 +23,7 @@ from google.adk.tools import BaseTool, ToolContext
 from google.genai.types import Content, FunctionCall, Part
 from mcp.types import CallToolResult, TextContent
 
+from agents.matmaster_agent.config import MAX_TOKENS_LIMIT
 from agents.matmaster_agent.constant import (
     CURRENT_ENV,
     FRONTEND_STATE_KEY,
@@ -53,6 +56,43 @@ logger.setLevel(logging.INFO)
 
 
 # before_model_callback
+async def default_before_model_callback(
+    callback_context: CallbackContext, llm_request: LlmRequest
+) -> Optional[LlmResponse]:
+    return
+
+
+def filter_safety_content(func: BeforeModelCallback) -> BeforeModelCallback:
+    @wraps(func)
+    async def wrapper(
+        callback_context: CallbackContext, llm_request: LlmRequest
+    ) -> Optional[LlmResponse]:
+
+        # 先调用被装饰的 before_model_callback
+        await func(callback_context, llm_request)
+
+        contents = []
+        record_tokens = 0
+        encoding = tiktoken.encoding_for_model('gpt-4')
+        for index, content in enumerate(llm_request.contents[::-1]):
+            current_tokens = 0
+            for part in content.parts:
+                if part.text:
+                    current_tokens += len(encoding.encode(part.text))
+            if record_tokens + current_tokens < MAX_TOKENS_LIMIT:
+                record_tokens += current_tokens
+                contents.insert(0, content)
+            else:
+                logger.warning(
+                    f'{callback_context.session.id} Content too long, use latest {index+1} part'
+                )
+                break
+
+        llm_request.contents = contents
+
+    return wrapper
+
+
 async def inject_function_declarations(
     callback_context: CallbackContext, llm_request: LlmRequest
 ) -> Optional[LlmResponse]:

@@ -9,7 +9,9 @@ from google.adk.events import Event
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferMixin,
 )
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
+from agents.matmaster_agent.base_agents.error_agent import (
+    ErrorHandleAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
@@ -22,7 +24,7 @@ from agents.matmaster_agent.utils.helper_func import extract_json_from_string
 logger = logging.getLogger(__name__)
 
 
-class SchemaAgent(ErrorHandleLlmAgent):
+class SchemaAgent(ErrorHandleAndContentLimitLlmAgent):
     state_key: Optional[str] = None  # Direct supervisor agent in the hierarchy
 
     @override

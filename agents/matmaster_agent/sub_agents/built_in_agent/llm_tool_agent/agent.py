@@ -7,7 +7,9 @@ from google.adk.events import Event
 from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
     DisallowTransferLlmAgent,
 )
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
+from agents.matmaster_agent.base_agents.error_agent import (
+    ErrorHandleAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant import (
@@ -36,5 +38,5 @@ class LLMToolAgent(DisallowTransferLlmAgent):
         yield update_state_event(ctx, state_delta={'plan': update_plan})
 
 
-def init_tool_agent(llm_config) -> ErrorHandleLlmAgent:
+def init_tool_agent(llm_config) -> ErrorHandleAndContentLimitLlmAgent:
     return LLMToolAgent(llm_config)
