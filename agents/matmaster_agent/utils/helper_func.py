@@ -99,7 +99,7 @@ def load_tool_response(part: Part):
     else:
         dict_result = tool_response
 
-    if dict_result.get('status', None) == 'error':
+    if dict_result.get('status', None) == 'error' and dict_result.get('error_type'):
         raise eval(dict_result['error_type'])(dict_result['error'])
 
     return dict_result
