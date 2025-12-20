@@ -11,6 +11,7 @@ from agents.matmaster_agent.base_agents.recommend_summary_agent.agent import (
 from agents.matmaster_agent.base_agents.validator_agent import ValidatorAgent
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
+    ModelRole,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.job_agents.result_core_agent.agent import (
@@ -24,6 +25,7 @@ from agents.matmaster_agent.job_agents.submit_render_agent.agent import (
 )
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.utils.event_utils import (
+    all_text_event,
     update_state_event,
 )
 
@@ -131,12 +133,19 @@ class BaseAsyncJobAgent(BaseAgentWithRecAndSum):
         ]
         current_step_status = current_step['status']
         if current_step_status in [
-            PlanStepStatusEnum.SUBMITTED,
             PlanStepStatusEnum.SUCCESS,
             PlanStepStatusEnum.FAILED,
         ]:
             # Only Query Job Result
             pass
+        elif current_step_status == PlanStepStatusEnum.SUBMITTED:
+            for submit_event in all_text_event(
+                ctx,
+                self.name,
+                '任务进行中，请等待右侧任务列表状态更新为完成后重新发起提问',
+                ModelRole,
+            ):
+                yield submit_event
         else:
             async for run_event in super()._run_events(ctx):
                 yield run_event
