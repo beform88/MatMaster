@@ -29,7 +29,7 @@ from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import RenderTypeEnum
 from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION
-from agents.matmaster_agent.state import ERROR_DETAIL, PLAN
+from agents.matmaster_agent.state import ERROR_DETAIL, PLAN, UPLOAD_FILE
 from agents.matmaster_agent.style import (
     no_found_structure_card,
     photon_consume_free_card,
@@ -528,7 +528,7 @@ async def handle_upload_file_event(ctx: InvocationContext, author):
                 ):
                     yield event
 
-                yield update_state_event(ctx, state_delta={'upload_file': True})
+                yield update_state_event(ctx, state_delta={UPLOAD_FILE: True})
 
 
 def frontend_render_event(ctx, event, author, parsed_tool_result, render_tool_response):

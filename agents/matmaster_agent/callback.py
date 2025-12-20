@@ -17,7 +17,7 @@ from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import UserContent
 from agents.matmaster_agent.prompt import get_user_content_lang
 from agents.matmaster_agent.services.quota import check_quota_service, use_quota_service
-from agents.matmaster_agent.state import ERROR_DETAIL, PLAN
+from agents.matmaster_agent.state import ERROR_DETAIL, PLAN, UPLOAD_FILE
 from agents.matmaster_agent.utils.helper_func import get_user_id
 
 logger = logging.getLogger(__name__)
@@ -119,7 +119,7 @@ async def matmaster_prepare_state(
     # 单次计划涉及的所有场景
     callback_context.state['scenes'] = callback_context.state.get('scenes', [])
     # 单次计划涉及的所有场景
-    callback_context.state['upload_file'] = False
+    callback_context.state[UPLOAD_FILE] = False
     # 用户免费使用次数
     callback_context.state['quota_remaining'] = callback_context.state.get(
         'quota_remaining', None

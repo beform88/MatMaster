@@ -76,7 +76,7 @@ from agents.matmaster_agent.services.icl import (
     toolchain_from_examples,
 )
 from agents.matmaster_agent.services.questions import get_random_questions
-from agents.matmaster_agent.state import EXPAND
+from agents.matmaster_agent.state import EXPAND, UPLOAD_FILE
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -276,7 +276,7 @@ class MatMasterFlowAgent(LlmAgent):
 
             # 如果用户上传文件，强制为 research 模式
             if (
-                ctx.session.state['upload_file']
+                ctx.session.state[UPLOAD_FILE]
                 and ctx.session.state['intent']['type'] == IntentEnum.CHAT
             ):
                 update_intent = copy.deepcopy(ctx.session.state['intent'])
@@ -350,7 +350,7 @@ class MatMasterFlowAgent(LlmAgent):
                     or not plan_confirm
                 ):
                     # 制定计划
-                    available_tools = get_tools_list(scenes)
+                    available_tools = get_tools_list(ctx, scenes)
                     if not available_tools:
                         available_tools = ALL_AGENT_TOOLS_LIST
                     available_tools_with_info = {

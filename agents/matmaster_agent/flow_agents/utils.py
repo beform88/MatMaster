@@ -5,7 +5,9 @@ from google.adk.agents import InvocationContext
 from pydantic import BaseModel, create_model
 
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
+from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum
+from agents.matmaster_agent.state import UPLOAD_FILE
 from agents.matmaster_agent.sub_agents.mapping import ALL_AGENT_TOOLS_LIST
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 
@@ -13,15 +15,25 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def get_tools_list(scenes: list):
+def get_tools_list(ctx: InvocationContext, scenes: list):
     if not scenes:
         return ALL_AGENT_TOOLS_LIST
     else:
-        return [
+        tools_list_by_scene = [
             k
             for k, v in ALL_TOOLS.items()
             if any(scene in v['scene'] for scene in scenes)
         ]
+        if not ctx.session.state[UPLOAD_FILE]:
+            final_tools_list = [
+                t
+                for t in tools_list_by_scene
+                if SceneEnum.NEED_UPLOAD_FILE not in ALL_TOOLS[t]['scene']
+            ]
+        else:
+            final_tools_list = tools_list_by_scene
+
+        return final_tools_list
 
 
 def get_agent_name(tool_name, sub_agents):

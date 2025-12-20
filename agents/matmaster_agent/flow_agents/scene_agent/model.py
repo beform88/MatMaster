@@ -15,9 +15,23 @@ class DescriptiveEnum(str, Enum):
 
 
 class SceneEnum(DescriptiveEnum):
-
-    # universal
+    # Special Scene
     UNIVERSAL = ('universal', 'Applicable to all scenarios')
+    NEED_UPLOAD_FILE = ('need_upload_file', '')
+
+    # literature
+    LITERATURE = (
+        'literature',
+        'Involving research papers retrieval, content extraction, or progress/trends analysis. e.g. Search for research papers on [topic], extract key findings from the abstract of papers, analyze research progress/trends in [field], and finalize by in-depth discussion/summary',
+    )
+    WEB_SEARCH = (
+        'general_web_search',
+        'Involving concept query or procedure query. e.g. `What is [concept]`, `How to do [procedure]`, `Why is [phenomena]`. Not suitable for final research progress search tasks unless user requests.',
+    )
+    WEB_PARSING = (
+        'webpage_parsing',
+        'Involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH, but usually no need for literature search tasks unless user requests.',
+    )
 
     # database
     DATABASE_SEARCH = ('database_search', '')
@@ -50,27 +64,7 @@ class SceneEnum(DescriptiveEnum):
     WORK_FUNCTION = ('work_function', '')
     COMPOSITION_OPTIMIZATION = ('composition_optimization', '')
     CONVEXHULL = ('convexhull', '')
-
-    # tool&models
-    NMR = (
-        'NMR',
-        'Involves predicting the NMR spectra of organic molecules or deducing molecular structures from NMR spectra',
-    )
-    XRD = ('XRD', 'Involving XRD raw data analysis and phase identification')
-
-    # literatue
-    LITERATURE = (
-        'literature',
-        'Involving research papers retrieval, content extraction, or progress/trends analysis. e.g. Search for research papers on [topic], extract key findings from the abstract of papers, analyze research progress/trends in [field], and finalize by in-depth discussion/summary',
-    )
-    WEB_SEARCH = (
-        'general_web_search',
-        'Involving concept query or procedure query. e.g. `What is [concept]`, `How to do [procedure]`, `Why is [phenomena]`. Not suitable for final research progress search tasks unless user requests.',
-    )
-    WEB_PARSING = (
-        'webpage_parsing',
-        'Involving extracting specific information from a given webpage URL.e.g. `Extract key information from the webpage at [URL]`, `Summarize the main points from the article at [URL]` Suitable for detail retrieval tasks after WEB_SEARCH, but usually no need for literature search tasks unless user requests.',
-    )
+    DOE = ('doe', '')
 
     # postprocess
     VISUALIZE_DATA = (
@@ -82,7 +76,19 @@ class SceneEnum(DescriptiveEnum):
         'Use after MD simulations with DPA or LAMMPS, or when user manually upload trajectories.',
     )
 
-    # reaserch sence
+    # experiments
+    NMR = (
+        'NMR',
+        'Involves predicting the NMR spectra of organic molecules or deducing molecular structures from NMR spectra',
+    )
+    XRD = ('XRD', 'Involving XRD raw data analysis and phase identification')
+    PHYSICAL_ADSORPTION = ('physical_adsorption', '')
+    Electron_Microscope = (
+        'electron_microscope',
+        'Involving microscopic image analysis',
+    )
+
+    # research scene
     MOLECULAR = (
         'MOLECULE',
         'Involving the generation, analysis, and SMILES representation of organic molecules',
@@ -91,10 +97,6 @@ class SceneEnum(DescriptiveEnum):
     POLYMER = ('polymer', 'Involving polymers')
     SUPERCONDUCTOR = ('superconductor', 'Involving superconducting materials')
     THERMOELECTRIC = ('thermoelectric', 'Involving thermoelectric materials')
-    Electron_Microscope = (
-        'electron_microscope',
-        'Involving microscopic image analysis',
-    )
     Solid_State_Electrolyte = (
         'solid_state_electrolyte',
         'Involving solid-state electrolyte materials',
@@ -103,7 +105,6 @@ class SceneEnum(DescriptiveEnum):
         'steel',
         'Scenarios for predicting properties of steel materials or conducting literature research.',
     )
-    DOE = ('doe', '')
     PILOTEYE_ELECTRO = (
         'piloteye_electro',
         'Liquid electrolyte calculations for conductivity, rdf, diffusion coefficient and redox properties.',
@@ -112,4 +113,3 @@ class SceneEnum(DescriptiveEnum):
         'perovskite_research',
         'Research, literature/database search, and semantic mining focused on perovskite solar cells (efficiency, stability, additives, architectures, new molecules).',
     )
-    PHYSICAL_ADSORPTION = ('physical_adsorption', '')
