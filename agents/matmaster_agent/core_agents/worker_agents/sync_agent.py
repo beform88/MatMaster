@@ -3,19 +3,34 @@ import logging
 from google.adk.agents import SequentialAgent
 from pydantic import computed_field, model_validator
 
-from agents.matmaster_agent.base_agents.dntransfer_climit_mcp_agent import (
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.core_agents.base_agents.mcp_agent import (
+    MCPRunEventsMixin,
+)
+from agents.matmaster_agent.core_agents.base_agents.subordinate_agent import (
+    SubordinateFeaturesMixin,
+)
+from agents.matmaster_agent.core_agents.comp_agents.climit_mcp_agent import (
+    ContentLimitMCPAgent,
+)
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_mcp_agent import (
     DisallowTransferAndContentLimitSyncMCPAgent,
 )
-from agents.matmaster_agent.base_agents.recommend_summary_agent.agent import (
+from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.agent import (
     BaseAgentWithRecAndSum,
 )
-from agents.matmaster_agent.base_agents.validator_agent import ValidatorAgent
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.core_agents.worker_agents.validator_agent import (
+    ValidatorAgent,
+)
 from agents.matmaster_agent.logger import PrefixFilter
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
+
+
+class BaseSyncAgent(SubordinateFeaturesMixin, MCPRunEventsMixin, ContentLimitMCPAgent):
+    pass
 
 
 class BaseSyncAgentWithToolValidator(BaseAgentWithRecAndSum):

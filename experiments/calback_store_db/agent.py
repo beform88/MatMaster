@@ -14,13 +14,13 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.genai import types
 from opik.integrations.adk import track_adk_agent_recursive
 
-from agents.matmaster_agent.base_agents.mcp_agent import MCPAgent
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     BohriumExecutor,
     BohriumStorge,
     Transfer2Agent,
 )
+from agents.matmaster_agent.core_agents.base_agents.mcp_agent import MCPAgent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.sub_agents.structure_generate_agent import (

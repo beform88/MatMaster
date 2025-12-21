@@ -6,11 +6,11 @@ from google.adk.agents import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
-    DisallowTransferAndContentLimitLlmAgent,
-)
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.flow_agents.style import step_card

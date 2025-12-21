@@ -9,7 +9,6 @@ from google.adk.agents import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.mcp_agent import MCPAgent
 from agents.matmaster_agent.base_callbacks.private_callback import (
     _inject_ak,
     _inject_projectId,
@@ -23,6 +22,7 @@ from agents.matmaster_agent.constant import (
     get_BohriumStorage,
     get_DFlowExecutor,
 )
+from agents.matmaster_agent.core_agents.base_agents.mcp_agent import MCPAgent
 from agents.matmaster_agent.job_agents.result_core_agent.prompt import (
     ResultCoreAgentDescription,
 )

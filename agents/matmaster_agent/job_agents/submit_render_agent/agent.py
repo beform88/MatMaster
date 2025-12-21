@@ -6,13 +6,13 @@ from google.adk.agents import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.error_climit_agent import (
-    ErrorHandleAndContentLimitLlmAgent,
-)
 from agents.matmaster_agent.constant import (
     JOB_LIST_KEY,
     MATMASTER_AGENT_NAME,
     ModelRole,
+)
+from agents.matmaster_agent.core_agents.comp_agents.error_climit_agent import (
+    ErrorHandleAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.job_agents.submit_render_agent.prompt import (
     SubmitRenderAgentDescription,

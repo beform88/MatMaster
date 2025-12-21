@@ -6,15 +6,15 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.dntransfer_climit_mcp_agent import (
-    DisallowTransferAndContentLimitMCPAgent,
-)
 from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     MATMASTER_AGENT_NAME,
     SANDBOX_JOB_DETAIL_URL,
     ModelRole,
+)
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_mcp_agent import (
+    DisallowTransferAndContentLimitMCPAgent,
 )
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter

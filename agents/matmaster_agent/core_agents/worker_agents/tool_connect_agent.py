@@ -3,10 +3,10 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
+from agents.matmaster_agent.constant import ModelRole
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
     DisallowTransferAndContentLimitLlmAgent,
 )
-from agents.matmaster_agent.constant import ModelRole
 from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     is_text,

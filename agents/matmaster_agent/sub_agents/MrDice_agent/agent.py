@@ -1,9 +1,9 @@
 from google.adk.agents import BaseAgent
 
-from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
+from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
     DisallowTransferAndContentLimitLlmAgent,
 )
-from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,

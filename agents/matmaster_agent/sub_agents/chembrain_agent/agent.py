@@ -1,6 +1,8 @@
+from agents.matmaster_agent.core_agents.comp_agents.error_climit_agent import (
+    ErrorHandleAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.llm_config import LLMConfig
 
-from ...base_agents.error_climit_agent import ErrorHandleAndContentLimitLlmAgent
 from .callback import (
     chembrain_after_model,
     chembrain_before_model,

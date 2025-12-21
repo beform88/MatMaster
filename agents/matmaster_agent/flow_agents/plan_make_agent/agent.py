@@ -4,10 +4,10 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.schema_agent import (
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
     DisallowTransferAndContentLimitSchemaAgent,
 )
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.utils.event_utils import update_state_event
 

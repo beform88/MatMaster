@@ -3,7 +3,7 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.schema_agent import (
+from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
     DisallowTransferAndContentLimitSchemaAgent,
 )
 from agents.matmaster_agent.utils.event_utils import handle_upload_file_event

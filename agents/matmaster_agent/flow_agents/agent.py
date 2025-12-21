@@ -7,16 +7,16 @@ from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from pydantic import computed_field, model_validator
 
-from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
-    DisallowTransferAndContentLimitLlmAgent,
-)
-from agents.matmaster_agent.base_agents.schema_agent import (
-    DisallowTransferAndContentLimitSchemaAgent,
-)
 from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_function_call,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
+    DisallowTransferAndContentLimitSchemaAgent,
+)
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
     get_analysis_instruction,
 )

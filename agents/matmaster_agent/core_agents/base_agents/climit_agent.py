@@ -3,11 +3,11 @@ from typing import Any
 from google.adk.agents import LlmAgent
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
 from agents.matmaster_agent.base_callbacks.private_callback import (
     default_before_model_callback,
     filter_safety_content,
 )
+from agents.matmaster_agent.core_agents.base_agents.abc_agent import BaseMixin
 
 
 def content_limit_callback_mixin(data: Any):

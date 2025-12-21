@@ -4,10 +4,10 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
     DisallowTransferAndContentLimitLlmAgent,
 )
-from agents.matmaster_agent.base_agents.error_climit_agent import (
+from agents.matmaster_agent.core_agents.comp_agents.error_climit_agent import (
     ErrorHandleAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum

@@ -8,9 +8,9 @@ from agents.matmaster_agent.constant import (  # BohriumExecutor,
     LOCAL_EXECUTOR,
     BohriumStorge,
 )
+from agents.matmaster_agent.core_agents.worker_agents.sync_agent import BaseSyncAgent
 from agents.matmaster_agent.llm_config import LLMConfig
 
-from ...base_agents.sync_agent import BaseSyncAgent
 from .constant import HEACALCULATOR_AGENT_NAME, HEACALCULATOR_SERVER_URL
 from .prompt import HEACALC_AGENT_DESCRIPTION, HEACALC_AGENT_INSTRUCTION
 

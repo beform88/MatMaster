@@ -1,8 +1,8 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
-from agents.matmaster_agent.base_agents.sync_agent import BaseSyncAgent
 from agents.matmaster_agent.constant import BohriumStorge
+from agents.matmaster_agent.core_agents.worker_agents.sync_agent import BaseSyncAgent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.sub_agents.chembrain_agent.smiles_conversion_agent.callback import (
     smiles_conversion_after_tool,

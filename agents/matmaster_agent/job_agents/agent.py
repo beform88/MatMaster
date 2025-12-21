@@ -5,13 +5,15 @@ from google.adk.agents import InvocationContext, SequentialAgent
 from google.adk.events import Event
 from pydantic import Field, computed_field, model_validator
 
-from agents.matmaster_agent.base_agents.recommend_summary_agent.agent import (
-    BaseAgentWithRecAndSum,
-)
-from agents.matmaster_agent.base_agents.validator_agent import ValidatorAgent
 from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     ModelRole,
+)
+from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.agent import (
+    BaseAgentWithRecAndSum,
+)
+from agents.matmaster_agent.core_agents.worker_agents.validator_agent import (
+    ValidatorAgent,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.job_agents.result_core_agent.agent import (

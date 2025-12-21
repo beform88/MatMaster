@@ -2,11 +2,11 @@ from typing import Any
 
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
-from agents.matmaster_agent.base_agents.climit_agent import (
+from agents.matmaster_agent.core_agents.base_agents.abc_agent import BaseMixin
+from agents.matmaster_agent.core_agents.base_agents.climit_agent import (
     content_limit_callback_mixin,
 )
-from agents.matmaster_agent.base_agents.error_agent import (
+from agents.matmaster_agent.core_agents.base_agents.error_agent import (
     ErrorHandleLlmAgent,
 )
 

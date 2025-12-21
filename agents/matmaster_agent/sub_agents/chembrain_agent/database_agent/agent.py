@@ -3,7 +3,9 @@ from typing import Any, Dict
 from google.adk.tools.base_tool import BaseTool
 from google.adk.tools.tool_context import ToolContext
 
-from agents.matmaster_agent.base_agents.subordinate_agent import SubordinateLlmAgent
+from agents.matmaster_agent.core_agents.base_agents.subordinate_agent import (
+    SubordinateLlmAgent,
+)
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 
 from ..constant import CHEMBRAIN_AGENT_NAME
