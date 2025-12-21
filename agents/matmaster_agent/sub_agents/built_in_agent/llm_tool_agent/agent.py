@@ -4,10 +4,10 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferLlmAgent,
+from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
 )
-from agents.matmaster_agent.base_agents.error_agent import (
+from agents.matmaster_agent.base_agents.error_climit_agent import (
     ErrorHandleAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
@@ -18,7 +18,7 @@ from agents.matmaster_agent.sub_agents.built_in_agent.llm_tool_agent.constant im
 from agents.matmaster_agent.utils.event_utils import update_state_event
 
 
-class LLMToolAgent(DisallowTransferLlmAgent):
+class LLMToolAgent(DisallowTransferAndContentLimitLlmAgent):
     def __init__(self, llm_config: LLMConfig):
         super().__init__(
             model=llm_config.default_litellm_model,

@@ -4,7 +4,6 @@ from google.adk.agents import BaseAgent, InvocationContext, LlmAgent, Sequential
 from google.adk.events import Event
 
 from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
-from agents.matmaster_agent.base_agents.ctx_limit_agent import ContentLimitMixin
 from agents.matmaster_agent.utils.event_utils import send_error_event
 
 
@@ -54,7 +53,5 @@ class ErrorHandelSequentialAgent(ErrorHandlerMixin, SequentialAgent):
     pass
 
 
-class ErrorHandleAndContentLimitLlmAgent(
-    ErrorHandlerMixin, ContentLimitMixin, LlmAgent
-):
+class ErrorHandleLlmAgent(ErrorHandlerMixin, LlmAgent):
     pass

@@ -1,14 +1,13 @@
 from typing import Any
 
-from google.adk.agents import LlmAgent
 from pydantic import model_validator
 
 from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
-from agents.matmaster_agent.base_agents.ctx_limit_agent import (
+from agents.matmaster_agent.base_agents.climit_agent import (
     content_limit_callback_mixin,
 )
 from agents.matmaster_agent.base_agents.error_agent import (
-    ErrorHandlerMixin,
+    ErrorHandleLlmAgent,
 )
 
 
@@ -22,13 +21,6 @@ def disallow_transfer_model_validator(data: Any):
     return data
 
 
-class DisallowTransferMixin(BaseMixin):
-    @model_validator(mode='before')
-    @classmethod
-    def decorate_callbacks(cls, data: Any) -> Any:
-        return disallow_transfer_model_validator(data)
-
-
 class CombinedDisallowTransferAndContentLimitMixin(BaseMixin):
     @model_validator(mode='before')
     @classmethod
@@ -36,7 +28,7 @@ class CombinedDisallowTransferAndContentLimitMixin(BaseMixin):
         return disallow_transfer_model_validator(content_limit_callback_mixin(data))
 
 
-class DisallowTransferLlmAgent(
-    CombinedDisallowTransferAndContentLimitMixin, ErrorHandlerMixin, LlmAgent
+class DisallowTransferAndContentLimitLlmAgent(
+    CombinedDisallowTransferAndContentLimitMixin, ErrorHandleLlmAgent
 ):
     pass

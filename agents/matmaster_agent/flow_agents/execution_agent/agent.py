@@ -6,8 +6,8 @@ from google.adk.agents import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferLlmAgent,
+from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
@@ -36,7 +36,7 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class MatMasterSupervisorAgent(DisallowTransferLlmAgent):
+class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
     @model_validator(mode='after')
     def after_init(self):
         self.name = MATMASTER_SUPERVISOR_AGENT

@@ -6,11 +6,11 @@ from typing import AsyncGenerator, Optional, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferMixin,
+from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
+    CombinedDisallowTransferAndContentLimitMixin,
 )
 from agents.matmaster_agent.base_agents.error_agent import (
-    ErrorHandleAndContentLimitLlmAgent,
+    ErrorHandleLlmAgent,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.utils.event_utils import (
@@ -24,7 +24,7 @@ from agents.matmaster_agent.utils.helper_func import extract_json_from_string
 logger = logging.getLogger(__name__)
 
 
-class SchemaAgent(ErrorHandleAndContentLimitLlmAgent):
+class SchemaAgent(ErrorHandleLlmAgent):
     state_key: Optional[str] = None  # Direct supervisor agent in the hierarchy
 
     @override
@@ -76,5 +76,7 @@ class SchemaAgent(ErrorHandleAndContentLimitLlmAgent):
             )
 
 
-class DisallowTransferSchemaAgent(DisallowTransferMixin, SchemaAgent):
+class DisallowTransferAndContentLimitSchemaAgent(
+    CombinedDisallowTransferAndContentLimitMixin, SchemaAgent
+):
     pass

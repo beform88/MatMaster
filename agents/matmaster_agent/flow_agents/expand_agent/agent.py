@@ -4,7 +4,9 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent
+from agents.matmaster_agent.base_agents.schema_agent import (
+    DisallowTransferAndContentLimitSchemaAgent,
+)
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.state import EXPAND
@@ -18,7 +20,7 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class ExpandAgent(SchemaAgent):
+class ExpandAgent(DisallowTransferAndContentLimitSchemaAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         async for event in super()._run_events(ctx):

@@ -7,11 +7,11 @@ from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
 from pydantic import computed_field, model_validator
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferLlmAgent,
+from agents.matmaster_agent.base_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.base_agents.schema_agent import (
-    SchemaAgent,
+    DisallowTransferAndContentLimitSchemaAgent,
 )
 from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_function_call,
@@ -101,7 +101,7 @@ class MatMasterFlowAgent(LlmAgent):
 
     @model_validator(mode='after')
     def after_init(self):
-        self._chat_agent = DisallowTransferLlmAgent(
+        self._chat_agent = DisallowTransferAndContentLimitLlmAgent(
             name='chat_agent',
             model=MatMasterLlmConfig.deepseek_chat,
             description=ChatAgentDescription,
@@ -115,8 +115,6 @@ class MatMasterFlowAgent(LlmAgent):
             model=MatMasterLlmConfig.tool_schema_model,
             description='识别用户的意图',
             instruction=INTENT_INSTRUCTION,
-            disallow_transfer_to_parent=True,
-            disallow_transfer_to_peers=True,
             output_schema=IntentSchema,
             state_key='intent',
         )
@@ -126,19 +124,15 @@ class MatMasterFlowAgent(LlmAgent):
             model=MatMasterLlmConfig.tool_schema_model,
             description='扩写用户的问题',
             instruction=EXPAND_INSTRUCTION,
-            disallow_transfer_to_parent=True,
-            disallow_transfer_to_peers=True,
             output_schema=ExpandSchema,
             state_key=EXPAND,
         )
 
-        self._scene_agent = SchemaAgent(
+        self._scene_agent = DisallowTransferAndContentLimitSchemaAgent(
             name='scene_agent',
             model=MatMasterLlmConfig.tool_schema_model,
             description='把用户的问题划分到特定的场景',
             instruction=SCENE_INSTRUCTION,
-            disallow_transfer_to_parent=True,
-            disallow_transfer_to_peers=True,
             output_schema=SceneSchema,
             state_key='single_scenes',
         )
@@ -147,31 +141,27 @@ class MatMasterFlowAgent(LlmAgent):
             name='plan_make_agent',
             model=MatMasterLlmConfig.tool_schema_model,
             description='根据用户的问题依据现有工具执行计划，如果没有工具可用，告知用户，不要自己制造工具或幻想',
-            disallow_transfer_to_parent=True,
-            disallow_transfer_to_peers=True,
             output_schema=PlanSchema,
             state_key='plan',
         )
 
-        self._plan_confirm_agent = SchemaAgent(
+        self._plan_confirm_agent = DisallowTransferAndContentLimitSchemaAgent(
             name='plan_confirm_agent',
             model=MatMasterLlmConfig.tool_schema_model,
             description='判断用户对计划是否认可',
             instruction=PlanConfirmInstruction,
-            disallow_transfer_to_parent=True,
-            disallow_transfer_to_peers=True,
             output_schema=PlanConfirmSchema,
             state_key='plan_confirm',
         )
 
-        self._plan_info_agent = DisallowTransferLlmAgent(
+        self._plan_info_agent = DisallowTransferAndContentLimitLlmAgent(
             name='plan_info_agent',
             model=MatMasterLlmConfig.default_litellm_model,
             description='根据 materials_plan 返回的计划进行总结',
             # instruction=PLAN_INFO_INSTRUCTION,
         )
 
-        execution_result_agent = DisallowTransferLlmAgent(
+        execution_result_agent = DisallowTransferAndContentLimitLlmAgent(
             name='execution_result_agent',
             model=MatMasterLlmConfig.gpt_5_mini,
             description='汇总计划的执行情况',
@@ -190,7 +180,7 @@ class MatMasterFlowAgent(LlmAgent):
             + [execution_result_agent],
         )
 
-        self._analysis_agent = DisallowTransferLlmAgent(
+        self._analysis_agent = DisallowTransferAndContentLimitLlmAgent(
             name='execution_summary_agent',
             model=MatMasterLlmConfig.default_litellm_model,
             global_instruction='使用 {target_language} 回答',

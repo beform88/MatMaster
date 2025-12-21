@@ -6,9 +6,7 @@ from google.adk.events import Event, EventActions
 from pydantic import model_validator
 
 from agents.matmaster_agent.base_agents.abc_agent import BaseMixin
-from agents.matmaster_agent.base_agents.error_agent import (
-    ErrorHandleAndContentLimitLlmAgent,
-)
+from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.base_callbacks.private_callback import (
     catch_after_tool_callback_error,
     catch_before_tool_callback_error,
@@ -241,5 +239,5 @@ class MCPRunEventsMixin(BaseMixin):
                     yield event
 
 
-class MCPAgent(MCPInitMixin, MCPCallbackMixin, ErrorHandleAndContentLimitLlmAgent):
+class MCPAgent(MCPInitMixin, MCPCallbackMixin, ErrorHandleLlmAgent):
     pass

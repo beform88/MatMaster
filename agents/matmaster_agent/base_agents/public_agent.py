@@ -3,17 +3,11 @@ import logging
 from google.adk.agents import SequentialAgent
 from pydantic import computed_field, model_validator
 
-from agents.matmaster_agent.base_agents.disallow_mcp_agent import (
-    DisallowTransferSyncMCPAgent,
+from agents.matmaster_agent.base_agents.dntransfer_climit_mcp_agent import (
+    DisallowTransferAndContentLimitSyncMCPAgent,
 )
 from agents.matmaster_agent.base_agents.recommend_summary_agent.agent import (
     BaseAgentWithRecAndSum,
-)
-from agents.matmaster_agent.base_agents.subordinate_agent import (
-    SubordinateFeaturesMixin,
-)
-from agents.matmaster_agent.base_agents.sync_agent import (
-    SyncMCPAgent,
 )
 from agents.matmaster_agent.base_agents.validator_agent import ValidatorAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
@@ -24,18 +18,13 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-# 同步计算 Agent，可自动 transfer 回主 Agent
-class BaseSyncAgent(SubordinateFeaturesMixin, SyncMCPAgent):
-    pass
-
-
 class BaseSyncAgentWithToolValidator(BaseAgentWithRecAndSum):
     @model_validator(mode='after')
     def after_init(self):
         self = self._after_init()
         agent_prefix = self.name.replace('_agent', '')
 
-        sync_mcp_agent = DisallowTransferSyncMCPAgent(
+        sync_mcp_agent = DisallowTransferAndContentLimitSyncMCPAgent(
             model=self.model,
             name=f"{agent_prefix}_sync_mcp_agent",
             tools=self.tools,

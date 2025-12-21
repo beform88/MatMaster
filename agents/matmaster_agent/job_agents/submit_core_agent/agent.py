@@ -6,8 +6,8 @@ from typing import AsyncGenerator, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.disallow_mcp_agent import (
-    DisallowTransferMCPAgent,
+from agents.matmaster_agent.base_agents.dntransfer_climit_mcp_agent import (
+    DisallowTransferAndContentLimitMCPAgent,
 )
 from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
@@ -48,7 +48,7 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class SubmitCoreMCPAgent(DisallowTransferMCPAgent):
+class SubmitCoreMCPAgent(DisallowTransferAndContentLimitMCPAgent):
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         logger.info(f"{ctx.session.id} state: {ctx.session.state}")

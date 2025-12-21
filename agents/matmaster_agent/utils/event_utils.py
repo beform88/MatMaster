@@ -15,7 +15,7 @@ from google.adk.tools import BaseTool
 from google.genai.types import Content, FunctionCall, FunctionResponse, Part
 from opik.integrations.adk import track_adk_agent_recursive
 
-from agents.matmaster_agent.base_agents.ctx_limit_agent import ContentLimitLlmAgent
+from agents.matmaster_agent.base_agents.climit_agent import ContentLimitLlmAgent
 from agents.matmaster_agent.base_callbacks.private_callback import _get_userId
 from agents.matmaster_agent.config import USE_PHOTON
 from agents.matmaster_agent.constant import (
