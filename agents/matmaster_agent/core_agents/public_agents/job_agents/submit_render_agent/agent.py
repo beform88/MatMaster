@@ -14,7 +14,7 @@ from agents.matmaster_agent.constant import (
 from agents.matmaster_agent.core_agents.comp_agents.error_climit_agent import (
     ErrorHandleAndContentLimitLlmAgent,
 )
-from agents.matmaster_agent.job_agents.submit_render_agent.prompt import (
+from agents.matmaster_agent.core_agents.public_agents.job_agents.submit_render_agent.prompt import (
     SubmitRenderAgentDescription,
 )
 from agents.matmaster_agent.logger import PrefixFilter

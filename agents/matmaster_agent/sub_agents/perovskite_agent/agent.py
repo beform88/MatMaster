@@ -9,7 +9,7 @@ from agents.matmaster_agent.constant import (
     BohriumStorge,
 )
 
-from ...core_agents.worker_agents.sync_agent import BaseSyncAgentWithToolValidator
+from ...core_agents.public_agents.sync_agent import BaseSyncAgentWithToolValidator
 from ...llm_config import LLMConfig
 from .constant import PEROVSKITE_RESEARCH_URL, UNIMOL_SERVER_URL, PerovskiteAgentName
 from .prompt import PerovskiteAgentDescription, PerovskiteAgentInstruction

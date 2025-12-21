@@ -5,7 +5,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerPa
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, BohriumStorge
 from agents.matmaster_agent.llm_config import LLMConfig
 
-from ...core_agents.worker_agents.sync_agent import BaseSyncAgentWithToolValidator
+from ...core_agents.public_agents.sync_agent import BaseSyncAgentWithToolValidator
 from .callback import validate_visualization_url
 from .constant import VisualizerAgentName, VisualizerServerUrl
 from .prompt import VisualizerAgentDescription, VisualizerAgentInstruction

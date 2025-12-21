@@ -31,23 +31,23 @@ from agents.matmaster_agent.core_agents.base_agents.subordinate_agent import (
 from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
     DisallowTransferAndContentLimitLlmAgent,
 )
-from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.recommend_params_agent.prompt import (
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.recommend_params_agent.prompt import (
     gen_recommend_params_agent_instruction,
 )
-from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.recommend_params_agent.schema import (
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.recommend_params_agent.schema import (
     create_tool_args_schema,
 )
-from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.subagent_summary_agent.prompt import (
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.subagent_summary_agent.prompt import (
     get_subagent_summary_prompt,
 )
-from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.tool_call_info_agent.prompt import (
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.tool_call_info_agent.prompt import (
     gen_tool_call_info_instruction,
 )
-from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.tool_call_info_agent.utils import (
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.tool_call_info_agent.utils import (
     update_tool_call_info_with_function_declarations,
     update_tool_call_info_with_recommend_params,
 )
-from agents.matmaster_agent.core_agents.worker_agents.tool_connect_agent import (
+from agents.matmaster_agent.core_agents.comp_agents.tool_connect_agent import (
     ToolConnectAgent,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum

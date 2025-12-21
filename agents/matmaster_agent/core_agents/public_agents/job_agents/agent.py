@@ -9,22 +9,22 @@ from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     ModelRole,
 )
-from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.agent import (
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.agent import (
     BaseAgentWithRecAndSum,
 )
-from agents.matmaster_agent.core_agents.worker_agents.validator_agent import (
+from agents.matmaster_agent.core_agents.comp_agents.validator_agent import (
     ValidatorAgent,
 )
-from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.job_agents.result_core_agent.agent import (
+from agents.matmaster_agent.core_agents.public_agents.job_agents.result_core_agent.agent import (
     ResultMCPAgent,
 )
-from agents.matmaster_agent.job_agents.submit_core_agent.agent import (
+from agents.matmaster_agent.core_agents.public_agents.job_agents.submit_core_agent.agent import (
     SubmitCoreMCPAgent,
 )
-from agents.matmaster_agent.job_agents.submit_render_agent.agent import (
+from agents.matmaster_agent.core_agents.public_agents.job_agents.submit_render_agent.agent import (
     SubmitRenderAgent,
 )
+from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,

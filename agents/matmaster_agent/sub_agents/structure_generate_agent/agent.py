@@ -8,7 +8,9 @@ from agents.matmaster_agent.constant import (
     BohriumExecutor,
     BohriumStorge,
 )
-from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
+from agents.matmaster_agent.core_agents.public_agents.job_agents.agent import (
+    BaseAsyncJobAgent,
+)
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.sub_agents.structure_generate_agent.callback import (

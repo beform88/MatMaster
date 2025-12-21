@@ -17,6 +17,9 @@ from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
 from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
     DisallowTransferAndContentLimitLlmAgent,
 )
+from agents.matmaster_agent.core_agents.public_agents.job_agents.agent import (
+    BaseAsyncJobAgent,
+)
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
     get_analysis_instruction,
 )
@@ -63,7 +66,6 @@ from agents.matmaster_agent.flow_agents.utils import (
     get_tools_list,
     should_bypass_confirmation,
 )
-from agents.matmaster_agent.job_agents.agent import BaseAsyncJobAgent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter

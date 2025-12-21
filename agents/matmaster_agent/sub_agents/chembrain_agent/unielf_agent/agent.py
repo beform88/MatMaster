@@ -5,7 +5,7 @@ from google.adk.tools.mcp_tool.mcp_session_manager import (
 )
 
 from agents.matmaster_agent.constant import BohriumStorge
-from agents.matmaster_agent.core_agents.worker_agents.sync_agent import (
+from agents.matmaster_agent.core_agents.public_agents.sync_agent import (
     BaseSyncAgentWithToolValidator,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig

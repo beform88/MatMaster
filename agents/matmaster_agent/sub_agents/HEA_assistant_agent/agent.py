@@ -14,7 +14,7 @@ from agents.matmaster_agent.sub_agents.HEA_assistant_agent.prompt import (
     HEA_assistant_AgentName,
 )
 
-from ...core_agents.worker_agents.sync_agent import BaseSyncAgentWithToolValidator
+from ...core_agents.public_agents.sync_agent import BaseSyncAgentWithToolValidator
 from .constant import HEA_assistant_agent_ServerUrl
 
 HEA_assistant_BohriumStorge = copy.deepcopy(BohriumStorge)

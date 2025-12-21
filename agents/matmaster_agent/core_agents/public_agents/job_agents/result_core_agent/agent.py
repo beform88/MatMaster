@@ -23,7 +23,7 @@ from agents.matmaster_agent.constant import (
     get_DFlowExecutor,
 )
 from agents.matmaster_agent.core_agents.base_agents.mcp_agent import MCPAgent
-from agents.matmaster_agent.job_agents.result_core_agent.prompt import (
+from agents.matmaster_agent.core_agents.public_agents.job_agents.result_core_agent.prompt import (
     ResultCoreAgentDescription,
 )
 from agents.matmaster_agent.logger import PrefixFilter

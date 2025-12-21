@@ -16,10 +16,10 @@ from agents.matmaster_agent.core_agents.comp_agents.climit_mcp_agent import (
 from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_mcp_agent import (
     DisallowTransferAndContentLimitSyncMCPAgent,
 )
-from agents.matmaster_agent.core_agents.worker_agents.recommend_summary_agent.agent import (
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.agent import (
     BaseAgentWithRecAndSum,
 )
-from agents.matmaster_agent.core_agents.worker_agents.validator_agent import (
+from agents.matmaster_agent.core_agents.comp_agents.validator_agent import (
     ValidatorAgent,
 )
 from agents.matmaster_agent.logger import PrefixFilter
