@@ -11,7 +11,6 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     catch_after_tool_callback_error,
     catch_before_tool_callback_error,
     check_before_tool_callback_effect,
-    check_job_create,
     check_user_phonon_balance,
     default_after_model_callback,
     default_after_tool_callback,
@@ -108,7 +107,7 @@ def mcp_callback_model_validator(data: Any):
     if USE_PHOTON:
         pipeline = check_user_phonon_balance(pipeline, data['cost_func'])
 
-    pipeline = check_job_create(pipeline)
+    # pipeline = check_job_create(pipeline)
     pipeline = inject_username_ticket(pipeline)
     pipeline = inject_current_env(pipeline)
 
