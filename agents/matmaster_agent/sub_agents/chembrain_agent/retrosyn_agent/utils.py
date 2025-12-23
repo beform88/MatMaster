@@ -86,9 +86,13 @@ async def extract_tarfile(tgz_path: Path, extract_to: Path) -> None:
     """异步解压tar文件(实际解压是同步操作)"""
     # 使用run_in_executor避免阻塞事件循环
     loop = asyncio.get_running_loop()
-    await loop.run_in_executor(
-        None, lambda: tarfile.open(tgz_path).extractall(extract_to)
-    )
+
+    def _sync_extract():
+        # 使用 with 语句确保 tarfile 正确关闭
+        with tarfile.open(tgz_path) as tf:
+            tf.extractall(extract_to)
+
+    await loop.run_in_executor(None, _sync_extract)
 
 
 async def find_jpg_files(directory: Path) -> List[Path]:
