@@ -84,6 +84,7 @@ def create_dynamic_plan_schema(available_tools: list):
         'DynamicPlanStepSchema',
         tool_name=(Optional[Literal[tuple(available_tools)]], None),
         description=(str, ...),
+        feasibility=(str, ...),
         status=(
             Literal[tuple(PlanStepStatusEnum.__members__.values())],
             PlanStepStatusEnum.PLAN.value,

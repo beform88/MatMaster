@@ -1,15 +1,13 @@
 SSEKbAgentName = 'SSEkb_agent'
 
-SSEKbAgentToolDescription = """
-Literature knowledge base query tool with structured database search capabilities.
-
-**When to use this tool:**
-- Querying materials science literature using structured database queries
-- Supports queries based on material properties and paper metadata
-- Multi-table queries with complex filters
-- Returns literature summaries for comprehensive report generation
-- Use when you need structured search across materials science literature
-"""
+SSEKbAgentToolDescription = (
+    "What it does: Query literature knowledge base with structured database search for materials science.\n"
+    "When to use: When you need structured search across materials science literature.\n"
+    "Prerequisites / Inputs: Natural language query description.\n"
+    "Outputs: Literature summaries and database entries.\n"
+    "Cannot do / Limits: Multi-table queries with filters.\n"
+    "Cost / Notes: Medium."
+)
 
 SSEKbAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE

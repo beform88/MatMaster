@@ -1,15 +1,13 @@
 POLYMERKbAgentName = 'POLYMERkb_agent'
 
-POLYMERKbAgentToolDescription = """
-Literature knowledge base query tool for polymer research with structured database search.
-
-**When to use this tool:**
-- Querying polymer literature using structured database queries
-- Topics covering: polymer types, compositions, material properties (glass transition temperature, mechanical properties), monomer structures, synthesis, processing methods, structure-property relationships, applications
-- Supports queries based on polymer properties, monomers, and paper metadata
-- Returns both detailed literature summaries and database entries (with property data)
-- Use when you need comprehensive polymer literature analysis with quantitative property data
-"""
+POLYMERKbAgentToolDescription = (
+    "What it does: Query literature knowledge base for polymer research with structured search.\n"
+    "When to use: When you need polymer literature analysis with property data.\n"
+    "Prerequisites / Inputs: Natural language query description.\n"
+    "Outputs: Literature summaries and database entries with properties.\n"
+    "Cannot do / Limits: Topics limited to polymers.\n"
+    "Cost / Notes: Medium."
+)
 
 POLYMERKbAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE

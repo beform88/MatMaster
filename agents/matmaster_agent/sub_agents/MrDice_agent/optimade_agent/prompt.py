@@ -1,47 +1,31 @@
 OptimadeAgentName = 'optimade_agent'
 
-OptimadeFilterToolDescription = """
-Internal OPTIMADE filter search tool.
+OptimadeFilterToolDescription = (
+    "What it does: Send OPTIMADE filter string to providers for structure search.\n"
+    "When to use: For flexible composition/formula queries without space group or band gap constraints.\n"
+    "Prerequisites / Inputs: OPTIMADE filter string.\n"
+    "Outputs: Matching structures.\n"
+    "Cannot do / Limits: Full OPTIMADE filter language; parallel queries.\n"
+    "Cost / Notes: Medium."
+)
 
-**What it does (`fetch_structures_with_filter`)**
-- Sends ONE raw OPTIMADE `filter` string to all selected providers in parallel.
-- Supports full OPTIMADE filter language: logical operators (AND/OR/NOT), `elements` (HAS ALL/ANY/ONLY), `chemical_formula_reduced`, `chemical_formula_descriptive`, `chemical_formula_anonymous`, numerical ranges, etc.
-- Best for flexible composition/formula/descriptor queries **without explicitly constraining space group or band gap**.
+OptimadeSpgToolDescription = (
+    "What it does: Search structures by space group number with optional filters.\n"
+    "When to use: When user specifies space group number or prototype structure.\n"
+    "Prerequisites / Inputs: Space group number and base filter.\n"
+    "Outputs: Structures with matching space group.\n"
+    "Cannot do / Limits: Provider-specific space-group filters.\n"
+    "Cost / Notes: Medium."
+)
 
-**When to use this tool**
-- User specifies:
-  - Element sets / fractions (e.g., “含 Al 和 Mg 的合金”, “只含 Fe 和 Ni 的材料”)
-  - Chemical formulas (e.g., `TiO2`, `MgO`, `ZrO2`, `LiFePO4`)
-  - Anonymous formulas or composition patterns (e.g., `AB2`, `A2B3C4`)
-  - Complex logical filters (AND / OR / NOT) or range conditions on `nelements`, etc.
-- **Do NOT** use this tool when the user explicitly asks for a band-gap range or a specific space group number / crystal structure type — in those cases use the corresponding specialized tools.
-"""
-
-OptimadeSpgToolDescription = """
-Internal OPTIMADE space-group search tool.
-
-**What it does (`fetch_structures_with_spg`)**
-- Adds provider-specific space-group filters (e.g., `_tcod_sg`, `_oqmd_spacegroup`, `_alexandria_space_group`) on top of a base composition/element filter.
-- Queries multiple OPTIMADE providers in parallel for structures with a given space group number and (optionally) additional filters.
-
-**When to use this tool**
-- User explicitly mentions a **space group number** (1–230), e.g. “空间群 225 的 MgO 结构”.
-- User asks for a **specific mineral / prototype structure** where the space group is well defined (e.g., rock-salt, rutile, perovskite, spinel, etc.).
-"""
-
-OptimadeBandgapToolDescription = """
-Internal OPTIMADE band-gap range search tool.
-
-**What it does (`fetch_structures_with_bandgap`)**
-- Adds provider-specific band-gap filters (e.g., `_oqmd_band_gap`, `_gnome_bandgap`, `_mcloudarchive_band_gap`) on top of a base OPTIMADE filter.
-- Retrieves structures whose **band gap** lies within a specified range.
-- For band-gap-focused queries, it defaults to `as_format="json"` to return rich property metadata.
-
-**When to use this tool**
-- User explicitly specifies a **band-gap range** (e.g., “带隙在 1–2 eV 之间的材料”).
-- User cares primarily about electronic properties (e.g., semiconductors, insulators) and requests band-gap constraints.
-- Do **not** use this tool when no band-gap range is given; in that case, use `fetch_structures_with_filter` and just display band gaps if available.
-"""
+OptimadeBandgapToolDescription = (
+    "What it does: Search structures by band-gap range with optional filters.\n"
+    "When to use: When user specifies band-gap range.\n"
+    "Prerequisites / Inputs: Band-gap range and base filter.\n"
+    "Outputs: Structures with band gap in range.\n"
+    "Cannot do / Limits: Provider-specific band-gap filters.\n"
+    "Cost / Notes: Medium."
+)
 
 OptimadeAgentArgsSetting = """
 You are a crystal structure retrieval assistant with access to MCP tools powered by the OPTIMADE API.

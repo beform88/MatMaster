@@ -11,6 +11,7 @@ Return a JSON structure with the following format:
     {{
       "tool_name": <string>,  // Name of the tool to use (exact match from available list). Use null if no suitable tool exists
       "description": <string>, // Clear explanation of what this tool call will accomplish
+      "feasibility", // Clear evidence that the preceding step or user input supports the execution of the step. Or why is there no tool support for this step
       "status": "plan"        // Always return "plan"
     }}
   ]
@@ -27,6 +28,7 @@ CRITICAL GUIDELINES:
 8. Ensure steps array represents the complete execution sequence for the request
 
 EXECUTION PRINCIPLES:
+- Make sure that the previous steps can provide the input information required for the current step, such as the file URL
 - Configuration parameters should be embedded within the step that uses them, not isolated as standalone steps
 - **File URLs should be treated as direct inputs to processing tools - no separate download, parsing, or preparation steps**
 - **Assume processing tools can handle URLs directly and include all necessary preprocessing capabilities**

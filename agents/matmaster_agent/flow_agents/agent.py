@@ -294,6 +294,7 @@ class MatMasterFlowAgent(LlmAgent):
                 async for expand_event in self.expand_agent.run_async(ctx):
                     yield expand_event
 
+                UPDATE_USER_CONTENT = '\nUSER INPUT FOR THIS TASK:\n' + ctx.session.state['expand']['update_user_content']
                 icl_update_examples = select_update_examples(
                     ctx.session.state['expand']['update_user_content'], logger
                 )
@@ -303,7 +304,7 @@ class MatMasterFlowAgent(LlmAgent):
                 logger.info(f'{ctx.session.id} {TOOLCHAIN_EXAMPLES_PROMPT}')
 
                 # 划分问题场景
-                self.scene_agent.instruction = SCENE_INSTRUCTION + SCENE_EXAMPLES_PROMPT
+                self.scene_agent.instruction = SCENE_INSTRUCTION + UPDATE_USER_CONTENT + SCENE_EXAMPLES_PROMPT
                 async for scene_event in self.scene_agent.run_async(ctx):
                     yield scene_event
 
@@ -361,7 +362,7 @@ class MatMasterFlowAgent(LlmAgent):
                         ]
                     )
                     self.plan_make_agent.instruction = get_plan_make_instruction(
-                        available_tools_with_info_str + TOOLCHAIN_EXAMPLES_PROMPT
+                        available_tools_with_info_str + UPDATE_USER_CONTENT + TOOLCHAIN_EXAMPLES_PROMPT
                     )
                     self.plan_make_agent.output_schema = create_dynamic_plan_schema(
                         available_tools

@@ -1,16 +1,13 @@
 BohriumPublicAgentName = 'bohriumpublic_agent'
 
-BohriumPublicAgentToolDescription = """
-Internal database search tool. PREFERRED when both Bohrium and OPTIMADE can handle the query. Retrieve crystal structures from the Bohrium Public database (includes Materials Project / MP dataset).
-
-**When to use this tool:**
-- Supports formula, elements, spacegroup_number, atom_count_range, predicted_formation_energy_range, band_gap_range
-- Supports space group / atom count / band gap / formation energy queries
-- Supports formula fragment searches via match_mode=0
-- Can combine space group and band gap in a single request
-- Faster than OPTIMADE
-- Cannot handle logical filter expressions (OR, NOT, complex boolean logic) - use OPTIMADE for those
-"""
+BohriumPublicAgentToolDescription = (
+    "What it does: Retrieve crystal structures from Bohrium Public database.\n"
+    "When to use: For formula, elements, space group, atom count, formation energy, band gap queries.\n"
+    "Prerequisites / Inputs: Filters like formula, elements, etc.\n"
+    "Outputs: Structures in CIF or JSON.\n"
+    "Cannot do / Limits: No logical expressions; faster than OPTIMADE.\n"
+    "Cost / Notes: Low."
+)
 
 BohriumPublicAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE

@@ -6,19 +6,14 @@ STEELPredictAgentDescription = (
     'Supports batch prediction for efficient analysis of multiple formulas.'
 )
 
-STEELPredictAgentToolDescription = """
-Stainless steel tensile strength prediction tool using neural network models.
-
-**When to use this tool:**
-- Predicting ultimate tensile strength (UTS) for stainless steel based on chemical composition
-- Supports batch prediction for efficient analysis of multiple formulas
-- Use when you need to predict or analyze tensile strength for stainless steel compositions
-- Use for systematic composition variation analysis (e.g., analyzing effect of element variation on strength)
-
-**Returns:**
-- List of predicted tensile strength values in MPa
-- Will not return any files, only numerical predictions
-"""
+STEELPredictAgentToolDescription = (
+    "What it does: Predict ultimate tensile strength for stainless steel using neural network.\n"
+    "When to use: When you need UTS prediction based on composition.\n"
+    "Prerequisites / Inputs: List of chemical formulas.\n"
+    "Outputs: List of predicted UTS values in MPa.\n"
+    "Cannot do / Limits: Stainless steel only; no files returned.\n"
+    "Cost / Notes: Low."
+)
 
 STEELPredictAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE
