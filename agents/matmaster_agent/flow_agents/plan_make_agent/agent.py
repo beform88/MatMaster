@@ -7,6 +7,9 @@ from google.adk.events import Event
 from agents.matmaster_agent.base_agents.schema_agent import SchemaAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.utils.event_utils import update_state_event
+from agents.matmaster_agent.flow_agents.plan_make_agent.utils import (
+    normalize_plan_state,
+)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -21,30 +24,7 @@ class PlanMakeAgent(SchemaAgent):
         logger.info(
             f'[{MATMASTER_AGENT_NAME}] {ctx.session.id} plan = {ctx.session.state["plan"]}'
         )
-        # 计算 feasibility
-        update_plan = ctx.session.state['plan']
-        update_plan['feasibility'] = 'null'
-        total_steps = len(update_plan['steps'])
-        exist_step = 0
-        update_plan_steps = []
-        for step in update_plan['steps']:
-            if not step['tool_name']:
-                step['tool_name'] = 'llm_tool'
-            update_plan_steps.append(step)
-        update_plan['steps'] = update_plan_steps
 
-        for index, step in enumerate(update_plan['steps']):
-            if index == 0 and not step['tool_name']:
-                break
-            if step['tool_name']:
-                exist_step += 1
-            else:
-                break
-        if not exist_step:
-            pass
-        elif exist_step != total_steps:
-            update_plan['feasibility'] = 'part'
-        else:
-            update_plan['feasibility'] = 'full'
+        normalized_plan = normalize_plan_state(ctx.session.state['plan'])
 
-        yield update_state_event(ctx, state_delta={'plan': update_plan})
+        yield update_state_event(ctx, state_delta={'plan': normalized_plan})

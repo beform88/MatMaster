@@ -49,6 +49,7 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.agent import PlanMakeAge
 from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
     get_plan_make_instruction,
 )
+from agents.matmaster_agent.flow_agents.tot.planner import TreeOfThoughtPlanner
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
@@ -150,6 +151,8 @@ class MatMasterFlowAgent(LlmAgent):
             output_schema=PlanSchema,
             state_key='plan',
         )
+
+        self._tot_planner = TreeOfThoughtPlanner(MatMasterLlmConfig)
 
         self._plan_confirm_agent = SchemaAgent(
             name='plan_confirm_agent',
@@ -366,14 +369,26 @@ class MatMasterFlowAgent(LlmAgent):
                             for key, value in available_tools_with_info.items()
                         ]
                     )
+                    tool_prompt_suffix = TOOLCHAIN_EXAMPLES_PROMPT
                     self.plan_make_agent.instruction = get_plan_make_instruction(
-                        available_tools_with_info_str + TOOLCHAIN_EXAMPLES_PROMPT
+                        available_tools_with_info_str + tool_prompt_suffix
                     )
                     self.plan_make_agent.output_schema = create_dynamic_plan_schema(
                         available_tools
                     )
-                    async for plan_event in self.plan_make_agent.run_async(ctx):
-                        yield plan_event
+
+                    plan = await self._tot_planner.search_best_plan(
+                        ctx,
+                        available_tools_with_info_str,
+                        available_tools,
+                        plan_prompt_suffix=tool_prompt_suffix,
+                    )
+
+                    if plan:
+                        yield update_state_event(ctx, state_delta={'plan': plan})
+                    else:
+                        async for plan_event in self.plan_make_agent.run_async(ctx):
+                            yield plan_event
 
                     # 总结计划
                     plan_steps = ctx.session.state['plan'].get('steps', [])
