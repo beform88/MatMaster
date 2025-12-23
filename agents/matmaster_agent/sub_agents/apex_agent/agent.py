@@ -1,6 +1,6 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerParams
 
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.core_agents.public_agents.job_agents.agent import (
@@ -18,10 +18,10 @@ from .constant import (
 from .finance import apex_cost_func
 from .prompt import ApexAgentDescription, ApexAgentInstruction
 
-# 配置SSE参数
-sse_params = SseServerParams(url=ApexServerUrl)
+# 配置MCP参数
+mcp_params = StreamableHTTPServerParams(url=ApexServerUrl)
 apex_toolset = CalculationMCPToolset(
-    connection_params=sse_params,
+    connection_params=mcp_params,
     storage=ApexBohriumStorage,
     executor=ApexBohriumExecutor,
     async_mode=True,
