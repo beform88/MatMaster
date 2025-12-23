@@ -72,21 +72,34 @@ def filter_safety_content(func: BeforeModelCallback) -> BeforeModelCallback:
         await func(callback_context, llm_request)
 
         contents = []
+        index = 0
         record_tokens = 0
         encoding = tiktoken.encoding_for_model('gpt-4')
+        logger.info(
+            f'{callback_context.session.id} {callback_context.agent_name} Prepare Filter Content, len = {len(llm_request.contents)}'
+        )
         for index, content in enumerate(llm_request.contents[::-1]):
             current_tokens = 0
             for part in content.parts:
                 if part.text:
                     current_tokens += len(encoding.encode(part.text))
+                elif part.function_call:
+                    current_tokens += len(encoding.encode(str(part.function_call.args)))
+                elif part.function_response:
+                    current_tokens += len(
+                        encoding.encode(str(part.function_response.response))
+                    )
             if record_tokens + current_tokens < MAX_TOKENS_LIMIT:
                 record_tokens += current_tokens
                 contents.insert(0, content)
             else:
                 logger.warning(
-                    f'{callback_context.session.id} Content too long, use latest {index+1} part'
+                    f'{callback_context.session.id} {callback_context.agent_name} Content too long, use latest {index+1} part'
                 )
                 break
+        logger.info(
+            f'{callback_context.session.id} {callback_context.agent_name} index={index}, record_tokens = {record_tokens}'
+        )
 
         if not contents:
             contents = [
