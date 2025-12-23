@@ -7,12 +7,12 @@ STEELPredictAgentDescription = (
 )
 
 STEELPredictAgentToolDescription = (
-    "What it does: Predict ultimate tensile strength for stainless steel using neural network.\n"
-    "When to use: When you need UTS prediction based on composition.\n"
-    "Prerequisites / Inputs: List of chemical formulas.\n"
-    "Outputs: List of predicted UTS values in MPa.\n"
-    "Cannot do / Limits: Stainless steel only; no files returned.\n"
-    "Cost / Notes: Low."
+    'What it does: Predict ultimate tensile strength for stainless steel using neural network.\n'
+    'When to use: When you need UTS prediction based on composition.\n'
+    'Prerequisites / Inputs: List of chemical formulas.\n'
+    'Outputs: List of predicted UTS values in MPa.\n'
+    'Cannot do / Limits: Stainless steel only; no files returned.\n'
+    'Cost / Notes: Low.'
 )
 
 STEELPredictAgentArgsSetting = """

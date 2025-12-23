@@ -57,7 +57,7 @@ class SceneEnum(DescriptiveEnum):
     STACKING_FAULT_ENERGY = ('stacking_fault_energy', '')
     EOS = ('eos', '')
     PHONON = ('phonon', '')
-    SCF = ('scf','Self-Consistent Field')
+    SCF = ('scf', 'Self-Consistent Field')
     BAND = ('band', '')
     DENSITY_OF_STATES = ('density_of_states', '')
     REACTION = ('reaction', '')

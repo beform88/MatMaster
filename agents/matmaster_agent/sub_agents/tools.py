@@ -102,9 +102,6 @@ from agents.matmaster_agent.sub_agents.Physical_adsorption_agent.constant import
 from agents.matmaster_agent.sub_agents.piloteye_electro_agent.constant import (
     PILOTEYE_ELECTRO_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.piloteye_electro_agent.prompt import (
-    PiloteyeElectroAgentDescription,
-)
 from agents.matmaster_agent.sub_agents.POLYMERkb_agent.constant import (
     POLYMER_KB_AGENT_NAME,
 )
@@ -120,9 +117,6 @@ from agents.matmaster_agent.sub_agents.ScienceNavigator_agent.prompt import (
     PAPER_SEARCH_AGENT_INSTRUCTION,
     WEB_SEARCH_AGENT_INSTRUCTION,
     WEBPAGE_PARSING_AGENT_INSTRUCTION,
-)
-from agents.matmaster_agent.sub_agents.ssebrain_agent.constant import (
-    SSEBRAIN_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.SSEkb_agent.constant import (
     SSE_KB_AGENT_NAME,
@@ -174,264 +168,264 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.VACANCY_FORMATION_ENERGY],
         'description': (
-            "What it does: Calculate formation energy of non-charged vacancy in metal atoms using DFT.\n"
-            "When to use: When you need vacancy formation energy for metal structures.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters like functional, spin polarization, DFT+U, magnetic moments.\n"
-            "Outputs: Vacancy formation energy.\n"
-            "Cannot do / Limits: Only non-charged vacancy of metal atoms; requires supercell for calculation.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate formation energy of non-charged vacancy in metal atoms using DFT.\n'
+            'When to use: When you need vacancy formation energy for metal structures.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters like functional, spin polarization, DFT+U, magnetic moments.\n'
+            'Outputs: Vacancy formation energy.\n'
+            'Cannot do / Limits: Only non-charged vacancy of metal atoms; requires supercell for calculation.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_phonon_dispersion': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.PHONON],
         'description': (
-            "What it does: Calculate phonon dispersion curve using DFT.\n"
-            "When to use: When you need phonon properties and thermal corrections for a structure.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; optional supercell, high-symmetry points, k-path.\n"
-            "Outputs: Plot of phonon dispersion band structure and thermal corrections.\n"
-            "Cannot do / Limits: Requires DFT; may need supercell for accuracy.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate phonon dispersion curve using DFT.\n'
+            'When to use: When you need phonon properties and thermal corrections for a structure.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; optional supercell, high-symmetry points, k-path.\n'
+            'Outputs: Plot of phonon dispersion band structure and thermal corrections.\n'
+            'Cannot do / Limits: Requires DFT; may need supercell for accuracy.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_cal_band': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.BAND],
         'description': (
-            "What it does: Calculate electronic band structure using DFT.\n"
-            "When to use: When you need band structure and band gap for a material.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; optional high-symmetry points, k-path.\n"
-            "Outputs: Plot of band structure and band gap.\n"
-            "Cannot do / Limits: DFT-based; supports PYATB or ABACUS nscf.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate electronic band structure using DFT.\n'
+            'When to use: When you need band structure and band gap for a material.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; optional high-symmetry points, k-path.\n'
+            'Outputs: Plot of band structure and band gap.\n'
+            'Cannot do / Limits: DFT-based; supports PYATB or ABACUS nscf.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_calculation_scf': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.SCF],
         'description': (
-            "What it does: Perform SCF calculation to compute energy using DFT.\n"
-            "When to use: When you need ground state energy for a structure.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n"
-            "Outputs: Energy.\n"
-            "Cannot do / Limits: Basic SCF; no relaxation or other properties.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Perform SCF calculation to compute energy using DFT.\n'
+            'When to use: When you need ground state energy for a structure.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
+            'Outputs: Energy.\n'
+            'Cannot do / Limits: Basic SCF; no relaxation or other properties.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'abacus_dos_run': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.DENSITY_OF_STATES],
         'description': (
-            "What it does: Calculate DOS and PDOS using DFT.\n"
-            "When to use: When you need density of states for electronic structure analysis.\n"
+            'What it does: Calculate DOS and PDOS using DFT.\n'
+            'When to use: When you need density of states for electronic structure analysis.\n'
             "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; PDOS mode ('species', 'species+shell', 'species+orbital').\n"
-            "Outputs: Plots for DOS and PDOS.\n"
-            "Cannot do / Limits: DFT-based; requires relaxation support.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'Outputs: Plots for DOS and PDOS.\n'
+            'Cannot do / Limits: DFT-based; requires relaxation support.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_badercharge_run': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.BADER_CHARGE_ANALYSIS],
         'description': (
-            "What it does: Calculate Bader charge using DFT.\n"
-            "When to use: When you need atomic charge analysis.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n"
-            "Outputs: Bader charge for each atom.\n"
-            "Cannot do / Limits: DFT-based; requires charge density calculation.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate Bader charge using DFT.\n'
+            'When to use: When you need atomic charge analysis.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
+            'Outputs: Bader charge for each atom.\n'
+            'Cannot do / Limits: DFT-based; requires charge density calculation.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_do_relax': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.OPTIMIZE_STRUCTURE],
         'description': (
-            "What it does: Perform geometry optimization (relaxation) using DFT.\n"
-            "When to use: When you need optimized structure.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; relaxation settings (cell, steps, method, axes).\n"
-            "Outputs: Relaxed structure file.\n"
-            "Cannot do / Limits: DFT-based relaxation.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Perform geometry optimization (relaxation) using DFT.\n'
+            'When to use: When you need optimized structure.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; relaxation settings (cell, steps, method, axes).\n'
+            'Outputs: Relaxed structure file.\n'
+            'Cannot do / Limits: DFT-based relaxation.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'abacus_cal_work_function': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.WORK_FUNCTION],
         'description': (
-            "What it does: Calculate work function of slabs and 2D materials using DFT.\n"
-            "When to use: When you need work function for surface materials.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; vacuum direction, dipole correction.\n"
-            "Outputs: Plot of electrostatic potential and work function.\n"
-            "Cannot do / Limits: For slabs and 2D materials; polar slabs have two work functions.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate work function of slabs and 2D materials using DFT.\n'
+            'When to use: When you need work function for surface materials.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; vacuum direction, dipole correction.\n'
+            'Outputs: Plot of electrostatic potential and work function.\n'
+            'Cannot do / Limits: For slabs and 2D materials; polar slabs have two work functions.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_run_md': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.MOLECULAR_DYNAMICS],
         'description': (
-            "What it does: Perform ab-initio molecular dynamics using DFT.\n"
-            "When to use: When you need MD simulation with DFT accuracy.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; ensemble, steps, timestep, temperature.\n"
-            "Outputs: ASE trajectory file.\n"
-            "Cannot do / Limits: DFT-based MD; expensive for long simulations.\n"
-            "Cost / Notes: High DFT cost; supports relaxation before calculation."
+            'What it does: Perform ab-initio molecular dynamics using DFT.\n'
+            'When to use: When you need MD simulation with DFT accuracy.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; ensemble, steps, timestep, temperature.\n'
+            'Outputs: ASE trajectory file.\n'
+            'Cannot do / Limits: DFT-based MD; expensive for long simulations.\n'
+            'Cost / Notes: High DFT cost; supports relaxation before calculation.'
         ),
     },
     'abacus_cal_elf': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS],
         'description': (
-            "What it does: Calculate electron localization function using DFT.\n"
-            "When to use: When you need ELF for bonding analysis.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n"
-            "Outputs: Cube file of ELF.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate electron localization function using DFT.\n'
+            'When to use: When you need ELF for bonding analysis.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
+            'Outputs: Cube file of ELF.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_eos': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.EOS],
         'description': (
-            "What it does: Calculate equation of state using DFT.\n"
-            "When to use: When you need EOS curve and bulk properties.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n"
-            "Outputs: Plot of fitted EOS and fitting parameters.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate equation of state using DFT.\n'
+            'When to use: When you need EOS curve and bulk properties.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
+            'Outputs: Plot of fitted EOS and fitting parameters.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'abacus_cal_elastic': {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.ELASTIC_CONSTANT],
         'description': (
-            "What it does: Calculate elastic properties using DFT.\n"
-            "When to use: When you need elastic constants and moduli.\n"
-            "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n"
-            "Outputs: Elastic tensor (Voigt notation), bulk/shear/Young’s modulus, Poisson ratio.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost; supports relaxation before calculation."
+            'What it does: Calculate elastic properties using DFT.\n'
+            'When to use: When you need elastic constants and moduli.\n'
+            'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
+            'Outputs: Elastic tensor (Voigt notation), bulk/shear/Young’s modulus, Poisson ratio.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
     },
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.VACANCY_FORMATION_ENERGY],
         'description': (
-            "What it does: Evaluate vacancy formation energies by relaxing supercells with one atom removed.\n"
-            "When to use: When you need vacancy formation energies for materials.\n"
-            "Prerequisites / Inputs: Structure file.\n"
-            "Outputs: Vacancy formation energies.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Evaluate vacancy formation energies by relaxing supercells with one atom removed.\n'
+            'When to use: When you need vacancy formation energies for materials.\n'
+            'Prerequisites / Inputs: Structure file.\n'
+            'Outputs: Vacancy formation energies.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'apex_optimize_structure': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.OPTIMIZE_STRUCTURE, SceneEnum.APEX],
         'description': (
-            "What it does: Perform geometry optimization of a crystal, relaxing atomic positions and optionally the unit cell.\n"
-            "When to use: When you need optimized crystal structure, especially for alloy systems.\n"
-            "Prerequisites / Inputs: Structure file.\n"
-            "Outputs: Optimized structure.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Perform geometry optimization of a crystal, relaxing atomic positions and optionally the unit cell.\n'
+            'When to use: When you need optimized crystal structure, especially for alloy systems.\n'
+            'Prerequisites / Inputs: Structure file.\n'
+            'Outputs: Optimized structure.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'apex_calculate_interstitial': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.INTERSTITIAL_FORMATION_ENERGY],
         'description': (
-            "What it does: Insert interstitial atoms into a host lattice to compute formation energies across candidate sites.\n"
-            "When to use: When you need interstitial formation energies.\n"
-            "Prerequisites / Inputs: Host lattice structure and interstitial atoms.\n"
-            "Outputs: Formation energies for candidate sites.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Insert interstitial atoms into a host lattice to compute formation energies across candidate sites.\n'
+            'When to use: When you need interstitial formation energies.\n'
+            'Prerequisites / Inputs: Host lattice structure and interstitial atoms.\n'
+            'Outputs: Formation energies for candidate sites.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'apex_calculate_elastic': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.ELASTIC_CONSTANT],
         'description': (
-            "What it does: Apply small strains to the lattice to extract elastic constants and derived moduli.\n"
-            "When to use: When you need elastic constants and moduli.\n"
-            "Prerequisites / Inputs: Structure file.\n"
-            "Outputs: Elastic constants and derived moduli.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Apply small strains to the lattice to extract elastic constants and derived moduli.\n'
+            'When to use: When you need elastic constants and moduli.\n'
+            'Prerequisites / Inputs: Structure file.\n'
+            'Outputs: Elastic constants and derived moduli.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.SURFACE_ENERGY],
         'description': (
-            "What it does: Execute a workflow of surface energy calculation.\n"
-            "When to use: When you need surface energy.\n"
-            "Prerequisites / Inputs: Structure file.\n"
-            "Outputs: Surface energy.\n"
-            "Cannot do / Limits: Cannot build slab structures; DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Execute a workflow of surface energy calculation.\n'
+            'When to use: When you need surface energy.\n'
+            'Prerequisites / Inputs: Structure file.\n'
+            'Outputs: Surface energy.\n'
+            'Cannot do / Limits: Cannot build slab structures; DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.EOS],
         'description': (
-            "What it does: Scan volumes around equilibrium, relax internal coordinates, and build an equation-of-state energy–volume curve.\n"
-            "When to use: When you need EOS curve.\n"
-            "Prerequisites / Inputs: Structure file.\n"
-            "Outputs: EOS energy-volume curve.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Scan volumes around equilibrium, relax internal coordinates, and build an equation-of-state energy–volume curve.\n'
+            'When to use: When you need EOS curve.\n'
+            'Prerequisites / Inputs: Structure file.\n'
+            'Outputs: EOS energy-volume curve.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'apex_calculate_phonon': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.PHONON],
         'description': (
-            "What it does: Perform supercell finite-displacement calculations, relax configurations, and assemble phonon spectra.\n"
-            "When to use: When you need phonon spectra.\n"
-            "Prerequisites / Inputs: Structure file.\n"
-            "Outputs: Phonon spectra.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Perform supercell finite-displacement calculations, relax configurations, and assemble phonon spectra.\n'
+            'When to use: When you need phonon spectra.\n'
+            'Prerequisites / Inputs: Structure file.\n'
+            'Outputs: Phonon spectra.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'apex_calculate_gamma': {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.STACKING_FAULT_ENERGY],
         'description': (
-            "What it does: Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths.\n"
-            "When to use: When you need stacking-fault energies.\n"
-            "Prerequisites / Inputs: Structure file and specified slip paths.\n"
-            "Outputs: Generalized stacking-fault energies.\n"
-            "Cannot do / Limits: DFT-based.\n"
-            "Cost / Notes: DFT calculation cost."
+            'What it does: Construct and relax sliding slabs to map generalized stacking-fault energies along specified slip paths.\n'
+            'When to use: When you need stacking-fault energies.\n'
+            'Prerequisites / Inputs: Structure file and specified slip paths.\n'
+            'Outputs: Generalized stacking-fault energies.\n'
+            'Cannot do / Limits: DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.'
         ),
     },
     'get_target_info': {
         'belonging_agent': UniELFAgentName,
         'scene': [SceneEnum.POLYMER],
         'description': (
-            "What it does: Get target information from configuration settings for Uni-ELF inference system.\n"
-            "When to use: When you need configuration info for Uni-ELF.\n"
-            "Prerequisites / Inputs: None.\n"
-            "Outputs: Comprehensive configuration information and available target model mappings.\n"
-            "Cannot do / Limits: Specific to Uni-ELF system.\n"
-            "Cost / Notes: Low."
+            'What it does: Get target information from configuration settings for Uni-ELF inference system.\n'
+            'When to use: When you need configuration info for Uni-ELF.\n'
+            'Prerequisites / Inputs: None.\n'
+            'Outputs: Comprehensive configuration information and available target model mappings.\n'
+            'Cannot do / Limits: Specific to Uni-ELF system.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'unielf_inference': {
         'belonging_agent': UniELFAgentName,
         'scene': [SceneEnum.POLYMER],
         'description': (
-            "What it does: Run Uni-ELF inference for formulation inputs to predict properties.\n"
-            "When to use: When you need property prediction for formulations.\n"
-            "Prerequisites / Inputs: Components and ratios for formulations.\n"
-            "Outputs: Predicted properties.\n"
-            "Cannot do / Limits: Supports mixtures and pseudo-formulations.\n"
-            "Cost / Notes: Medium."
+            'What it does: Run Uni-ELF inference for formulation inputs to predict properties.\n'
+            'When to use: When you need property prediction for formulations.\n'
+            'Prerequisites / Inputs: Components and ratios for formulations.\n'
+            'Outputs: Predicted properties.\n'
+            'Cannot do / Limits: Supports mixtures and pseudo-formulations.\n'
+            'Cost / Notes: Medium.'
         ),
         'summary_prompt': (
             'Summarize the Uni-ELF inference results based on the output:\n'
@@ -463,36 +457,36 @@ ALL_TOOLS = {
         'belonging_agent': PerovskiteAgentName,
         'scene': [SceneEnum.PEROVSKITE_RESEARCH],
         'description': (
-            "What it does: Fetch complete schema and descriptive information for the perovskite solar cell database.\n"
-            "When to use: Before querying the perovskite database.\n"
-            "Prerequisites / Inputs: None.\n"
-            "Outputs: Database schema and descriptions.\n"
-            "Cannot do / Limits: Specific to perovskite database.\n"
-            "Cost / Notes: Low."
+            'What it does: Fetch complete schema and descriptive information for the perovskite solar cell database.\n'
+            'When to use: Before querying the perovskite database.\n'
+            'Prerequisites / Inputs: None.\n'
+            'Outputs: Database schema and descriptions.\n'
+            'Cannot do / Limits: Specific to perovskite database.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'sql_database_mcp': {
         'belonging_agent': PerovskiteAgentName,
         'scene': [SceneEnum.PEROVSKITE_RESEARCH],
         'description': (
-            "What it does: Execute SQL queries against the perovskite solar cell database and return first k rows.\n"
-            "When to use: When querying perovskite database after getting schema.\n"
-            "Prerequisites / Inputs: SQL query; call get_database_info first.\n"
-            "Outputs: First k rows of query results.\n"
-            "Cannot do / Limits: Limited to first k rows.\n"
-            "Cost / Notes: Medium."
+            'What it does: Execute SQL queries against the perovskite solar cell database and return first k rows.\n'
+            'When to use: When querying perovskite database after getting schema.\n'
+            'Prerequisites / Inputs: SQL query; call get_database_info first.\n'
+            'Outputs: First k rows of query results.\n'
+            'Cannot do / Limits: Limited to first k rows.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'Unimol_Predict_Perovskite_Additive': {
         'belonging_agent': PerovskiteAgentName,
         'scene': [SceneEnum.PEROVSKITE_RESEARCH],
         'description': (
-            "What it does: Predict the additive effect on perovskite PCE with a list of additive molecules.\n"
-            "When to use: When you need PCE change prediction for additives.\n"
-            "Prerequisites / Inputs: List of additive molecules.\n"
-            "Outputs: Predicted PCE changes.\n"
-            "Cannot do / Limits: Specific to perovskite additives.\n"
-            "Cost / Notes: Medium."
+            'What it does: Predict the additive effect on perovskite PCE with a list of additive molecules.\n'
+            'When to use: When you need PCE change prediction for additives.\n'
+            'Prerequisites / Inputs: List of additive molecules.\n'
+            'Outputs: Predicted PCE changes.\n'
+            'Cannot do / Limits: Specific to perovskite additives.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     # 'validate_smiles': {
@@ -504,36 +498,36 @@ ALL_TOOLS = {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
         'description': (
-            "What it does: Perform composition optimization targeting specific properties using genetic algorithm.\n"
-            "When to use: When you need to optimize compositions for properties.\n"
-            "Prerequisites / Inputs: Proxy model file prepared.\n"
-            "Outputs: Optimized compositions.\n"
-            "Cannot do / Limits: Cannot build doping structures; requires proxy model.\n"
-            "Cost / Notes: Medium."
+            'What it does: Perform composition optimization targeting specific properties using genetic algorithm.\n'
+            'When to use: When you need to optimize compositions for properties.\n'
+            'Prerequisites / Inputs: Proxy model file prepared.\n'
+            'Outputs: Optimized compositions.\n'
+            'Cannot do / Limits: Cannot build doping structures; requires proxy model.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'run_doe_task': {
         'belonging_agent': DOE_AGENT_NAME,
         'scene': [SceneEnum.DOE],
         'description': (
-            "What it does: Run a Design of Experiments (DoE) task using supported algorithms.\n"
-            "When to use: When you need experimental design.\n"
-            "Prerequisites / Inputs: Algorithm choice (Extreme Vertices, Simplex Centroid, etc.).\n"
-            "Outputs: DoE results.\n"
-            "Cannot do / Limits: Limited to supported algorithms.\n"
-            "Cost / Notes: Medium."
+            'What it does: Run a Design of Experiments (DoE) task using supported algorithms.\n'
+            'When to use: When you need experimental design.\n'
+            'Prerequisites / Inputs: Algorithm choice (Extreme Vertices, Simplex Centroid, etc.).\n'
+            'Outputs: DoE results.\n'
+            'Cannot do / Limits: Limited to supported algorithms.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
         'scene': [SceneEnum.LITERATURE, SceneEnum.UNIVERSAL],
         'description': (
-            "What it does: Read and extract material data and methodologies from PDF documents.\n"
-            "When to use: When you need to extract info from PDF literature.\n"
-            "Prerequisites / Inputs: PDF file.\n"
-            "Outputs: Extracted material info and methodologies.\n"
-            "Cannot do / Limits: Cannot retrieve from internet; local PDFs only.\n"
-            "Cost / Notes: Low."
+            'What it does: Read and extract material data and methodologies from PDF documents.\n'
+            'When to use: When you need to extract info from PDF literature.\n'
+            'Prerequisites / Inputs: PDF file.\n'
+            'Outputs: Extracted material info and methodologies.\n'
+            'Cannot do / Limits: Cannot retrieve from internet; local PDFs only.\n'
+            'Cost / Notes: Low.'
         ),
         'bypass_confirmation': True,
     },
@@ -541,12 +535,12 @@ ALL_TOOLS = {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.OPTIMIZE_STRUCTURE],
         'description': (
-            "What it does: Perform geometry optimization of a crystal or molecular structure using ML potential.\n"
-            "When to use: When you need fast optimized structure without DFT.\n"
-            "Prerequisites / Inputs: Structure file (CIF/POSCAR/ABACUS STRU/LAMMPS data); compatible ML potential.\n"
-            "Outputs: Optimized structure file.\n"
-            "Cannot do / Limits: ML-based; accuracy depends on potential domain.\n"
-            "Cost / Notes: Low relative to DFT."
+            'What it does: Perform geometry optimization of a crystal or molecular structure using ML potential.\n'
+            'When to use: When you need fast optimized structure without DFT.\n'
+            'Prerequisites / Inputs: Structure file (CIF/POSCAR/ABACUS STRU/LAMMPS data); compatible ML potential.\n'
+            'Outputs: Optimized structure file.\n'
+            'Cannot do / Limits: ML-based; accuracy depends on potential domain.\n'
+            'Cost / Notes: Low relative to DFT.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
@@ -554,12 +548,12 @@ ALL_TOOLS = {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.MOLECULAR_DYNAMICS],
         'description': (
-            "What it does: Run molecular dynamics simulations using ML potential.\n"
-            "When to use: When you need fast MD without DFT.\n"
-            "Prerequisites / Inputs: Structure file; ML potential; ensemble settings.\n"
-            "Outputs: MD trajectories and thermodynamics.\n"
-            "Cannot do / Limits: NVE/NVT/NPT only; no classical force fields or DFT.\n"
-            "Cost / Notes: Medium; scales with system size and steps."
+            'What it does: Run molecular dynamics simulations using ML potential.\n'
+            'When to use: When you need fast MD without DFT.\n'
+            'Prerequisites / Inputs: Structure file; ML potential; ensemble settings.\n'
+            'Outputs: MD trajectories and thermodynamics.\n'
+            'Cannot do / Limits: NVE/NVT/NPT only; no classical force fields or DFT.\n'
+            'Cost / Notes: Medium; scales with system size and steps.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
@@ -567,12 +561,12 @@ ALL_TOOLS = {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.PHONON],
         'description': (
-            "What it does: Compute phonon properties using ML potential.\n"
-            "When to use: When you need phonon dispersion and thermal properties.\n"
-            "Prerequisites / Inputs: Optimized structure; ML potential.\n"
-            "Outputs: Phonon dispersion, DOS, thermal properties.\n"
-            "Cannot do / Limits: Requires finite-displacement supercells.\n"
-            "Cost / Notes: High; scales with supercell size."
+            'What it does: Compute phonon properties using ML potential.\n'
+            'When to use: When you need phonon dispersion and thermal properties.\n'
+            'Prerequisites / Inputs: Optimized structure; ML potential.\n'
+            'Outputs: Phonon dispersion, DOS, thermal properties.\n'
+            'Cannot do / Limits: Requires finite-displacement supercells.\n'
+            'Cost / Notes: High; scales with supercell size.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
@@ -580,25 +574,25 @@ ALL_TOOLS = {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA, SceneEnum.ELASTIC_CONSTANT],
         'description': (
-            "What it does: Compute elastic constants (Cij) and derived mechanical properties using a machine-learning interatomic potential.\n"
-            "When to use: You have a relaxed structure and want fast elastic properties without running DFT.\n"
-            "Prerequisites / Inputs: A structure file (e.g., CIF / POSCAR / ABACUS STRU / LAMMPS data) and a compatible ML potential available to the backend; recommended to relax the structure first.\n"
-            "Outputs: Elastic tensor (Cij), bulk/shear/Young’s modulus, Poisson ratio (units reported in the result payload).\n"
-            "Cannot do / Limits: Not a DFT calculation; accuracy depends on the ML potential domain; may be unreliable for structures far from training distribution.\n"
-            "Cost / Notes: Medium; scales with system size and deformation settings."
-            ),
+            'What it does: Compute elastic constants (Cij) and derived mechanical properties using a machine-learning interatomic potential.\n'
+            'When to use: You have a relaxed structure and want fast elastic properties without running DFT.\n'
+            'Prerequisites / Inputs: A structure file (e.g., CIF / POSCAR / ABACUS STRU / LAMMPS data) and a compatible ML potential available to the backend; recommended to relax the structure first.\n'
+            'Outputs: Elastic tensor (Cij), bulk/shear/Young’s modulus, Poisson ratio (units reported in the result payload).\n'
+            'Cannot do / Limits: Not a DFT calculation; accuracy depends on the ML potential domain; may be unreliable for structures far from training distribution.\n'
+            'Cost / Notes: Medium; scales with system size and deformation settings.'
+        ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
     'run_neb': {
         'belonging_agent': DPACalulator_AGENT_NAME,
         'scene': [SceneEnum.DPA],
         'description': (
-            "What it does: Run a Nudged Elastic Band (NEB) calculation with a machine-learning potential to estimate minimum energy path and barrier.\n"
-            "When to use: You have initial/final states (and optionally an initial guess path) and need a fast barrier estimate.\n"
-            "Prerequisites / Inputs: Initial and final structure files; optional intermediate images or image count; a compatible ML potential available to the backend.\n"
-            "Outputs: Optimized NEB path, energies along images, estimated barrier and reaction coordinate.\n"
-            "Cannot do / Limits: Not DFT-quality by default; may fail if images are too distorted or if the potential is not valid for the chemistry.\n"
-            "Cost / Notes: High relative to single relax; cost scales with number of images and system size."
+            'What it does: Run a Nudged Elastic Band (NEB) calculation with a machine-learning potential to estimate minimum energy path and barrier.\n'
+            'When to use: You have initial/final states (and optionally an initial guess path) and need a fast barrier estimate.\n'
+            'Prerequisites / Inputs: Initial and final structure files; optional intermediate images or image count; a compatible ML potential available to the backend.\n'
+            'Outputs: Optimized NEB path, energies along images, estimated barrier and reaction coordinate.\n'
+            'Cannot do / Limits: Not DFT-quality by default; may fail if images are too distorted or if the potential is not valid for the chemistry.\n'
+            'Cost / Notes: High relative to single relax; cost scales with number of images and system size.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
     },
@@ -606,12 +600,12 @@ ALL_TOOLS = {
         'belonging_agent': FinetuneDPAAgentName,
         'scene': [SceneEnum.DPA],
         'description': (
-            "What it does: Fine-tune DPA pretrained models using DFT-labeled data.\n"
-            "When to use: When you need to adapt DPA potential to specific systems.\n"
-            "Prerequisites / Inputs: DFT-labeled data (energies, forces, stresses).\n"
-            "Outputs: Fine-tuned DPA model.\n"
-            "Cannot do / Limits: Cannot run calculations with the model.\n"
-            "Cost / Notes: High."
+            'What it does: Fine-tune DPA pretrained models using DFT-labeled data.\n'
+            'When to use: When you need to adapt DPA potential to specific systems.\n'
+            'Prerequisites / Inputs: DFT-labeled data (energies, forces, stresses).\n'
+            'Outputs: Fine-tuned DPA model.\n'
+            'Cannot do / Limits: Cannot run calculations with the model.\n'
+            'Cost / Notes: High.'
         ),
         'args_setting': 'Do NOT omit parameters that have default values. If the user does not provide a value, you MUST use the default value defined in the input parameters and include that field in the tool call. Only parameters without defaults are truly required and must be filled from user input.',
     },
@@ -619,85 +613,85 @@ ALL_TOOLS = {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': (
-            "What it does: Calculate HEA parameters like VEC, delta, Hmix, Smix, Lambda from composition.\n"
-            "When to use: When you need HEA thermodynamic parameters.\n"
-            "Prerequisites / Inputs: HEA chemical formula.\n"
-            "Outputs: VEC, delta, Hmix, Smix, Lambda.\n"
-            "Cannot do / Limits: Specific to HEA.\n"
-            "Cost / Notes: Low."
+            'What it does: Calculate HEA parameters like VEC, delta, Hmix, Smix, Lambda from composition.\n'
+            'When to use: When you need HEA thermodynamic parameters.\n'
+            'Prerequisites / Inputs: HEA chemical formula.\n'
+            'Outputs: VEC, delta, Hmix, Smix, Lambda.\n'
+            'Cannot do / Limits: Specific to HEA.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'HEA_predictor': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': (
-            "What it does: Predict if HEA composition forms solid-solution and its crystal structure.\n"
-            "When to use: When you need phase prediction for HEA.\n"
-            "Prerequisites / Inputs: HEA composition.\n"
-            "Outputs: Solid-solution formation and crystal structure.\n"
-            "Cannot do / Limits: Uses pre-trained ML model.\n"
-            "Cost / Notes: Low."
+            'What it does: Predict if HEA composition forms solid-solution and its crystal structure.\n'
+            'When to use: When you need phase prediction for HEA.\n'
+            'Prerequisites / Inputs: HEA composition.\n'
+            'Outputs: Solid-solution formation and crystal structure.\n'
+            'Cannot do / Limits: Uses pre-trained ML model.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'HEA_comps_generator': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': (
-            "What it does: Generate HEA compositions by adjusting molar ratios of one element.\n"
-            "When to use: For HEA composition design and optimization.\n"
-            "Prerequisites / Inputs: Initial HEA composition.\n"
-            "Outputs: Series of modified compositions.\n"
-            "Cannot do / Limits: Adjusts one element at a time.\n"
-            "Cost / Notes: Low."
+            'What it does: Generate HEA compositions by adjusting molar ratios of one element.\n'
+            'When to use: For HEA composition design and optimization.\n'
+            'Prerequisites / Inputs: Initial HEA composition.\n'
+            'Outputs: Series of modified compositions.\n'
+            'Cannot do / Limits: Adjusts one element at a time.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'HEA_data_extract': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': (
-            "What it does: Extract HEA data from PDF literature.\n"
-            "When to use: When you need HEA data from papers.\n"
-            "Prerequisites / Inputs: PDF literature.\n"
-            "Outputs: Compositions, processing, microstructures, properties.\n"
-            "Cannot do / Limits: PDF format only.\n"
-            "Cost / Notes: Low."
+            'What it does: Extract HEA data from PDF literature.\n'
+            'When to use: When you need HEA data from papers.\n'
+            'Prerequisites / Inputs: PDF literature.\n'
+            'Outputs: Compositions, processing, microstructures, properties.\n'
+            'Cannot do / Limits: PDF format only.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'HEA_paper_search': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': (
-            "What it does: Search and download HEA papers from arXiv.\n"
-            "When to use: When you need HEA literature.\n"
-            "Prerequisites / Inputs: Title, author, or keywords.\n"
-            "Outputs: Search results and downloaded papers.\n"
-            "Cannot do / Limits: arXiv only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Search and download HEA papers from arXiv.\n'
+            'When to use: When you need HEA literature.\n'
+            'Prerequisites / Inputs: Title, author, or keywords.\n'
+            'Outputs: Search results and downloaded papers.\n'
+            'Cannot do / Limits: arXiv only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'HEA_bi_phase_Calc': {
         'belonging_agent': HEA_assistant_AgentName,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': (
-            "What it does: Calculate formation energies and phase diagrams for binary pairs in HEA.\n"
-            "When to use: When you need binary phase info for HEA.\n"
-            "Prerequisites / Inputs: HEA chemical system.\n"
-            "Outputs: Formation energies and convex hulls.\n"
-            "Cannot do / Limits: Binary pairs only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Calculate formation energies and phase diagrams for binary pairs in HEA.\n'
+            'When to use: When you need binary phase info for HEA.\n'
+            'Prerequisites / Inputs: HEA chemical system.\n'
+            'Outputs: Formation energies and convex hulls.\n'
+            'Cannot do / Limits: Binary pairs only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'generate_binary_phase_diagram': {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': (
-            "What it does: Generate a binary phase diagram for a specified A–B system based on available thermodynamic/energy data in the backend workflow.\n"
-            "When to use: You want a quick overview of stable/competing phases across composition for a binary alloy/compound system.\n"
-            "Prerequisites / Inputs: Element pair (A, B) and optional temperature/pressure range; requires accessible formation-energy/thermo dataset or computation route configured in the backend.\n"
-            "Outputs: Phase diagram data (stable phases, tie-lines, composition ranges) and a plot-ready representation.\n"
-            "Cannot do / Limits: If no dataset/computation route is available, the tool will return an error; results depend on data coverage and model assumptions.\n"
-            "Cost / Notes: Medium; faster with cached datasets."
-        )
+            'What it does: Generate a binary phase diagram for a specified A–B system based on available thermodynamic/energy data in the backend workflow.\n'
+            'When to use: You want a quick overview of stable/competing phases across composition for a binary alloy/compound system.\n'
+            'Prerequisites / Inputs: Element pair (A, B) and optional temperature/pressure range; requires accessible formation-energy/thermo dataset or computation route configured in the backend.\n'
+            'Outputs: Phase diagram data (stable phases, tie-lines, composition ranges) and a plot-ready representation.\n'
+            'Cannot do / Limits: If no dataset/computation route is available, the tool will return an error; results depend on data coverage and model assumptions.\n'
+            'Cost / Notes: Medium; faster with cached datasets.'
+        ),
     },
     'query_heakb_literature': {
         'belonging_agent': HEA_KB_AGENT_NAME,
@@ -780,24 +774,24 @@ ALL_TOOLS = {
         'belonging_agent': ORGANIC_REACTION_AGENT_NAME,
         'scene': [SceneEnum.REACTION],
         'description': (
-            "What it does: Calculate reaction profile.\n"
-            "When to use: For organic reaction analysis.\n"
-            "Prerequisites / Inputs: Reaction inputs.\n"
-            "Outputs: Reaction profile.\n"
-            "Cannot do / Limits: Specific to reactions.\n"
-            "Cost / Notes: Medium."
+            'What it does: Calculate reaction profile.\n'
+            'When to use: For organic reaction analysis.\n'
+            'Prerequisites / Inputs: Reaction inputs.\n'
+            'Outputs: Reaction profile.\n'
+            'Cannot do / Limits: Specific to reactions.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'run_piloteye': {
         'belonging_agent': PILOTEYE_ELECTRO_AGENT_NAME,
         'scene': [SceneEnum.PILOTEYE_ELECTRO],
         'description': (
-            "What it does: Perform property calculations for lithium-ion battery electrolytes using MD and DFT.\n"
-            "When to use: When you need electrolyte property calculations.\n"
-            "Prerequisites / Inputs: Params JSON with formulation.\n"
-            "Outputs: Target properties from modeling pipeline.\n"
-            "Cannot do / Limits: Built-in molecule library; complete workflow.\n"
-            "Cost / Notes: High."
+            'What it does: Perform property calculations for lithium-ion battery electrolytes using MD and DFT.\n'
+            'When to use: When you need electrolyte property calculations.\n'
+            'Prerequisites / Inputs: Params JSON with formulation.\n'
+            'Outputs: Target properties from modeling pipeline.\n'
+            'Cannot do / Limits: Built-in molecule library; complete workflow.\n'
+            'Cost / Notes: High.'
         ),
     },
     # 'deep_research_agent': {
@@ -814,12 +808,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Perform global structure search with CALYPSO to generate candidate crystal structures.\n"
-            "When to use: When you need to explore polymorphs for a composition.\n"
-            "Prerequisites / Inputs: Valid element inputs; CALYPSO environment.\n"
-            "Outputs: Multiple POSCAR files.\n"
-            "Cannot do / Limits: Requires relaxation downstream.\n"
-            "Cost / Notes: Medium."
+            'What it does: Perform global structure search with CALYPSO to generate candidate crystal structures.\n'
+            'When to use: When you need to explore polymorphs for a composition.\n'
+            'Prerequisites / Inputs: Valid element inputs; CALYPSO environment.\n'
+            'Outputs: Multiple POSCAR files.\n'
+            'Cannot do / Limits: Requires relaxation downstream.\n'
+            'Cost / Notes: Medium.'
         ),
         'args_setting': 'Parameter guidance: n_tot=10–30 gives reasonable diversity without excessive cost. Elements must be from the supported list (H–Bi, Ac–Pu). Output is a set of POSCAR files; downstream relaxation is strongly recommended.',
     },
@@ -827,12 +821,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE, SceneEnum.CONDITIONAL_GENERATE],
         'description': (
-            "What it does: Generate crystal structures based on conditional attributes and space groups.\n"
-            "When to use: When you need structures with specific properties.\n"
-            "Prerequisites / Inputs: Target properties (bandgap, moduli, Tc, sound); space groups.\n"
-            "Outputs: Generated structures.\n"
-            "Cannot do / Limits: Limited to supported properties; requires space group.\n"
-            "Cost / Notes: High; uses generative model."
+            'What it does: Generate crystal structures based on conditional attributes and space groups.\n'
+            'When to use: When you need structures with specific properties.\n'
+            'Prerequisites / Inputs: Target properties (bandgap, moduli, Tc, sound); space groups.\n'
+            'Outputs: Generated structures.\n'
+            'Cannot do / Limits: Limited to supported properties; requires space group.\n'
+            'Cost / Notes: High; uses generative model.'
         ),
         'args_setting': 'Parameter guidance: Supported properties: bandgap (eV), shear_modulus, bulk_modulus (both log₁₀ GPa), superconducting ambient_pressure/high_pressure (K), sound (m/s). For target_type="minimize", use small target (e.g., 0.1) and low alpha (0.01); for "equal", "greater", "less", use alpha=1.0. mc_steps=500 balances convergence and speed; increase to 2000 for high-accuracy targets. sample_num=20–100 recommended; distribute across space groups if random_spacegroup_num>0. Critical: Space group must be explicitly specified by the user — no defaults or auto-inference.',
     },
@@ -840,12 +834,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Create supercell expansion from structure file.\n"
-            "When to use: When you need larger unit cell for simulations.\n"
-            "Prerequisites / Inputs: Structure file.\n"
-            "Outputs: Supercell structure.\n"
-            "Cannot do / Limits: Expansion only; no reduction.\n"
-            "Cost / Notes: Low."
+            'What it does: Create supercell expansion from structure file.\n'
+            'When to use: When you need larger unit cell for simulations.\n'
+            'Prerequisites / Inputs: Structure file.\n'
+            'Outputs: Supercell structure.\n'
+            'Cannot do / Limits: Expansion only; no reduction.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': "Parameter guidance: Primarily follow user's instrucution. If not specified, firstly get structure information to understand the raw lattice. An ideal supercell for computation is isotropic. For example, the raw lattice is (4 A, 10 A, 12 A, 90 deg, 90 deg, 90 deg), the supercell should be 5 × 2 × 2. 30-50 angstrom is often appropriate for simulations. Avoid overly large cells unless needed for long-range interactions.",
         'bypass_confirmation': True,
@@ -854,12 +848,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Build bulk structures for simple packing types and compounds.\n"
-            "When to use: For standard crystal structures like sc, fcc, bcc, hcp, rocksalt, etc.\n"
-            "Prerequisites / Inputs: Element symbols or formulas; lattice constants.\n"
-            "Outputs: Crystal structure file.\n"
-            "Cannot do / Limits: Limited to simple structures; no complex crystals.\n"
-            "Cost / Notes: Low."
+            'What it does: Build bulk structures for simple packing types and compounds.\n'
+            'When to use: For standard crystal structures like sc, fcc, bcc, hcp, rocksalt, etc.\n'
+            'Prerequisites / Inputs: Element symbols or formulas; lattice constants.\n'
+            'Outputs: Crystal structure file.\n'
+            'Cannot do / Limits: Limited to simple structures; no complex crystals.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Lattice constant requirements due to symmetry constraints: sc/fcc/bcc/diamond/rocksalt/cesiumchloride/zincblende/fluorite → only a; hcp/wurtzite → a and c; orthorhombic/monoclinic → a, b, c. Set conventional=True by default unless primitive cell is explicitly required. For elements, use element symbols; for compounds, use chemical formula (e.g., "NaCl"). {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -868,12 +862,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Build surface slab structures from bulk structure.\n"
-            "When to use: When you need surface models for calculations.\n"
-            "Prerequisites / Inputs: Bulk structure file; Miller indices.\n"
-            "Outputs: Slab structure file.\n"
-            "Cannot do / Limits: Requires bulk input; vacuum added.\n"
-            "Cost / Notes: Low."
+            'What it does: Build surface slab structures from bulk structure.\n'
+            'When to use: When you need surface models for calculations.\n'
+            'Prerequisites / Inputs: Bulk structure file; Miller indices.\n'
+            'Outputs: Slab structure file.\n'
+            'Cannot do / Limits: Requires bulk input; vacuum added.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Prefer slab_size_mode="layers" with slab_size_value=4–6 for stability; or "thickness" with ≥12 Å for electronic convergence. Use vacuum=15–20 Å to minimize spurious interactions. For polar surfaces or systems with strong dipoles, increase vacuum to ensure the electrostatic potential flattens in the vacuum region. Enable repair=True for covalent materials (e.g., drug-like molecule crystals, oragnic-inorganic hybrids, MOFs); Set false for regular sphrical-like inorganic crystals. Gets slow if set True. Default termination="auto" usually selects the most stoichiometric termination. {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -882,12 +876,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Build surface-adsorbate structures by placing molecules on slabs.\n"
-            "When to use: For adsorption studies.\n"
-            "Prerequisites / Inputs: Surface slab and adsorbate structure files.\n"
-            "Outputs: Combined structure file.\n"
-            "Cannot do / Limits: Single adsorbate placement.\n"
-            "Cost / Notes: Low."
+            'What it does: Build surface-adsorbate structures by placing molecules on slabs.\n'
+            'When to use: For adsorption studies.\n'
+            'Prerequisites / Inputs: Surface slab and adsorbate structure files.\n'
+            'Outputs: Combined structure file.\n'
+            'Cannot do / Limits: Single adsorbate placement.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: height=2.0 Å is typical for physisorption; reduce to 1.5–1.8 Å for chemisorption (e.g., CO on Pt). For high-symmetry sites, use string keywords ("ontop", "fcc", "hcp"); for custom placement, supply [x, y] fractional coordinates. {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -896,12 +890,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Build heterointerface by stacking two slab structures.\n"
-            "When to use: For interface studies.\n"
-            "Prerequisites / Inputs: Two slab structure files.\n"
-            "Outputs: Interface structure file.\n"
-            "Cannot do / Limits: Basic strain checking.\n"
-            "Cost / Notes: Low."
+            'What it does: Build heterointerface by stacking two slab structures.\n'
+            'When to use: For interface studies.\n'
+            'Prerequisites / Inputs: Two slab structure files.\n'
+            'Outputs: Interface structure file.\n'
+            'Cannot do / Limits: Basic strain checking.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Keep max_strain=0.05 (5%) for physical relevance; relax only if intentional strain engineering is intended. Try combinding make_supercell and get_structural_info to obtain the appropriate size of the two slabs. interface_distance=2.5 Å is safe for van der Waals gaps; reduce to 1.8–2.0 Å for covalent bonding (e.g., heterostructures with orbital overlap). {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -910,12 +904,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Add periodic cell to molecular structures for calculations.\n"
-            "When to use: For isolated molecule calculations requiring periodicity.\n"
-            "Prerequisites / Inputs: Molecular structure file.\n"
-            "Outputs: Structure with periodic cell.\n"
-            "Cannot do / Limits: For gas-phase molecules.\n"
-            "Cost / Notes: Low."
+            'What it does: Add periodic cell to molecular structures for calculations.\n'
+            'When to use: For isolated molecule calculations requiring periodicity.\n'
+            'Prerequisites / Inputs: Molecular structure file.\n'
+            'Outputs: Structure with periodic cell.\n'
+            'Cannot do / Limits: For gas-phase molecules.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: For non-periodic system aiming to run calculations with periodic boundary conditions required (e.g., DFT calculations with ABACUS), use add_cell_for_molecules to put the system in a large cell. Default cell [10, 10, 10] Å and vacuum = 5 Å are suitable for most gas-phase molecules; increase to ≥15 Å and ≥8 Å vacuum for polar or diffuse systems (e.g., anions, excited states). {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -924,12 +918,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Build crystal structures by specifying space group and Wyckoff positions.\n"
-            "When to use: For custom crystal structures.\n"
-            "Prerequisites / Inputs: Space group; Wyckoff positions with coordinates.\n"
-            "Outputs: Crystal structure file.\n"
-            "Cannot do / Limits: Requires symmetry knowledge.\n"
-            "Cost / Notes: Low."
+            'What it does: Build crystal structures by specifying space group and Wyckoff positions.\n'
+            'When to use: For custom crystal structures.\n'
+            'Prerequisites / Inputs: Space group; Wyckoff positions with coordinates.\n'
+            'Outputs: Crystal structure file.\n'
+            'Cannot do / Limits: Requires symmetry knowledge.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Space Group: Integer (e.g., 225) or Symbol (e.g., "Fm-3m"). Wyckoff Consistency: The provided coordinates must mathematically belong to the specific Wyckoff position (e.g., if using position 4a at (0,0,0), do not input (0.5, 0.5, 0) just because it\'s in the same unit cell; only input the canonical generator). Lattice: Angles in degrees, lengths in Å. Fractional Coordinates: Must be in [0, 1). Strictly Use the Asymmetric Unit: You must provide only the generating coordinates for each Wyckoff orbit. Do NOT Pre-calculate Symmetry: The function will automatically apply all space group operators to your input. If you manually input coordinates that are already symmetry-equivalent (e.g., providing both (x, y, z) and (-x, -y, -z) in a centrosymmetric structure), the function will generate them again, causing catastrophic atom overlapping. Redundancy Rule: Before adding a coordinate, check if it can be generated from an existing input coordinate via any operator in the Space Group. If yes, discard it. One Wyckoff letter = One coordinate triplet input. {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -938,12 +932,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Build 3D molecular structures from SMILES strings.\n"
-            "When to use: When you have SMILES and need 3D coordinates.\n"
-            "Prerequisites / Inputs: SMILES string.\n"
-            "Outputs: Molecular structure file.\n"
-            "Cannot do / Limits: Single conformer generation.\n"
-            "Cost / Notes: Low."
+            'What it does: Build 3D molecular structures from SMILES strings.\n'
+            'When to use: When you have SMILES and need 3D coordinates.\n'
+            'Prerequisites / Inputs: SMILES string.\n'
+            'Outputs: Molecular structure file.\n'
+            'Cannot do / Limits: Single conformer generation.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'{STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -952,12 +946,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Generate doped crystal structures by substituting atoms.\n"
-            "When to use: For doping studies.\n"
-            "Prerequisites / Inputs: Host structure; dopant species and concentrations.\n"
-            "Outputs: Doped structure file.\n"
-            "Cannot do / Limits: Random substitution; recommend supercells.\n"
-            "Cost / Notes: Low."
+            'What it does: Generate doped crystal structures by substituting atoms.\n'
+            'When to use: For doping studies.\n'
+            'Prerequisites / Inputs: Host structure; dopant species and concentrations.\n'
+            'Outputs: Doped structure file.\n'
+            'Cannot do / Limits: Random substitution; recommend supercells.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Fractions are applied per-site; actual doping % may differ slightly in small cells — recommend ≥2×2×2 supercells for <10% doping. Covalent ions (ammonium, formamidinium, etc.) are supported via built-in library; specify by name (e.g., "ammonium"). {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -966,12 +960,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            "What it does: Generate amorphous molecular structures in periodic boxes.\n"
-            "When to use: For amorphous material simulations.\n"
-            "Prerequisites / Inputs: Molecule structure; box size/density/count.\n"
-            "Outputs: Amorphous structure file.\n"
-            "Cannot do / Limits: Avoids overlaps; for further relaxation.\n"
-            "Cost / Notes: Medium."
+            'What it does: Generate amorphous molecular structures in periodic boxes.\n'
+            'When to use: For amorphous material simulations.\n'
+            'Prerequisites / Inputs: Molecule structure; box size/density/count.\n'
+            'Outputs: Amorphous structure file.\n'
+            'Cannot do / Limits: Avoids overlaps; for further relaxation.\n'
+            'Cost / Notes: Medium.'
         ),
         'args_setting': f'Parameter guidance: Input Constraint: Specify exactly two of: box_size, density, molecule_numbers. The third is derived. Density Regimes (CRITICAL): Solids/Liquids: Target ~0.9–1.2 g/cm³ (e.g., water ~1.0, polymers ~1.1). Gases/Vapors: Target orders of magnitude lower (e.g., ~0.001–0.002 g/cm³ for STP gases). Warning: Do not apply default liquid densities to gas inputs. If simulating a specific pressure, pre-calculate the required number of molecules N for the given Box Volume V (using Ideal Gas Law), then fix box_size and molecule_numbers. Composition: Use composition for multi-component mixtures; otherwise equal molar ratios are assumed. Packing Geometry: Box Size: For gases, ensure the box is large enough (usually >15 Å) to minimize unphysical periodic self-interactions, even if the density is low. {STRUCTURE_BUILDING_SAVENAME}',
         'bypass_confirmation': True,
@@ -980,12 +974,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.UNIVERSAL],
         'description': (
-            "What it does: Extract structural information from **files**.\n"
-            "When to use: Analyze crystal/molecular structures **files**.\n"
-            "Prerequisites / Inputs: Structure file path.\n"
-            "Outputs: Formula, space group, lattice, atoms.\n"
-            "Cannot do / Limits: No modifications; read-only.\n"
-            "Cost / Notes: Low."
+            'What it does: Extract structural information from **files**.\n'
+            'When to use: Analyze crystal/molecular structures **files**.\n'
+            'Prerequisites / Inputs: Structure file path.\n'
+            'Outputs: Formula, space group, lattice, atoms.\n'
+            'Cannot do / Limits: No modifications; read-only.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': '',
     },
@@ -993,12 +987,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.UNIVERSAL],
         'description': (
-            "What it does: Extract molecular structure information from **files**.\n"
-            "When to use: Analyze molecular structures **files**.\n"
-            "Prerequisites / Inputs: Molecule file path.\n"
-            "Outputs: Formula, atoms, bonds, properties.\n"
-            "Cannot do / Limits: No modifications; read-only.\n"
-            "Cost / Notes: Low."
+            'What it does: Extract molecular structure information from **files**.\n'
+            'When to use: Analyze molecular structures **files**.\n'
+            'Prerequisites / Inputs: Molecule file path.\n'
+            'Outputs: Formula, atoms, bonds, properties.\n'
+            'Cannot do / Limits: No modifications; read-only.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': '',
     },
@@ -1006,168 +1000,168 @@ ALL_TOOLS = {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
         'description': (
-            "What it does: Optimize superconducting structures.\n"
-            "When to use: Relax superconductor geometries.\n"
-            "Prerequisites / Inputs: Structure file (CIF/POSCAR).\n"
-            "Outputs: Optimized structure.\n"
-            "Cannot do / Limits: Only geometry optimization.\n"
-            "Cost / Notes: High (DPA calculations)."
+            'What it does: Optimize superconducting structures.\n'
+            'When to use: Relax superconductor geometries.\n'
+            'Prerequisites / Inputs: Structure file (CIF/POSCAR).\n'
+            'Outputs: Optimized structure.\n'
+            'Cannot do / Limits: Only geometry optimization.\n'
+            'Cost / Notes: High (DPA calculations).'
         ),
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
         'description': (
-            "What it does: Calculate enthalpy and stability.\n"
-            "When to use: Screen superconductor stability.\n"
-            "Prerequisites / Inputs: Structure candidates.\n"
-            "Outputs: Enthalpy, convex hull, stable phases.\n"
-            "Cannot do / Limits: Superconductor-specific only.\n"
-            "Cost / Notes: High (DPA calculations)."
+            'What it does: Calculate enthalpy and stability.\n'
+            'When to use: Screen superconductor stability.\n'
+            'Prerequisites / Inputs: Structure candidates.\n'
+            'Outputs: Enthalpy, convex hull, stable phases.\n'
+            'Cannot do / Limits: Superconductor-specific only.\n'
+            'Cost / Notes: High (DPA calculations).'
         ),
     },
     'predict_superconductor_Tc': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
         'description': (
-            "What it does: Predict superconducting Tc.\n"
-            "When to use: Estimate critical temperature.\n"
-            "Prerequisites / Inputs: Material structure.\n"
-            "Outputs: Tc prediction.\n"
-            "Cannot do / Limits: DPA model only.\n"
-            "Cost / Notes: High (ML predictions)."
+            'What it does: Predict superconducting Tc.\n'
+            'When to use: Estimate critical temperature.\n'
+            'Prerequisites / Inputs: Material structure.\n'
+            'Outputs: Tc prediction.\n'
+            'Cannot do / Limits: DPA model only.\n'
+            'Cost / Notes: High (ML predictions).'
         ),
     },
     'screen_superconductor': {
         'belonging_agent': SuperconductorAgentName,
         'scene': [SceneEnum.SUPERCONDUCTOR],
         'description': (
-            "What it does: Screen multiple superconductors.\n"
-            "When to use: Compare Tc and stability.\n"
-            "Prerequisites / Inputs: List of candidates.\n"
-            "Outputs: Ranked Tc and stability.\n"
-            "Cannot do / Limits: Multiple candidates only.\n"
-            "Cost / Notes: High (batch DPA)."
+            'What it does: Screen multiple superconductors.\n'
+            'When to use: Compare Tc and stability.\n'
+            'Prerequisites / Inputs: List of candidates.\n'
+            'Outputs: Ranked Tc and stability.\n'
+            'Cannot do / Limits: Multiple candidates only.\n'
+            'Cost / Notes: High (batch DPA).'
         ),
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
         'description': (
-            "What it does: Predict thermoelectric properties.\n"
-            "When to use: Estimate band gap, Seebeck, etc.\n"
-            "Prerequisites / Inputs: Material structure.\n"
-            "Outputs: Band gap, Seebeck, power factor, moduli.\n"
-            "Cannot do / Limits: No thermal conductivity.\n"
-            "Cost / Notes: High (DPA predictions)."
+            'What it does: Predict thermoelectric properties.\n'
+            'When to use: Estimate band gap, Seebeck, etc.\n'
+            'Prerequisites / Inputs: Material structure.\n'
+            'Outputs: Band gap, Seebeck, power factor, moduli.\n'
+            'Cannot do / Limits: No thermal conductivity.\n'
+            'Cost / Notes: High (DPA predictions).'
         ),
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
         'description': (
-            "What it does: Optimize under pressure.\n"
-            "When to use: Relax thermoelectric structures.\n"
-            "Prerequisites / Inputs: Structure, pressure.\n"
-            "Outputs: Optimized structure.\n"
-            "Cannot do / Limits: Thermoelectric-specific.\n"
-            "Cost / Notes: High (DPA calculations)."
+            'What it does: Optimize under pressure.\n'
+            'When to use: Relax thermoelectric structures.\n'
+            'Prerequisites / Inputs: Structure, pressure.\n'
+            'Outputs: Optimized structure.\n'
+            'Cannot do / Limits: Thermoelectric-specific.\n'
+            'Cost / Notes: High (DPA calculations).'
         ),
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
         'description': (
-            "What it does: Calculate enthalpy under pressure.\n"
-            "When to use: Screen thermoelectric stability.\n"
-            "Prerequisites / Inputs: Candidates, pressure.\n"
-            "Outputs: Enthalpy, convex hull.\n"
-            "Cannot do / Limits: Thermoelectric-specific.\n"
-            "Cost / Notes: High (DPA calculations)."
+            'What it does: Calculate enthalpy under pressure.\n'
+            'When to use: Screen thermoelectric stability.\n'
+            'Prerequisites / Inputs: Candidates, pressure.\n'
+            'Outputs: Enthalpy, convex hull.\n'
+            'Cannot do / Limits: Thermoelectric-specific.\n'
+            'Cost / Notes: High (DPA calculations).'
         ),
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
         'scene': [SceneEnum.THERMOELECTRIC],
         'description': (
-            "What it does: Screen thermoelectric candidates.\n"
-            "When to use: Identify promising materials.\n"
-            "Prerequisites / Inputs: Multiple structures.\n"
-            "Outputs: Ranked thermoelectric properties.\n"
-            "Cannot do / Limits: Requires multiple inputs.\n"
-            "Cost / Notes: High (batch DPA)."
+            'What it does: Screen thermoelectric candidates.\n'
+            'When to use: Identify promising materials.\n'
+            'Prerequisites / Inputs: Multiple structures.\n'
+            'Outputs: Ranked thermoelectric properties.\n'
+            'Cannot do / Limits: Requires multiple inputs.\n'
+            'Cost / Notes: High (batch DPA).'
         ),
     },
     'traj_analysis_diffusion': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': (
-            "What it does: Analyze diffusion from trajectories.\n"
-            "When to use: Calculate MSD, diffusion coeffs.\n"
-            "Prerequisites / Inputs: MD trajectory file.\n"
-            "Outputs: MSD, D, conductivity.\n"
-            "Cannot do / Limits: Post-MD analysis only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Analyze diffusion from trajectories.\n'
+            'When to use: Calculate MSD, diffusion coeffs.\n'
+            'Prerequisites / Inputs: MD trajectory file.\n'
+            'Outputs: MSD, D, conductivity.\n'
+            'Cannot do / Limits: Post-MD analysis only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'traj_analysis_rdf': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': (
-            "What it does: Compute RDF from trajectories.\n"
-            "When to use: Analyze atomic distributions.\n"
-            "Prerequisites / Inputs: MD trajectory.\n"
-            "Outputs: Radial distribution function.\n"
-            "Cannot do / Limits: Post-MD analysis only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Compute RDF from trajectories.\n'
+            'When to use: Analyze atomic distributions.\n'
+            'Prerequisites / Inputs: MD trajectory.\n'
+            'Outputs: Radial distribution function.\n'
+            'Cannot do / Limits: Post-MD analysis only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'traj_analysis_solvation': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': (
-            "What it does: Analyze solvation structures.\n"
-            "When to use: Study solvent-solute interactions.\n"
-            "Prerequisites / Inputs: MD trajectory.\n"
-            "Outputs: Solvation shells, properties.\n"
-            "Cannot do / Limits: Post-MD analysis only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Analyze solvation structures.\n'
+            'When to use: Study solvent-solute interactions.\n'
+            'Prerequisites / Inputs: MD trajectory.\n'
+            'Outputs: Solvation shells, properties.\n'
+            'Cannot do / Limits: Post-MD analysis only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'traj_analysis_bond': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': (
-            "What it does: Analyze bond length evolution.\n"
-            "When to use: Monitor bond dynamics.\n"
-            "Prerequisites / Inputs: MD trajectory.\n"
-            "Outputs: Bond length time series.\n"
-            "Cannot do / Limits: Post-MD analysis only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Analyze bond length evolution.\n'
+            'When to use: Monitor bond dynamics.\n'
+            'Prerequisites / Inputs: MD trajectory.\n'
+            'Outputs: Bond length time series.\n'
+            'Cannot do / Limits: Post-MD analysis only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'traj_analysis_react': {
         'belonging_agent': TrajAnalysisAgentName,
         'scene': [SceneEnum.POST_MD_ANALYSIS],
         'description': (
-            "What it does: Analyze reaction networks.\n"
-            "When to use: Study chemical reactions.\n"
-            "Prerequisites / Inputs: MD trajectory.\n"
-            "Outputs: Reaction species, networks.\n"
-            "Cannot do / Limits: Post-MD analysis only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Analyze reaction networks.\n'
+            'When to use: Study chemical reactions.\n'
+            'Prerequisites / Inputs: MD trajectory.\n'
+            'Outputs: Reaction species, networks.\n'
+            'Cannot do / Limits: Post-MD analysis only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'visualize_data': {
         'belonging_agent': VisualizerAgentName,
         'scene': [SceneEnum.VISUALIZE_DATA, SceneEnum.UNIVERSAL],
         'description': (
-            "What it does: Create plots from data files.\n"
-            "When to use: Visualize CSV/Excel/JSON data.\n"
-            "Prerequisites / Inputs: Data file URL.\n"
-            "Outputs: Plots.\n"
-            "Cannot do / Limits: Data files only.\n"
-            "Cost / Notes: Low."
+            'What it does: Create plots from data files.\n'
+            'When to use: Visualize CSV/Excel/JSON data.\n'
+            'Prerequisites / Inputs: Data file URL.\n'
+            'Outputs: Plots.\n'
+            'Cannot do / Limits: Data files only.\n'
+            'Cost / Notes: Low.'
         ),
         'bypass_confirmation': True,
     },
@@ -1175,48 +1169,48 @@ ALL_TOOLS = {
         'belonging_agent': LAMMPS_AGENT_NAME,
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
         'description': (
-            "What it does: Convert to LAMMPS format.\n"
-            "When to use: Prepare structures for LAMMPS.\n"
-            "Prerequisites / Inputs: Structure file URL.\n"
-            "Outputs: LAMMPS data file.\n"
-            "Cannot do / Limits: Format conversion only.\n"
-            "Cost / Notes: Low."
+            'What it does: Convert to LAMMPS format.\n'
+            'When to use: Prepare structures for LAMMPS.\n'
+            'Prerequisites / Inputs: Structure file URL.\n'
+            'Outputs: LAMMPS data file.\n'
+            'Cannot do / Limits: Format conversion only.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'run_lammps': {
         'belonging_agent': LAMMPS_AGENT_NAME,
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
         'description': (
-            "What it does: Run LAMMPS simulations.\n"
-            "When to use: Perform MD or minimization.\n"
-            "Prerequisites / Inputs: LAMMPS data file.\n"
-            "Outputs: Simulation results.\n"
-            "Cannot do / Limits: Requires LAMMPS format.\n"
-            "Cost / Notes: High (simulation time)."
+            'What it does: Run LAMMPS simulations.\n'
+            'When to use: Perform MD or minimization.\n'
+            'Prerequisites / Inputs: LAMMPS data file.\n'
+            'Outputs: Simulation results.\n'
+            'Cannot do / Limits: Requires LAMMPS format.\n'
+            'Cost / Notes: High (simulation time).'
         ),
     },
     'orchestrate_lammps_input': {
         'belonging_agent': LAMMPS_AGENT_NAME,
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
         'description': (
-            "What it does: Generate LAMMPS scripts.\n"
-            "When to use: Create input from description.\n"
-            "Prerequisites / Inputs: Natural language task.\n"
-            "Outputs: LAMMPS input script.\n"
-            "Cannot do / Limits: Script generation only.\n"
-            "Cost / Notes: Low."
+            'What it does: Generate LAMMPS scripts.\n'
+            'When to use: Create input from description.\n'
+            'Prerequisites / Inputs: Natural language task.\n'
+            'Outputs: LAMMPS input script.\n'
+            'Cannot do / Limits: Script generation only.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.LITERATURE],
         'description': (
-            "What it does: Search scientific papers.\n"
-            "When to use: Find research on topics.\n"
-            "Prerequisites / Inputs: Topic keywords.\n"
-            "Outputs: Relevant papers.\n"
-            "Cannot do / Limits: Literature search only.\n"
-            "Cost / Notes: Low."
+            'What it does: Search scientific papers.\n'
+            'When to use: Find research on topics.\n'
+            'Prerequisites / Inputs: Topic keywords.\n'
+            'Outputs: Relevant papers.\n'
+            'Cannot do / Limits: Literature search only.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': f"""
             If not specified, apply start_time=2020-01-01, end_time={TODAY}, page_size not less than 150. When constructing query word list and question: (i) use English to ensure professionalism; (ii) avoid broad keywords like 'materials science', 'chemistry', 'progress'; (iii) extract specific, technically relevant keywords such as material names, molecular identifiers, mechanism names, property names, or application contexts; (iv) if the user's query is broad, decompose the concept into technical terms and generate concrete, research-usable keywords; (v) when translating, no segmenting composite technical noun phrases unless it is an established scientific usage. If ambiguous in Chinese, preserve the maximal-span term and translate it as a whole before considering refinement, including identifying: representative subfields, canonical mechanisms, prototypical material classes, commonly studied performance metrics, key methodologies or application contexts. These keywords must be specific enough to retrieve meaningful literature and avoid domain-level noise.
@@ -1231,60 +1225,60 @@ ALL_TOOLS = {
         'belonging_agent': ConvexHullAgentName,
         'scene': [SceneEnum.CONVEXHULL],
         'description': (
-            "What it does: Build convex hull diagrams.\n"
-            "When to use: Assess thermodynamic stability.\n"
-            "Prerequisites / Inputs: Material structures.\n"
-            "Outputs: Convex hull, stable phases.\n"
-            "Cannot do / Limits: General materials only.\n"
-            "Cost / Notes: High (DPA calculations)."
+            'What it does: Build convex hull diagrams.\n'
+            'When to use: Assess thermodynamic stability.\n'
+            'Prerequisites / Inputs: Material structures.\n'
+            'Outputs: Convex hull, stable phases.\n'
+            'Cannot do / Limits: General materials only.\n'
+            'Cost / Notes: High (DPA calculations).'
         ),
     },
     'NMR_search_tool': {
         'belonging_agent': NMR_AGENT_NAME,
         'scene': [SceneEnum.NMR],
         'description': (
-            "What it does: Search a molecular database by NMR spectroscopic features to retrieve candidate structures.\n"
-            "When to use: You have NMR peak/shift patterns and want likely matching molecules.\n"
-            "Prerequisites / Inputs: NMR features (e.g., shifts, multiplicities, coupling, nucleus type) in the tool-accepted schema; optional tolerance settings.\n"
-            "Outputs: Ranked candidate molecules/structures with match scores and key evidence fields.\n"
-            "Cannot do / Limits: Not a definitive identification; results depend on database coverage and feature quality.\n"
-            "Cost / Notes: Medium; tighter tolerances increase runtime and reduce recall."
-        )
+            'What it does: Search a molecular database by NMR spectroscopic features to retrieve candidate structures.\n'
+            'When to use: You have NMR peak/shift patterns and want likely matching molecules.\n'
+            'Prerequisites / Inputs: NMR features (e.g., shifts, multiplicities, coupling, nucleus type) in the tool-accepted schema; optional tolerance settings.\n'
+            'Outputs: Ranked candidate molecules/structures with match scores and key evidence fields.\n'
+            'Cannot do / Limits: Not a definitive identification; results depend on database coverage and feature quality.\n'
+            'Cost / Notes: Medium; tighter tolerances increase runtime and reduce recall.'
+        ),
     },
     'NMR_predict_tool': {
         'belonging_agent': NMR_AGENT_NAME,
         'scene': [SceneEnum.NMR],
         'description': (
-            "What it does: Predict NMR spectroscopic properties for molecular structures.\n"
-            "When to use: When you need simulated NMR chemical shifts.\n"
-            "Prerequisites / Inputs: SMILES strings.\n"
-            "Outputs: Predicted NMR shifts and similarity scores.\n"
-            "Cannot do / Limits: 1H and 13C only.\n"
-            "Cost / Notes: Medium."
+            'What it does: Predict NMR spectroscopic properties for molecular structures.\n'
+            'When to use: When you need simulated NMR chemical shifts.\n'
+            'Prerequisites / Inputs: SMILES strings.\n'
+            'Outputs: Predicted NMR shifts and similarity scores.\n'
+            'Cannot do / Limits: 1H and 13C only.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'NMR_reverse_predict_tool': {
         'belonging_agent': NMR_AGENT_NAME,
         'scene': [SceneEnum.NMR],
         'description': (
-            "What it does: Generate candidate molecular structures from NMR spectroscopic data.\n"
-            "When to use: When you have NMR data and need structure candidates.\n"
-            "Prerequisites / Inputs: NMR spectroscopic data.\n"
-            "Outputs: Candidate molecular structures.\n"
-            "Cannot do / Limits: Based on NMR features.\n"
-            "Cost / Notes: Medium."
+            'What it does: Generate candidate molecular structures from NMR spectroscopic data.\n'
+            'When to use: When you have NMR data and need structure candidates.\n'
+            'Prerequisites / Inputs: NMR spectroscopic data.\n'
+            'Outputs: Candidate molecular structures.\n'
+            'Cannot do / Limits: Based on NMR features.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'extract_info_from_webpage': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.UNIVERSAL],
         'description': (
-            "What it does: Extract key information from a webpage URL.\n"
-            "When to use: When you need scientific facts, data, or findings from a webpage.\n"
-            "Prerequisites / Inputs: Webpage URL.\n"
-            "Outputs: Extracted information.\n"
-            "Cannot do / Limits: Web-based extraction.\n"
-            "Cost / Notes: Low."
+            'What it does: Extract key information from a webpage URL.\n'
+            'When to use: When you need scientific facts, data, or findings from a webpage.\n'
+            'Prerequisites / Inputs: Webpage URL.\n'
+            'Outputs: Extracted information.\n'
+            'Cannot do / Limits: Web-based extraction.\n'
+            'Cost / Notes: Low.'
         ),
         'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
@@ -1293,12 +1287,12 @@ ALL_TOOLS = {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
         'scene': [SceneEnum.UNIVERSAL],
         'description': (
-            "What it does: Perform web searches for what, why, how questions.\n"
-            "When to use: For concise factual or explanatory lookups.\n"
-            "Prerequisites / Inputs: Search query.\n"
-            "Outputs: URL, title, snippet.\n"
-            "Cannot do / Limits: No command-type queries; follow up with extract_info_from_webpage.\n"
-            "Cost / Notes: Low."
+            'What it does: Perform web searches for what, why, how questions.\n'
+            'When to use: For concise factual or explanatory lookups.\n'
+            'Prerequisites / Inputs: Search query.\n'
+            'Outputs: URL, title, snippet.\n'
+            'Cannot do / Limits: No command-type queries; follow up with extract_info_from_webpage.\n'
+            'Cost / Notes: Low.'
         ),
         'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
@@ -1307,48 +1301,48 @@ ALL_TOOLS = {
         'belonging_agent': XRD_AGENT_NAME,
         'scene': [SceneEnum.XRD],
         'description': (
-            "What it does: Parse and preprocess raw XRD data files.\n"
-            "When to use: When you have XRD data to analyze.\n"
-            "Prerequisites / Inputs: XRD files (.xrdml, .xy, .csv).\n"
-            "Outputs: Processed data and visualization configs.\n"
-            "Cannot do / Limits: Preprocessing and feature extraction.\n"
-            "Cost / Notes: Low."
+            'What it does: Parse and preprocess raw XRD data files.\n'
+            'When to use: When you have XRD data to analyze.\n'
+            'Prerequisites / Inputs: XRD files (.xrdml, .xy, .csv).\n'
+            'Outputs: Processed data and visualization configs.\n'
+            'Cannot do / Limits: Preprocessing and feature extraction.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'xrd_phase_identification': {
         'belonging_agent': XRD_AGENT_NAME,
         'scene': [SceneEnum.XRD],
         'description': (
-            "What it does: Identify crystalline phases in XRD pattern.\n"
-            "When to use: When you have processed XRD data.\n"
-            "Prerequisites / Inputs: Processed CSV file; optional composition filters.\n"
-            "Outputs: Top matching phases and comparison chart.\n"
-            "Cannot do / Limits: Requires processed data.\n"
-            "Cost / Notes: Medium."
+            'What it does: Identify crystalline phases in XRD pattern.\n'
+            'When to use: When you have processed XRD data.\n'
+            'Prerequisites / Inputs: Processed CSV file; optional composition filters.\n'
+            'Outputs: Top matching phases and comparison chart.\n'
+            'Cannot do / Limits: Requires processed data.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'get_electron_microscope_recognize': {
         'belonging_agent': Electron_Microscope_AGENT_NAME,
         'scene': [SceneEnum.Electron_Microscope],
         'description': (
-            "What it does: Analyze electron microscope images for particles and morphology.\n"
-            "When to use: When you have TEM/SEM images to analyze.\n"
-            "Prerequisites / Inputs: Electron microscope images.\n"
-            "Outputs: Detected particles, morphology, geometric properties.\n"
-            "Cannot do / Limits: Computer vision-based.\n"
-            "Cost / Notes: Medium."
+            'What it does: Analyze electron microscope images for particles and morphology.\n'
+            'When to use: When you have TEM/SEM images to analyze.\n'
+            'Prerequisites / Inputs: Electron microscope images.\n'
+            'Outputs: Detected particles, morphology, geometric properties.\n'
+            'Cannot do / Limits: Computer vision-based.\n'
+            'Cost / Notes: Medium.'
         ),
     },
     'llm_tool': {
         'belonging_agent': TOOL_AGENT_NAME,
         'scene': [],
         'description': (
-            "What it does: Use LLM for general tasks.\n"
-            "When to use: For LLM-based assistance.\n"
-            "Prerequisites / Inputs: Query or task.\n"
-            "Outputs: LLM response.\n"
-            "Cannot do / Limits: General purpose.\n"
-            "Cost / Notes: Low."
+            'What it does: Use LLM for general tasks.\n'
+            'When to use: For LLM-based assistance.\n'
+            'Prerequisites / Inputs: Query or task.\n'
+            'Outputs: LLM response.\n'
+            'Cannot do / Limits: General purpose.\n'
+            'Cost / Notes: Low.'
         ),
         'bypass_confirmation': True,
     },
@@ -1356,24 +1350,24 @@ ALL_TOOLS = {
         'belonging_agent': Physical_Adsorption_AGENT_NAME,
         'scene': [SceneEnum.PHYSICAL_ADSORPTION],
         'description': (
-            "What it does: Analyze physical adsorption instrument reports.\n"
-            "When to use: When you have gas adsorption data.\n"
-            "Prerequisites / Inputs: Instrument reports.\n"
-            "Outputs: Analyzed data.\n"
-            "Cannot do / Limits: Specific to physical adsorption.\n"
-            "Cost / Notes: Low."
+            'What it does: Analyze physical adsorption instrument reports.\n'
+            'When to use: When you have gas adsorption data.\n'
+            'Prerequisites / Inputs: Instrument reports.\n'
+            'Outputs: Analyzed data.\n'
+            'Cannot do / Limits: Specific to physical adsorption.\n'
+            'Cost / Notes: Low.'
         ),
     },
     'file_parse': {
         'belonging_agent': FILE_PARSE_AGENT_NAME,
         'scene': [SceneEnum.UNIVERSAL],
         'description': (
-            "What it does: Parse various file contents to extract key information.\n"
-            "When to use: When you need to extract data from files.\n"
-            "Prerequisites / Inputs: File (TXT, PDF, Word, Excel, etc.).\n"
-            "Outputs: Extracted information and data.\n"
-            "Cannot do / Limits: Universal parsing.\n"
-            "Cost / Notes: Low."
+            'What it does: Parse various file contents to extract key information.\n'
+            'When to use: When you need to extract data from files.\n'
+            'Prerequisites / Inputs: File (TXT, PDF, Word, Excel, etc.).\n'
+            'Outputs: Extracted information and data.\n'
+            'Cannot do / Limits: Universal parsing.\n'
+            'Cost / Notes: Low.'
         ),
         'bypass_confirmation': True,
     },

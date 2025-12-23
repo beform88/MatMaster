@@ -1,12 +1,12 @@
 BohriumPublicAgentName = 'bohriumpublic_agent'
 
 BohriumPublicAgentToolDescription = (
-    "What it does: Retrieve crystal structures from Bohrium Public database.\n"
-    "When to use: For formula, elements, space group, atom count, formation energy, band gap queries.\n"
-    "Prerequisites / Inputs: Filters like formula, elements, etc.\n"
-    "Outputs: Structures in CIF or JSON.\n"
-    "Cannot do / Limits: No logical expressions; faster than OPTIMADE.\n"
-    "Cost / Notes: Low."
+    'What it does: Retrieve crystal structures from Bohrium Public database.\n'
+    'When to use: For formula, elements, space group, atom count, formation energy, band gap queries.\n'
+    'Prerequisites / Inputs: Filters like formula, elements, etc.\n'
+    'Outputs: Structures in CIF or JSON.\n'
+    'Cannot do / Limits: No logical expressions; faster than OPTIMADE.\n'
+    'Cost / Notes: Low.'
 )
 
 BohriumPublicAgentArgsSetting = """

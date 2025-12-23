@@ -1,12 +1,12 @@
 STEELKbAgentName = 'STEELkb_agent'
 
 STEELKbAgentToolDescription = (
-    "What it does: Query literature knowledge base for Stainless Steel research.\n"
-    "When to use: When you need in-depth literature analysis on Stainless Steel topics.\n"
-    "Prerequisites / Inputs: Natural language questions about Stainless Steel.\n"
-    "Outputs: Literature summaries from vector search.\n"
-    "Cannot do / Limits: Topics limited to Stainless Steel.\n"
-    "Cost / Notes: Medium."
+    'What it does: Query literature knowledge base for Stainless Steel research.\n'
+    'When to use: When you need in-depth literature analysis on Stainless Steel topics.\n'
+    'Prerequisites / Inputs: Natural language questions about Stainless Steel.\n'
+    'Outputs: Literature summaries from vector search.\n'
+    'Cannot do / Limits: Topics limited to Stainless Steel.\n'
+    'Cost / Notes: Medium.'
 )
 
 STEELKbAgentArgsSetting = """

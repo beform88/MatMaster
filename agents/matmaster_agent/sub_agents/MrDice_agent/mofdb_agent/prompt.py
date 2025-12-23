@@ -7,12 +7,12 @@ MofdbAgentDescription = (
 )
 
 MofdbAgentToolDescription = (
-    "What it does: Execute SQL queries against the MOF database.\n"
-    "When to use: For complex MOF queries with multi-table joins and statistical analysis.\n"
-    "Prerequisites / Inputs: SQL query string.\n"
-    "Outputs: Query results.\n"
-    "Cannot do / Limits: MOF-specific; supports advanced SQL.\n"
-    "Cost / Notes: Medium."
+    'What it does: Execute SQL queries against the MOF database.\n'
+    'When to use: For complex MOF queries with multi-table joins and statistical analysis.\n'
+    'Prerequisites / Inputs: SQL query string.\n'
+    'Outputs: Query results.\n'
+    'Cannot do / Limits: MOF-specific; supports advanced SQL.\n'
+    'Cost / Notes: Medium.'
 )
 
 MofdbAgentArgsSetting = """

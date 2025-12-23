@@ -1,12 +1,12 @@
 POLYMERKbAgentName = 'POLYMERkb_agent'
 
 POLYMERKbAgentToolDescription = (
-    "What it does: Query literature knowledge base for polymer research with structured search.\n"
-    "When to use: When you need polymer literature analysis with property data.\n"
-    "Prerequisites / Inputs: Natural language query description.\n"
-    "Outputs: Literature summaries and database entries with properties.\n"
-    "Cannot do / Limits: Topics limited to polymers.\n"
-    "Cost / Notes: Medium."
+    'What it does: Query literature knowledge base for polymer research with structured search.\n'
+    'When to use: When you need polymer literature analysis with property data.\n'
+    'Prerequisites / Inputs: Natural language query description.\n'
+    'Outputs: Literature summaries and database entries with properties.\n'
+    'Cannot do / Limits: Topics limited to polymers.\n'
+    'Cost / Notes: Medium.'
 )
 
 POLYMERKbAgentArgsSetting = """

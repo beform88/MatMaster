@@ -1,30 +1,30 @@
 OptimadeAgentName = 'optimade_agent'
 
 OptimadeFilterToolDescription = (
-    "What it does: Send OPTIMADE filter string to providers for structure search.\n"
-    "When to use: For flexible composition/formula queries without space group or band gap constraints.\n"
-    "Prerequisites / Inputs: OPTIMADE filter string.\n"
-    "Outputs: Matching structures.\n"
-    "Cannot do / Limits: Full OPTIMADE filter language; parallel queries.\n"
-    "Cost / Notes: Medium."
+    'What it does: Send OPTIMADE filter string to providers for structure search.\n'
+    'When to use: For flexible composition/formula queries without space group or band gap constraints.\n'
+    'Prerequisites / Inputs: OPTIMADE filter string.\n'
+    'Outputs: Matching structures.\n'
+    'Cannot do / Limits: Full OPTIMADE filter language; parallel queries.\n'
+    'Cost / Notes: Medium.'
 )
 
 OptimadeSpgToolDescription = (
-    "What it does: Search structures by space group number with optional filters.\n"
-    "When to use: When user specifies space group number or prototype structure.\n"
-    "Prerequisites / Inputs: Space group number and base filter.\n"
-    "Outputs: Structures with matching space group.\n"
-    "Cannot do / Limits: Provider-specific space-group filters.\n"
-    "Cost / Notes: Medium."
+    'What it does: Search structures by space group number with optional filters.\n'
+    'When to use: When user specifies space group number or prototype structure.\n'
+    'Prerequisites / Inputs: Space group number and base filter.\n'
+    'Outputs: Structures with matching space group.\n'
+    'Cannot do / Limits: Provider-specific space-group filters.\n'
+    'Cost / Notes: Medium.'
 )
 
 OptimadeBandgapToolDescription = (
-    "What it does: Search structures by band-gap range with optional filters.\n"
-    "When to use: When user specifies band-gap range.\n"
-    "Prerequisites / Inputs: Band-gap range and base filter.\n"
-    "Outputs: Structures with band gap in range.\n"
-    "Cannot do / Limits: Provider-specific band-gap filters.\n"
-    "Cost / Notes: Medium."
+    'What it does: Search structures by band-gap range with optional filters.\n'
+    'When to use: When user specifies band-gap range.\n'
+    'Prerequisites / Inputs: Band-gap range and base filter.\n'
+    'Outputs: Structures with band gap in range.\n'
+    'Cannot do / Limits: Provider-specific band-gap filters.\n'
+    'Cost / Notes: Medium.'
 )
 
 OptimadeAgentArgsSetting = """

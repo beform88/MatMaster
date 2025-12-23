@@ -6,12 +6,12 @@ OpenlamAgentDescription = (
 )
 
 OpenlamAgentToolDescription = (
-    "What it does: Retrieve crystal structures from OpenLAM database.\n"
-    "When to use: When querying OpenLAM-specific materials or time-based filters.\n"
-    "Prerequisites / Inputs: Formula, energy range, submission time filters.\n"
-    "Outputs: Structures in CIF or JSON.\n"
-    "Cannot do / Limits: No space group, band gap, elements list, or logical filters.\n"
-    "Cost / Notes: Medium."
+    'What it does: Retrieve crystal structures from OpenLAM database.\n'
+    'When to use: When querying OpenLAM-specific materials or time-based filters.\n'
+    'Prerequisites / Inputs: Formula, energy range, submission time filters.\n'
+    'Outputs: Structures in CIF or JSON.\n'
+    'Cannot do / Limits: No space group, band gap, elements list, or logical filters.\n'
+    'Cost / Notes: Medium.'
 )
 
 OpenlamAgentArgsSetting = """
