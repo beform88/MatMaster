@@ -7,7 +7,7 @@ import tarfile
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 from urllib.parse import unquote
 
 import aiofiles
@@ -27,7 +27,7 @@ async def temp_dir(path: str = './tmp'):
         shutil.rmtree(temp_path, ignore_errors=True)
 
 
-async def get_filename_from_url(url: str) -> Optional[str]:
+async def get_filename_from_url(url: str) -> str:
     """
     从 HTTP URL 异步获取文件名：
     1. 尝试解析 Content-Disposition
@@ -42,7 +42,7 @@ async def get_filename_from_url(url: str) -> Optional[str]:
                 if match:
                     return unquote(match.group(1))
 
-    return None  # 无法确定文件名
+    return 'unknown'
 
 
 # Step1: download tgz -> unzip -> find jpg_files
