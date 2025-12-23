@@ -64,13 +64,10 @@ class TreeOfThoughtPlanner:
         ctx: InvocationContext,
         available_tools_with_info_str: str,
         available_tools: list[str],
-        plan_prompt_suffix: str = '',
     ) -> Optional[dict]:
         """Perform a lightweight Tree-of-Thoughts search to pick the best plan."""
 
-        plan_instruction = get_plan_make_instruction(
-            available_tools_with_info_str + plan_prompt_suffix
-        )
+        plan_instruction = get_plan_make_instruction(available_tools_with_info_str)
         output_schema = create_dynamic_plan_schema(available_tools)
 
         initial_candidates = await self._generate_candidates(
