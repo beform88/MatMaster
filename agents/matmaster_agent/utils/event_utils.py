@@ -8,7 +8,6 @@ import uuid
 from typing import Iterable, Optional
 
 from deepmerge import always_merger
-from google.adk.agents import LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event, EventActions
 from google.adk.models.lite_llm import LiteLlm
@@ -23,6 +22,9 @@ from agents.matmaster_agent.constant import (
     JOB_RESULT_KEY,
     MATMASTER_AGENT_NAME,
     ModelRole,
+)
+from agents.matmaster_agent.core_agents.base_agents.climit_agent import (
+    ContentLimitLlmAgent,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
@@ -392,7 +394,7 @@ async def send_error_event(err, ctx: InvocationContext, author):
         yield event
 
     # Agent 分析错误原因
-    error_handel_agent = LlmAgent(
+    error_handel_agent = ContentLimitLlmAgent(
         name='error_handel_agent',
         description='仅分析错误原因',
         global_instruction=GLOBAL_INSTRUCTION,

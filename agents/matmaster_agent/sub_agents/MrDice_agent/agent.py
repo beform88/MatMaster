@@ -1,9 +1,9 @@
 from google.adk.agents import BaseAgent
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferLlmAgent,
-)
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.MrDice_agent.bohriumpublic_agent.agent import (
     init_bohriumpublic_database_agent,
@@ -28,7 +28,7 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.prompt import (
 )
 
 
-class MrDice_Agent(DisallowTransferLlmAgent):
+class MrDice_Agent(DisallowTransferAndContentLimitLlmAgent):
     def __init__(self, llm_config: LLMConfig, name_suffix=''):
         optimade_agent = init_optimade_database_agent(
             llm_config, name_suffix=name_suffix

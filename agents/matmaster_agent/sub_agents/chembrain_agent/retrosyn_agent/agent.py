@@ -1,8 +1,8 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.tools.mcp_tool.mcp_toolset import SseConnectionParams
 
-from agents.matmaster_agent.base_agents.public_agent import BaseSyncAgent
 from agents.matmaster_agent.constant import BohriumStorge
+from agents.matmaster_agent.core_agents.public_agents.sync_agent import BaseSyncAgent
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 
 from ..constant import CHEMBRAIN_AGENT_NAME

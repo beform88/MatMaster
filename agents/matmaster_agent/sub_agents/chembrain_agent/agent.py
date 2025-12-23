@@ -1,6 +1,8 @@
+from agents.matmaster_agent.core_agents.comp_agents.error_climit_agent import (
+    ErrorHandleAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.llm_config import LLMConfig
 
-from ...base_agents.error_agent import ErrorHandleLlmAgent
 from .callback import (
     chembrain_after_model,
     chembrain_before_model,
@@ -16,7 +18,7 @@ from .smiles_conversion_agent.agent import init_smiles_conversion_agent
 from .unielf_agent.agent import init_unielf_agent
 
 
-class ChemBrainAgent(ErrorHandleLlmAgent):
+class ChemBrainAgent(ErrorHandleAndContentLimitLlmAgent):
     def __init__(self, llm_config: LLMConfig):
         prepare_state_before_agent = init_chembrain_before_agent(llm_config)
         database_agent = init_database_agent(llm_config)

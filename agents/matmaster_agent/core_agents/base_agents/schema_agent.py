@@ -6,11 +6,13 @@ from typing import AsyncGenerator, Optional, override
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferMixin,
-)
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.core_agents.base_agents.error_agent import (
+    ErrorHandleLlmAgent,
+)
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
+    CombinedDisallowTransferAndContentLimitMixin,
+)
 from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     is_function_call,
@@ -74,5 +76,7 @@ class SchemaAgent(ErrorHandleLlmAgent):
             )
 
 
-class DisallowTransferSchemaAgent(DisallowTransferMixin, SchemaAgent):
+class DisallowTransferAndContentLimitSchemaAgent(
+    CombinedDisallowTransferAndContentLimitMixin, SchemaAgent
+):
     pass

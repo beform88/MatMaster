@@ -5,15 +5,15 @@ from google.adk.agents import BaseAgent, ParallelAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.events import Event, EventActions
 
-from agents.matmaster_agent.base_agents.subordinate_agent import (
-    SubordinateSequentialAgent,
-)
 from agents.matmaster_agent.constant import (
     LOADING_DESC,
     LOADING_START,
     LOADING_STATE_KEY,
     LOADING_TITLE,
     TMP_FRONTEND_STATE_KEY,
+)
+from agents.matmaster_agent.core_agents.base_agents.subordinate_agent import (
+    SubordinateSequentialAgent,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.sub_agents.chembrain_agent.constant import (

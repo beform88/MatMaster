@@ -13,40 +13,43 @@ from google.adk.models import BaseLlm
 from google.genai.types import FunctionDeclaration
 from pydantic import computed_field
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferLlmAgent,
-)
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleBaseAgent
-from agents.matmaster_agent.base_agents.mcp_agent import MCPInitMixin
-from agents.matmaster_agent.base_agents.recommend_summary_agent.recommend_params_agent.prompt import (
-    gen_recommend_params_agent_instruction,
-)
-from agents.matmaster_agent.base_agents.recommend_summary_agent.recommend_params_agent.schema import (
-    create_tool_args_schema,
-)
-from agents.matmaster_agent.base_agents.recommend_summary_agent.subagent_summary_agent.prompt import (
-    get_subagent_summary_prompt,
-)
-from agents.matmaster_agent.base_agents.recommend_summary_agent.tool_call_info_agent.prompt import (
-    gen_tool_call_info_instruction,
-)
-from agents.matmaster_agent.base_agents.recommend_summary_agent.tool_call_info_agent.utils import (
-    update_tool_call_info_with_function_declarations,
-    update_tool_call_info_with_recommend_params,
-)
-from agents.matmaster_agent.base_agents.schema_agent import (
-    DisallowTransferSchemaAgent,
-    SchemaAgent,
-)
-from agents.matmaster_agent.base_agents.subordinate_agent import (
-    SubordinateFeaturesMixin,
-)
-from agents.matmaster_agent.base_agents.tool_connect_agent import ToolConnectAgent
 from agents.matmaster_agent.base_callbacks.private_callback import (
     inject_function_declarations,
     remove_function_call,
 )
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.core_agents.base_agents.error_agent import (
+    ErrorHandleBaseAgent,
+)
+from agents.matmaster_agent.core_agents.base_agents.mcp_agent import MCPInitMixin
+from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
+    DisallowTransferAndContentLimitSchemaAgent,
+)
+from agents.matmaster_agent.core_agents.base_agents.subordinate_agent import (
+    SubordinateFeaturesMixin,
+)
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
+)
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.recommend_params_agent.prompt import (
+    gen_recommend_params_agent_instruction,
+)
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.recommend_params_agent.schema import (
+    create_tool_args_schema,
+)
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.subagent_summary_agent.prompt import (
+    get_subagent_summary_prompt,
+)
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.tool_call_info_agent.prompt import (
+    gen_tool_call_info_instruction,
+)
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.tool_call_info_agent.utils import (
+    update_tool_call_info_with_function_declarations,
+    update_tool_call_info_with_recommend_params,
+)
+from agents.matmaster_agent.core_agents.comp_agents.tool_connect_agent import (
+    ToolConnectAgent,
+)
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.logger import PrefixFilter
@@ -83,14 +86,14 @@ class BaseAgentWithRecAndSum(
             after_model_callback=remove_function_call,
         )
 
-        self._tool_call_info_agent = DisallowTransferSchemaAgent(
+        self._tool_call_info_agent = DisallowTransferAndContentLimitSchemaAgent(
             model=MatMasterLlmConfig.tool_schema_model,
             name=f"{agent_prefix}_tool_call_info_agent",
             output_schema=ToolCallInfoSchema,
             state_key='tool_call_info',
         )
 
-        self._recommend_params_agent = DisallowTransferLlmAgent(
+        self._recommend_params_agent = DisallowTransferAndContentLimitLlmAgent(
             model=self.model,
             name=f"{agent_prefix}_recommend_params_agent",
             instruction=gen_recommend_params_agent_instruction(),
@@ -98,14 +101,16 @@ class BaseAgentWithRecAndSum(
             after_model_callback=remove_function_call,
         )
 
-        self._recommend_params_schema_agent = SchemaAgent(
-            model=MatMasterLlmConfig.tool_schema_model,
-            name=f"{agent_prefix}_recommend_params_schema_agent",
-            global_instruction=GLOBAL_SCHEMA_INSTRUCTION,
-            state_key=RECOMMEND_PARAMS,
+        self._recommend_params_schema_agent = (
+            DisallowTransferAndContentLimitSchemaAgent(
+                model=MatMasterLlmConfig.tool_schema_model,
+                name=f"{agent_prefix}_recommend_params_schema_agent",
+                global_instruction=GLOBAL_SCHEMA_INSTRUCTION,
+                state_key=RECOMMEND_PARAMS,
+            )
         )
         if self.doc_summary:
-            self._summary_agent = DisallowTransferLlmAgent(
+            self._summary_agent = DisallowTransferAndContentLimitLlmAgent(
                 model=MatMasterLlmConfig.gemini_2_5_pro,
                 name=f"{agent_prefix}_summary_agent",
                 description=self.description,
@@ -113,7 +118,7 @@ class BaseAgentWithRecAndSum(
                 instruction=self.instruction,
             )
         else:
-            self._summary_agent = DisallowTransferLlmAgent(
+            self._summary_agent = DisallowTransferAndContentLimitLlmAgent(
                 model=MatMasterLlmConfig.default_litellm_model,
                 name=f"{agent_prefix}_summary_agent",
                 description='You are an assistant to summarize the task to aware the user.',
@@ -138,22 +143,24 @@ class BaseAgentWithRecAndSum(
 
     @computed_field
     @property
-    def tool_call_info_agent(self) -> SchemaAgent:
+    def tool_call_info_agent(self) -> DisallowTransferAndContentLimitSchemaAgent:
         return self._tool_call_info_agent
 
     @computed_field
     @property
-    def recommend_params_agent(self) -> DisallowTransferLlmAgent:
+    def recommend_params_agent(self) -> DisallowTransferAndContentLimitLlmAgent:
         return self._recommend_params_agent
 
     @computed_field
     @property
-    def recommend_params_schema_agent(self) -> SchemaAgent:
+    def recommend_params_schema_agent(
+        self,
+    ) -> DisallowTransferAndContentLimitSchemaAgent:
         return self._recommend_params_schema_agent
 
     @computed_field
     @property
-    def summary_agent(self) -> DisallowTransferLlmAgent:
+    def summary_agent(self) -> DisallowTransferAndContentLimitLlmAgent:
         return self._summary_agent
 
     @override

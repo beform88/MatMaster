@@ -1,4 +1,4 @@
-from agents.matmaster_agent.base_agents.public_agent import (
+from agents.matmaster_agent.core_agents.public_agents.sync_agent import (
     BaseSyncAgentWithToolValidator,
 )
 from agents.matmaster_agent.llm_config import LLMConfig

@@ -6,13 +6,15 @@ from google.adk.agents import InvocationContext
 from google.adk.events import Event
 from pydantic import model_validator
 
-from agents.matmaster_agent.base_agents.error_agent import ErrorHandleLlmAgent
 from agents.matmaster_agent.constant import (
     JOB_LIST_KEY,
     MATMASTER_AGENT_NAME,
     ModelRole,
 )
-from agents.matmaster_agent.job_agents.submit_render_agent.prompt import (
+from agents.matmaster_agent.core_agents.comp_agents.error_climit_agent import (
+    ErrorHandleAndContentLimitLlmAgent,
+)
+from agents.matmaster_agent.core_agents.public_agents.job_agents.submit_render_agent.prompt import (
     SubmitRenderAgentDescription,
 )
 from agents.matmaster_agent.logger import PrefixFilter
@@ -27,7 +29,7 @@ logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
 
-class SubmitRenderAgent(ErrorHandleLlmAgent):
+class SubmitRenderAgent(ErrorHandleAndContentLimitLlmAgent):
     @model_validator(mode='before')
     @classmethod
     def modify_description(cls, data: Any) -> Any:

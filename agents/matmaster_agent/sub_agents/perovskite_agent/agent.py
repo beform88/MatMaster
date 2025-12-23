@@ -3,15 +3,13 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
 from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerParams
 
-from agents.matmaster_agent.base_agents.public_agent import (
-    BaseSyncAgentWithToolValidator,
-)
 from agents.matmaster_agent.constant import (
     LOCAL_EXECUTOR,
     MATMASTER_AGENT_NAME,
     BohriumStorge,
 )
 
+from ...core_agents.public_agents.sync_agent import BaseSyncAgentWithToolValidator
 from ...llm_config import LLMConfig
 from .constant import PEROVSKITE_RESEARCH_URL, UNIMOL_SERVER_URL, PerovskiteAgentName
 from .prompt import PerovskiteAgentDescription, PerovskiteAgentInstruction

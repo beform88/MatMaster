@@ -1,7 +1,9 @@
 from google.adk.agents import BaseAgent
 
-from agents.matmaster_agent.base_agents.subordinate_agent import SubordinateLlmAgent
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.core_agents.base_agents.subordinate_agent import (
+    SubordinateLlmAgent,
+)
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.task_orchestrator_agent.constant import (
     TASK_ORCHESTRATOR_AGENT_DESCRIPTION,

@@ -5,10 +5,10 @@ from google.adk.tools.mcp_tool.mcp_session_manager import (
     StreamableHTTPServerParams,
 )
 
-from agents.matmaster_agent.base_agents.public_agent import (
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.core_agents.public_agents.sync_agent import (
     BaseSyncAgentWithToolValidator,
 )
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.document_parser_agent.constant import (
     DocumentParserServerUrl,

@@ -3,17 +3,17 @@ from typing import AsyncGenerator
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
 
-from agents.matmaster_agent.base_agents.disallow_transfer_agent import (
-    DisallowTransferLlmAgent,
-)
 from agents.matmaster_agent.constant import ModelRole
+from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
+    DisallowTransferAndContentLimitLlmAgent,
+)
 from agents.matmaster_agent.utils.event_utils import (
     context_function_event,
     is_text,
 )
 
 
-class ToolConnectAgent(DisallowTransferLlmAgent):
+class ToolConnectAgent(DisallowTransferAndContentLimitLlmAgent):
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         async for event in super()._run_events(ctx):
             if is_text(event):
