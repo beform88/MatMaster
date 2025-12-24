@@ -1,15 +1,13 @@
 STEELKbAgentName = 'STEELkb_agent'
 
-STEELKbAgentToolDescription = """
-Literature knowledge base query tool for Stainless Steel research.
-
-**When to use this tool:**
-- Querying Stainless Steel literature knowledge base with natural language questions
-- Topics covering: corrosion behavior, protection mechanisms, mechanical properties, microstructure, preparation methods, alloy composition, design principles, strengthening mechanisms, high/low temperature performance, applications, phase transformations, surface treatment
-- Supports vector similarity search across document chunks
-- Returns literature summaries for comprehensive report generation
-- Use when you need in-depth literature analysis on Stainless Steel topics
-"""
+STEELKbAgentToolDescription = (
+    'What it does: Query literature knowledge base for Stainless Steel research.\n'
+    'When to use: When you need in-depth literature analysis on Stainless Steel topics.\n'
+    'Prerequisites / Inputs: Natural language questions about Stainless Steel.\n'
+    'Outputs: Literature summaries from vector search.\n'
+    'Cannot do / Limits: Topics limited to Stainless Steel.\n'
+    'Cost / Notes: Medium.'
+)
 
 STEELKbAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE

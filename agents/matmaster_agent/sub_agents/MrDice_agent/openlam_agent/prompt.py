@@ -5,15 +5,14 @@ OpenlamAgentDescription = (
     'Supports queries by formula, energy range, and submission time, with output in CIF or JSON format.'
 )
 
-OpenlamAgentToolDescription = """
-Internal database search tool. Retrieve crystal structures from the OpenLAM internal database.
-
-**When to use this tool:**
-- Supports formula, min_energy, max_energy, min_submission_time, max_submission_time filters
-- Supports energy window searches and time-based filters
-- No support for space group, band gap, elements list, or logical filters
-- Use when querying OpenLAM-specific materials or when time-based filtering is needed
-"""
+OpenlamAgentToolDescription = (
+    'What it does: Retrieve crystal structures from OpenLAM database.\n'
+    'When to use: When querying OpenLAM-specific materials or time-based filters.\n'
+    'Prerequisites / Inputs: Formula, energy range, submission time filters.\n'
+    'Outputs: Structures in CIF or JSON.\n'
+    'Cannot do / Limits: No space group, band gap, elements list, or logical filters.\n'
+    'Cost / Notes: Medium.'
+)
 
 OpenlamAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE

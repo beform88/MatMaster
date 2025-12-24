@@ -1,15 +1,13 @@
 HEAKbAgentName = 'HEAkb_agent'
 
-HEAKbAgentToolDescription = """
-Literature knowledge base query tool for HEA (High-Entropy Alloy) research.
-
-**When to use this tool:**
-- Querying HEA literature knowledge base with natural language questions
-- Topics covering: phase transformations, mechanical properties, corrosion behavior, microstructure, preparation methods, element selection, strengthening mechanisms, high/low temperature performance, applications, multi-phase structures, lattice distortion effects
-- Supports vector similarity search across 1M+ document chunks
-- Returns literature summaries for comprehensive report generation
-- Use when you need in-depth literature analysis on HEA topics
-"""
+HEAKbAgentToolDescription = (
+    'What it does: Query literature knowledge base for HEA research with natural language.\n'
+    'When to use: When you need in-depth literature analysis on HEA topics.\n'
+    'Prerequisites / Inputs: Natural language questions about HEA.\n'
+    'Outputs: Literature summaries from vector similarity search.\n'
+    'Cannot do / Limits: Topics limited to HEA; 1M+ document chunks.\n'
+    'Cost / Notes: Medium.'
+)
 
 HEAKbAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE

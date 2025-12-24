@@ -6,15 +6,14 @@ MofdbAgentDescription = (
     'and temperature sensitivity analysis.'
 )
 
-MofdbAgentToolDescription = """
-Internal database search tool. Execute SQL queries against the MOF database.
-
-**When to use this tool:**
-- Any request clearly about MOFs should be handled by MOFdb
-- Supports all MOF-related queries via SQL: MOFid, MOFkey, name, database source, void fraction, pore sizes, surface area, element composition analysis, adsorption selectivity calculations, temperature sensitivity analysis, statistical ranking
-- Supports complex multi-table joins, window functions, CTEs, and statistical analysis
-- Use when you need sophisticated queries that traditional servers cannot handle
-"""
+MofdbAgentToolDescription = (
+    'What it does: Execute SQL queries against the MOF database.\n'
+    'When to use: For complex MOF queries with multi-table joins and statistical analysis.\n'
+    'Prerequisites / Inputs: SQL query string.\n'
+    'Outputs: Query results.\n'
+    'Cannot do / Limits: MOF-specific; supports advanced SQL.\n'
+    'Cost / Notes: Medium.'
+)
 
 MofdbAgentArgsSetting = """
 ## PARAMETER CONSTRUCTION GUIDE
