@@ -3,11 +3,11 @@ import requests
 from agents.matmaster_agent.constant import ICL_SERVICE_URL
 
 
-def select_examples(query, logger):
+def select_examples(query, session_id, current_env, logger):
     try:
         return requests.post(
             url=f"http://{ICL_SERVICE_URL}/api/v1/icl/select-examples",
-            json={'query': query},
+            json={'query': query, 'session_id': session_id, 'current_env': current_env},
             timeout=10,
         ).json()['data']
     except Exception as e:
@@ -22,11 +22,11 @@ def select_examples(query, logger):
         ]
 
 
-def select_update_examples(query, logger):
+def select_update_examples(query, session_id, current_env, logger):
     try:
         return requests.post(
             url=f"http://{ICL_SERVICE_URL}/api/v1/icl/select-update-examples",
-            json={'query': query},
+            json={'query': query, 'session_id': session_id, 'current_env': current_env},
             timeout=10,
         ).json()['data']
     except Exception as e:
