@@ -111,7 +111,7 @@ class BaseAgentWithRecAndSum(
         )
         if self.doc_summary:
             self._summary_agent = DisallowTransferAndContentLimitLlmAgent(
-                model=MatMasterLlmConfig.gemini_2_5_pro,
+                model=MatMasterLlmConfig.gemini_3_flash,
                 name=f"{agent_prefix}_summary_agent",
                 description=self.description,
                 global_instruction=GLOBAL_INSTRUCTION,
