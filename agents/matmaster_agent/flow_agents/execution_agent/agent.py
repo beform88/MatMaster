@@ -13,7 +13,7 @@ from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent impo
 )
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.flow_agents.style import step_card
+from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     get_agent_name,
@@ -97,7 +97,10 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                         f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                     )
                     for step_event in all_text_event(
-                        ctx, self.name, step_card(index + 1, i18n), ModelRole
+                        ctx,
+                        self.name,
+                        separate_card(f"{i18n.t('Step')} {index + 1}"),
+                        ModelRole,
                     ):
                         yield step_event
 

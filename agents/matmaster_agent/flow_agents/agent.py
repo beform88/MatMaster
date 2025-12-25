@@ -59,6 +59,7 @@ from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
 from agents.matmaster_agent.flow_agents.style import (
     all_summary_card,
+    separate_card,
 )
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
@@ -99,8 +100,6 @@ logger.setLevel(logging.INFO)
 
 
 class MatMasterFlowAgent(LlmAgent):
-    # store example selector as a private attribute to avoid pydantic field validation
-
     @model_validator(mode='after')
     def after_init(self):
         self._chat_agent = DisallowTransferAndContentLimitLlmAgent(
@@ -253,256 +252,294 @@ class MatMasterFlowAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
-            if not ctx.session.state['quota_remaining']:
-                for quota_remaining_event in all_text_event(
-                    ctx,
-                    self.name,
-                    i18n.t('Questionnaire'),
-                    ModelRole,
-                ):
-                    yield quota_remaining_event
-                return
-
-            # 用户意图识别（一旦进入 research 模式，暂时无法退出）
-            if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
-                async for intent_event in self.intent_agent.run_async(ctx):
-                    yield intent_event
-
-            # 如果用户上传文件，强制为 research 模式
-            if (
-                ctx.session.state[UPLOAD_FILE]
-                and ctx.session.state['intent']['type'] == IntentEnum.CHAT
-            ):
-                update_intent = copy.deepcopy(ctx.session.state['intent'])
-                update_intent['type'] = IntentEnum.RESEARCH
-                yield update_state_event(ctx, state_delta={'intent': update_intent})
-
-            # chat 模式
-            if ctx.session.state['intent']['type'] == IntentEnum.CHAT:
-                async for chat_event in self.chat_agent.run_async(ctx):
-                    yield chat_event
-            # research 模式
-            else:
-                # 检索 ICL 示例
-                icl_examples = select_examples(
-                    ctx.user_content.parts[0].text, ctx.session.id, CURRENT_ENV, logger
-                )
-                EXPAND_INPUT_EXAMPLES_PROMPT = expand_input_examples(icl_examples)
-                logger.info(f'{ctx.session.id} {EXPAND_INPUT_EXAMPLES_PROMPT}')
-                # 扩写用户问题
-                self.expand_agent.instruction = (
-                    EXPAND_INSTRUCTION + EXPAND_INPUT_EXAMPLES_PROMPT
-                )
-                async for expand_event in self.expand_agent.run_async(ctx):
-                    yield expand_event
-
-                UPDATE_USER_CONTENT = (
-                    '\nUSER INPUT FOR THIS TASK:\n'
-                    + ctx.session.state['expand']['update_user_content']
-                )
-                icl_update_examples = select_update_examples(
-                    ctx.session.state['expand']['update_user_content'],
-                    ctx.session.id,
-                    CURRENT_ENV,
-                    logger,
-                )
-                SCENE_EXAMPLES_PROMPT = scene_tags_from_examples(icl_update_examples)
-                TOOLCHAIN_EXAMPLES_PROMPT = toolchain_from_examples(icl_update_examples)
-                logger.info(f'{ctx.session.id} {SCENE_EXAMPLES_PROMPT}')
-                logger.info(f'{ctx.session.id} {TOOLCHAIN_EXAMPLES_PROMPT}')
-
-                # 划分问题场景
-                self.scene_agent.instruction = (
-                    SCENE_INSTRUCTION + UPDATE_USER_CONTENT + SCENE_EXAMPLES_PROMPT
-                )
-                async for scene_event in self.scene_agent.run_async(ctx):
-                    yield scene_event
-
-                before_scenes = ctx.session.state['scenes']
-                single_scene = ctx.session.state['single_scenes']['type']
-                scenes = list(set(before_scenes + single_scene + ['universal']))
-                logger.info(f'{ctx.session.id} scenes = {scenes}')
-                yield update_state_event(
-                    ctx, state_delta={'scenes': copy.deepcopy(scenes)}
-                )
-
-                # 计划是否确认（1. 上一步计划完成；2. 用户未确认计划）
-                if check_plan(ctx) == FlowStatusEnum.COMPLETE or not ctx.session.state[
-                    'plan_confirm'
-                ].get('flag', False):
-                    async for plan_confirm_event in self.plan_confirm_agent.run_async(
-                        ctx
+            for _ in range(2):
+                loop_continue = False
+                if not ctx.session.state['quota_remaining']:
+                    for quota_remaining_event in all_text_event(
+                        ctx,
+                        self.name,
+                        i18n.t('Questionnaire'),
+                        ModelRole,
                     ):
-                        yield plan_confirm_event
+                        yield quota_remaining_event
+                    return
 
-                    if ctx.user_content.parts[
-                        0
-                    ].text == '确认计划' and not ctx.session.state['plan_confirm'].get(
+                # 用户意图识别（一旦进入 research 模式，暂时无法退出）
+                if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
+                    async for intent_event in self.intent_agent.run_async(ctx):
+                        yield intent_event
+
+                # 如果用户上传文件，强制为 research 模式
+                if (
+                    ctx.session.state[UPLOAD_FILE]
+                    and ctx.session.state['intent']['type'] == IntentEnum.CHAT
+                ):
+                    update_intent = copy.deepcopy(ctx.session.state['intent'])
+                    update_intent['type'] = IntentEnum.RESEARCH
+                    yield update_state_event(ctx, state_delta={'intent': update_intent})
+
+                # chat 模式
+                if ctx.session.state['intent']['type'] == IntentEnum.CHAT:
+                    async for chat_event in self.chat_agent.run_async(ctx):
+                        yield chat_event
+                # research 模式
+                else:
+                    # 检索 ICL 示例
+                    icl_examples = select_examples(
+                        ctx.user_content.parts[0].text,
+                        ctx.session.id,
+                        CURRENT_ENV,
+                        logger,
+                    )
+                    EXPAND_INPUT_EXAMPLES_PROMPT = expand_input_examples(icl_examples)
+                    logger.info(f'{ctx.session.id} {EXPAND_INPUT_EXAMPLES_PROMPT}')
+                    # 扩写用户问题
+                    self.expand_agent.instruction = (
+                        EXPAND_INSTRUCTION + EXPAND_INPUT_EXAMPLES_PROMPT
+                    )
+                    async for expand_event in self.expand_agent.run_async(ctx):
+                        yield expand_event
+
+                    UPDATE_USER_CONTENT = (
+                        '\nUSER INPUT FOR THIS TASK:\n'
+                        + ctx.session.state['expand']['update_user_content']
+                    )
+                    icl_update_examples = select_update_examples(
+                        ctx.session.state['expand']['update_user_content'],
+                        ctx.session.id,
+                        CURRENT_ENV,
+                        logger,
+                    )
+                    SCENE_EXAMPLES_PROMPT = scene_tags_from_examples(
+                        icl_update_examples
+                    )
+                    TOOLCHAIN_EXAMPLES_PROMPT = toolchain_from_examples(
+                        icl_update_examples
+                    )
+                    logger.info(f'{ctx.session.id} {SCENE_EXAMPLES_PROMPT}')
+                    logger.info(f'{ctx.session.id} {TOOLCHAIN_EXAMPLES_PROMPT}')
+
+                    # 划分问题场景
+                    self.scene_agent.instruction = (
+                        SCENE_INSTRUCTION + UPDATE_USER_CONTENT + SCENE_EXAMPLES_PROMPT
+                    )
+                    async for scene_event in self.scene_agent.run_async(ctx):
+                        yield scene_event
+
+                    before_scenes = ctx.session.state['scenes']
+                    single_scene = ctx.session.state['single_scenes']['type']
+                    scenes = list(set(before_scenes + single_scene + ['universal']))
+                    logger.info(f'{ctx.session.id} scenes = {scenes}')
+                    yield update_state_event(
+                        ctx, state_delta={'scenes': copy.deepcopy(scenes)}
+                    )
+
+                    # 计划是否确认（1. 上一步计划完成；2. 用户未确认计划）
+                    if check_plan(
+                        ctx
+                    ) == FlowStatusEnum.COMPLETE or not ctx.session.state[
+                        'plan_confirm'
+                    ].get(
                         'flag', False
                     ):
-                        logger.warning(
-                            f'{ctx.session.id} 确认计划 not confirm, manually setting it'
-                        )
-                        yield update_state_event(
-                            ctx, state_delta={'plan_confirm': True}
-                        )
+                        async for (
+                            plan_confirm_event
+                        ) in self.plan_confirm_agent.run_async(ctx):
+                            yield plan_confirm_event
 
-                plan_confirm = ctx.session.state['plan_confirm'].get('flag', False)
-
-                # 判断要不要制定计划（1. 无计划；2. 计划未通过；3. 计划已完成）
-                if (
-                    check_plan(ctx) in [FlowStatusEnum.NO_PLAN, FlowStatusEnum.COMPLETE]
-                    or not plan_confirm
-                ):
-                    # 制定计划
-                    available_tools = get_tools_list(ctx, scenes)
-                    if not available_tools:
-                        available_tools = ALL_AGENT_TOOLS_LIST
-                    available_tools_with_info = {
-                        item: {
-                            'scene': ALL_TOOLS[item]['scene'],
-                            'description': ALL_TOOLS[item]['description'],
-                        }
-                        for item in available_tools
-                    }
-                    available_tools_with_info_str = '\n'.join(
-                        [
-                            f"{key}\n    scene: {', '.join(value['scene'])}\n    description: {value['description']}"
-                            for key, value in available_tools_with_info.items()
-                        ]
-                    )
-                    self.plan_make_agent.instruction = get_plan_make_instruction(
-                        available_tools_with_info_str
-                        + UPDATE_USER_CONTENT
-                        + TOOLCHAIN_EXAMPLES_PROMPT
-                    )
-                    self.plan_make_agent.output_schema = create_dynamic_plan_schema(
-                        available_tools
-                    )
-                    async for plan_event in self.plan_make_agent.run_async(ctx):
-                        yield plan_event
-
-                    # 总结计划
-                    plan_steps = ctx.session.state['plan'].get('steps', [])
-                    tool_names = [
-                        step.get('tool_name')
-                        for step in plan_steps
-                        if step.get('tool_name')
-                    ]
-                    self.plan_info_agent.instruction = get_plan_info_instruction(
-                        tool_names
-                    )
-                    async for plan_summary_event in self.plan_info_agent.run_async(ctx):
-                        yield plan_summary_event
-
-                    # 更新计划为可执行的计划
-                    update_plan = copy.deepcopy(ctx.session.state['plan'])
-                    origin_steps = ctx.session.state['plan']['steps']
-                    actual_steps = []
-                    for step in origin_steps:
-                        if step.get('tool_name'):
-                            actual_steps.append(step)
-                        else:
-                            break
-                    update_plan['steps'] = actual_steps
-                    yield update_state_event(ctx, state_delta={'plan': update_plan})
-
-                    # 检查是否应该跳过用户确认步骤
-                    if should_bypass_confirmation(ctx):
-                        # 自动设置计划确认状态
-                        yield update_state_event(
-                            ctx,
-                            state_delta={
-                                'plan_confirm': {
-                                    'flag': True,
-                                    'reason': 'Auto confirmed for single bypass tool',
-                                }
-                            },
-                        )
-                    else:
-                        for generate_plan_confirm_event in context_function_event(
-                            ctx,
-                            self.name,
-                            'matmaster_generate_follow_up',
-                            {},
-                            ModelRole,
-                            {
-                                'follow_up_result': json.dumps(
-                                    {
-                                        'invocation_id': ctx.invocation_id,
-                                        'title': i18n.t('PlanOperation'),
-                                        'list': [
-                                            i18n.t('ConfirmPlan'),
-                                            i18n.t('RePlan'),
-                                        ],
-                                    }
-                                ),
-                            },
+                        if ctx.user_content.parts[
+                            0
+                        ].text == '确认计划' and not ctx.session.state[
+                            'plan_confirm'
+                        ].get(
+                            'flag', False
                         ):
-                            yield generate_plan_confirm_event
+                            logger.warning(
+                                f'{ctx.session.id} 确认计划 not confirm, manually setting it'
+                            )
+                            yield update_state_event(
+                                ctx, state_delta={'plan_confirm': True}
+                            )
 
-                # 计划未确认，暂停往下执行
-                if ctx.session.state['plan_confirm']['flag']:
-                    # 重置 scenes
-                    yield update_state_event(ctx, state_delta={'scenes': []})
-                    # 执行计划
-                    if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
-                        async for execution_event in self.execution_agent.run_async(
+                    plan_confirm = ctx.session.state['plan_confirm'].get('flag', False)
+
+                    # 判断要不要制定计划（1. 无计划；2. 计划未通过；3. 计划已完成）
+                    if (
+                        check_plan(ctx)
+                        in [
+                            FlowStatusEnum.NO_PLAN,
+                            FlowStatusEnum.COMPLETE,
+                            FlowStatusEnum.FAILED,
+                        ]
+                        or not plan_confirm
+                    ):
+                        # 制定计划
+                        if check_plan(ctx) == FlowStatusEnum.FAILED:
+                            for replan_event in all_text_event(
+                                ctx, self.name, separate_card('重新制定计划'), ModelRole
+                            ):
+                                yield replan_event
+
+                        available_tools = get_tools_list(ctx, scenes)
+                        if not available_tools:
+                            available_tools = ALL_AGENT_TOOLS_LIST
+                        available_tools_with_info = {
+                            item: {
+                                'scene': ALL_TOOLS[item]['scene'],
+                                'description': ALL_TOOLS[item]['description'],
+                            }
+                            for item in available_tools
+                        }
+                        available_tools_with_info_str = '\n'.join(
+                            [
+                                f"{key}\n    scene: {', '.join(value['scene'])}\n    description: {value['description']}"
+                                for key, value in available_tools_with_info.items()
+                            ]
+                        )
+                        self.plan_make_agent.instruction = get_plan_make_instruction(
+                            available_tools_with_info_str
+                            + UPDATE_USER_CONTENT
+                            + TOOLCHAIN_EXAMPLES_PROMPT
+                        )
+                        self.plan_make_agent.output_schema = create_dynamic_plan_schema(
+                            available_tools
+                        )
+                        async for plan_event in self.plan_make_agent.run_async(ctx):
+                            yield plan_event
+
+                        # 总结计划
+                        plan_steps = ctx.session.state['plan'].get('steps', [])
+                        tool_names = [
+                            step.get('tool_name')
+                            for step in plan_steps
+                            if step.get('tool_name')
+                        ]
+                        self.plan_info_agent.instruction = get_plan_info_instruction(
+                            tool_names
+                        )
+                        async for plan_summary_event in self.plan_info_agent.run_async(
                             ctx
                         ):
-                            yield execution_event
+                            yield plan_summary_event
 
-                    # 全部执行完毕，总结执行情况
-                    if (
-                        check_plan(ctx) == FlowStatusEnum.COMPLETE
-                        or ctx.session.state['plan']['feasibility'] == 'null'
-                    ):
-                        # Skip summary for single-tool plans
-                        plan_steps = ctx.session.state['plan'].get('steps', [])
-                        tool_count = sum(
-                            1 for step in plan_steps if step.get('tool_name')
-                        )
+                        # 更新计划为可执行的计划
+                        update_plan = copy.deepcopy(ctx.session.state['plan'])
+                        origin_steps = ctx.session.state['plan']['steps']
+                        actual_steps = []
+                        for step in origin_steps:
+                            if step.get('tool_name'):
+                                actual_steps.append(step)
+                            else:
+                                break
+                        update_plan['steps'] = actual_steps
+                        yield update_state_event(ctx, state_delta={'plan': update_plan})
 
-                        is_async_agent = issubclass(
-                            AGENT_CLASS_MAPPING[
-                                ALL_TOOLS[plan_steps[0]['tool_name']]['belonging_agent']
-                            ],
-                            BaseAsyncJobAgent,
-                        )
-                        logger.info(
-                            f'is_async_agent = {is_async_agent}, tool_count = {tool_count}'
-                        )
-                        if tool_count > 1 or is_async_agent:
-                            for all_summary_event in all_text_event(
-                                ctx, self.name, all_summary_card(i18n), ModelRole
-                            ):
-                                yield all_summary_event
-                            self._analysis_agent.instruction = get_analysis_instruction(
-                                ctx.session.state['plan']
+                        # 检查是否应该跳过用户确认步骤
+                        if should_bypass_confirmation(ctx):
+                            # 自动设置计划确认状态
+                            yield update_state_event(
+                                ctx,
+                                state_delta={
+                                    'plan_confirm': {
+                                        'flag': True,
+                                        'reason': 'Auto confirmed for single bypass tool',
+                                    }
+                                },
                             )
-                            async for analysis_event in self.analysis_agent.run_async(
+                        else:
+                            for generate_plan_confirm_event in context_function_event(
+                                ctx,
+                                self.name,
+                                'matmaster_generate_follow_up',
+                                {},
+                                ModelRole,
+                                {
+                                    'follow_up_result': json.dumps(
+                                        {
+                                            'invocation_id': ctx.invocation_id,
+                                            'title': i18n.t('PlanOperation'),
+                                            'list': [
+                                                i18n.t('ConfirmPlan'),
+                                                i18n.t('RePlan'),
+                                            ],
+                                        }
+                                    ),
+                                },
+                            ):
+                                yield generate_plan_confirm_event
+
+                    # 计划未确认，暂停往下执行
+                    if ctx.session.state['plan_confirm']['flag']:
+                        # 重置 scenes
+                        yield update_state_event(ctx, state_delta={'scenes': []})
+                        # 执行计划
+                        if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
+                            async for execution_event in self.execution_agent.run_async(
                                 ctx
                             ):
-                                yield analysis_event
+                                yield execution_event
 
-                        follow_up_list = await get_random_questions(i18n=i18n)
-                        for generate_follow_up_event in context_function_event(
-                            ctx,
-                            self.name,
-                            'matmaster_generate_follow_up',
-                            {},
-                            ModelRole,
-                            {
-                                'follow_up_result': json.dumps(
-                                    {
-                                        'invocation_id': ctx.invocation_id,
-                                        'title': i18n.t('MoreQuestions'),
-                                        'list': follow_up_list,
-                                    }
-                                )
-                            },
+                        # 全部执行完毕，总结执行情况
+                        if (
+                            check_plan(ctx) == FlowStatusEnum.COMPLETE
+                            or ctx.session.state['plan']['feasibility'] == 'null'
                         ):
-                            yield generate_follow_up_event
+                            # Skip summary for single-tool plans
+                            plan_steps = ctx.session.state['plan'].get('steps', [])
+                            tool_count = sum(
+                                1 for step in plan_steps if step.get('tool_name')
+                            )
+
+                            is_async_agent = issubclass(
+                                AGENT_CLASS_MAPPING[
+                                    ALL_TOOLS[plan_steps[0]['tool_name']][
+                                        'belonging_agent'
+                                    ]
+                                ],
+                                BaseAsyncJobAgent,
+                            )
+                            logger.info(
+                                f'is_async_agent = {is_async_agent}, tool_count = {tool_count}'
+                            )
+
+                            # 渲染总结
+                            if tool_count > 1 or is_async_agent:
+                                for all_summary_event in all_text_event(
+                                    ctx, self.name, all_summary_card(i18n), ModelRole
+                                ):
+                                    yield all_summary_event
+                                self._analysis_agent.instruction = (
+                                    get_analysis_instruction(ctx.session.state['plan'])
+                                )
+                                async for (
+                                    analysis_event
+                                ) in self.analysis_agent.run_async(ctx):
+                                    yield analysis_event
+
+                            # 渲染追问组件
+                            follow_up_list = await get_random_questions(i18n=i18n)
+                            for generate_follow_up_event in context_function_event(
+                                ctx,
+                                self.name,
+                                'matmaster_generate_follow_up',
+                                {},
+                                ModelRole,
+                                {
+                                    'follow_up_result': json.dumps(
+                                        {
+                                            'invocation_id': ctx.invocation_id,
+                                            'title': i18n.t('MoreQuestions'),
+                                            'list': follow_up_list,
+                                        }
+                                    )
+                                },
+                            ):
+                                yield generate_follow_up_event
+                        elif check_plan(ctx) == FlowStatusEnum.FAILED:
+                            loop_continue = True
+                # 退出循环
+                if not loop_continue:
+                    break
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):
                 yield error_event
