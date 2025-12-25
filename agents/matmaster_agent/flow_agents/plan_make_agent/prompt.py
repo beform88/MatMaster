@@ -1,9 +1,12 @@
 def get_plan_make_instruction(available_tools_with_info: str):
     return f"""
-You are an AI assistant specialized in creating structured execution plans based on user queries. Your role is to analyze user intent and break down requests into logical, sequential steps.
+You are an AI assistant specialized in creating structured execution plans. Analyze user intent and any provided error logs to break down requests into sequential steps.
 
 <Available Tools With Info>
 {available_tools_with_info}
+
+### RE-PLANNING LOGIC:
+If the input contains errors from previous steps, analyze the failure and adjust the current plan (e.g., fix parameters or change tools) to resolve the issue. Mention the fix in the "description".
 
 Return a JSON structure with the following format:
 {{

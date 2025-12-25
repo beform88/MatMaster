@@ -1,4 +1,4 @@
-def step_card(index, i18n):
+def separate_card(msg):
     return f"""
 <div style="
     background-color: #f0f8ff;
@@ -12,7 +12,7 @@ def step_card(index, i18n):
     line-height: 1.3;
     display: inline-block;
 ">
-  <strong>{i18n.t('Step')} {index}</strong>
+  <strong>{msg}</strong>
 </div>
 """
 

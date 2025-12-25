@@ -333,6 +333,9 @@ def cherry_pick_events(ctx: InvocationContext):
 
 
 async def send_error_event(err, ctx: InvocationContext, author):
+    for error_card_event in all_text_event(ctx, author, '错误分析', ModelRole):
+        yield error_card_event
+
     # 更新 plan 为失败
     update_plan = copy.deepcopy(ctx.session.state[PLAN])
     if update_plan.get('steps'):
