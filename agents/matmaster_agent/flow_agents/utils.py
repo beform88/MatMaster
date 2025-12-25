@@ -70,7 +70,9 @@ def check_plan(ctx: InvocationContext):
         elif step['status'] == PlanStepStatusEnum.FAILED:
             failed_step_count += 1
 
-    if (not plan_step_count and not process_step_count) or failed_step_count:
+    if failed_step_count:
+        return FlowStatusEnum.FAILED
+    elif (not plan_step_count and not process_step_count) or failed_step_count:
         return FlowStatusEnum.COMPLETE
     elif plan_step_count == total_steps:
         return FlowStatusEnum.NEW_PLAN
