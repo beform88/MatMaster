@@ -1,10 +1,10 @@
 POLYMERKbAgentName = 'POLYMERkb_agent'
 
 POLYMERKbAgentToolDescription = (
-    'What it does: Query literature knowledge base for polymer research with structured search.\n'
-    'When to use: When you need polymer literature analysis with property data.\n'
-    'Prerequisites / Inputs: Natural language query description.\n'
-    'Outputs: Literature summaries and database entries with properties.\n'
+    'What it does: Query literature knowledge base for polymer research with natural language.\n'
+    'When to use: When you need in-depth literature analysis on polymer topics.\n'
+    'Prerequisites / Inputs: Natural language questions about polymer.\n'
+    'Outputs: Literature summaries from vector similarity search.\n'
     'Cannot do / Limits: Topics limited to polymers.\n'
     'Cost / Notes: Medium.'
 )
@@ -18,10 +18,10 @@ POLYMERKbAgentArgsSetting = """
 The knowledge base contains:
 • Structured database with polymer properties and paper metadata
 • Multiple tables including:
-  - Polymer properties (polym00): polymer names, types, compositions, properties, DOI
-  - Paper metadata (690hd00): titles, abstracts, authors, publication dates, journal info, DOI
-  - Paper full text (690hd02): complete paper text and supplementary information
-  - Monomer information (690hd16, 690hd17): monomer abbreviations, full names, SMILES, notes
+  - Polymer properties: polymer names, types, compositions, properties, DOI
+  - Paper metadata: titles, abstracts, authors, publication dates, journal info, DOI
+  - Paper full text: complete paper text and supplementary information
+  - Monomer information: monomer abbreviations, full names, SMILES, notes
 • Topics covering:
   - Polymer types and compositions
   - Material properties (glass transition temperature, mechanical properties, etc.)

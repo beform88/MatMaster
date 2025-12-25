@@ -1,11 +1,11 @@
 HEAKbAgentName = 'HEAkb_agent'
 
 HEAKbAgentToolDescription = (
-    'What it does: Query literature knowledge base for HEA research with natural language.\n'
+    'What it does: Query literature knowledge base for HEA(High-entropy alloys) research with natural language.\n'
     'When to use: When you need in-depth literature analysis on HEA topics.\n'
     'Prerequisites / Inputs: Natural language questions about HEA.\n'
     'Outputs: Literature summaries from vector similarity search.\n'
-    'Cannot do / Limits: Topics limited to HEA; 1M+ document chunks.\n'
+    'Cannot do / Limits: Topics limited to HEA.\n'
     'Cost / Notes: Medium.'
 )
 
@@ -15,7 +15,7 @@ HEAKbAgentArgsSetting = """
 ## Do not ask the user for confirmation; directly start retrieval when a query is made.
 
 **Parameters:**
-- question (str, required): Natural language query about HEA research topics
+- question (str, required): Natural language query about HEA(High-entropy alloys) research topics
 - top_k (int, optional): Number of chunks to retrieve (5-15 recommended, default: 5)
 
 **Examples:**

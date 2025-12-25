@@ -1,30 +1,30 @@
 SSEKbAgentName = 'SSEkb_agent'
 
 SSEKbAgentToolDescription = (
-    'What it does: Query literature knowledge base with structured database search for materials science.\n'
-    'When to use: When you need structured search across materials science literature.\n'
-    'Prerequisites / Inputs: Natural language query description.\n'
-    'Outputs: Literature summaries and database entries.\n'
-    'Cannot do / Limits: Multi-table queries with filters.\n'
+    'What it does: Query literature knowledge base for SSE(Solid-state electrolyte) research with natural language.\n'
+    'When to use: When you need in-depth literature analysis on Solid-state electrolyte topics.\n'
+    'Prerequisites / Inputs: Natural language questions about Solid-state electrolyte.\n'
+    'Outputs: Literature summaries from vector similarity search.\n'
+    'Cannot do / Limits: Topics limited to Solid-state electrolyte.\n'
     'Cost / Notes: Medium.'
 )
 
-SSEKbAgentArgsSetting = """
+SSEKbAgentArgsSetting = """## PARAMETER CONSTRUCTION GUIDE
 ## PARAMETER CONSTRUCTION GUIDE
 
 **Tool:** query_ssekb_literature(query_description)
 
 **Parameters:**
-- query_description (str, required): Natural language description of the query
+- query_description (str, required): Natural language query about SSE(Solid-state electrolyte) research topics
 
 **Examples:**
 1) 查询特定材料属性：
    → Tool: query_ssekb_literature
-     query_description: '查找具有特定性能的材料相关论文'
+     query_description: '查找具有特定性能的固态电解质材料相关论文'
 
 2) 查询特定材料类型：
    → Tool: query_ssekb_literature
-     query_description: '查找特定材料类型的相关论文'
+     query_description: '查找特定材料类型的固态电解质相关论文'
 """
 
 SSEKbAgentSummaryPrompt = """
