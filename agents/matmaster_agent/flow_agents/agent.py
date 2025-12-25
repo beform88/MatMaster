@@ -10,7 +10,7 @@ from pydantic import computed_field, model_validator
 from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_function_call,
 )
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole, CURRENT_ENV
 from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
     DisallowTransferAndContentLimitSchemaAgent,
 )
@@ -284,7 +284,7 @@ class MatMasterFlowAgent(LlmAgent):
             # research 模式
             else:
                 # 检索 ICL 示例
-                icl_examples = select_examples(ctx.user_content.parts[0].text, logger)
+                icl_examples = select_examples(ctx.user_content.parts[0].text, ctx.session.id, CURRENT_ENV, logger)
                 EXPAND_INPUT_EXAMPLES_PROMPT = expand_input_examples(icl_examples)
                 logger.info(f'{ctx.session.id} {EXPAND_INPUT_EXAMPLES_PROMPT}')
                 # 扩写用户问题
@@ -299,7 +299,7 @@ class MatMasterFlowAgent(LlmAgent):
                     + ctx.session.state['expand']['update_user_content']
                 )
                 icl_update_examples = select_update_examples(
-                    ctx.session.state['expand']['update_user_content'], logger
+                    ctx.session.state['expand']['update_user_content'], ctx.session.id, CURRENT_ENV, logger
                 )
                 SCENE_EXAMPLES_PROMPT = scene_tags_from_examples(icl_update_examples)
                 TOOLCHAIN_EXAMPLES_PROMPT = toolchain_from_examples(icl_update_examples)
