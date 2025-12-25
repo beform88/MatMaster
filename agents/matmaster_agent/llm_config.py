@@ -32,7 +32,8 @@ MODEL_MAPPING = {
     ('litellm_proxy', 'gemini-2.0-flash'): 'litellm_proxy/gemini-2.0-flash',
     ('litellm_proxy', 'gemini-2.5-flash'): 'litellm_proxy/gemini-2.5-flash',
     ('litellm_proxy', 'gemini-2.5-pro'): 'litellm_proxy/gemini-2.5-pro',
-    ('litellm_proxy', 'gemini-3-pro-preview'): 'litellm_proxy/gemini-3-pro-preview',
+    ('litellm_proxy', 'gemini-3-flash'): 'litellm_proxy/gemini-3-flash-preview',
+    ('litellm_proxy', 'gemini-3-pro'): 'litellm_proxy/gemini-3-pro-preview',
     ('litellm_proxy', 'claude-sonnet-4'): 'litellm_proxy/claude-sonnet-4',
     ('litellm_proxy', 'gpt-5'): 'litellm_proxy/azure/gpt-5',
     ('litellm_proxy', 'gpt-5-mini'): 'litellm_proxy/azure/gpt-5-mini',
@@ -76,6 +77,7 @@ class LLMConfig:
         gemini_2_5_flash = 'gemini-2.5-flash'
         gemini_2_0_flash = 'gemini-2.0-flash'
         gemini_2_5_pro = 'gemini-2.5-pro'
+        gemini_3_flash = 'gemini-3-flash'
         claude_sonnet_4 = 'claude-sonnet-4'
         deepseek_chat = 'deepseek-chat'
         gpt_5 = 'gpt-5'
@@ -94,8 +96,7 @@ class LLMConfig:
 
             return LiteLlm(model=model, **llm_kwargs)
 
-        self.gpt_4o_mini = _init_model(MODEL_MAPPING.get((azure_provider, gpt_4o_mini)))
-        self.gpt_4o = _init_model(MODEL_MAPPING.get((azure_provider, gpt_4o)))
+        # Gemini Models
         self.gemini_2_0_flash = _init_model(
             MODEL_MAPPING.get((litellm_provider, gemini_2_0_flash))
         )
@@ -105,6 +106,9 @@ class LLMConfig:
         self.gemini_2_5_pro = _init_model(
             MODEL_MAPPING.get((litellm_provider, gemini_2_5_pro))
         )
+        self.gemini_3_flash = _init_model(
+            MODEL_MAPPING.get((litellm_provider, gemini_3_flash))
+        )
         self.claude_sonnet_4 = _init_model(
             MODEL_MAPPING.get((litellm_provider, claude_sonnet_4))
         )
@@ -112,7 +116,9 @@ class LLMConfig:
             MODEL_MAPPING.get((deepseek_provider, deepseek_chat))
         )
 
-        # GPT-5 models
+        # GPT Models
+        self.gpt_4o_mini = _init_model(MODEL_MAPPING.get((azure_provider, gpt_4o_mini)))
+        self.gpt_4o = _init_model(MODEL_MAPPING.get((azure_provider, gpt_4o)))
         self.gpt_5 = _init_model(MODEL_MAPPING.get((litellm_provider, gpt_5)))
         self.gpt_5_nano = _init_model(MODEL_MAPPING.get((litellm_provider, gpt_5_nano)))
         self.gpt_5_mini = _init_model(MODEL_MAPPING.get((litellm_provider, gpt_5_mini)))
