@@ -1152,7 +1152,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
     },
-    'visualize_data': {
+    'visualize_data_from_file': {
         'belonging_agent': VisualizerAgentName,
         'scene': [SceneEnum.VISUALIZE_DATA, SceneEnum.UNIVERSAL],
         'description': (
@@ -1161,6 +1161,18 @@ ALL_TOOLS = {
             'Prerequisites / Inputs: Data file URL.\n'
             'Outputs: Plots.\n'
             'Cannot do / Limits: Data files only.\n'
+            'Cost / Notes: Low.'
+        ),
+        'bypass_confirmation': True,
+    },
+    'visualize_data_from_prompt': {
+        'belonging_agent': VisualizerAgentName,
+        'scene': [SceneEnum.VISUALIZE_DATA, SceneEnum.UNIVERSAL],
+        'description': (
+            'What it does: Create plots from prompts.\n'
+            'When to use: Quick visualize data embedded in prompt.\n'
+            'Outputs: Plots.\n'
+            'Cannot do / Limits: Plot requests with valid data only.\n'
             'Cost / Notes: Low.'
         ),
         'bypass_confirmation': True,

@@ -69,7 +69,7 @@ class SceneEnum(DescriptiveEnum):
 
     # postprocess
     VISUALIZE_DATA = (
-        'visualize_data',
+        'data_visualization',
         'Involves visualization or charting requirements',
     )
     POST_MD_ANALYSIS = (
