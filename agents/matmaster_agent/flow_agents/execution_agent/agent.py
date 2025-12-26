@@ -81,7 +81,8 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 'status'
                             ] = PlanStepStatusEnum.PROCESS
                             yield update_state_event(
-                                ctx, state_delta={'plan': update_plan, 'plan_index': index}
+                                ctx,
+                                state_delta={'plan': update_plan, 'plan_index': index},
                             )
                             for (
                                 materials_plan_function_call_event
@@ -116,15 +117,26 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                         current_steps = ctx.session.state['plan']['steps']
                         if current_steps[index]['status'] == PlanStepStatusEnum.SUCCESS:
                             break  # 成功，退出重试
-                        elif current_steps[index]['status'] == PlanStepStatusEnum.FAILED and retry_count < max_retries:
+                        elif (
+                            current_steps[index]['status'] == PlanStepStatusEnum.FAILED
+                            and retry_count < max_retries
+                        ):
                             retry_count += 1
-                            logger.info(f'{ctx.session.id} Step {index + 1} failed, retrying {retry_count}/{max_retries}')
+                            logger.info(
+                                f'{ctx.session.id} Step {index + 1} failed, retrying {retry_count}/{max_retries}'
+                            )
                             # 重置状态为 PROCESS 以便重试
                             update_plan = copy.deepcopy(ctx.session.state['plan'])
-                            update_plan['steps'][index]['status'] = PlanStepStatusEnum.PROCESS
-                            yield update_state_event(ctx, state_delta={'plan': update_plan})
+                            update_plan['steps'][index][
+                                'status'
+                            ] = PlanStepStatusEnum.PROCESS
+                            yield update_state_event(
+                                ctx, state_delta={'plan': update_plan}
+                            )
                         else:
                             break  # 超过重试次数或非失败状态，退出
 
-                    if current_steps[index]['status'] != PlanStepStatusEnum.SUCCESS:  # 如果上一步没成功，退出
+                    if (
+                        current_steps[index]['status'] != PlanStepStatusEnum.SUCCESS
+                    ):  # 如果上一步没成功，退出
                         break
