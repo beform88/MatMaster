@@ -72,7 +72,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                     PlanStepStatusEnum.FAILED,
                     PlanStepStatusEnum.SUBMITTED,
                 ]:
-                    max_retries = 3
+                    max_retries = 2
                     retry_count = 0
                     while retry_count <= max_retries:
                         if step['status'] != PlanStepStatusEnum.SUBMITTED:
