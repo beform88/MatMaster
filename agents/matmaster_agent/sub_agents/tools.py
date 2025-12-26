@@ -1327,9 +1327,9 @@ ALL_TOOLS = {
         'description': (
             'What it does: Analyze electron microscope images for particles and morphology.\n'
             'When to use: When you have TEM/SEM images to analyze.\n'
-            'Prerequisites / Inputs: Electron microscope images.\n'
+            'Prerequisites / Inputs: Electron microscope images(.tif, .tiff, .png, .jpeg, .jpg).\n'
             'Outputs: Detected particles, morphology, geometric properties.\n'
-            'Cannot do / Limits: Computer vision-based.\n'
+            'Cannot do / Limits: Only support .tif, .tiff, .png, .jpeg, .jpg format files.\n'
             'Cost / Notes: Medium.'
         ),
     },
