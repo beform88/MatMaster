@@ -982,6 +982,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': '',
+        'bypass_confirmation': True,
     },
     'get_molecule_info': {
         'belonging_agent': StructureGenerateAgentName,
@@ -995,6 +996,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': '',
+        'bypass_confirmation': True,
     },
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
@@ -1220,8 +1222,8 @@ ALL_TOOLS = {
             'What it does: Search scientific papers.\n'
             'When to use: Find research on topics.\n'
             'Prerequisites / Inputs: Topic keywords.\n'
-            'Outputs: Literature summary, abstract information of relevant papers, web link of the papers\n'
-            'Cannot do / Limits: Literature search only. No thesis files (.pdf,.doc, etc.) will be downloaded.\n'
+            'Outputs: Relevant papers.\n'
+            'Cannot do / Limits: Literature search only.\n'
             'Cost / Notes: Low.'
         ),
         'args_setting': f"""
@@ -1288,8 +1290,8 @@ ALL_TOOLS = {
             'What it does: Extract key information from a webpage URL.\n'
             'When to use: When you need scientific facts, data, or findings from a webpage.\n'
             'Prerequisites / Inputs: Webpage URL.\n'
-            'Outputs: Extracted information in text form.\n'
-            'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
+            'Outputs: Extracted information.\n'
+            'Cannot do / Limits: Web-based extraction.\n'
             'Cost / Notes: Low.'
         ),
         'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
@@ -1315,9 +1317,9 @@ ALL_TOOLS = {
         'description': (
             'What it does: Parse and preprocess raw XRD data files.\n'
             'When to use: When you have XRD data to analyze.\n'
-            'Prerequisites / Inputs: XRD files (.xrdml, .xy, .asc, .txt).\n'
+            'Prerequisites / Inputs: XRD files (.xrdml, .xy, .csv).\n'
             'Outputs: Processed data and visualization configs.\n'
-            'Cannot do / Limits: Not support .raw and .mdi format files.\n'
+            'Cannot do / Limits: Preprocessing and feature extraction.\n'
             'Cost / Notes: Low.'
         ),
     },
@@ -1377,8 +1379,8 @@ ALL_TOOLS = {
             'What it does: Parse various file contents to extract key information.\n'
             'When to use: When you need to extract data from files.\n'
             'Prerequisites / Inputs: File (TXT, PDF, Word, Excel, etc.).\n'
-            'Outputs: Extracted information in text form.\n'
-            'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
+            'Outputs: Extracted information and data.\n'
+            'Cannot do / Limits: Universal parsing.\n'
             'Cost / Notes: Low.'
         ),
         'bypass_confirmation': True,
