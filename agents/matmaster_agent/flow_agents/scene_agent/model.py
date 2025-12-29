@@ -40,6 +40,12 @@ class SceneEnum(DescriptiveEnum):
     STRUCTURE_GENERATE = ('structure_generate', '')
     CONDITIONAL_GENERATE = ('conditional_generate', '')
 
+    # sanitize
+    STRUCTURE_SANITIZE = (
+        'structure_sanitize',
+        'Cleanup experimental crystal structures for computational modeling',
+    )
+
     # calc
     DPA = ('DPA', 'Involving machine learning potentials and DPA')
     APEX = ('APEX', 'Involving first-principles calculation methods using APEX.')
