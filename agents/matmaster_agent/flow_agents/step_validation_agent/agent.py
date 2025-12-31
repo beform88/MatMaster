@@ -26,5 +26,5 @@ class StepValidationAgent(DisallowTransferAndContentLimitSchemaAgent):
             description='校验步骤执行结果是否合理',
             instruction=STEP_VALIDATION_INSTRUCTION,
             output_schema=StepValidationSchema,
-            **kwargs
+            **kwargs,
         )
