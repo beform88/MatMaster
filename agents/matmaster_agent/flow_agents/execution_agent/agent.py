@@ -85,9 +85,8 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         plan = ctx.session.state['plan']
         logger.info(f'{ctx.session.id} plan = {plan}')
-        steps = plan['steps']
 
-        for index, step in enumerate(steps):
+        for index, step in enumerate(plan['steps']):
             if step.get('tool_name'):
                 tried_tools = [step['tool_name']]
                 current_tool_name = step['tool_name']
