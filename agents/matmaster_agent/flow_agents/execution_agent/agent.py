@@ -167,7 +167,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 logger.warning(
                                     f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
                                 )
-                                
+
                                 # 向用户显示校验失败信息
                                 for validation_failed_event in all_text_event(
                                     ctx,
@@ -176,7 +176,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     ModelRole,
                                 ):
                                     yield validation_failed_event
-                                
+
                                 # 校验失败，标记为失败状态并准备重试
                                 update_plan = copy.deepcopy(ctx.session.state['plan'])
                                 update_plan['steps'][index][
@@ -205,13 +205,15 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             validation_reason = current_steps[index].get(
                                 'validation_failure_reason', ''
                             )
-                            
+
                             # 向用户显示重试信息
                             if validation_reason:
                                 retry_message = f"步骤 {index + 1} 执行失败（校验原因：{validation_reason}），正在准备重试..."
                             else:
-                                retry_message = f"步骤 {index + 1} 执行失败，正在准备重试..."
-                            
+                                retry_message = (
+                                    f"步骤 {index + 1} 执行失败，正在准备重试..."
+                                )
+
                             for retry_event in all_text_event(
                                 ctx,
                                 self.name,
@@ -219,7 +221,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 ModelRole,
                             ):
                                 yield retry_event
-                            
+
                             if validation_reason:
                                 logger.info(
                                     f'{ctx.session.id} Step {index + 1} failed due to validation, retrying {retry_count}/{max_retries}. Reason: {validation_reason}'
