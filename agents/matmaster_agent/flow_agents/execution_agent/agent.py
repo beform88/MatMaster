@@ -119,10 +119,10 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             logger.info(
                                 f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                             )
-                            if retry_count != 0 or separate_card_info != 'Step':
+                            if retry_count != 0:
                                 separate_card_info = 'ReExecuteSteps'
                             else:
-                                separate_card_info = 'Step'
+                                separate_card_info = 'Step' 
 
                             for step_event in all_text_event(
                                 ctx,
