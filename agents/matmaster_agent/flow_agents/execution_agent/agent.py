@@ -22,6 +22,7 @@ from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
 from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
+    find_alternative_tool,
     get_agent_name,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
@@ -71,167 +72,239 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
 
         for index, step in enumerate(steps):
             if step.get('tool_name'):
-                target_agent = get_agent_name(step['tool_name'], self.sub_agents)
-                logger.info(
-                    f'{ctx.session.id} tool_name = {step['tool_name']}, target_agent = {target_agent.name}'
-                )
-                if step['status'] in [
-                    PlanStepStatusEnum.PLAN,
-                    PlanStepStatusEnum.PROCESS,
-                    PlanStepStatusEnum.FAILED,
-                    PlanStepStatusEnum.SUBMITTED,
-                ]:
-                    max_retries = 2
-                    retry_count = 0
-                    while retry_count <= max_retries:
-                        if step['status'] != PlanStepStatusEnum.SUBMITTED:
-                            update_plan = copy.deepcopy(ctx.session.state['plan'])
-                            update_plan['steps'][index][
-                                'status'
-                            ] = PlanStepStatusEnum.PROCESS
-                            yield update_state_event(
-                                ctx,
-                                state_delta={'plan': update_plan, 'plan_index': index},
-                            )
-                            for (
-                                materials_plan_function_call_event
-                            ) in context_function_event(
-                                ctx,
-                                self.name,
-                                'materials_plan_function_call',
-                                {
-                                    'msg': f'According to the plan, I will call the `{step['tool_name']}`: {step['description']}'
-                                },
-                                ModelRole,
-                            ):
-                                yield materials_plan_function_call_event
+                tried_tools = [step['tool_name']]
+                current_tool_name = step['tool_name']
+                alternatives = find_alternative_tool(current_tool_name)
+                tool_attempt_success = False
 
-                        logger.info(
-                            f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
-                        )
-                        if retry_count != 0:
-                            separate_card_info = 'ReExecuteSteps'
-                        else:
-                            separate_card_info = 'Step'
-
-                        for step_event in all_text_event(
-                            ctx,
-                            self.name,
-                            separate_card(f"{i18n.t(separate_card_info)} {index + 1}"),
-                            ModelRole,
-                        ):
-                            yield step_event
-
-                        async for event in target_agent.run_async(ctx):
-                            yield event
-                        logger.info(
-                            f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
-                        )
-
-                        current_steps = ctx.session.state['plan']['steps']
-                        if current_steps[index]['status'] == PlanStepStatusEnum.SUCCESS:
-                            # 执行结果校验
-                            # 获取执行结果 - 从步骤状态或最近的事件中提取
-                            execution_result = current_steps[index].get('result', '')
-                            if not execution_result:
-                                # 尝试从会话状态获取最后的结果
-                                execution_result = ctx.session.state.get(
-                                    'last_execution_result', ''
+                while not tool_attempt_success:
+                    target_agent = get_agent_name(current_tool_name, self.sub_agents)
+                    logger.info(
+                        f'{ctx.session.id} tool_name = {current_tool_name}, target_agent = {target_agent.name}'
+                    )
+                    if step['status'] in [
+                        PlanStepStatusEnum.PLAN,
+                        PlanStepStatusEnum.PROCESS,
+                        PlanStepStatusEnum.FAILED,
+                        PlanStepStatusEnum.SUBMITTED,
+                    ]:
+                        max_retries = 2
+                        retry_count = 0
+                        while retry_count <= max_retries:
+                            if step['status'] != PlanStepStatusEnum.SUBMITTED:
+                                update_plan = copy.deepcopy(ctx.session.state['plan'])
+                                update_plan['steps'][index][
+                                    'status'
+                                ] = PlanStepStatusEnum.PROCESS
+                                yield update_state_event(
+                                    ctx,
+                                    state_delta={
+                                        'plan': update_plan,
+                                        'plan_index': index,
+                                    },
                                 )
-
-                            validation_instruction = f"""
-                            用户原始请求: {ctx.user_content.parts[0].text}
-                            当前步骤描述: {step['description']}
-                            工具名称: {step['tool_name']}
-                            步骤执行结果: {execution_result}
-
-                            请根据以上信息判断，工具的参数配置及对应的执行结果是否严格满足用户原始需求。
-                            """
-                            self._validation_agent.instruction = (
-                                STEP_VALIDATION_INSTRUCTION + validation_instruction
-                            )
-
-                            async for (
-                                validation_event
-                            ) in self._validation_agent.run_async(ctx):
-                                yield validation_event
-
-                            validation_result = ctx.session.state.get(
-                                'step_validation', {}
-                            )
-                            is_valid = validation_result.get('is_valid', True)
-                            validation_reason = validation_result.get('reason', '')
-
-                            if (not is_valid) and retry_count < max_retries:
-                                retry_count += 1
-                                logger.warning(
-                                    f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
-                                )
-
-                                # 向用户显示校验失败信息
-                                for validation_failed_event in all_text_event(
+                                for (
+                                    materials_plan_function_call_event
+                                ) in context_function_event(
                                     ctx,
                                     self.name,
-                                    f"步骤 {index + 1} 结果校验失败：{validation_reason}，正在准备重试...",
+                                    'materials_plan_function_call',
+                                    {
+                                        'msg': f'According to the plan, I will call the `{current_tool_name}`: {step['description']}'
+                                    },
                                     ModelRole,
                                 ):
-                                    yield validation_failed_event
+                                    yield materials_plan_function_call_event
 
-                                # 校验失败，标记为失败状态并准备重试
-                                update_plan = copy.deepcopy(ctx.session.state['plan'])
-                                update_plan['steps'][index][
-                                    'status'
-                                ] = PlanStepStatusEnum.PROCESS
-                                update_plan['steps'][index][
-                                    'validation_failure_reason'
-                                ] = validation_reason
-                                original_description = step['description']
-                                update_plan['steps'][index][
-                                    'description'
-                                ] = f"{original_description}\n\n注意：上次执行因以下原因校验失败，请改进：{validation_reason}"
-                                yield update_state_event(
-                                    ctx, state_delta={'plan': update_plan}
-                                )
-                                # 继续循环进行重试
-                            else:
-                                # 校验成功，步骤完成
-                                break
-                        elif (
-                            current_steps[index]['status'] == PlanStepStatusEnum.FAILED
-                            and retry_count < max_retries
-                        ):
-                            # 执行失败，检查是否可以重试
-                            retry_count += 1
-                            validation_reason = current_steps[index].get(
-                                'validation_failure_reason', ''
+                            logger.info(
+                                f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                             )
-
-                            # 向用户显示重试信息
-                            if validation_reason:
-                                retry_message = f"步骤 {index + 1} 执行失败（校验原因：{validation_reason}），正在准备重试..."
+                            if retry_count != 0 or separate_card_info != 'Step':
+                                separate_card_info = 'ReExecuteSteps'
                             else:
-                                retry_message = (
-                                    f"步骤 {index + 1} 执行失败，正在准备重试..."
-                                )
+                                separate_card_info = 'Step'
 
-                            for retry_event in all_text_event(
+                            for step_event in all_text_event(
                                 ctx,
                                 self.name,
-                                retry_message,
+                                separate_card(
+                                    f"{i18n.t(separate_card_info)} {index + 1}"
+                                ),
                                 ModelRole,
                             ):
-                                yield retry_event
+                                yield step_event
 
-                            if validation_reason:
-                                logger.info(
-                                    f'{ctx.session.id} Step {index + 1} failed due to validation, retrying {retry_count}/{max_retries}. Reason: {validation_reason}'
+                            async for event in target_agent.run_async(ctx):
+                                yield event
+                            logger.info(
+                                f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
+                            )
+
+                            current_steps = ctx.session.state['plan']['steps']
+                            if (
+                                current_steps[index]['status']
+                                == PlanStepStatusEnum.SUCCESS
+                            ):
+                                # 执行结果校验
+                                # 获取执行结果 - 从步骤状态或最近的事件中提取
+                                execution_result = current_steps[index].get(
+                                    'result', ''
                                 )
-                                # 在重试时更新步骤描述，包含校验失败的原因
+                                if not execution_result:
+                                    # 尝试从会话状态获取最后的结果
+                                    execution_result = ctx.session.state.get(
+                                        'last_execution_result', ''
+                                    )
+
+                                validation_instruction = f"""
+                                用户原始请求: {ctx.user_content.parts[0].text}
+                                当前步骤描述: {step['description']}
+                                工具名称: {current_tool_name}
+                                步骤执行结果: {execution_result}
+
+                                请根据以上信息判断，工具的参数配置及对应的执行结果是否严格满足用户原始需求。
+                                """
+                                self._validation_agent.instruction = (
+                                    STEP_VALIDATION_INSTRUCTION + validation_instruction
+                                )
+
+                                async for (
+                                    validation_event
+                                ) in self._validation_agent.run_async(ctx):
+                                    yield validation_event
+
+                                validation_result = ctx.session.state.get(
+                                    'step_validation', {}
+                                )
+                                is_valid = validation_result.get('is_valid', True)
+                                validation_reason = validation_result.get('reason', '')
+
+                                if (not is_valid) and retry_count < max_retries:
+                                    retry_count += 1
+                                    logger.warning(
+                                        f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
+                                    )
+
+                                    # 向用户显示校验失败信息
+                                    for validation_failed_event in all_text_event(
+                                        ctx,
+                                        self.name,
+                                        f"步骤 {index + 1} 结果与用户需求不符：{validation_reason}，正在准备重试...",
+                                        ModelRole,
+                                    ):
+                                        yield validation_failed_event
+
+                                    # 校验失败，标记为失败状态并准备重试
+                                    update_plan = copy.deepcopy(
+                                        ctx.session.state['plan']
+                                    )
+                                    update_plan['steps'][index][
+                                        'status'
+                                    ] = PlanStepStatusEnum.PROCESS
+                                    update_plan['steps'][index][
+                                        'validation_failure_reason'
+                                    ] = validation_reason
+                                    original_description = step['description']
+                                    update_plan['steps'][index][
+                                        'description'
+                                    ] = f"{original_description}\n\n注意：上次执行因以下原因校验失败，请改进：{validation_reason}"
+                                    yield update_state_event(
+                                        ctx, state_delta={'plan': update_plan}
+                                    )
+                                    # 继续循环进行重试
+                                else:
+                                    # 校验成功，步骤完成
+                                    tool_attempt_success = True
+                                    break
+                            elif (
+                                current_steps[index]['status']
+                                == PlanStepStatusEnum.FAILED
+                                and retry_count < max_retries
+                            ):
+                                # 执行失败，检查是否可以重试
+                                retry_count += 1
+                                validation_reason = current_steps[index].get(
+                                    'validation_failure_reason', ''
+                                )
+
+                                # 向用户显示重试信息
+                                if validation_reason:
+                                    retry_message = f"步骤 {index + 1} 执行失败（校验原因：{validation_reason}），正在准备重试..."
+                                else:
+                                    retry_message = (
+                                        f"步骤 {index + 1} 执行失败，正在准备重试..."
+                                    )
+
+                                for retry_event in all_text_event(
+                                    ctx,
+                                    self.name,
+                                    retry_message,
+                                    ModelRole,
+                                ):
+                                    yield retry_event
+
+                                if validation_reason:
+                                    logger.info(
+                                        f'{ctx.session.id} Step {index + 1} failed due to validation, retrying {retry_count}/{max_retries}. Reason: {validation_reason}'
+                                    )
+                                    # 在重试时更新步骤描述，包含校验失败的原因
+                                    update_plan = copy.deepcopy(
+                                        ctx.session.state['plan']
+                                    )
+                                    original_description = step['description']
+                                    update_plan['steps'][index][
+                                        'description'
+                                    ] = f"{original_description}\n\n注意：上次执行因以下原因校验失败，请改进：{validation_reason}"
+                                    update_plan['steps'][index][
+                                        'status'
+                                    ] = PlanStepStatusEnum.PROCESS
+                                    yield update_state_event(
+                                        ctx, state_delta={'plan': update_plan}
+                                    )
+                                else:
+                                    logger.info(
+                                        f'{ctx.session.id} Step {index + 1} execution failed, retrying {retry_count}/{max_retries}'
+                                    )
+                                    # 重置状态为 PROCESS 以便重试
+                                    update_plan = copy.deepcopy(
+                                        ctx.session.state['plan']
+                                    )
+                                    update_plan['steps'][index][
+                                        'status'
+                                    ] = PlanStepStatusEnum.PROCESS
+                                    yield update_state_event(
+                                        ctx, state_delta={'plan': update_plan}
+                                    )
+
+                            else:
+                                # 其他状态（SUBMITTED等），退出循环
+                                break
+
+                        # 如果retry循环结束后仍未成功，尝试alternative工具
+                        if not tool_attempt_success:
+                            available_alts = [
+                                alt for alt in alternatives if alt not in tried_tools
+                            ]
+                            if available_alts:
+                                # 向用户显示工具替换信息
+                                for tool_replace_event in all_text_event(
+                                    ctx,
+                                    self.name,
+                                    f"步骤 {index + 1} 多次重试失败，已找到合适的替代工具：{step['tool_name']} → {available_alts}",
+                                    ModelRole,
+                                ):
+                                    yield tool_replace_event
+
+                                # 尝试替换工具
+                                next_tool = available_alts[0]
+                                tried_tools.append(next_tool)
+                                current_tool_name = next_tool
+                                logger.info(
+                                    f'{ctx.session.id} Switching to alternative tool: {next_tool} for step {index + 1}'
+                                )
+                                # 更新plan中的tool_name和status
                                 update_plan = copy.deepcopy(ctx.session.state['plan'])
-                                original_description = step['description']
-                                update_plan['steps'][index][
-                                    'description'
-                                ] = f"{original_description}\n\n注意：上次执行因以下原因校验失败，请改进：{validation_reason}"
+                                update_plan['steps'][index]['tool_name'] = next_tool
                                 update_plan['steps'][index][
                                     'status'
                                 ] = PlanStepStatusEnum.PROCESS
@@ -239,23 +312,11 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     ctx, state_delta={'plan': update_plan}
                                 )
                             else:
+
                                 logger.info(
-                                    f'{ctx.session.id} Step {index + 1} execution failed, retrying {retry_count}/{max_retries}'
+                                    f'{ctx.session.id} No more alternative tools for step {index + 1}'
                                 )
-                                # 重置状态为 PROCESS 以便重试
-                                update_plan = copy.deepcopy(ctx.session.state['plan'])
-                                update_plan['steps'][index][
-                                    'status'
-                                ] = PlanStepStatusEnum.PROCESS
-                                yield update_state_event(
-                                    ctx, state_delta={'plan': update_plan}
-                                )
+                                break  # 退出tool while
 
-                        else:
-                            # 其他状态（SUBMITTED等），退出循环
-                            break
-
-                    if (
-                        current_steps[index]['status'] != PlanStepStatusEnum.SUCCESS
-                    ):  # 如果上一步没成功，退出
-                        break
+                if not tool_attempt_success:
+                    break  # 如果没有成功，退出step for

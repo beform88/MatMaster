@@ -62,6 +62,8 @@ class SceneEnum(DescriptiveEnum):
     SURFACE_ENERGY = ('surface_energy', '')
     STACKING_FAULT_ENERGY = ('stacking_fault_energy', '')
     EOS = ('eos', '')
+    Electron_Localization_Function = ('electron_localization_function', '')
+    Nudged_Elastic_Band = ('nudged_elastic_band', '')
     PHONON = ('phonon', '')
     SCF = ('scf', 'Self-Consistent Field')
     BAND = ('band', '')
