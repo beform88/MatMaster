@@ -982,6 +982,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': '',
+        'bypass_confirmation': True,
     },
     'get_molecule_info': {
         'belonging_agent': StructureGenerateAgentName,
@@ -995,6 +996,29 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': '',
+        'bypass_confirmation': True,
+    },
+    'add_hydrogens': {
+        'belonging_agent': StructureGenerateAgentName,
+        'scene': [SceneEnum.STRUCTURE_SANITIZE, SceneEnum.STRUCTURE_GENERATE],
+        'description': (
+            'What it does: Add hydrogen atoms to a structure.\n'
+            'When to use: Complete structures by adding missing hydrogens.\n'
+            'Prerequisites / Inputs: Structure file path; optional bonding or hydrogen-adding rules.\n'
+            'Outputs: Structure file with hydrogens added.\n'
+            'Cannot do / Limits: No optimization, refinement, or reactions.\n'
+            'Cost / Notes: Low.'
+        ),
+        'args_setting': (
+            'Parameter guidance: structure_path: Required. Input structure file (CIF/POSCAR/XYZ). '
+            'rules: Optional but Critical for precision. Use this to specify customized coordination. '
+            'IMPORTANT: If the user says "do not add H" to specific atoms (e.g., O in ClO4, O in SO4), '
+            'you MUST create a rule for that element (e.g., symbol="O", neighbors=["Cl"]) and set "target_coordination" equal to its current bond count (e.g., 1) '
+            'to explicitly prevent hydrogen addition. '
+            'bond_lengths: Optional. Override default H-X bond lengths. '
+            'output_file: Required. Path to save the hydrogenated structure.'
+        ),
+        'bypass_confirmation': True,
     },
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
@@ -1152,7 +1176,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
     },
-    'visualize_data': {
+    'visualize_data_from_file': {
         'belonging_agent': VisualizerAgentName,
         'scene': [SceneEnum.VISUALIZE_DATA, SceneEnum.UNIVERSAL],
         'description': (
@@ -1161,6 +1185,18 @@ ALL_TOOLS = {
             'Prerequisites / Inputs: Data file URL.\n'
             'Outputs: Plots.\n'
             'Cannot do / Limits: Data files only.\n'
+            'Cost / Notes: Low.'
+        ),
+        'bypass_confirmation': True,
+    },
+    'visualize_data_from_prompt': {
+        'belonging_agent': VisualizerAgentName,
+        'scene': [SceneEnum.VISUALIZE_DATA, SceneEnum.UNIVERSAL],
+        'description': (
+            'What it does: Create plots from prompts.\n'
+            'When to use: Quick visualize data embedded in prompt.\n'
+            'Outputs: Plots.\n'
+            'Cannot do / Limits: Plot requests with valid data only.\n'
             'Cost / Notes: Low.'
         ),
         'bypass_confirmation': True,
