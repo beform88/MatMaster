@@ -19,7 +19,7 @@ from agents.matmaster_agent.flow_agents.step_validation_agent.agent import (
 from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
     STEP_VALIDATION_INSTRUCTION,
 )
-from agents.matmaster_agent.flow_agents.style import separate_card, all_summary_card
+from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     get_agent_name,
