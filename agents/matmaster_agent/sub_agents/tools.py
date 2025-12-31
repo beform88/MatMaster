@@ -175,6 +175,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Only non-charged vacancy of metal atoms; requires supercell for calculation.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': ['apex_calculate_vacancy'],
     },
     'abacus_phonon_dispersion': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -187,6 +188,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Requires DFT; may need supercell for accuracy.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': ['apex_calculate_phonon', 'calculate_phonon'],
     },
     'abacus_cal_band': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -199,6 +201,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based; supports PYATB or ABACUS nscf.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': [],
     },
     'abacus_calculation_scf': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -211,6 +214,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Basic SCF; no relaxation or other properties.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': [],
     },
     'abacus_dos_run': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -223,6 +227,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based; requires relaxation support.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': [],
     },
     'abacus_badercharge_run': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -235,6 +240,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based; requires charge density calculation.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': [],
     },
     'abacus_do_relax': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -247,6 +253,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based relaxation.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': ['apex_optimize_structure', 'optimize_structure'],
     },
     'abacus_cal_work_function': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -259,6 +266,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: For slabs and 2D materials; polar slabs have two work functions.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': [],
     },
     'abacus_run_md': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -271,10 +279,11 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based MD; expensive for long simulations.\n'
             'Cost / Notes: High DFT cost; supports relaxation before calculation.'
         ),
+        'alternative': ['run_molecular_dynamics'],
     },
     'abacus_cal_elf': {
         'belonging_agent': ABACUS_AGENT_NAME,
-        'scene': [SceneEnum.ABACUS],
+        'scene': [SceneEnum.ABACUS, SceneEnum.Electron_Localization_Function],
         'description': (
             'What it does: Calculate electron localization function using DFT.\n'
             'When to use: When you need ELF for bonding analysis.\n'
@@ -283,6 +292,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': [],
     },
     'abacus_eos': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -295,6 +305,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': ['apex_calculate_eos'],
     },
     'abacus_cal_elastic': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -307,6 +318,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
+        'alternative': ['apex_calculate_elastic', 'calculate_elastic_constants'],
     },
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
@@ -319,6 +331,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': ['abacus_vacancy_formation_energy'],
     },
     'apex_optimize_structure': {
         'belonging_agent': ApexAgentName,
@@ -331,6 +344,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': ['abacus_do_relax', 'optimize_structure'],
     },
     'apex_calculate_interstitial': {
         'belonging_agent': ApexAgentName,
@@ -343,6 +357,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': [],
     },
     'apex_calculate_elastic': {
         'belonging_agent': ApexAgentName,
@@ -355,6 +370,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': ['abacus_cal_elastic', 'calculate_elastic_constants'],
     },
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
@@ -367,6 +383,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Cannot build slab structures; DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': [],
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
@@ -379,6 +396,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': ['abacus_eos'],
     },
     'apex_calculate_phonon': {
         'belonging_agent': ApexAgentName,
@@ -391,6 +409,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': ['abacus_phonon_dispersion', 'calculate_phonon'],
     },
     'apex_calculate_gamma': {
         'belonging_agent': ApexAgentName,
@@ -403,6 +422,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DFT-based.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
+        'alternative': [],
     },
     'get_target_info': {
         'belonging_agent': UniELFAgentName,
@@ -415,6 +435,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specific to Uni-ELF system.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'unielf_inference': {
         'belonging_agent': UniELFAgentName,
@@ -427,6 +448,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Supports mixtures and pseudo-formulations.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
         'summary_prompt': (
             'Summarize the Uni-ELF inference results based on the output:\n'
             '1. Report the url to the full results CSV file (`result_csv`).\n'
@@ -464,6 +486,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specific to perovskite database.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'sql_database_mcp': {
         'belonging_agent': PerovskiteAgentName,
@@ -476,6 +499,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Limited to first k rows.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'Unimol_Predict_Perovskite_Additive': {
         'belonging_agent': PerovskiteAgentName,
@@ -488,6 +512,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specific to perovskite additives.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     # 'validate_smiles': {
     #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
@@ -505,6 +530,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Cannot build doping structures; requires proxy model.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'run_doe_task': {
         'belonging_agent': DOE_AGENT_NAME,
@@ -517,6 +543,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Limited to supported algorithms.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
@@ -529,6 +556,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Cannot retrieve from internet; local PDFs only.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': ['file_parse', 'extract_material_data_from_webpage'],
         'bypass_confirmation': True,
     },
     'optimize_structure': {
@@ -543,6 +571,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low relative to DFT.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
+        'alternative': ['apex_optimize_structure', 'abacus_do_relax'],
     },
     'run_molecular_dynamics': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -556,6 +585,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium; scales with system size and steps.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
+        'alternative': ['abacus_run_md'],
     },
     'calculate_phonon': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -569,6 +599,7 @@ ALL_TOOLS = {
             'Cost / Notes: High; scales with supercell size.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
+        'alternative': ['abacus_phonon_dispersion', 'apex_calculate_phonon'],
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -582,10 +613,11 @@ ALL_TOOLS = {
             'Cost / Notes: Medium; scales with system size and deformation settings.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
+        'alternative': ['abacus_cal_elastic', 'apex_calculate_elastic'],
     },
     'run_neb': {
         'belonging_agent': DPACalulator_AGENT_NAME,
-        'scene': [SceneEnum.DPA],
+        'scene': [SceneEnum.DPA, SceneEnum.Nudged_Elastic_Band],
         'description': (
             'What it does: Run a Nudged Elastic Band (NEB) calculation with a machine-learning potential to estimate minimum energy path and barrier.\n'
             'When to use: You have initial/final states (and optionally an initial guess path) and need a fast barrier estimate.\n'
@@ -595,6 +627,7 @@ ALL_TOOLS = {
             'Cost / Notes: High relative to single relax; cost scales with number of images and system size.'
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
+        'alternative': [],
     },
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
@@ -608,6 +641,7 @@ ALL_TOOLS = {
             'Cost / Notes: High.'
         ),
         'args_setting': 'Do NOT omit parameters that have default values. If the user does not provide a value, you MUST use the default value defined in the input parameters and include that field in the tool call. Only parameters without defaults are truly required and must be filled from user input.',
+        'alternative': [],
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -620,6 +654,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specific to HEA.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'HEA_predictor': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -632,6 +667,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Uses pre-trained ML model.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'HEA_comps_generator': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -644,6 +680,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Adjusts one element at a time.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'HEA_data_extract': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -656,6 +693,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: PDF format only.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'HEA_paper_search': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -668,6 +706,11 @@ ALL_TOOLS = {
             'Cannot do / Limits: arXiv only.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [
+            'query_heakb_literature',
+            'search-papers-enhanced',
+            'web-search',
+        ],
     },
     'HEA_bi_phase_Calc': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -680,6 +723,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Binary pairs only.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'generate_binary_phase_diagram': {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
@@ -692,12 +736,14 @@ ALL_TOOLS = {
             'Cannot do / Limits: If no dataset/computation route is available, the tool will return an error; results depend on data coverage and model assumptions.\n'
             'Cost / Notes: Medium; faster with cached datasets.'
         ),
+        'alternative': [],
     },
     'query_heakb_literature': {
         'belonging_agent': HEA_KB_AGENT_NAME,
         'scene': [SceneEnum.HIGH_ENTROPY_ALLOY],
         'description': HEAKbAgentToolDescription,
         'args_setting': f"{HEAKbAgentArgsSetting}",
+        'alternative': ['HEA_paper_search', 'search-papers-enhanced', 'web-search'],
         'summary_prompt': HEAKbAgentSummaryPrompt,
     },
     'query_ssekb_literature': {
@@ -705,6 +751,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.Solid_State_Electrolyte],
         'description': SSEKbAgentToolDescription,
         'args_setting': f"{SSEKbAgentArgsSetting}",
+        'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': SSEKbAgentSummaryPrompt,
     },
     'query_polymerkb_literature': {
@@ -712,6 +759,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.POLYMER],
         'description': POLYMERKbAgentToolDescription,
         'args_setting': f"{POLYMERKbAgentArgsSetting}",
+        'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': POLYMERKbAgentSummaryPrompt,
     },
     'query_steelkb_literature': {
@@ -719,6 +767,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.STEEL],
         'description': STEELKbAgentToolDescription,
         'args_setting': f"{STEELKbAgentArgsSetting}",
+        'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': STEELKbAgentSummaryPrompt,
     },
     'predict_tensile_strength': {
@@ -726,6 +775,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.STEEL],
         'description': STEELPredictAgentToolDescription,
         'args_setting': f"{STEELPredictAgentArgsSetting}",
+        'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': STEELPredictAgentSummaryPrompt,
     },
     'fetch_structures_with_filter': {
@@ -733,6 +783,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeFilterToolDescription,
         'args_setting': f"{OptimadeAgentArgsSetting}",
+        'alternative': [
+            'fetch_bohrium_crystals',
+            'fetch_openlam_structures',
+            'web-search',
+        ],
         'summary_prompt': OptimadeAgentSummaryPrompt,
     },
     'fetch_structures_with_spg': {
@@ -740,6 +795,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeSpgToolDescription,
         'args_setting': f"{OptimadeAgentArgsSetting}",
+        'alternative': [
+            'fetch_bohrium_crystals',
+            'fetch_structures_with_filter',
+            'web-search',
+        ],
         'summary_prompt': OptimadeAgentSummaryPrompt,
     },
     'fetch_structures_with_bandgap': {
@@ -747,6 +807,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeBandgapToolDescription,
         'args_setting': f"{OptimadeAgentArgsSetting}",
+        'alternative': [
+            'fetch_bohrium_crystals',
+            'fetch_structures_with_filter',
+            'web-search',
+        ],
         'summary_prompt': OptimadeAgentSummaryPrompt,
     },
     'fetch_bohrium_crystals': {
@@ -754,6 +819,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': BohriumPublicAgentToolDescription,
         'args_setting': f"{BohriumPublicAgentArgsSetting}",
+        'alternative': [
+            'fetch_structures_with_filter',
+            'web-search',
+            'fetch_openlam_structures',
+        ],
         'summary_prompt': BohriumPublicAgentSummaryPrompt,
     },
     'fetch_openlam_structures': {
@@ -761,6 +831,11 @@ ALL_TOOLS = {
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OpenlamAgentToolDescription,
         'args_setting': f"{OpenlamAgentArgsSetting}",
+        'alternative': [
+            'fetch_structures_with_filter',
+            'web-search',
+            'fetch_openlam_structures',
+        ],
         'summary_prompt': OpenlamAgentSummaryPrompt,
     },
     'fetch_mofs_sql': {
@@ -768,6 +843,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': MofdbAgentToolDescription,
         'args_setting': f"{MofdbAgentArgsSetting}",
+        'alternative': ['web-search'],
         'summary_prompt': MofdbAgentSummaryPrompt,
     },
     'calculate_reaction_profile': {
@@ -781,6 +857,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specific to reactions.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'run_piloteye': {
         'belonging_agent': PILOTEYE_ELECTRO_AGENT_NAME,
@@ -793,6 +870,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Built-in molecule library; complete workflow.\n'
             'Cost / Notes: High.'
         ),
+        'alternative': [],
     },
     # 'deep_research_agent': {
     #     'belonging_agent': SSEBRAIN_AGENT_NAME,
@@ -816,6 +894,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'args_setting': 'Parameter guidance: n_tot=10–30 gives reasonable diversity without excessive cost. Elements must be from the supported list (H–Bi, Ac–Pu). Output is a set of POSCAR files; downstream relaxation is strongly recommended.',
+        'alternative': [],
     },
     'generate_crystalformer_structures': {
         'belonging_agent': StructureGenerateAgentName,
@@ -829,6 +908,7 @@ ALL_TOOLS = {
             'Cost / Notes: High; uses generative model.'
         ),
         'args_setting': 'Parameter guidance: Supported properties: bandgap (eV), shear_modulus, bulk_modulus (both log₁₀ GPa), superconducting ambient_pressure/high_pressure (K), sound (m/s). For target_type="minimize", use small target (e.g., 0.1) and low alpha (0.01); for "equal", "greater", "less", use alpha=1.0. mc_steps=500 balances convergence and speed; increase to 2000 for high-accuracy targets. sample_num=20–100 recommended; distribute across space groups if random_spacegroup_num>0. Critical: Space group must be explicitly specified by the user — no defaults or auto-inference.',
+        'alternative': [],
     },
     'make_supercell_structure': {
         'belonging_agent': StructureGenerateAgentName,
@@ -842,6 +922,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': "Parameter guidance: Primarily follow user's instrucution. If not specified, firstly get structure information to understand the raw lattice. An ideal supercell for computation is isotropic. For example, the raw lattice is (4 A, 10 A, 12 A, 90 deg, 90 deg, 90 deg), the supercell should be 5 × 2 × 2. 30-50 angstrom is often appropriate for simulations. Avoid overly large cells unless needed for long-range interactions.",
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'build_bulk_structure_by_template': {
@@ -856,6 +937,11 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Lattice constant requirements due to symmetry constraints: sc/fcc/bcc/diamond/rocksalt/cesiumchloride/zincblende/fluorite → only a; hcp/wurtzite → a and c; orthorhombic/monoclinic → a, b, c. Set conventional=True by default unless primitive cell is explicitly required. For elements, use element symbols; for compounds, use chemical formula (e.g., "NaCl"). {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [
+            'fetch_bohrium_crystals',
+            'fetch_structures_with_filter',
+            'build_bulk_structure_by_wyckoff',
+        ],
         'bypass_confirmation': True,
     },
     'build_surface_slab': {
@@ -870,6 +956,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Prefer slab_size_mode="layers" with slab_size_value=4–6 for stability; or "thickness" with ≥12 Å for electronic convergence. Use vacuum=15–20 Å to minimize spurious interactions. For polar surfaces or systems with strong dipoles, increase vacuum to ensure the electrostatic potential flattens in the vacuum region. Enable repair=True for covalent materials (e.g., drug-like molecule crystals, oragnic-inorganic hybrids, MOFs); Set false for regular sphrical-like inorganic crystals. Gets slow if set True. Default termination="auto" usually selects the most stoichiometric termination. {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'build_surface_adsorbate': {
@@ -884,6 +971,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: height=2.0 Å is typical for physisorption; reduce to 1.5–1.8 Å for chemisorption (e.g., CO on Pt). For high-symmetry sites, use string keywords ("ontop", "fcc", "hcp"); for custom placement, supply [x, y] fractional coordinates. {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'build_surface_interface': {
@@ -898,6 +986,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Keep max_strain=0.05 (5%) for physical relevance; relax only if intentional strain engineering is intended. Try combinding make_supercell and get_structural_info to obtain the appropriate size of the two slabs. interface_distance=2.5 Å is safe for van der Waals gaps; reduce to 1.8–2.0 Å for covalent bonding (e.g., heterostructures with orbital overlap). {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'add_cell_for_molecules': {
@@ -912,6 +1001,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: For non-periodic system aiming to run calculations with periodic boundary conditions required (e.g., DFT calculations with ABACUS), use add_cell_for_molecules to put the system in a large cell. Default cell [10, 10, 10] Å and vacuum = 5 Å are suitable for most gas-phase molecules; increase to ≥15 Å and ≥8 Å vacuum for polar or diffuse systems (e.g., anions, excited states). {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'build_bulk_structure_by_wyckoff': {
@@ -926,6 +1016,11 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Space Group: Integer (e.g., 225) or Symbol (e.g., "Fm-3m"). Wyckoff Consistency: The provided coordinates must mathematically belong to the specific Wyckoff position (e.g., if using position 4a at (0,0,0), do not input (0.5, 0.5, 0) just because it\'s in the same unit cell; only input the canonical generator). Lattice: Angles in degrees, lengths in Å. Fractional Coordinates: Must be in [0, 1). Strictly Use the Asymmetric Unit: You must provide only the generating coordinates for each Wyckoff orbit. Do NOT Pre-calculate Symmetry: The function will automatically apply all space group operators to your input. If you manually input coordinates that are already symmetry-equivalent (e.g., providing both (x, y, z) and (-x, -y, -z) in a centrosymmetric structure), the function will generate them again, causing catastrophic atom overlapping. Redundancy Rule: Before adding a coordinate, check if it can be generated from an existing input coordinate via any operator in the Space Group. If yes, discard it. One Wyckoff letter = One coordinate triplet input. {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [
+            'fetch_bohrium_crystals',
+            'fetch_structures_with_filter',
+            'build_bulk_structure_by_template',
+        ],
         'bypass_confirmation': True,
     },
     'build_molecule_structures_from_smiles': {
@@ -940,6 +1035,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'{STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'make_doped_structure': {
@@ -954,6 +1050,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': f'Parameter guidance: Fractions are applied per-site; actual doping % may differ slightly in small cells — recommend ≥2×2×2 supercells for <10% doping. Covalent ions (ammonium, formamidinium, etc.) are supported via built-in library; specify by name (e.g., "ammonium"). {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'make_amorphous_structure': {
@@ -968,6 +1065,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'args_setting': f'Parameter guidance: Input Constraint: Specify exactly two of: box_size, density, molecule_numbers. The third is derived. Density Regimes (CRITICAL): Solids/Liquids: Target ~0.9–1.2 g/cm³ (e.g., water ~1.0, polymers ~1.1). Gases/Vapors: Target orders of magnitude lower (e.g., ~0.001–0.002 g/cm³ for STP gases). Warning: Do not apply default liquid densities to gas inputs. If simulating a specific pressure, pre-calculate the required number of molecules N for the given Box Volume V (using Ideal Gas Law), then fix box_size and molecule_numbers. Composition: Use composition for multi-component mixtures; otherwise equal molar ratios are assumed. Packing Geometry: Box Size: For gases, ensure the box is large enough (usually >15 Å) to minimize unphysical periodic self-interactions, even if the density is low. {STRUCTURE_BUILDING_SAVENAME}',
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'get_structure_info': {
@@ -982,6 +1080,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': '',
+        'alternative': ['file_parse'],
         'bypass_confirmation': True,
     },
     'get_molecule_info': {
@@ -996,6 +1095,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': '',
+        'alternative': ['file_parse'],
         'bypass_confirmation': True,
     },
     'add_hydrogens': {
@@ -1018,6 +1118,7 @@ ALL_TOOLS = {
             'bond_lengths: Optional. Override default H-X bond lengths. '
             'output_file: Required. Path to save the hydrogenated structure.'
         ),
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'run_superconductor_optimization': {
@@ -1031,6 +1132,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Only geometry optimization.\n'
             'Cost / Notes: High (DPA calculations).'
         ),
+        'alternative': [],
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
@@ -1043,6 +1145,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Superconductor-specific only.\n'
             'Cost / Notes: High (DPA calculations).'
         ),
+        'alternative': ['predict_superconductor_Tc'],
     },
     'predict_superconductor_Tc': {
         'belonging_agent': SuperconductorAgentName,
@@ -1055,6 +1158,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: DPA model only.\n'
             'Cost / Notes: High (ML predictions).'
         ),
+        'alternative': ['calculate_superconductor_enthalpy'],
     },
     'screen_superconductor': {
         'belonging_agent': SuperconductorAgentName,
@@ -1067,6 +1171,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Multiple candidates only.\n'
             'Cost / Notes: High (batch DPA).'
         ),
+        'alternative': [],
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1079,6 +1184,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: No thermal conductivity.\n'
             'Cost / Notes: High (DPA predictions).'
         ),
+        'alternative': [],
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1091,6 +1197,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Thermoelectric-specific.\n'
             'Cost / Notes: High (DPA calculations).'
         ),
+        'alternative': [],
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1103,6 +1210,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Thermoelectric-specific.\n'
             'Cost / Notes: High (DPA calculations).'
         ),
+        'alternative': [],
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1115,6 +1223,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Requires multiple inputs.\n'
             'Cost / Notes: High (batch DPA).'
         ),
+        'alternative': [],
     },
     'traj_analysis_diffusion': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1127,6 +1236,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Post-MD analysis only.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'traj_analysis_rdf': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1139,6 +1249,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Post-MD analysis only.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'traj_analysis_solvation': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1151,6 +1262,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Post-MD analysis only.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'traj_analysis_bond': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1163,6 +1275,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Post-MD analysis only.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'traj_analysis_react': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1175,6 +1288,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Post-MD analysis only.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'visualize_data_from_file': {
         'belonging_agent': VisualizerAgentName,
@@ -1187,6 +1301,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Data files only.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'visualize_data_from_prompt': {
@@ -1199,6 +1314,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Plot requests with valid data only.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'convert_lammps_structural_format': {
@@ -1212,6 +1328,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Format conversion only.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'run_lammps': {
         'belonging_agent': LAMMPS_AGENT_NAME,
@@ -1224,6 +1341,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Requires LAMMPS format.\n'
             'Cost / Notes: High (simulation time).'
         ),
+        'alternative': [],
     },
     'orchestrate_lammps_input': {
         'belonging_agent': LAMMPS_AGENT_NAME,
@@ -1236,6 +1354,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Script generation only.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
@@ -1254,69 +1373,8 @@ ALL_TOOLS = {
             Must be aware of these prior knowledge:
             - {ALIAS_SEARCH_PROMPT}
         """,
+        'alternative': ['web-search'],
         'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
-        'bypass_confirmation': True,
-    },
-    'build_convex_hull': {
-        'belonging_agent': ConvexHullAgentName,
-        'scene': [SceneEnum.CONVEXHULL],
-        'description': (
-            'What it does: Build convex hull diagrams.\n'
-            'When to use: Assess thermodynamic stability.\n'
-            'Prerequisites / Inputs: Material structures.\n'
-            'Outputs: Convex hull, stable phases.\n'
-            'Cannot do / Limits: General materials only.\n'
-            'Cost / Notes: High (DPA calculations).'
-        ),
-    },
-    'NMR_search_tool': {
-        'belonging_agent': NMR_AGENT_NAME,
-        'scene': [SceneEnum.NMR],
-        'description': (
-            'What it does: Search a molecular database by NMR spectroscopic features to retrieve candidate structures.\n'
-            'When to use: You have NMR peak/shift patterns and want likely matching molecules.\n'
-            'Prerequisites / Inputs: NMR features (e.g., shifts, multiplicities, coupling, nucleus type) in the tool-accepted schema; optional tolerance settings.\n'
-            'Outputs: Ranked candidate molecules/structures with match scores and key evidence fields.\n'
-            'Cannot do / Limits: Not a definitive identification; results depend on database coverage and feature quality.\n'
-            'Cost / Notes: Medium; tighter tolerances increase runtime and reduce recall.'
-        ),
-    },
-    'NMR_predict_tool': {
-        'belonging_agent': NMR_AGENT_NAME,
-        'scene': [SceneEnum.NMR],
-        'description': (
-            'What it does: Predict NMR spectroscopic properties for molecular structures.\n'
-            'When to use: When you need simulated NMR chemical shifts.\n'
-            'Prerequisites / Inputs: SMILES strings.\n'
-            'Outputs: Predicted NMR shifts and similarity scores.\n'
-            'Cannot do / Limits: 1H and 13C only.\n'
-            'Cost / Notes: Medium.'
-        ),
-    },
-    'NMR_reverse_predict_tool': {
-        'belonging_agent': NMR_AGENT_NAME,
-        'scene': [SceneEnum.NMR],
-        'description': (
-            'What it does: Generate candidate molecular structures from NMR spectroscopic data.\n'
-            'When to use: When you have NMR data and need structure candidates.\n'
-            'Prerequisites / Inputs: NMR spectroscopic data.\n'
-            'Outputs: Candidate molecular structures.\n'
-            'Cannot do / Limits: Based on NMR features.\n'
-            'Cost / Notes: Medium.'
-        ),
-    },
-    'extract_info_from_webpage': {
-        'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
-        'scene': [SceneEnum.UNIVERSAL],
-        'description': (
-            'What it does: Extract key information from a webpage URL.\n'
-            'When to use: When you need scientific facts, data, or findings from a webpage.\n'
-            'Prerequisites / Inputs: Webpage URL.\n'
-            'Outputs: Extracted information in text form.\n'
-            'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
-            'Cost / Notes: Low.'
-        ),
-        'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
     },
     'web-search': {
@@ -1330,7 +1388,75 @@ ALL_TOOLS = {
             'Cannot do / Limits: No command-type queries; follow up with extract_info_from_webpage.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
         'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
+        'bypass_confirmation': True,
+    },
+    'build_convex_hull': {
+        'belonging_agent': ConvexHullAgentName,
+        'scene': [SceneEnum.CONVEXHULL],
+        'description': (
+            'What it does: Build convex hull diagrams.\n'
+            'When to use: Assess thermodynamic stability.\n'
+            'Prerequisites / Inputs: Material structures.\n'
+            'Outputs: Convex hull, stable phases.\n'
+            'Cannot do / Limits: General materials only.\n'
+            'Cost / Notes: High (DPA calculations).'
+        ),
+        'alternative': [],
+    },
+    'NMR_search_tool': {
+        'belonging_agent': NMR_AGENT_NAME,
+        'scene': [SceneEnum.NMR],
+        'description': (
+            'What it does: Search a molecular database by NMR spectroscopic features to retrieve candidate structures.\n'
+            'When to use: You have NMR peak/shift patterns and want likely matching molecules.\n'
+            'Prerequisites / Inputs: NMR features (e.g., shifts, multiplicities, coupling, nucleus type) in the tool-accepted schema; optional tolerance settings.\n'
+            'Outputs: Ranked candidate molecules/structures with match scores and key evidence fields.\n'
+            'Cannot do / Limits: Not a definitive identification; results depend on database coverage and feature quality.\n'
+            'Cost / Notes: Medium; tighter tolerances increase runtime and reduce recall.'
+        ),
+        'alternative': [],
+    },
+    'NMR_predict_tool': {
+        'belonging_agent': NMR_AGENT_NAME,
+        'scene': [SceneEnum.NMR],
+        'description': (
+            'What it does: Predict NMR spectroscopic properties for molecular structures.\n'
+            'When to use: When you need simulated NMR chemical shifts.\n'
+            'Prerequisites / Inputs: SMILES strings.\n'
+            'Outputs: Predicted NMR shifts and similarity scores.\n'
+            'Cannot do / Limits: 1H and 13C only.\n'
+            'Cost / Notes: Medium.'
+        ),
+        'alternative': [],
+    },
+    'NMR_reverse_predict_tool': {
+        'belonging_agent': NMR_AGENT_NAME,
+        'scene': [SceneEnum.NMR],
+        'description': (
+            'What it does: Generate candidate molecular structures from NMR spectroscopic data.\n'
+            'When to use: When you have NMR data and need structure candidates.\n'
+            'Prerequisites / Inputs: NMR spectroscopic data.\n'
+            'Outputs: Candidate molecular structures.\n'
+            'Cannot do / Limits: Based on NMR features.\n'
+            'Cost / Notes: Medium.'
+        ),
+        'alternative': [],
+    },
+    'extract_info_from_webpage': {
+        'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
+        'scene': [SceneEnum.UNIVERSAL],
+        'description': (
+            'What it does: Extract key information from a webpage URL.\n'
+            'When to use: When you need scientific facts, data, or findings from a webpage.\n'
+            'Prerequisites / Inputs: Webpage URL.\n'
+            'Outputs: Extracted information in text form.\n'
+            'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
+            'Cost / Notes: Low.'
+        ),
+        'alternative': [],
+        'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
     },
     'xrd_parse_file': {
@@ -1344,6 +1470,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Not support .raw and .mdi format files.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'xrd_phase_identification': {
         'belonging_agent': XRD_AGENT_NAME,
@@ -1356,6 +1483,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Requires processed data.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'get_electron_microscope_recognize': {
         'belonging_agent': Electron_Microscope_AGENT_NAME,
@@ -1363,11 +1491,12 @@ ALL_TOOLS = {
         'description': (
             'What it does: Analyze electron microscope images for particles and morphology.\n'
             'When to use: When you have TEM/SEM images to analyze.\n'
-            'Prerequisites / Inputs: Electron microscope images.\n'
+            'Prerequisites / Inputs: Electron microscope images(.tif, .tiff, .png, .jpeg, .jpg).\n'
             'Outputs: Detected particles, morphology, geometric properties.\n'
-            'Cannot do / Limits: Computer vision-based.\n'
+            'Cannot do / Limits: Only support .tif, .tiff, .png, .jpeg, .jpg format files.\n'
             'Cost / Notes: Medium.'
         ),
+        'alternative': [],
     },
     'llm_tool': {
         'belonging_agent': TOOL_AGENT_NAME,
@@ -1380,6 +1509,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: General purpose.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
         'bypass_confirmation': True,
     },
     'physical_adsorption_echart_data': {
@@ -1393,6 +1523,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specific to physical adsorption.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
     },
     'file_parse': {
         'belonging_agent': FILE_PARSE_AGENT_NAME,
@@ -1405,6 +1536,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
             'Cost / Notes: Low.'
         ),
+        'alternative': [],
         'bypass_confirmation': True,
     },
 }

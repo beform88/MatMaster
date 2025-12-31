@@ -132,3 +132,17 @@ def should_bypass_confirmation(ctx: InvocationContext) -> bool:
             return True
 
     return False
+
+
+def find_alternative_tool(current_tool_name: str) -> Optional[str]:
+    """Find an alternative tool for the current tool.
+
+    Priority order:
+    1. Pre-defined alternatives in ALL_TOOLS
+    """
+    if current_tool_name not in ALL_TOOLS:
+        return None
+
+    current_tool_info = ALL_TOOLS[current_tool_name]
+
+    return current_tool_info.get('alternative', [])
