@@ -4,20 +4,25 @@ from typing import AsyncGenerator, override
 
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
-from pydantic import model_validator
+from opik.integrations.adk import track_adk_agent_recursive
+from pydantic import computed_field, model_validator
 
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
+from agents.matmaster_agent.config import MAX_TOOL_RETRIES
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
+    DisallowTransferAndContentLimitSchemaAgent,
+)
 from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
     DisallowTransferAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.flow_agents.step_validation_agent.agent import (
-    StepValidationAgent,
-)
 from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
     STEP_VALIDATION_INSTRUCTION,
+)
+from agents.matmaster_agent.flow_agents.step_validation_agent.schema import (
+    StepValidationSchema,
 )
 from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.flow_agents.utils import (
@@ -60,23 +65,37 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
         ]
 
         # Initialize validation agent
-        self._validation_agent = StepValidationAgent(state_key='step_validation')
+        self._validation_agent = DisallowTransferAndContentLimitSchemaAgent(
+            name='step_validation_agent',
+            model=MatMasterLlmConfig.tool_schema_model,
+            description='校验步骤执行结果是否合理',
+            instruction=STEP_VALIDATION_INSTRUCTION,
+            output_schema=StepValidationSchema,
+            state_key='step_validation',
+        )
+
+        self.sub_agents += self.validation_agent
+        track_adk_agent_recursive(self.validation_agent, MatMasterLlmConfig.opik_tracer)
 
         return self
+
+    @computed_field
+    @property
+    def validation_agent(self) -> DisallowTransferAndContentLimitSchemaAgent:
+        return self._validation_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
         plan = ctx.session.state['plan']
         logger.info(f'{ctx.session.id} plan = {plan}')
-        steps = plan['steps']
 
-        for index, step in enumerate(steps):
+        for index, step in enumerate(plan['steps']):
             if step.get('tool_name'):
-                tried_tools = [step['tool_name']]
                 current_tool_name = step['tool_name']
+                tried_tools = [current_tool_name]
                 alternatives = find_alternative_tool(current_tool_name)
-                tool_attempt_success = False
 
+                tool_attempt_success = False
                 while not tool_attempt_success:
                     target_agent = get_agent_name(current_tool_name, self.sub_agents)
                     logger.info(
@@ -88,9 +107,10 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                         PlanStepStatusEnum.FAILED,
                         PlanStepStatusEnum.SUBMITTED,
                     ]:
-                        max_retries = 2
                         retry_count = 0
-                        while retry_count <= max_retries:
+                        validation_reason = ''
+                        # 同一工具重试
+                        while retry_count <= MAX_TOOL_RETRIES:
                             if step['status'] != PlanStepStatusEnum.SUBMITTED:
                                 update_plan = copy.deepcopy(ctx.session.state['plan'])
                                 update_plan['steps'][index][
@@ -119,8 +139,8 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             logger.info(
                                 f'{ctx.session.id} Before Run: plan_index = {ctx.session.state["plan_index"]}, plan = {ctx.session.state['plan']}'
                             )
-                            if retry_count != 0:
-                                separate_card_info = 'ReExecuteSteps'
+                            if retry_count:
+                                separate_card_info = 'ReExecuteStep'
                             else:
                                 separate_card_info = 'Step'
 
@@ -141,36 +161,27 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             )
 
                             current_steps = ctx.session.state['plan']['steps']
+
+                            # 工具调用结果返回【成功】
                             if (
                                 current_steps[index]['status']
                                 == PlanStepStatusEnum.SUCCESS
                             ):
-                                # 执行结果校验
-                                # 获取执行结果 - 从步骤状态或最近的事件中提取
-                                execution_result = current_steps[index].get(
-                                    'result', ''
+                                # 对成功的工具调用结果进行校验
+                                lines = (
+                                    f"用户原始请求: {ctx.user_content.parts[0].text}",
+                                    f"当前步骤描述: {step['description']}",
+                                    f"工具名称: {current_tool_name}",
+                                    '请根据以上信息判断，工具的参数配置及对应的执行结果是否严格满足用户原始需求。',
                                 )
-                                if not execution_result:
-                                    # 尝试从会话状态获取最后的结果
-                                    execution_result = ctx.session.state.get(
-                                        'last_execution_result', ''
-                                    )
-
-                                validation_instruction = f"""
-                                用户原始请求: {ctx.user_content.parts[0].text}
-                                当前步骤描述: {step['description']}
-                                工具名称: {current_tool_name}
-                                步骤执行结果: {execution_result}
-
-                                请根据以上信息判断，工具的参数配置及对应的执行结果是否严格满足用户原始需求。
-                                """
-                                self._validation_agent.instruction = (
+                                validation_instruction = '\n'.join(lines)
+                                self.validation_agent.instruction = (
                                     STEP_VALIDATION_INSTRUCTION + validation_instruction
                                 )
 
                                 async for (
                                     validation_event
-                                ) in self._validation_agent.run_async(ctx):
+                                ) in self.validation_agent.run_async(ctx):
                                     yield validation_event
 
                                 validation_result = ctx.session.state.get(
@@ -179,7 +190,8 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 is_valid = validation_result.get('is_valid', True)
                                 validation_reason = validation_result.get('reason', '')
 
-                                if (not is_valid) and retry_count < max_retries:
+                                # “假成功”结果，计划重试
+                                if (not is_valid) and retry_count < MAX_TOOL_RETRIES:
                                     retry_count += 1
                                     logger.warning(
                                         f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
@@ -194,7 +206,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     ):
                                         yield validation_failed_event
 
-                                    # 校验失败，标记为失败状态并准备重试
+                                    # 重新标记为进行中状态，准备重试
                                     update_plan = copy.deepcopy(
                                         ctx.session.state['plan']
                                     )
@@ -211,7 +223,6 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     yield update_state_event(
                                         ctx, state_delta={'plan': update_plan}
                                     )
-                                    # 继续循环进行重试
                                 else:
                                     # 校验成功，步骤完成
                                     tool_attempt_success = True
@@ -219,7 +230,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             elif (
                                 current_steps[index]['status']
                                 == PlanStepStatusEnum.FAILED
-                                and retry_count < max_retries
+                                and retry_count < MAX_TOOL_RETRIES
                             ):
                                 retry_count += 1
 
@@ -227,7 +238,6 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 retry_message = (
                                     f"步骤 {index + 1} 执行失败，正在准备重试..."
                                 )
-
                                 for retry_event in all_text_event(
                                     ctx,
                                     self.name,
@@ -236,44 +246,33 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 ):
                                     yield retry_event
 
+                                update_plan = copy.deepcopy(ctx.session.state['plan'])
+                                update_plan['steps'][index][
+                                    'status'
+                                ] = PlanStepStatusEnum.PROCESS
                                 if validation_reason:
                                     logger.info(
-                                        f'{ctx.session.id} Step {index + 1} failed due to validation, retrying {retry_count}/{max_retries}. Reason: {validation_reason}'
+                                        f'{ctx.session.id} Step {index + 1} failed due to validation, retrying {retry_count}/{MAX_TOOL_RETRIES}. Reason: {validation_reason}'
                                     )
                                     # 在重试时更新步骤描述，包含校验失败的原因
-                                    update_plan = copy.deepcopy(
-                                        ctx.session.state['plan']
-                                    )
                                     original_description = step['description']
                                     update_plan['steps'][index][
                                         'description'
                                     ] = f"{original_description}\n\n注意：上次执行因以下原因校验失败，请改进：{validation_reason}"
-                                    update_plan['steps'][index][
-                                        'status'
-                                    ] = PlanStepStatusEnum.PROCESS
-                                    yield update_state_event(
-                                        ctx, state_delta={'plan': update_plan}
-                                    )
                                 else:
                                     logger.info(
-                                        f'{ctx.session.id} Step {index + 1} execution failed, retrying {retry_count}/{max_retries}'
-                                    )
-                                    # 重置状态为 PROCESS 以便重试
-                                    update_plan = copy.deepcopy(
-                                        ctx.session.state['plan']
-                                    )
-                                    update_plan['steps'][index][
-                                        'status'
-                                    ] = PlanStepStatusEnum.PROCESS
-                                    yield update_state_event(
-                                        ctx, state_delta={'plan': update_plan}
+                                        f'{ctx.session.id} Step {index + 1} execution failed, retrying {retry_count}/{MAX_TOOL_RETRIES}'
                                     )
 
+                                # 重置状态为 PROCESS 以便重试
+                                yield update_state_event(
+                                    ctx, state_delta={'plan': update_plan}
+                                )
                             else:
                                 # 其他状态（SUBMITTED等），退出循环
                                 break
 
-                        # 如果retry循环结束后仍未成功，尝试alternative工具
+                        # 如果同一工具重试 MAX_TOOL_RETRIES 后仍未成功，尝试其他工具
                         if not tool_attempt_success:
                             available_alts = [
                                 alt for alt in alternatives if alt not in tried_tools
@@ -295,6 +294,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 logger.info(
                                     f'{ctx.session.id} Switching to alternative tool: {next_tool} for step {index + 1}'
                                 )
+
                                 # 更新plan中的tool_name和status
                                 update_plan = copy.deepcopy(ctx.session.state['plan'])
                                 update_plan['steps'][index]['tool_name'] = next_tool
@@ -313,8 +313,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     ctx, state_delta={'plan': update_plan}
                                 )
                             else:
-
-                                logger.info(
+                                logger.warning(
                                     f'{ctx.session.id} No more alternative tools for step {index + 1}'
                                 )
                                 break  # 退出tool while
