@@ -301,8 +301,14 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 update_plan['steps'][index][
                                     'status'
                                 ] = PlanStepStatusEnum.PROCESS
-                                original_description = step['description'].split('\n\n注意：')[0]  # 移除之前的失败原因
-                                update_plan['steps'][index]['description'] = original_description
+                                original_description = step['description'].split(
+                                    '\n\n注意：'
+                                )[
+                                    0
+                                ]  # 移除之前的失败原因
+                                update_plan['steps'][index][
+                                    'description'
+                                ] = original_description
                                 yield update_state_event(
                                     ctx, state_delta={'plan': update_plan}
                                 )
