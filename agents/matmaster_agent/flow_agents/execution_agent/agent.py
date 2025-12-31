@@ -189,7 +189,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     for validation_failed_event in all_text_event(
                                         ctx,
                                         self.name,
-                                        f"步骤 {index + 1} 结果与用户需求不符：{validation_reason}，正在准备重试...",
+                                        f"步骤 {index + 1} 结果校验未通过：{validation_reason}，正在准备重试...",
                                         ModelRole,
                                     ):
                                         yield validation_failed_event
@@ -221,19 +221,12 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 == PlanStepStatusEnum.FAILED
                                 and retry_count < max_retries
                             ):
-                                # 执行失败，检查是否可以重试
                                 retry_count += 1
-                                validation_reason = current_steps[index].get(
-                                    'validation_failure_reason', ''
-                                )
 
                                 # 向用户显示重试信息
-                                if validation_reason:
-                                    retry_message = f"步骤 {index + 1} 执行失败（校验原因：{validation_reason}），正在准备重试..."
-                                else:
-                                    retry_message = (
-                                        f"步骤 {index + 1} 执行失败，正在准备重试..."
-                                    )
+                                retry_message = (
+                                    f"步骤 {index + 1} 执行失败，正在准备重试..."
+                                )
 
                                 for retry_event in all_text_event(
                                     ctx,
@@ -308,6 +301,8 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 update_plan['steps'][index][
                                     'status'
                                 ] = PlanStepStatusEnum.PROCESS
+                                original_description = step['description'].split('\n\n注意：')[0]  # 移除之前的失败原因
+                                update_plan['steps'][index]['description'] = original_description
                                 yield update_state_event(
                                     ctx, state_delta={'plan': update_plan}
                                 )
