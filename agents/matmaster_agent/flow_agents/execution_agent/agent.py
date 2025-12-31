@@ -290,7 +290,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 for tool_replace_event in all_text_event(
                                     ctx,
                                     self.name,
-                                    f"步骤 {index + 1} 多次重试失败，已找到合适的替代工具：{step['tool_name']} → {available_alts}",
+                                    f"步骤 {index + 1} 多次重试失败，已找到合适的替代工具：{step['tool_name']} → {available_alts[0]}",
                                     ModelRole,
                                 ):
                                     yield tool_replace_event
