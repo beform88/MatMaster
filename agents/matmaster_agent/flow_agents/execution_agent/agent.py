@@ -122,7 +122,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             if retry_count != 0:
                                 separate_card_info = 'ReExecuteSteps'
                             else:
-                                separate_card_info = 'Step' 
+                                separate_card_info = 'Step'
 
                             for step_event in all_text_event(
                                 ctx,
