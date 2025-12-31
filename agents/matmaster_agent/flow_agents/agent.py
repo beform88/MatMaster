@@ -31,9 +31,6 @@ from agents.matmaster_agent.flow_agents.chat_agent.prompt import (
 from agents.matmaster_agent.flow_agents.execution_agent.agent import (
     MatMasterSupervisorAgent,
 )
-from agents.matmaster_agent.flow_agents.execution_result_agent.prompt import (
-    PLAN_EXECUTION_CHECK_INSTRUCTION,
-)
 from agents.matmaster_agent.flow_agents.expand_agent.agent import ExpandAgent
 from agents.matmaster_agent.flow_agents.expand_agent.prompt import EXPAND_INSTRUCTION
 from agents.matmaster_agent.flow_agents.expand_agent.schema import ExpandSchema
@@ -162,13 +159,6 @@ class MatMasterFlowAgent(LlmAgent):
             # instruction=PLAN_INFO_INSTRUCTION,
         )
 
-        execution_result_agent = DisallowTransferAndContentLimitLlmAgent(
-            name='execution_result_agent',
-            model=MatMasterLlmConfig.gpt_5_mini,
-            description='汇总计划的执行情况',
-            instruction=PLAN_EXECUTION_CHECK_INSTRUCTION,
-        )
-
         self._execution_agent = MatMasterSupervisorAgent(
             name='execution_agent',
             model=MatMasterLlmConfig.default_litellm_model,
@@ -177,8 +167,7 @@ class MatMasterFlowAgent(LlmAgent):
             sub_agents=[
                 sub_agent(MatMasterLlmConfig)
                 for sub_agent in AGENT_CLASS_MAPPING.values()
-            ]
-            + [execution_result_agent],
+            ],
         )
 
         self._analysis_agent = DisallowTransferAndContentLimitLlmAgent(
