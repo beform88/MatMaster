@@ -19,7 +19,7 @@ from agents.matmaster_agent.flow_agents.step_validation_agent.agent import (
 from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
     STEP_VALIDATION_INSTRUCTION,
 )
-from agents.matmaster_agent.flow_agents.style import separate_card
+from agents.matmaster_agent.flow_agents.style import separate_card, all_summary_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     get_agent_name,
@@ -167,6 +167,16 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 logger.warning(
                                     f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
                                 )
+                                
+                                # 向用户显示校验失败信息
+                                for validation_failed_event in all_text_event(
+                                    ctx,
+                                    self.name,
+                                    f"步骤 {index + 1} 结果校验失败：{validation_reason}，正在准备重试...",
+                                    ModelRole,
+                                ):
+                                    yield validation_failed_event
+                                
                                 # 校验失败，标记为失败状态并准备重试
                                 update_plan = copy.deepcopy(ctx.session.state['plan'])
                                 update_plan['steps'][index][
@@ -195,6 +205,21 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             validation_reason = current_steps[index].get(
                                 'validation_failure_reason', ''
                             )
+                            
+                            # 向用户显示重试信息
+                            if validation_reason:
+                                retry_message = f"步骤 {index + 1} 执行失败（校验原因：{validation_reason}），正在准备重试..."
+                            else:
+                                retry_message = f"步骤 {index + 1} 执行失败，正在准备重试..."
+                            
+                            for retry_event in all_text_event(
+                                ctx,
+                                self.name,
+                                retry_message,
+                                ModelRole,
+                            ):
+                                yield retry_event
+                            
                             if validation_reason:
                                 logger.info(
                                     f'{ctx.session.id} Step {index + 1} failed due to validation, retrying {retry_count}/{max_retries}. Reason: {validation_reason}'
