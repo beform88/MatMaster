@@ -4,20 +4,23 @@ from typing import AsyncGenerator, override
 
 from google.adk.agents import InvocationContext
 from google.adk.events import Event
-from pydantic import model_validator
+from pydantic import computed_field, model_validator
 
 from agents.matmaster_agent.base_callbacks.public_callback import check_transfer
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
+    DisallowTransferAndContentLimitSchemaAgent,
+)
 from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent import (
     DisallowTransferAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
-from agents.matmaster_agent.flow_agents.step_validation_agent.agent import (
-    StepValidationAgent,
-)
 from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
     STEP_VALIDATION_INSTRUCTION,
+)
+from agents.matmaster_agent.flow_agents.step_validation_agent.schema import (
+    StepValidationSchema,
 )
 from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.flow_agents.utils import (
@@ -60,9 +63,23 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
         ]
 
         # Initialize validation agent
-        self._validation_agent = StepValidationAgent(state_key='step_validation')
+        self._validation_agent = DisallowTransferAndContentLimitSchemaAgent(
+            name='step_validation_agent',
+            model=MatMasterLlmConfig.tool_schema_model,
+            description='校验步骤执行结果是否合理',
+            instruction=STEP_VALIDATION_INSTRUCTION,
+            output_schema=StepValidationSchema,
+            state_key='step_validation',
+        )
+
+        self.sub_agents += self.validation_agent
 
         return self
+
+    @computed_field
+    @property
+    def validation_agent(self) -> DisallowTransferAndContentLimitSchemaAgent:
+        return self._validation_agent
 
     @override
     async def _run_events(self, ctx: InvocationContext) -> AsyncGenerator[Event, None]:
@@ -164,13 +181,13 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
 
                                 请根据以上信息判断，工具的参数配置及对应的执行结果是否严格满足用户原始需求。
                                 """
-                                self._validation_agent.instruction = (
+                                self.validation_agent.instruction = (
                                     STEP_VALIDATION_INSTRUCTION + validation_instruction
                                 )
 
                                 async for (
                                     validation_event
-                                ) in self._validation_agent.run_async(ctx):
+                                ) in self.validation_agent.run_async(ctx):
                                     yield validation_event
 
                                 validation_result = ctx.session.state.get(
