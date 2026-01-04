@@ -91,6 +91,7 @@ class SceneEnum(DescriptiveEnum):
         'Involves predicting the NMR spectra of organic molecules or deducing molecular structures from NMR spectra',
     )
     XRD = ('XRD', 'Involving XRD raw data analysis and phase identification')
+    TPD = ('TPD', 'Involving Temperature Programmed Desorption (TPD) data analysis')
     PHYSICAL_ADSORPTION = ('physical_adsorption', '')
     Electron_Microscope = (
         'electron_microscope',
