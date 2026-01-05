@@ -41,7 +41,7 @@ class HumanSimulator:
     3. 生成上下文相关的响应
     """
 
-    def __init__(self, model: str = 'azure/gpt-5', max_turn_count=10):
+    def __init__(self, model: str = 'litellm_proxy/azure/gpt-5', max_turn_count=10):
         self.model = model
         self.max_turn_count = max_turn_count
         self.conversation_history: List[Dict[str, Any]] = []
