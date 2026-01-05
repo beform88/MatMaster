@@ -41,7 +41,7 @@ class HumanSimulator:
     3. 生成上下文相关的响应
     """
 
-    def __init__(self, model: str = 'litellm_proxy/azure/gpt-5', max_turn_count=10):
+    def __init__(self, model: str = 'azure/gpt-5', max_turn_count=10):
         self.model = model
         self.max_turn_count = max_turn_count
         self.conversation_history: List[Dict[str, Any]] = []
@@ -162,10 +162,8 @@ class HumanSimulator:
 
 - 你只能进行如下几种回复:
     1."我已经确认了你的方案,请开始执行"
-    2."好的,请继续执行"
-    3."请总结执行错误的原因,并重新尝试"
-    4."你列出的方案中部分关键步骤没有可用工具,请重新确认是否存在可用的工具。如果确认没有,请尝试规划新的可行方案
-    5."任务完成,谢谢你的帮助"
+    2."最终结果存在XXX的问题。结果不符合要求,请给出合理的解释，或尝试重新执行"
+    3."任务完成,谢谢你的帮助"
 
 现在请给出合理的回答
 """

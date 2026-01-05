@@ -388,7 +388,7 @@ async def evaluation_threads_single_task(
     item_id: int,
     max_turn_count: int = 10,
     label_key: str = '',
-    max_retries: int = 3,
+    max_retries: int = 1,
     base_backoff: float = 5.0,
 ):
     """测试单个数据（带重试）"""

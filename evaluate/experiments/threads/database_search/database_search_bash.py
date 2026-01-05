@@ -13,7 +13,7 @@ if __name__ == '__main__':
     print('🚀 人类模拟器启动')
     print('=' * 50)
     parser = argparse.ArgumentParser()
-    parser.add_argument('--max_turn_count', type=int, default=20, help='最大对话轮数')
+    parser.add_argument('--max_turn_count', type=int, default=5, help='最大对话轮数')
     parser.add_argument('--item_id', type=int, default=0, help='样本索引')
     args = parser.parse_args()
 
