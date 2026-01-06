@@ -179,7 +179,9 @@ class BaseAgentWithRecAndSum(
         function_declarations: List[FunctionDeclaration] = ctx.session.state[
             'function_declarations'
         ]
-        logger.info(f'{ctx.session.id} function_declarations = {function_declarations}')
+        logger.info(
+            f'{ctx.session.id} function_declarations = {function_declarations}, current_step_tool_name = {current_step_tool_name}'
+        )
         current_function_declaration = [
             item
             for item in function_declarations
