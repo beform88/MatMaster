@@ -1053,6 +1053,21 @@ ALL_TOOLS = {
         'alternative': [],
         'bypass_confirmation': True,
     },
+    'make_defect_structure': {
+        'belonging_agent': StructureGenerateAgentName,
+        'scene': [SceneEnum.STRUCTURE_GENERATE],
+        'description': (
+            'What it does: Create a defect structure by removing specific molecular clusters based on spatial relationships.\n'
+            'When to use: For creating vacancy defects in molecular crystals by removing specific molecular units based on spatial clustering.\n'
+            'Prerequisites / Inputs: Input molecular crystal structure file; optionally target species to remove and starting molecule index.\n'
+            'Outputs: Defective structure file.\n'
+            'Cannot do / Limits: Specifically designed for molecular crystals where entire molecules need to be removed as clusters rather than individual atoms.\n'
+            'Cost / Notes: Low.'
+        ),
+        'args_setting': 'Parameter guidance: structure_path is the input molecular crystal structure file (e.g., CIF); target_spec is an optional dictionary mapping species IDs to counts to remove (e.g., {"C6H14N2_1": 1, "H4N_1": 1}), if None uses the simplest unit in crystal; seed_index is the index of molecule to start removing from, if None picks randomly from rarest species; method is the method to use for selecting molecules to remove; output_file is the path to save the generated defective structure file.',
+        'alternative': [],
+        'bypass_confirmation': True,
+    },
     'make_amorphous_structure': {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_GENERATE],
@@ -1115,7 +1130,7 @@ ALL_TOOLS = {
             'IMPORTANT: If the user says "do not add H" to specific atoms (e.g., O in ClO4, O in SO4), '
             'you MUST create a rule for that element (e.g., symbol="O", neighbors=["Cl"]) and set "target_coordination" equal to its current bond count (e.g., 1) '
             'to explicitly prevent hydrogen addition. '
-            'bond_lengths: Optional. Override default H-X bond lengths. '
+            'bond_lengths: Optional. Override default X-Y bond lengths. '
             'output_file: Required. Path to save the hydrogenated structure.'
         ),
         'alternative': [],
