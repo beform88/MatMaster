@@ -1115,7 +1115,7 @@ ALL_TOOLS = {
             'IMPORTANT: If the user says "do not add H" to specific atoms (e.g., O in ClO4, O in SO4), '
             'you MUST create a rule for that element (e.g., symbol="O", neighbors=["Cl"]) and set "target_coordination" equal to its current bond count (e.g., 1) '
             'to explicitly prevent hydrogen addition. '
-            'bond_lengths: Optional. Override default H-X bond lengths. '
+            'bond_lengths: Optional. Override default X-Y bond lengths. '
             'output_file: Required. Path to save the hydrogenated structure.'
         ),
         'alternative': [],
