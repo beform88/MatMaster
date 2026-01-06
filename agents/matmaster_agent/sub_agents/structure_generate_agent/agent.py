@@ -63,6 +63,7 @@ class StructureGenerateAgent(BaseAsyncJobAgent):
                 'build_bulk_structure_by_template',
                 'build_bulk_structure_by_wyckoff',
                 'make_supercell_structure',
+                'make_defect_structure',
                 'make_doped_structure',
                 'make_amorphous_structure',
                 'build_molecule_structures_from_smiles',
