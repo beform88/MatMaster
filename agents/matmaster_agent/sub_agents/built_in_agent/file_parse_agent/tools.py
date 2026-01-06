@@ -1,3 +1,4 @@
+import asyncio
 from typing import TypedDict
 
 import aiohttp
@@ -42,8 +43,6 @@ async def file_parse(file_url: str) -> FileParseResponse:
 
 
 if __name__ == '__main__':
-    import asyncio
-
     asyncio.run(
         file_parse(
             'https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KBM1X4KGDHTE2ZR44G7EHC0Z/dsc-example.txt'
