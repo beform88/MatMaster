@@ -198,10 +198,20 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     )
 
                                     # 向用户显示校验失败信息
+                                    for step_validation_failed_event in all_text_event(
+                                        ctx,
+                                        self.name,
+                                        separate_card(
+                                            f"步骤 {index + 1} 结果校验未通过"
+                                        ),
+                                        ModelRole,
+                                    ):
+                                        yield step_validation_failed_event
+
                                     for validation_failed_event in all_text_event(
                                         ctx,
                                         self.name,
-                                        f"步骤 {index + 1} 结果校验未通过：{validation_reason}，正在准备重试...",
+                                        f"{validation_reason}",
                                         ModelRole,
                                     ):
                                         yield validation_failed_event
