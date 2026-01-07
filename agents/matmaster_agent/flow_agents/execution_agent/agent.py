@@ -21,8 +21,8 @@ from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     find_alternative_tool,
-    get_self_check,
     get_agent_name,
+    get_self_check,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
@@ -157,7 +157,8 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     )
                                     validation_instruction = '\n'.join(lines)
                                     self.validation_agent.instruction = (
-                                        STEP_VALIDATION_INSTRUCTION + validation_instruction
+                                        STEP_VALIDATION_INSTRUCTION
+                                        + validation_instruction
                                     )
 
                                     async for (
@@ -169,17 +170,23 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                         'step_validation', {}
                                     )
                                     is_valid = validation_result.get('is_valid', True)
-                                    validation_reason = validation_result.get('reason', '')
+                                    validation_reason = validation_result.get(
+                                        'reason', ''
+                                    )
 
                                     # “假成功”结果，计划重试
-                                    if (not is_valid) and retry_count < MAX_TOOL_RETRIES:
+                                    if (
+                                        not is_valid
+                                    ) and retry_count < MAX_TOOL_RETRIES:
                                         retry_count += 1
                                         logger.warning(
                                             f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
                                         )
 
                                         # 向用户显示校验失败信息
-                                        for step_validation_failed_event in all_text_event(
+                                        for (
+                                            step_validation_failed_event
+                                        ) in all_text_event(
                                             ctx,
                                             self.name,
                                             separate_card(
