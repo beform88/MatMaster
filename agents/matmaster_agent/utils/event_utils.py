@@ -32,6 +32,7 @@ from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import RenderTypeEnum
 from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION
+from agents.matmaster_agent.services.session_files import insert_session_files
 from agents.matmaster_agent.state import ERROR_DETAIL, PLAN, UPLOAD_FILE
 from agents.matmaster_agent.style import (
     no_found_structure_card,
@@ -528,6 +529,11 @@ async def handle_upload_file_event(ctx: InvocationContext, author):
                 pass  # Inline data is currently not processed
             elif part.file_data:
                 prompt += f", file_url = {part.file_data.file_uri}"
+
+                # 写入数据库
+                await insert_session_files(
+                    session_id=ctx.session.id, files=[part.file_data.file_uri]
+                )
 
                 # 包装成function_call，来避免在历史记录中展示
                 for event in context_function_event(

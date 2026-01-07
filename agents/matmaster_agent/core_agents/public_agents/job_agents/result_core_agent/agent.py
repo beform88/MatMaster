@@ -175,7 +175,7 @@ class ResultMCPAgent(MCPAgent):
                         tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
                     else:
                         new_tool_result = dict_result
-                    parsed_tool_result = await parse_result(new_tool_result)
+                    parsed_tool_result = await parse_result(ctx, new_tool_result)
                     logger.info(
                         f'{ctx.session.id} parsed_tool_result = {parsed_tool_result}'
                     )
