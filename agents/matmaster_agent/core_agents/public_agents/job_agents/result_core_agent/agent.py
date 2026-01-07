@@ -73,7 +73,7 @@ class ResultMCPAgent(MCPAgent):
             access_key, Executor, BohriumStorge = _inject_ak(
                 ctx, get_BohriumExecutor(), get_BohriumStorage()
             )
-            project_id, Executor, BohriumStorge = _inject_projectId(
+            project_id, Executor, BohriumStorge = await _inject_projectId(
                 ctx, Executor, BohriumStorge
             )
         else:
