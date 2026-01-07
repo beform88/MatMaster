@@ -27,6 +27,7 @@ from agents.matmaster_agent.core_agents.base_agents.climit_agent import (
     ContentLimitLlmAgent,
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
+from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.llm_config import DEFAULT_MODEL, MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.model import RenderTypeEnum
@@ -333,7 +334,12 @@ def cherry_pick_events(ctx: InvocationContext):
 
 
 async def send_error_event(err, ctx: InvocationContext, author):
-    for error_card_event in all_text_event(ctx, author, '错误分析', ModelRole):
+    for error_card_event in all_text_event(
+        ctx,
+        author,
+        separate_card('错误分析'),
+        ModelRole,
+    ):
         yield error_card_event
 
     # 更新 plan 为失败
