@@ -74,7 +74,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
             state_key='step_validation',
         )
 
-        self.sub_agents += self.validation_agent
+        self.sub_agents += [self.validation_agent]
         track_adk_agent_recursive(self.validation_agent, MatMasterLlmConfig.opik_tracer)
 
         return self
