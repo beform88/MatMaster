@@ -123,7 +123,7 @@ class SubmitCoreMCPAgent(DisallowTransferAndContentLimitMCPAgent):
                     tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
                 else:
                     new_tool_result = dict_result
-                parsed_result = await parse_result(new_tool_result)
+                parsed_result = await parse_result(ctx, new_tool_result)
                 markdown_image_result = get_markdown_image_result(parsed_result)
                 job_result_comp_data = get_kv_result(parsed_result)
 

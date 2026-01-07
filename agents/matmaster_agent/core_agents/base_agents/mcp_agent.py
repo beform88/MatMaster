@@ -219,7 +219,7 @@ class MCPRunEventsMixin(BaseMixin):
                         yield event
                         raise
 
-                    parsed_tool_result = await parse_result(dict_result)
+                    parsed_tool_result = await parse_result(ctx, dict_result)
                     logger.info(
                         f'{ctx.session.id} parsed_tool_result = {parsed_tool_result}'
                     )

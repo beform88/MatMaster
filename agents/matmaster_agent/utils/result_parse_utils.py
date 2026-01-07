@@ -16,6 +16,7 @@ from agents.matmaster_agent.model import (
     RenderTypeEnum,
     WebSearchItem,
 )
+from agents.matmaster_agent.services.session_files import insert_session_files
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -122,7 +123,9 @@ def validate_model_list(data: list, model: type[BaseModel]) -> bool:
     return True
 
 
-async def parse_result(result: dict) -> List[Union[dict, WebSearchItem, JobResult]]:
+async def parse_result(
+    ctx, result: dict
+) -> List[Union[dict, WebSearchItem, JobResult]]:
     """
     Parse and flatten a nested dictionary result into a list of standardized JobResult objects.
 
@@ -177,6 +180,10 @@ async def parse_result(result: dict) -> List[Union[dict, WebSearchItem, JobResul
                     )
                 )
             else:
+                # 写入数据库
+                await insert_session_files(session_id=ctx.session.id, files=[v])
+
+                # 按文件类型解析
                 filename = v.split('/')[-1]
                 if await is_matmodeler_file(filename):
                     parsed_result.append(
