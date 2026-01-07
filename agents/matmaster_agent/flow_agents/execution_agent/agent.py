@@ -21,6 +21,7 @@ from agents.matmaster_agent.flow_agents.style import separate_card
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     find_alternative_tool,
+    get_self_check,
     get_agent_name,
 )
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
@@ -147,73 +148,78 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 == PlanStepStatusEnum.SUCCESS
                             ):
                                 # 对成功的工具调用结果进行校验
-                                lines = (
-                                    f"用户原始请求: {ctx.user_content.parts[0].text}",
-                                    f"当前步骤描述: {step['description']}",
-                                    f"工具名称: {current_tool_name}",
-                                    '请根据以上信息判断，工具的参数配置及对应的执行结果是否严格满足用户原始需求。',
-                                )
-                                validation_instruction = '\n'.join(lines)
-                                self.validation_agent.instruction = (
-                                    STEP_VALIDATION_INSTRUCTION + validation_instruction
-                                )
-
-                                async for (
-                                    validation_event
-                                ) in self.validation_agent.run_async(ctx):
-                                    yield validation_event
-
-                                validation_result = ctx.session.state.get(
-                                    'step_validation', {}
-                                )
-                                is_valid = validation_result.get('is_valid', True)
-                                validation_reason = validation_result.get('reason', '')
-
-                                # “假成功”结果，计划重试
-                                if (not is_valid) and retry_count < MAX_TOOL_RETRIES:
-                                    retry_count += 1
-                                    logger.warning(
-                                        f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
+                                if get_self_check(current_tool_name):
+                                    lines = (
+                                        f"用户原始请求: {ctx.user_content.parts[0].text}",
+                                        f"当前步骤描述: {step['description']}",
+                                        f"工具名称: {current_tool_name}",
+                                        '请根据以上信息判断，工具的参数配置及对应的执行结果是否严格满足用户原始需求。',
+                                    )
+                                    validation_instruction = '\n'.join(lines)
+                                    self.validation_agent.instruction = (
+                                        STEP_VALIDATION_INSTRUCTION + validation_instruction
                                     )
 
-                                    # 向用户显示校验失败信息
-                                    for step_validation_failed_event in all_text_event(
-                                        ctx,
-                                        self.name,
-                                        separate_card(
-                                            f"步骤 {index + 1} 结果校验未通过"
-                                        ),
-                                        ModelRole,
-                                    ):
-                                        yield step_validation_failed_event
+                                    async for (
+                                        validation_event
+                                    ) in self.validation_agent.run_async(ctx):
+                                        yield validation_event
 
-                                    for validation_failed_event in all_text_event(
-                                        ctx,
-                                        self.name,
-                                        f"{validation_reason}",
-                                        ModelRole,
-                                    ):
-                                        yield validation_failed_event
+                                    validation_result = ctx.session.state.get(
+                                        'step_validation', {}
+                                    )
+                                    is_valid = validation_result.get('is_valid', True)
+                                    validation_reason = validation_result.get('reason', '')
 
-                                    # 重新标记为进行中状态，准备重试
-                                    update_plan = copy.deepcopy(
-                                        ctx.session.state['plan']
-                                    )
-                                    update_plan['steps'][index][
-                                        'status'
-                                    ] = PlanStepStatusEnum.PROCESS
-                                    update_plan['steps'][index][
-                                        'validation_failure_reason'
-                                    ] = validation_reason
-                                    original_description = step['description']
-                                    update_plan['steps'][index][
-                                        'description'
-                                    ] = f"{original_description}\n\n注意：上次执行因以下原因校验失败，请改进：{validation_reason}"
-                                    yield update_state_event(
-                                        ctx, state_delta={'plan': update_plan}
-                                    )
+                                    # “假成功”结果，计划重试
+                                    if (not is_valid) and retry_count < MAX_TOOL_RETRIES:
+                                        retry_count += 1
+                                        logger.warning(
+                                            f'{ctx.session.id} Step {index + 1} validation failed: {validation_reason}'
+                                        )
+
+                                        # 向用户显示校验失败信息
+                                        for step_validation_failed_event in all_text_event(
+                                            ctx,
+                                            self.name,
+                                            separate_card(
+                                                f"步骤 {index + 1} 结果校验未通过"
+                                            ),
+                                            ModelRole,
+                                        ):
+                                            yield step_validation_failed_event
+
+                                        for validation_failed_event in all_text_event(
+                                            ctx,
+                                            self.name,
+                                            f"{validation_reason}",
+                                            ModelRole,
+                                        ):
+                                            yield validation_failed_event
+
+                                        # 重新标记为进行中状态，准备重试
+                                        update_plan = copy.deepcopy(
+                                            ctx.session.state['plan']
+                                        )
+                                        update_plan['steps'][index][
+                                            'status'
+                                        ] = PlanStepStatusEnum.PROCESS
+                                        update_plan['steps'][index][
+                                            'validation_failure_reason'
+                                        ] = validation_reason
+                                        original_description = step['description']
+                                        update_plan['steps'][index][
+                                            'description'
+                                        ] = f"{original_description}\n\n注意：上次执行因以下原因校验失败，请改进：{validation_reason}"
+                                        yield update_state_event(
+                                            ctx, state_delta={'plan': update_plan}
+                                        )
+                                    else:
+                                        # 校验成功，步骤完成
+                                        tool_attempt_success = True
+                                        break
                                 else:
-                                    # 校验成功，步骤完成
+                                    # 无需校验，步骤完成
                                     tool_attempt_success = True
                                     break
                             elif (

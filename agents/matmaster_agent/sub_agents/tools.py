@@ -176,6 +176,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': ['apex_calculate_vacancy'],
+        'self_check':False
     },
     'abacus_phonon_dispersion': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -189,6 +190,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': ['apex_calculate_phonon', 'calculate_phonon'],
+        'self_check':False
     },
     'abacus_cal_band': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -202,6 +204,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'abacus_calculation_scf': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -215,6 +218,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'abacus_dos_run': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -228,6 +232,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'abacus_badercharge_run': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -241,6 +246,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'abacus_do_relax': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -254,6 +260,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['apex_optimize_structure', 'optimize_structure'],
+        'self_check':False
     },
     'abacus_cal_work_function': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -267,6 +274,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'abacus_run_md': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -280,6 +288,7 @@ ALL_TOOLS = {
             'Cost / Notes: High DFT cost; supports relaxation before calculation.'
         ),
         'alternative': ['run_molecular_dynamics'],
+        'self_check':False
     },
     'abacus_cal_elf': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -293,6 +302,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'abacus_eos': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -306,6 +316,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': ['apex_calculate_eos'],
+        'self_check':False
     },
     'abacus_cal_elastic': {
         'belonging_agent': ABACUS_AGENT_NAME,
@@ -319,6 +330,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
         ),
         'alternative': ['apex_calculate_elastic', 'calculate_elastic_constants'],
+        'self_check':False
     },
     'apex_calculate_vacancy': {
         'belonging_agent': ApexAgentName,
@@ -332,6 +344,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['abacus_vacancy_formation_energy'],
+        'self_check':False
     },
     'apex_optimize_structure': {
         'belonging_agent': ApexAgentName,
@@ -345,6 +358,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['abacus_do_relax', 'optimize_structure'],
+        'self_check':False
     },
     'apex_calculate_interstitial': {
         'belonging_agent': ApexAgentName,
@@ -358,6 +372,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'apex_calculate_elastic': {
         'belonging_agent': ApexAgentName,
@@ -371,6 +386,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['abacus_cal_elastic', 'calculate_elastic_constants'],
+        'self_check':False
     },
     'apex_calculate_surface': {
         'belonging_agent': ApexAgentName,
@@ -384,6 +400,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'apex_calculate_eos': {
         'belonging_agent': ApexAgentName,
@@ -397,6 +414,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['abacus_eos'],
+        'self_check':False
     },
     'apex_calculate_phonon': {
         'belonging_agent': ApexAgentName,
@@ -410,6 +428,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['abacus_phonon_dispersion', 'calculate_phonon'],
+        'self_check':False
     },
     'apex_calculate_gamma': {
         'belonging_agent': ApexAgentName,
@@ -423,6 +442,7 @@ ALL_TOOLS = {
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'get_target_info': {
         'belonging_agent': UniELFAgentName,
@@ -436,6 +456,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'unielf_inference': {
         'belonging_agent': UniELFAgentName,
@@ -458,6 +479,7 @@ ALL_TOOLS = {
             'value (key ending in `_pred`).\n'
             '3. Highlight the best performing formulation.\n'
         ),
+        'self_check':False
     },
     # 'plan_and_visualize_reaction': {
     #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
@@ -487,6 +509,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'sql_database_mcp': {
         'belonging_agent': PerovskiteAgentName,
@@ -500,6 +523,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'Unimol_Predict_Perovskite_Additive': {
         'belonging_agent': PerovskiteAgentName,
@@ -513,6 +537,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     # 'validate_smiles': {
     #     'belonging_agent': CHEMBRAIN_AGENT_NAME,
@@ -531,6 +556,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'run_doe_task': {
         'belonging_agent': DOE_AGENT_NAME,
@@ -544,6 +570,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'extract_material_data_from_pdf': {
         'belonging_agent': DocumentParserAgentName,
@@ -558,6 +585,7 @@ ALL_TOOLS = {
         ),
         'alternative': ['file_parse', 'extract_material_data_from_webpage'],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'optimize_structure': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -572,6 +600,7 @@ ALL_TOOLS = {
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
         'alternative': ['apex_optimize_structure', 'abacus_do_relax'],
+        'self_check':False
     },
     'run_molecular_dynamics': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -586,6 +615,7 @@ ALL_TOOLS = {
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
         'alternative': ['abacus_run_md'],
+        'self_check':False
     },
     'calculate_phonon': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -600,6 +630,7 @@ ALL_TOOLS = {
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
         'alternative': ['abacus_phonon_dispersion', 'apex_calculate_phonon'],
+        'self_check':False
     },
     'calculate_elastic_constants': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -614,6 +645,7 @@ ALL_TOOLS = {
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
         'alternative': ['abacus_cal_elastic', 'apex_calculate_elastic'],
+        'self_check':False
     },
     'run_neb': {
         'belonging_agent': DPACalulator_AGENT_NAME,
@@ -628,6 +660,7 @@ ALL_TOOLS = {
         ),
         'args_setting': f"{DPA_MODEL_BRANCH_SELECTION}",
         'alternative': [],
+        'self_check':False
     },
     'finetune_dpa_model': {
         'belonging_agent': FinetuneDPAAgentName,
@@ -642,6 +675,7 @@ ALL_TOOLS = {
         ),
         'args_setting': 'Do NOT omit parameters that have default values. If the user does not provide a value, you MUST use the default value defined in the input parameters and include that field in the tool call. Only parameters without defaults are truly required and must be filled from user input.',
         'alternative': [],
+        'self_check':False
     },
     'HEA_params_calculator': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -655,6 +689,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'HEA_predictor': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -668,6 +703,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'HEA_comps_generator': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -681,6 +717,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'HEA_data_extract': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -694,6 +731,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'HEA_paper_search': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -711,6 +749,7 @@ ALL_TOOLS = {
             'search-papers-enhanced',
             'web-search',
         ],
+        'self_check':False
     },
     'HEA_bi_phase_Calc': {
         'belonging_agent': HEA_assistant_AgentName,
@@ -724,6 +763,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'generate_binary_phase_diagram': {
         'belonging_agent': HEACALCULATOR_AGENT_NAME,
@@ -737,6 +777,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium; faster with cached datasets.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'query_heakb_literature': {
         'belonging_agent': HEA_KB_AGENT_NAME,
@@ -745,6 +786,7 @@ ALL_TOOLS = {
         'args_setting': f"{HEAKbAgentArgsSetting}",
         'alternative': ['HEA_paper_search', 'search-papers-enhanced', 'web-search'],
         'summary_prompt': HEAKbAgentSummaryPrompt,
+        'self_check':False
     },
     'query_ssekb_literature': {
         'belonging_agent': SSE_KB_AGENT_NAME,
@@ -753,6 +795,7 @@ ALL_TOOLS = {
         'args_setting': f"{SSEKbAgentArgsSetting}",
         'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': SSEKbAgentSummaryPrompt,
+        'self_check':False
     },
     'query_polymerkb_literature': {
         'belonging_agent': POLYMER_KB_AGENT_NAME,
@@ -761,6 +804,7 @@ ALL_TOOLS = {
         'args_setting': f"{POLYMERKbAgentArgsSetting}",
         'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': POLYMERKbAgentSummaryPrompt,
+        'self_check':False
     },
     'query_steelkb_literature': {
         'belonging_agent': STEEL_KB_AGENT_NAME,
@@ -769,6 +813,7 @@ ALL_TOOLS = {
         'args_setting': f"{STEELKbAgentArgsSetting}",
         'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': STEELKbAgentSummaryPrompt,
+        'self_check':False
     },
     'predict_tensile_strength': {
         'belonging_agent': STEEL_PREDICT_AGENT_NAME,
@@ -777,6 +822,7 @@ ALL_TOOLS = {
         'args_setting': f"{STEELPredictAgentArgsSetting}",
         'alternative': ['search-papers-enhanced', 'web-search'],
         'summary_prompt': STEELPredictAgentSummaryPrompt,
+        'self_check':False
     },
     'fetch_structures_with_filter': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
@@ -789,6 +835,7 @@ ALL_TOOLS = {
             'web-search',
         ],
         'summary_prompt': OptimadeAgentSummaryPrompt,
+        'self_check':True
     },
     'fetch_structures_with_spg': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
@@ -801,6 +848,7 @@ ALL_TOOLS = {
             'web-search',
         ],
         'summary_prompt': OptimadeAgentSummaryPrompt,
+        'self_check':True
     },
     'fetch_structures_with_bandgap': {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
@@ -813,6 +861,7 @@ ALL_TOOLS = {
             'web-search',
         ],
         'summary_prompt': OptimadeAgentSummaryPrompt,
+        'self_check':True
     },
     'fetch_bohrium_crystals': {
         'belonging_agent': BOHRIUMPUBLIC_DATABASE_AGENT_NAME,
@@ -825,6 +874,7 @@ ALL_TOOLS = {
             'fetch_openlam_structures',
         ],
         'summary_prompt': BohriumPublicAgentSummaryPrompt,
+        'self_check':True
     },
     'fetch_openlam_structures': {
         'belonging_agent': OPENLAM_DATABASE_AGENT_NAME,
@@ -837,6 +887,7 @@ ALL_TOOLS = {
             'fetch_openlam_structures',
         ],
         'summary_prompt': OpenlamAgentSummaryPrompt,
+        'self_check':True
     },
     'fetch_mofs_sql': {
         'belonging_agent': MOFDB_DATABASE_AGENT_NAME,
@@ -845,6 +896,7 @@ ALL_TOOLS = {
         'args_setting': f"{MofdbAgentArgsSetting}",
         'alternative': ['web-search'],
         'summary_prompt': MofdbAgentSummaryPrompt,
+        'self_check':True
     },
     'calculate_reaction_profile': {
         'belonging_agent': ORGANIC_REACTION_AGENT_NAME,
@@ -858,6 +910,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'run_piloteye': {
         'belonging_agent': PILOTEYE_ELECTRO_AGENT_NAME,
@@ -871,6 +924,7 @@ ALL_TOOLS = {
             'Cost / Notes: High.'
         ),
         'alternative': [],
+        'self_check':False
     },
     # 'deep_research_agent': {
     #     'belonging_agent': SSEBRAIN_AGENT_NAME,
@@ -895,6 +949,7 @@ ALL_TOOLS = {
         ),
         'args_setting': 'Parameter guidance: n_tot=10–30 gives reasonable diversity without excessive cost. Elements must be from the supported list (H–Bi, Ac–Pu). Output is a set of POSCAR files; downstream relaxation is strongly recommended.',
         'alternative': [],
+        'self_check':True
     },
     'generate_crystalformer_structures': {
         'belonging_agent': StructureGenerateAgentName,
@@ -909,6 +964,7 @@ ALL_TOOLS = {
         ),
         'args_setting': 'Parameter guidance: Supported properties: bandgap (eV), shear_modulus, bulk_modulus (both log₁₀ GPa), superconducting ambient_pressure/high_pressure (K), sound (m/s). For target_type="minimize", use small target (e.g., 0.1) and low alpha (0.01); for "equal", "greater", "less", use alpha=1.0. mc_steps=500 balances convergence and speed; increase to 2000 for high-accuracy targets. sample_num=20–100 recommended; distribute across space groups if random_spacegroup_num>0. Critical: Space group must be explicitly specified by the user — no defaults or auto-inference.',
         'alternative': [],
+        'self_check':True
     },
     'make_supercell_structure': {
         'belonging_agent': StructureGenerateAgentName,
@@ -924,6 +980,7 @@ ALL_TOOLS = {
         'args_setting': "Parameter guidance: Primarily follow user's instrucution. If not specified, firstly get structure information to understand the raw lattice. An ideal supercell for computation is isotropic. For example, the raw lattice is (4 A, 10 A, 12 A, 90 deg, 90 deg, 90 deg), the supercell should be 5 × 2 × 2. 30-50 angstrom is often appropriate for simulations. Avoid overly large cells unless needed for long-range interactions.",
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':True
     },
     'build_bulk_structure_by_template': {
         'belonging_agent': StructureGenerateAgentName,
@@ -943,6 +1000,7 @@ ALL_TOOLS = {
             'build_bulk_structure_by_wyckoff',
         ],
         'bypass_confirmation': True,
+        'self_check':True
     },
     'build_surface_slab': {
         'belonging_agent': StructureGenerateAgentName,
@@ -958,6 +1016,7 @@ ALL_TOOLS = {
         'args_setting': f'Parameter guidance: Prefer slab_size_mode="layers" with slab_size_value=4–6 for stability; or "thickness" with ≥12 Å for electronic convergence. Use vacuum=15–20 Å to minimize spurious interactions. For polar surfaces or systems with strong dipoles, increase vacuum to ensure the electrostatic potential flattens in the vacuum region. Enable repair=True for covalent materials (e.g., drug-like molecule crystals, oragnic-inorganic hybrids, MOFs); Set false for regular sphrical-like inorganic crystals. Gets slow if set True. Default termination="auto" usually selects the most stoichiometric termination. {STRUCTURE_BUILDING_SAVENAME}',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':True
     },
     'build_surface_adsorbate': {
         'belonging_agent': StructureGenerateAgentName,
@@ -973,6 +1032,7 @@ ALL_TOOLS = {
         'args_setting': f'Parameter guidance: height=2.0 Å is typical for physisorption; reduce to 1.5–1.8 Å for chemisorption (e.g., CO on Pt). For high-symmetry sites, use string keywords ("ontop", "fcc", "hcp"); for custom placement, supply [x, y] fractional coordinates. {STRUCTURE_BUILDING_SAVENAME}',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':True
     },
     'build_surface_interface': {
         'belonging_agent': StructureGenerateAgentName,
@@ -988,6 +1048,7 @@ ALL_TOOLS = {
         'args_setting': f'Parameter guidance: Keep max_strain=0.05 (5%) for physical relevance; relax only if intentional strain engineering is intended. Try combinding make_supercell and get_structural_info to obtain the appropriate size of the two slabs. interface_distance=2.5 Å is safe for van der Waals gaps; reduce to 1.8–2.0 Å for covalent bonding (e.g., heterostructures with orbital overlap). {STRUCTURE_BUILDING_SAVENAME}',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'add_cell_for_molecules': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1003,6 +1064,7 @@ ALL_TOOLS = {
         'args_setting': f'Parameter guidance: For non-periodic system aiming to run calculations with periodic boundary conditions required (e.g., DFT calculations with ABACUS), use add_cell_for_molecules to put the system in a large cell. Default cell [10, 10, 10] Å and vacuum = 5 Å are suitable for most gas-phase molecules; increase to ≥15 Å and ≥8 Å vacuum for polar or diffuse systems (e.g., anions, excited states). {STRUCTURE_BUILDING_SAVENAME}',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'build_bulk_structure_by_wyckoff': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1022,6 +1084,7 @@ ALL_TOOLS = {
             'build_bulk_structure_by_template',
         ],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'build_molecule_structures_from_smiles': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1037,6 +1100,7 @@ ALL_TOOLS = {
         'args_setting': f'{STRUCTURE_BUILDING_SAVENAME}',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'make_doped_structure': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1052,6 +1116,7 @@ ALL_TOOLS = {
         'args_setting': f'Parameter guidance: Fractions are applied per-site; actual doping % may differ slightly in small cells — recommend ≥2×2×2 supercells for <10% doping. Covalent ions (ammonium, formamidinium, etc.) are supported via built-in library; specify by name (e.g., "ammonium"). {STRUCTURE_BUILDING_SAVENAME}',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'make_defect_structure': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1067,6 +1132,7 @@ ALL_TOOLS = {
         'args_setting': 'Parameter guidance: structure_path is the input molecular crystal structure file (e.g., CIF); target_spec is an optional dictionary mapping species IDs to counts to remove (e.g., {"C6H14N2_1": 1, "H4N_1": 1}), if None uses the simplest unit in crystal; seed_index is the index of molecule to start removing from, if None picks randomly from rarest species; method is the method to use for selecting molecules to remove; output_file is the path to save the generated defective structure file.',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'make_amorphous_structure': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1082,6 +1148,7 @@ ALL_TOOLS = {
         'args_setting': f'Parameter guidance: Input Constraint: Specify exactly two of: box_size, density, molecule_numbers. The third is derived. Density Regimes (CRITICAL): Solids/Liquids: Target ~0.9–1.2 g/cm³ (e.g., water ~1.0, polymers ~1.1). Gases/Vapors: Target orders of magnitude lower (e.g., ~0.001–0.002 g/cm³ for STP gases). Warning: Do not apply default liquid densities to gas inputs. If simulating a specific pressure, pre-calculate the required number of molecules N for the given Box Volume V (using Ideal Gas Law), then fix box_size and molecule_numbers. Composition: Use composition for multi-component mixtures; otherwise equal molar ratios are assumed. Packing Geometry: Box Size: For gases, ensure the box is large enough (usually >15 Å) to minimize unphysical periodic self-interactions, even if the density is low. {STRUCTURE_BUILDING_SAVENAME}',
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':True
     },
     'get_structure_info': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1097,6 +1164,7 @@ ALL_TOOLS = {
         'args_setting': '',
         'alternative': ['file_parse'],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'get_molecule_info': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1112,6 +1180,7 @@ ALL_TOOLS = {
         'args_setting': '',
         'alternative': ['file_parse'],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'add_hydrogens': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1135,6 +1204,7 @@ ALL_TOOLS = {
         ),
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':True
     },
     'generate_ordered_replicas': {
         'belonging_agent': StructureGenerateAgentName,
@@ -1155,6 +1225,7 @@ ALL_TOOLS = {
         ),
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'run_superconductor_optimization': {
         'belonging_agent': SuperconductorAgentName,
@@ -1168,6 +1239,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (DPA calculations).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'calculate_superconductor_enthalpy': {
         'belonging_agent': SuperconductorAgentName,
@@ -1181,6 +1253,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (DPA calculations).'
         ),
         'alternative': ['predict_superconductor_Tc'],
+        'self_check':False
     },
     'predict_superconductor_Tc': {
         'belonging_agent': SuperconductorAgentName,
@@ -1194,6 +1267,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (ML predictions).'
         ),
         'alternative': ['calculate_superconductor_enthalpy'],
+        'self_check':False
     },
     'screen_superconductor': {
         'belonging_agent': SuperconductorAgentName,
@@ -1207,6 +1281,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (batch DPA).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'predict_thermoelectric_properties': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1220,6 +1295,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (DPA predictions).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'run_pressure_optimization': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1233,6 +1309,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (DPA calculations).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'calculate_thermoele_enthalp': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1246,6 +1323,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (DPA calculations).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'screen_thermoelectric_candidate': {
         'belonging_agent': ThermoelectricAgentName,
@@ -1259,6 +1337,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (batch DPA).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'traj_analysis_diffusion': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1272,6 +1351,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'traj_analysis_rdf': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1285,6 +1365,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'traj_analysis_solvation': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1298,6 +1379,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'traj_analysis_bond': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1311,6 +1393,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'traj_analysis_react': {
         'belonging_agent': TrajAnalysisAgentName,
@@ -1324,6 +1407,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'visualize_data_from_file': {
         'belonging_agent': VisualizerAgentName,
@@ -1338,6 +1422,7 @@ ALL_TOOLS = {
         ),
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'visualize_data_from_prompt': {
         'belonging_agent': VisualizerAgentName,
@@ -1351,6 +1436,7 @@ ALL_TOOLS = {
         ),
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'convert_lammps_structural_format': {
         'belonging_agent': LAMMPS_AGENT_NAME,
@@ -1364,6 +1450,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'run_lammps': {
         'belonging_agent': LAMMPS_AGENT_NAME,
@@ -1377,6 +1464,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (simulation time).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'orchestrate_lammps_input': {
         'belonging_agent': LAMMPS_AGENT_NAME,
@@ -1390,6 +1478,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'search-papers-enhanced': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
@@ -1411,6 +1500,7 @@ ALL_TOOLS = {
         'alternative': ['web-search'],
         'summary_prompt': PAPER_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
+        'self_check':False
     },
     'web-search': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
@@ -1426,6 +1516,7 @@ ALL_TOOLS = {
         'alternative': [],
         'summary_prompt': WEB_SEARCH_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
+        'self_check':False
     },
     'build_convex_hull': {
         'belonging_agent': ConvexHullAgentName,
@@ -1439,6 +1530,7 @@ ALL_TOOLS = {
             'Cost / Notes: High (DPA calculations).'
         ),
         'alternative': [],
+        'self_check':False
     },
     'NMR_search_tool': {
         'belonging_agent': NMR_AGENT_NAME,
@@ -1452,6 +1544,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium; tighter tolerances increase runtime and reduce recall.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'NMR_predict_tool': {
         'belonging_agent': NMR_AGENT_NAME,
@@ -1465,6 +1558,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'NMR_reverse_predict_tool': {
         'belonging_agent': NMR_AGENT_NAME,
@@ -1478,6 +1572,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'extract_info_from_webpage': {
         'belonging_agent': SCIENCE_NAVIGATOR_AGENT_NAME,
@@ -1493,6 +1588,7 @@ ALL_TOOLS = {
         'alternative': [],
         'summary_prompt': WEBPAGE_PARSING_AGENT_INSTRUCTION,
         'bypass_confirmation': True,
+        'self_check':False
     },
     'xrd_parse_file': {
         'belonging_agent': XRD_AGENT_NAME,
@@ -1506,6 +1602,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'xrd_phase_identification': {
         'belonging_agent': XRD_AGENT_NAME,
@@ -1519,6 +1616,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'get_electron_microscope_recognize': {
         'belonging_agent': Electron_Microscope_AGENT_NAME,
@@ -1532,6 +1630,7 @@ ALL_TOOLS = {
             'Cost / Notes: Medium.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'llm_tool': {
         'belonging_agent': TOOL_AGENT_NAME,
@@ -1546,6 +1645,7 @@ ALL_TOOLS = {
         ),
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
     'physical_adsorption_echart_data': {
         'belonging_agent': Physical_Adsorption_AGENT_NAME,
@@ -1559,6 +1659,7 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'alternative': [],
+        'self_check':False
     },
     'file_parse': {
         'belonging_agent': FILE_PARSE_AGENT_NAME,
@@ -1573,5 +1674,6 @@ ALL_TOOLS = {
         ),
         'alternative': [],
         'bypass_confirmation': True,
+        'self_check':False
     },
 }
