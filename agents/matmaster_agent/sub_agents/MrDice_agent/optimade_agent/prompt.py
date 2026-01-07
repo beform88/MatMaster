@@ -311,10 +311,6 @@ Examples:
      base_filter: chemical_formula_reduced="MoS2" AND nperiodic_dimensions=2
      as_format: "cif"
 
-8) User: Find graphene
-   → Tool: fetch_structures_with_filter
-     base_filter: elements HAS "C" AND nelements=1 AND nperiodic_dimensions=2
-     as_format: "cif"
 """
 
 OptimadeAgentSummaryPrompt = """
