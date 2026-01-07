@@ -282,10 +282,15 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 break
 
                         # 如果同一工具重试 MAX_TOOL_RETRIES 后仍未成功，尝试其他工具
-                        if current_steps[index]['status'] != PlanStepStatusEnum.SUBMITTED:
+                        if (
+                            current_steps[index]['status']
+                            != PlanStepStatusEnum.SUBMITTED
+                        ):
                             if not tool_attempt_success:
                                 available_alts = [
-                                    alt for alt in alternatives if alt not in tried_tools
+                                    alt
+                                    for alt in alternatives
+                                    if alt not in tried_tools
                                 ]
                                 if available_alts:
                                     # 向用户显示工具替换信息
@@ -308,7 +313,9 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                     )
 
                                     # 更新plan中的tool_name和status
-                                    update_plan = copy.deepcopy(ctx.session.state['plan'])
+                                    update_plan = copy.deepcopy(
+                                        ctx.session.state['plan']
+                                    )
                                     update_plan['steps'][index]['tool_name'] = next_tool
                                     update_plan['steps'][index][
                                         'status'
