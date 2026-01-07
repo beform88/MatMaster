@@ -450,8 +450,10 @@ def _inject_ak(ctx: Union[InvocationContext, ToolContext], executor, storage):
     return access_key, executor, storage
 
 
-def _inject_projectId(ctx: Union[InvocationContext, ToolContext], executor, storage):
-    project_id = _get_projectId(ctx)
+async def _inject_projectId(
+    ctx: Union[InvocationContext, ToolContext], executor, storage
+):
+    project_id = await _get_projectId(ctx)
     if executor is not None:
         if executor['type'] == 'dispatcher':  # BohriumExecutor
             executor['machine']['remote_profile']['project_id'] = int(project_id)
@@ -571,7 +573,7 @@ def inject_ak_projectId(func: BeforeToolCallback) -> BeforeToolCallback:
 
         # 获取 project_id
         try:
-            project_id, tool.executor, tool.storage = _inject_projectId(
+            project_id, tool.executor, tool.storage = await _inject_projectId(
                 tool_context, tool.executor, tool.storage
             )
         except ValueError as e:
