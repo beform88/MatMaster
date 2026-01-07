@@ -54,6 +54,12 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
+from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
+    STEP_VALIDATION_INSTRUCTION,
+)
+from agents.matmaster_agent.flow_agents.step_validation_agent.schema import (
+    StepValidationSchema,
+)
 from agents.matmaster_agent.flow_agents.style import (
     all_summary_card,
     separate_card,
@@ -159,6 +165,17 @@ class MatMasterFlowAgent(LlmAgent):
             # instruction=PLAN_INFO_INSTRUCTION,
         )
 
+        # execution_agent
+        # Initialize validation agent
+        step_validation_agent = DisallowTransferAndContentLimitSchemaAgent(
+            name='step_validation_agent',
+            model=MatMasterLlmConfig.tool_schema_model,
+            description='校验步骤执行结果是否合理',
+            instruction=STEP_VALIDATION_INSTRUCTION,
+            output_schema=StepValidationSchema,
+            state_key='step_validation',
+        )
+
         self._execution_agent = MatMasterSupervisorAgent(
             name='execution_agent',
             model=MatMasterLlmConfig.default_litellm_model,
@@ -167,7 +184,8 @@ class MatMasterFlowAgent(LlmAgent):
             sub_agents=[
                 sub_agent(MatMasterLlmConfig)
                 for sub_agent in AGENT_CLASS_MAPPING.values()
-            ],
+            ]
+            + [step_validation_agent],
         )
 
         self._analysis_agent = DisallowTransferAndContentLimitLlmAgent(
