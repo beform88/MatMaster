@@ -83,6 +83,9 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant impo
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.prompt import (
     OptimadeAgentArgsSetting,
     OptimadeAgentSummaryPrompt,
+    OptimadeBandgapArgsSetting,
+    OptimadeFilterArgsSetting,
+    OptimadeSpgArgsSetting,
     OptimadeBandgapToolDescription,
     OptimadeFilterToolDescription,
     OptimadeSpgToolDescription,
@@ -831,7 +834,7 @@ ALL_TOOLS = {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeFilterToolDescription,
-        'args_setting': f"{OptimadeAgentArgsSetting}",
+        'args_setting': f"{OptimadeFilterArgsSetting}",
         'alternative': [
             'fetch_bohrium_crystals',
             'fetch_openlam_structures',
@@ -844,7 +847,7 @@ ALL_TOOLS = {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeSpgToolDescription,
-        'args_setting': f"{OptimadeAgentArgsSetting}",
+        'args_setting': f"{OptimadeSpgArgsSetting}",
         'alternative': [
             'fetch_bohrium_crystals',
             'fetch_structures_with_filter',
@@ -857,7 +860,7 @@ ALL_TOOLS = {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeBandgapToolDescription,
-        'args_setting': f"{OptimadeAgentArgsSetting}",
+        'args_setting': f"{OptimadeBandgapArgsSetting}",
         'alternative': [
             'fetch_bohrium_crystals',
             'fetch_structures_with_filter',
