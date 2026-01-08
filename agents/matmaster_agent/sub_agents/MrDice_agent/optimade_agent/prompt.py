@@ -46,12 +46,6 @@ Use ONLY these standard fields unless explicitly using SPG/BG tools (which add p
 - chemical_formula_anonymous
 - structure_features
 
-NEVER invent fields like band_gap, formation_energy, space_group_symbol, lattice_a, etc.
-If the user requests those, you must:
-(a) explain they are provider-specific and not always filterable via standard OPTIMADE,
-(b) use SPG/BG tools if applicable,
-(c) otherwise fall back to composition-based filtering.
-
 ### 2) Allowed operators ONLY
 You must ONLY use:
 - Equality & numeric: =, !=, <, <=, >, >=
