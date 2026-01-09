@@ -441,7 +441,13 @@ class MatMasterFlowAgent(LlmAgent):
                             'matmaster_flow',
                             None,
                             ModelRole,
-                            {'title': '制定计划', 'status': 'start'},
+                            {
+                                'title': '制定计划',
+                                'status': 'start',
+                                'font_color': '#30B37F',
+                                'bg_color': '#EFF8F5',
+                                'border_color': '#B2E0CE',
+                            },
                         ):
                             yield matmaster_flow_event
                         plan_steps = ctx.session.state['plan'].get('steps', [])
@@ -463,7 +469,13 @@ class MatMasterFlowAgent(LlmAgent):
                             'matmaster_flow',
                             None,
                             ModelRole,
-                            {'title': '制定计划', 'status': 'end'},
+                            {
+                                'title': '制定计划',
+                                'status': 'end',
+                                'font_color': '#30B37F',
+                                'bg_color': '#EFF8F5',
+                                'border_color': '#B2E0CE',
+                            },
                         ):
                             yield matmaster_flow_event
 
@@ -555,7 +567,13 @@ class MatMasterFlowAgent(LlmAgent):
                                     'matmaster_flow',
                                     None,
                                     ModelRole,
-                                    {'title': i18n.t('PlanSummary'), 'status': 'start'},
+                                    {
+                                        'title': i18n.t('PlanSummary'),
+                                        'status': 'start',
+                                        'font_color': '#9479F7',
+                                        'bg_color': '#F5F3FF',
+                                        'border_color': '#CFC3FC',
+                                    },
                                 ):
                                     yield matmaster_flow_event
                                 self._analysis_agent.instruction = (
@@ -571,7 +589,13 @@ class MatMasterFlowAgent(LlmAgent):
                                     'matmaster_flow',
                                     None,
                                     ModelRole,
-                                    {'title': i18n.t('PlanSummary'), 'status': 'end'},
+                                    {
+                                        'title': i18n.t('PlanSummary'),
+                                        'status': 'end',
+                                        'font_color': '#9479F7',
+                                        'bg_color': '#F5F3FF',
+                                        'border_color': '#CFC3FC',
+                                    },
                                 ):
                                     yield matmaster_flow_event
 
