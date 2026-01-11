@@ -11,6 +11,9 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     remove_function_call,
 )
 from agents.matmaster_agent.constant import CURRENT_ENV, MATMASTER_AGENT_NAME, ModelRole
+from agents.matmaster_agent.core_agents.base_agents.error_agent import (
+    ErrorHandleBaseAgent,
+)
 from agents.matmaster_agent.core_agents.base_agents.schema_agent import (
     DisallowTransferAndContentLimitSchemaAgent,
 )
@@ -34,7 +37,9 @@ from agents.matmaster_agent.flow_agents.execution_agent.agent import (
 from agents.matmaster_agent.flow_agents.expand_agent.agent import ExpandAgent
 from agents.matmaster_agent.flow_agents.expand_agent.prompt import EXPAND_INSTRUCTION
 from agents.matmaster_agent.flow_agents.expand_agent.schema import ExpandSchema
-from agents.matmaster_agent.flow_agents.intent_agent.agent import IntentAgent
+from agents.matmaster_agent.flow_agents.handle_upload_agent.agent import (
+    HandleUploadAgent,
+)
 from agents.matmaster_agent.flow_agents.intent_agent.model import IntentEnum
 from agents.matmaster_agent.flow_agents.intent_agent.prompt import INTENT_INSTRUCTION
 from agents.matmaster_agent.flow_agents.intent_agent.schema import IntentSchema
@@ -114,7 +119,11 @@ class MatMasterFlowAgent(LlmAgent):
             after_model_callback=remove_function_call,
         )
 
-        self._intent_agent = IntentAgent(
+        self._handle_upload_agent = HandleUploadAgent(
+            name='handle_upload_agent',
+        )
+
+        self._intent_agent = DisallowTransferAndContentLimitSchemaAgent(
             name='intent_agent',
             model=MatMasterLlmConfig.tool_schema_model,
             description='识别用户的意图',
@@ -198,6 +207,7 @@ class MatMasterFlowAgent(LlmAgent):
 
         self.sub_agents = [
             self.chat_agent,
+            self.handle_upload_agent,
             self.intent_agent,
             self.expand_agent,
             self.scene_agent,
@@ -214,6 +224,11 @@ class MatMasterFlowAgent(LlmAgent):
     @property
     def chat_agent(self) -> LlmAgent:
         return self._chat_agent
+
+    @computed_field
+    @property
+    def handle_upload_agent(self) -> ErrorHandleBaseAgent:
+        return self._handle_upload_agent
 
     @computed_field
     @property
@@ -270,6 +285,12 @@ class MatMasterFlowAgent(LlmAgent):
                     ):
                         yield quota_remaining_event
                     return
+
+                # 上传文件特殊处理
+                async for handle_upload_event in self.handle_upload_agent.run_async(
+                    ctx
+                ):
+                    yield handle_upload_event
 
                 # 用户意图识别（一旦进入 research 模式，暂时无法退出）
                 if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
