@@ -1635,53 +1635,61 @@ ALL_TOOLS = {
         'alternative': [],
         'self_check': False,
     },
-    'tpd_get_chart': {
+    'tpd_parse_and_get_mol': {
         'belonging_agent': TPD_AGENT_NAME,
         'scene': [SceneEnum.TPD],
         'description': (
-            'What it does: Generate an ECharts option to visualize curves from a single TPD file across selected m/z values.\n'
-            'When to use: Build single-file TPD plots for selected channels.\n'
-            'Prerequisites / Inputs: file_path, file_name, selected_weights (m/z), data_type; optional line_width.\n'
-            'Outputs: Full ECharts option JSON (legend, axes, series).\n'
-            'Cannot do / Limits: Requires parseable curve data (e.g., data_xy); no image export by this tool.\n'
-            'Cost / Notes: Low.'
+            'What it does: Parse a single TPD file and extract recognized molecule weights (m/z or labels).\n'
+            'When to use: When you need to know which molecule weights are present in a TPD file.\n'
+            'Prerequisites / Inputs: Local file path, file name, data type (Signal vs. Temp/Time).\n'
+            'Outputs: List of molecule weights (m/z or "*").\n'
+            'Cannot do / Limits: Only parses local files; remote URLs must be downloaded first.\n'
+            'Cost / Notes: Fast; supports three data types.'
         ),
+        'alternative': [],
+        'self_check': False,
     },
     'tpd_get_chart': {
         'belonging_agent': TPD_AGENT_NAME,
         'scene': [SceneEnum.TPD],
         'description': (
-            'What it does: Generate an ECharts option to visualize curves from a single TPD file across selected m/z values.\n'
-            'When to use: Build single-file TPD plots for selected channels.\n'
-            'Prerequisites / Inputs: file_path, file_name, selected_weights (m/z), data_type; optional line_width.\n'
-            'Outputs: Full ECharts option JSON (legend, axes, series).\n'
-            'Cannot do / Limits: Requires parseable curve data (e.g., data_xy); no image export by this tool.\n'
-            'Cost / Notes: Low.'
+            'What it does: Generate ECharts visualization config for selected molecule weights in a TPD file.\n'
+            'When to use: When you want to plot curves for selected m/z channels from a TPD file.\n'
+            'Prerequisites / Inputs: Local file path, file name, selected_weights (list of m/z), data type, line width.\n'
+            'Outputs: Path to saved ECharts option JSON file.\n'
+            'Cannot do / Limits: Only local files; selected_weights must match available m/z.\n'
+            'Cost / Notes: Fast; supports three data types.'
         ),
+        'alternative': [],
+        'self_check': False,
     },
     'tpd_get_cal': {
         'belonging_agent': TPD_AGENT_NAME,
         'scene': [SceneEnum.TPD],
         'description': (
-            'What it does: Run peak analysis for one file and one m/z, including peak finding, curve fitting, peak deconvolution, integration, and first derivative; returns chart config and results.\n'
-            'When to use: Perform detailed single-channel analysis on TPD data.\n'
-            'Prerequisites / Inputs: file_path, file_name, mol_weight (m/z), data_type, line_width, cal_options.\n'
-            'Outputs: Saved chart option file path (.echarts), error_list for failed sub-steps, and integral_area if integration is performed.\n'
-            'Cannot do / Limits: Sub-operations run independently; invalid ranges or missing data are recorded as errors.\n'
-            'Cost / Notes: Low–Medium depending on data size and selected operations.'
+            'What it does: Perform peak finding, fitting, deconvolution, integration, and derivative analysis for a single m/z channel in a TPD file.\n'
+            'When to use: When you need detailed analysis (peak, fit, integration, etc.) for one channel.\n'
+            'Prerequisites / Inputs: Local file path, file name, mol_weight (m/z), data type, line width, cal_options (list of operations).\n'
+            'Outputs: Path to ECharts option JSON, error list, integral area (if computed).\n'
+            'Cannot do / Limits: Only local files; cal_options must follow supported format.\n'
+            'Cost / Notes: Medium; each operation is independent.'
         ),
+        'alternative': [],
+        'self_check': False,
     },
     'tpd_peak_integrate': {
         'belonging_agent': TPD_AGENT_NAME,
         'scene': [SceneEnum.TPD],
         'description': (
-            'What it does: For a single TPD file and one m/z, detect peaks and integrate each peak within a local window; visualize raw curve, peak markers, and baseline segments; save chart option JSON.\n'
-            'When to use: Quickly estimate peak areas around detected centers for one channel.\n'
-            'Prerequisites / Inputs: file_path, file_name, mol_weight (m/z or "*"), data_type, baseline_mode ("Horizontal baseline" or "Trend baseline"), window_halfwidth, optional line_width.\n'
-            'Outputs: Saved chart JSON path (.echarts), peaks list (x,y), integrations per peak (start/end/area/baseline_mode), llm_context summary.\n'
-            'Cannot do / Limits: Single-file/single-channel only; window-based integration may overlap for dense peaks; requires parseable curve data; no deconvolution or advanced baseline beyond provided modes.\n'
-            'Cost / Notes: Low.'
+            'What it does: For a single TPD file and m/z, detect peaks and integrate each peak within a local window; visualize raw curve, peak markers, and baseline segments.\n'
+            'When to use: Quickly estimate peak areas for one channel.\n'
+            'Prerequisites / Inputs: Local file path, file name, mol_weight (m/z or "*"), data type, baseline_mode, window_halfwidth, line width.\n'
+            'Outputs: Path to ECharts option JSON, peaks list, integrations per peak, llm_context summary.\n'
+            'Cannot do / Limits: Only local files; window-based integration may overlap for dense peaks.\n'
+            'Cost / Notes: Fast; supports horizontal/trend baseline.'
         ),
+        'alternative': [],
+        'self_check': False,
     },
     'llm_tool': {
         'belonging_agent': TOOL_AGENT_NAME,
