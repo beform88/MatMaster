@@ -1186,12 +1186,12 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_SANITIZE, SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            'What it does: Add hydrogen atoms to a molecular crystal structure.\n'
-            'When to use: Complete structures by adding missing hydrogens based on bonding patterns.\n'
-            'Prerequisites / Inputs: Input structure file path; optional rules for coordination or bond lengths.\n'
+            'What it does: Add hydrogen atoms to a structure.\n'
+            'When to use: Complete structures by adding missing hydrogens.\n'
+            'Prerequisites / Inputs: Structure file path; optional bonding or hydrogen-adding rules.\n'
             'Outputs: Structure file with hydrogens added.\n'
-            'Cannot do / Limits: Does not perform general geometry optimization beyond optional torsion adjustment; does not handle reactions.\n'
-            'Cost / Notes: Low computational cost.'
+            'Cannot do / Limits: No optimization, refinement, or reactions.\n'
+            'Cost / Notes: Low.'
         ),
         'args_setting': (
             '- target_elements: Optional. Limit hydrogen addition to specific elements.\n'
