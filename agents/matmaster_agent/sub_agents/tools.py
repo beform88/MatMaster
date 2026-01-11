@@ -151,6 +151,9 @@ from agents.matmaster_agent.sub_agents.superconductor_agent.constant import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
+from agents.matmaster_agent.sub_agents.TPD_agent.constant import (
+    TPD_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
     TrajAnalysisAgentName,
 )
@@ -159,9 +162,6 @@ from agents.matmaster_agent.sub_agents.visualizer_agent.constant import (
 )
 from agents.matmaster_agent.sub_agents.XRD_agent.constant import (
     XRD_AGENT_NAME,
-)
-from agents.matmaster_agent.sub_agents.TPD_agent.constant import (
-    TPD_AGENT_NAME,
 )
 
 TODAY = date.today()

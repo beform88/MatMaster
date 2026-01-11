@@ -241,6 +241,13 @@ from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
+from agents.matmaster_agent.sub_agents.TPD_agent.agent import (
+    TPDAgent,
+    tpd_toolset,
+)
+from agents.matmaster_agent.sub_agents.TPD_agent.constant import (
+    TPD_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
     TrajAnalysisAgent,
     traj_analysis_toolset,
@@ -269,13 +276,7 @@ from agents.matmaster_agent.sub_agents.XRD_agent.agent import (
 from agents.matmaster_agent.sub_agents.XRD_agent.constant import (
     XRD_AGENT_NAME,
 )
-from agents.matmaster_agent.sub_agents.TPD_agent.agent import (
-    TPDAgent,
-    tpd_toolset,
-)
-from agents.matmaster_agent.sub_agents.TPD_agent.constant import (
-    TPD_AGENT_NAME,
-)
+
 ALL_TOOLSET_DICT = {
     'abacus_toolset': abacus_toolset,
     'apex_toolset': apex_toolset,
