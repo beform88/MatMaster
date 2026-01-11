@@ -1129,7 +1129,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specifically designed for molecular crystals where entire molecules need to be removed as clusters rather than individual atoms.\n'
             'Cost / Notes: Low.'
         ),
-        'args_setting': 'Parameter guidance: structure_path is the input molecular crystal structure file (e.g., CIF); target_spec is an optional dictionary mapping species IDs to counts to remove (e.g., {"C6H14N2_1": 1, "H4N_1": 1}), if None uses the simplest unit in crystal; seed_index is the index of molecule to start removing from, if None picks randomly from rarest species; method is the method to use for selecting molecules to remove; output_file is the path to save the generated defective structure file.',
+        'args_setting': 'Parameter guidance: structure_path is the input molecular crystal structure file (e.g., CIF); target_spec is an optional dictionary mapping species IDs to counts to remove (e.g., {"C6H14N2_1": 1, "H4N_1": 1}), if None uses the simplest unit in crystal; seed_index is the index of molecule to start removing from, if None picks randomly from rarest species; method is the method to use for selecting molecules to remove; return_removed_cluster: controls whether returns removed clusters; output_file is the path to save the generated defective structure file.',
         'alternative': [],
         'bypass_confirmation': True,
         'self_check': False,
