@@ -1186,21 +1186,20 @@ ALL_TOOLS = {
         'belonging_agent': StructureGenerateAgentName,
         'scene': [SceneEnum.STRUCTURE_SANITIZE, SceneEnum.STRUCTURE_GENERATE],
         'description': (
-            'What it does: Add hydrogen atoms to a structure.\n'
-            'When to use: Complete structures by adding missing hydrogens.\n'
-            'Prerequisites / Inputs: Structure file path; optional bonding or hydrogen-adding rules.\n'
+            'What it does: Add hydrogen atoms to a molecular crystal structure.\n'
+            'When to use: Complete structures by adding missing hydrogens based on bonding patterns.\n'
+            'Prerequisites / Inputs: Input structure file path; optional rules for coordination or bond lengths.\n'
             'Outputs: Structure file with hydrogens added.\n'
-            'Cannot do / Limits: No optimization, refinement, or reactions.\n'
-            'Cost / Notes: Low.'
+            'Cannot do / Limits: Does not perform general geometry optimization beyond optional torsion adjustment; does not handle reactions.\n'
+            'Cost / Notes: Low computational cost.'
         ),
         'args_setting': (
-            'Parameter guidance: structure_path: Required. Input structure file (CIF/POSCAR/XYZ). '
-            'rules: Optional but Critical for precision. Use this to specify customized coordination. '
-            'IMPORTANT: If the user says "do not add H" to specific atoms (e.g., O in ClO4, O in SO4), '
-            'you MUST create a rule for that element (e.g., symbol="O", neighbors=["Cl"]) and set "target_coordination" equal to its current bond count (e.g., 1) '
-            'to explicitly prevent hydrogen addition. '
-            'bond_lengths: Optional. Override default X-Y bond lengths. '
-            'output_file: Required. Path to save the hydrogenated structure.'
+            '- target_elements: Optional. Limit hydrogen addition to specific elements.\n'
+            '- optimize_torsion: Optional. If True, adjust torsion angles to optimize geometry; default is False.\n'
+            '- rules: Optional. **Critical** for special cases (e.g., N in ammonium must remain target_coordination=4 and geometry of tetrahedron). '
+            'If not provided, default chemical environment rules are used. For precise control, provide rules to override defaults.\n'
+            '- bond_lengths: Optional. Override default bond lengths for specific atom pairs. If None, defaults are used.\n'
+            'IMPORTANT: Even though rules are optional, certain functional groups require explicit rules for correctness. '
         ),
         'alternative': [],
         'bypass_confirmation': True,
