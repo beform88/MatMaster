@@ -166,7 +166,7 @@ def bold(text: str) -> str:
     return c(text, '1')
 
 
-async def check_one(url: str, timeout_s: float = 5.0) -> Tuple[str, bool, str]:
+async def check_one(url: str, timeout_s: float = 10.0) -> Tuple[str, bool, str]:
     try:
         async with asyncio.timeout(timeout_s):
             if 'sse' in url:
