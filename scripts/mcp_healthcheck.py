@@ -86,6 +86,7 @@ from agents.matmaster_agent.sub_agents.superconductor_agent.constant import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricServerUrl,
 )
+from agents.matmaster_agent.sub_agents.TPD_agent.constant import TPD_MCP_SERVER_URL
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
     TrajAnalysisMCPServerUrl,
 )
@@ -93,7 +94,6 @@ from agents.matmaster_agent.sub_agents.visualizer_agent.constant import (
     VisualizerServerUrl,
 )
 from agents.matmaster_agent.sub_agents.XRD_agent.constant import XRD_MCP_SERVER_URL
-from agents.matmaster_agent.sub_agents.TPD_agent.constant import TPD_MCP_SERVER_URL
 
 MCP_SERVER_URLS = [
     ABACUS_CALCULATOR_URL,
