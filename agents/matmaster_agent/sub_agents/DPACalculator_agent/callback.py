@@ -92,7 +92,7 @@ async def _replace_if_not_oss_url(file_path, actual_files, tool_name, arg_name):
     Checks if the file_path is an OSS URL, if not, tries to match it with actual files
     and returns the matched OSS URL or the original file_path.
     """
-    # Check if it's already an OSS/HTTP URL
+    # Check if it's already an OSS URL
     if file_path and isinstance(file_path, str):
         parsed = urlparse(file_path)
         if parsed.scheme in ['http', 'https']:
@@ -175,11 +175,10 @@ async def validate_dpa_file_urls(tool, args, tool_context: ToolContext):
                     args[arg_name] = updated_value
 
 
-async def combined_before_tool_callback(tool, args, tool_context: ToolContext):
-    # First run the file URL validation
-    await validate_dpa_file_urls(tool, args, tool_context)
-
-    # Then run the existing head validation
+async def validate_dpa_head(tool, args, tool_context: ToolContext):
+    """
+    Validates and corrects the head parameter based on the model_path provided.
+    """
     model_path = args.get('model_path')
     head = args.get('head')
 
@@ -191,7 +190,7 @@ async def combined_before_tool_callback(tool, args, tool_context: ToolContext):
         if head not in BUILTIN_DPA2_HEADS:
             args['head'] = 'Omat24'
             logger.info(
-                f"[before_tool_callback] Updated head to Omat24 for DPA2.4 model {head}, {args['head']}"
+                f"[validate_dpa_head] Updated head to Omat24 for DPA2.4 model {head}, {args['head']}"
             )
     elif (
         model_path
@@ -201,9 +200,13 @@ async def combined_before_tool_callback(tool, args, tool_context: ToolContext):
         if head not in BUILTIN_DPA3_HEADS:
             args['head'] = 'Omat24'
             logger.info(
-                f"[before_tool_callback] Updated head to Omat24 for DPA3.1 model {head}, {args['head']}"
+                f"[validate_dpa_head] Updated head to Omat24 for DPA3.1 model {head}, {args['head']}"
             )
 
 
-# Backwards compatibility alias
-before_tool_callback = combined_before_tool_callback
+async def before_tool_callback(tool, args, tool_context: ToolContext):
+    # First run the file URL validation
+    await validate_dpa_file_urls(tool, args, tool_context)
+
+    # Then run the head validation
+    await validate_dpa_head(tool, args, tool_context)

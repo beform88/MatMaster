@@ -9,7 +9,7 @@ from agents.matmaster_agent.core_agents.public_agents.job_agents.agent import (
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.callback import (
-    combined_before_tool_callback,
+    before_tool_callback,
 )
 from agents.matmaster_agent.sub_agents.DPACalculator_agent.constant import (
     DPACalulator_AGENT_NAME,
@@ -44,7 +44,7 @@ class DPACalculationsAgent(BaseAsyncJobAgent):
             dflow_flag=False,
             supervisor_agent=MATMASTER_AGENT_NAME,
             cost_func=dpa_cost_func,
-            before_tool_callback=combined_before_tool_callback,
+            before_tool_callback=before_tool_callback,
         )
 
 
