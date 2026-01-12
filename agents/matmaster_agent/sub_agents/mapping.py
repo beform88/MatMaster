@@ -241,6 +241,13 @@ from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricAgentName,
 )
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
+from agents.matmaster_agent.sub_agents.TPD_agent.agent import (
+    TPDAgent,
+    tpd_toolset,
+)
+from agents.matmaster_agent.sub_agents.TPD_agent.constant import (
+    TPD_AGENT_NAME,
+)
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.agent import (
     TrajAnalysisAgent,
     traj_analysis_toolset,
@@ -306,6 +313,7 @@ ALL_TOOLSET_DICT = {
     'convexhull_toolset': convexhull_toolset,
     'nmr_toolset': nmr_toolset,
     'xrd_toolset': xrd_toolset,
+    'tpd_toolset': tpd_toolset,
     'electron_microscope_toolset': electron_microscope_toolset,
     'physical_adsorption_toolset': physical_adsorption_toolset,
 }
@@ -346,6 +354,7 @@ AGENT_CLASS_MAPPING = {
     ConvexHullAgentName: ConvexHullAgent,
     NMR_AGENT_NAME: NMRAgent,
     XRD_AGENT_NAME: XRDAgent,
+    TPD_AGENT_NAME: TPDAgent,
     Electron_Microscope_AGENT_NAME: ElectronMicroscopeAgent,
     TOOL_AGENT_NAME: LLMToolAgent,
     Physical_Adsorption_AGENT_NAME: PhysicalAdsorptionAgent,
@@ -389,6 +398,7 @@ class MatMasterSubAgentsEnum(str, Enum):
     ConvexHullAgent = ConvexHullAgentName
     NMRAgent = NMR_AGENT_NAME
     XRDAgent = XRD_AGENT_NAME
+    TPDAgent = TPD_AGENT_NAME
     ElectronMicroscopeAgent = Electron_Microscope_AGENT_NAME
     ToolAgent = TOOL_AGENT_NAME
     FileParseAgent = FILE_PARSE_AGENT_NAME

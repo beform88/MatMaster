@@ -86,6 +86,7 @@ from agents.matmaster_agent.sub_agents.superconductor_agent.constant import (
 from agents.matmaster_agent.sub_agents.thermoelectric_agent.constant import (
     ThermoelectricServerUrl,
 )
+from agents.matmaster_agent.sub_agents.TPD_agent.constant import TPD_MCP_SERVER_URL
 from agents.matmaster_agent.sub_agents.traj_analysis_agent.constant import (
     TrajAnalysisMCPServerUrl,
 )
@@ -130,6 +131,7 @@ MCP_SERVER_URLS = [
     TrajAnalysisMCPServerUrl,
     VisualizerServerUrl,
     XRD_MCP_SERVER_URL,
+    TPD_MCP_SERVER_URL,
 ]
 
 # ---- 颜色工具（ANSI），非 TTY 自动禁用 ----
