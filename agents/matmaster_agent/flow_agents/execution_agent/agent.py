@@ -128,6 +128,13 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             else:
                                 separate_card_info = 'Step'
 
+                            yield update_state_event(
+                                ctx,
+                                state_delta={
+                                    'separate_card_info': separate_card_info,
+                                },
+                            )
+
                             async for title_event in self.title_agent.run_async(ctx):
                                 yield title_event
 
@@ -152,21 +159,6 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                                 yield matmaster_flow_event
                             async for event in target_agent.run_async(ctx):
                                 yield event
-                            for matmaster_flow_event in context_function_event(
-                                ctx,
-                                self.name,
-                                'matmaster_flow',
-                                None,
-                                ModelRole,
-                                {
-                                    'title': step_title,
-                                    'status': 'end',
-                                    'font_color': '#0E6DE8',
-                                    'bg_color': '#EBF2FB',
-                                    'border_color': '#B7D3F7',
-                                },
-                            ):
-                                yield matmaster_flow_event
                             logger.info(
                                 f'{ctx.session.id} After Run: plan = {ctx.session.state['plan']}, {check_plan(ctx)}'
                             )
