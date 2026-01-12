@@ -1132,7 +1132,7 @@ ALL_TOOLS = {
             'Cannot do / Limits: Specifically designed for molecular crystals where entire molecules need to be removed as clusters rather than individual atoms.\n'
             'Cost / Notes: Low.'
         ),
-        'args_setting': 'Parameter guidance: structure_path is the input molecular crystal structure file (e.g., CIF); target_spec is an optional dictionary mapping species IDs to counts to remove (e.g., {"C6H14N2_1": 1, "H4N_1": 1}), if None uses the simplest unit in crystal; seed_index is the index of molecule to start removing from, if None picks randomly from rarest species; method is the method to use for selecting molecules to remove; output_file is the path to save the generated defective structure file.',
+        'args_setting': 'Parameter guidance: structure_path is the input molecular crystal structure file (e.g., CIF); target_spec is an optional dictionary mapping species IDs to counts to remove (e.g., {"C6H14N2_1": 1, "H4N_1": 1}), if None uses the simplest unit in crystal; seed_index is the index of molecule to start removing from, if None picks randomly from rarest species; method is the method to use for selecting molecules to remove; return_removed_cluster: controls whether returns removed clusters; output_file is the path to save the generated defective structure file.',
         'alternative': [],
         'bypass_confirmation': True,
         'self_check': False,
@@ -1197,13 +1197,12 @@ ALL_TOOLS = {
             'Cost / Notes: Low.'
         ),
         'args_setting': (
-            'Parameter guidance: structure_path: Required. Input structure file (CIF/POSCAR/XYZ). '
-            'rules: Optional but Critical for precision. Use this to specify customized coordination. '
-            'IMPORTANT: If the user says "do not add H" to specific atoms (e.g., O in ClO4, O in SO4), '
-            'you MUST create a rule for that element (e.g., symbol="O", neighbors=["Cl"]) and set "target_coordination" equal to its current bond count (e.g., 1) '
-            'to explicitly prevent hydrogen addition. '
-            'bond_lengths: Optional. Override default X-Y bond lengths. '
-            'output_file: Required. Path to save the hydrogenated structure.'
+            '- target_elements: Optional. Limit hydrogen addition to specific elements.\n'
+            '- optimize_torsion: Optional. If True, adjust torsion angles to optimize geometry; default is False.\n'
+            '- rules: Optional. **Critical** for special cases (e.g., N in ammonium must remain target_coordination=4 and geometry of tetrahedron). '
+            'If not provided, default chemical environment rules are used. For precise control, provide rules to override defaults.\n'
+            '- bond_lengths: Optional. Override default bond lengths for specific atom pairs. If None, defaults are used.\n'
+            'IMPORTANT: Even though rules are optional, certain functional groups require explicit rules for correctness. '
         ),
         'alternative': [],
         'bypass_confirmation': True,
