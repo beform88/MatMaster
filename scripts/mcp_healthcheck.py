@@ -93,6 +93,7 @@ from agents.matmaster_agent.sub_agents.visualizer_agent.constant import (
     VisualizerServerUrl,
 )
 from agents.matmaster_agent.sub_agents.XRD_agent.constant import XRD_MCP_SERVER_URL
+from agents.matmaster_agent.sub_agents.TPD_agent.constant import TPD_MCP_SERVER_URL
 
 MCP_SERVER_URLS = [
     ABACUS_CALCULATOR_URL,
@@ -130,6 +131,7 @@ MCP_SERVER_URLS = [
     TrajAnalysisMCPServerUrl,
     VisualizerServerUrl,
     XRD_MCP_SERVER_URL,
+    TPD_MCP_SERVER_URL,
 ]
 
 # ---- 颜色工具（ANSI），非 TTY 自动禁用 ----
