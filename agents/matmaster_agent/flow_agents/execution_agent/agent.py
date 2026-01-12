@@ -85,7 +85,10 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                     logger.info(
                         f'{ctx.session.id} tool_name = {current_tool_name}, target_agent = {target_agent.name}'
                     )
-                    if step['status'] in [
+                    if step['status'] == PlanStepStatusEnum.SUCCESS:
+                        tool_attempt_success = True
+                        break
+                    elif step['status'] in [
                         PlanStepStatusEnum.PLAN,
                         PlanStepStatusEnum.PROCESS,
                         PlanStepStatusEnum.FAILED,
@@ -165,12 +168,12 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
 
                             current_steps = ctx.session.state['plan']['steps']
 
+                            # 异步任务，直接退出当前函数
                             if (
                                 current_steps[index]['status']
                                 == PlanStepStatusEnum.SUBMITTED
                             ):
-                                tool_attempt_success = True
-                                break
+                                return
 
                             # 工具调用结果返回【成功】
                             if (
