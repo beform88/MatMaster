@@ -17,7 +17,7 @@ from agents.matmaster_agent.base_callbacks.private_callback import (
     inject_function_declarations,
     remove_function_call,
 )
-from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
+from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, ModelRole
 from agents.matmaster_agent.core_agents.base_agents.error_agent import (
     ErrorHandleBaseAgent,
 )
@@ -52,12 +52,16 @@ from agents.matmaster_agent.core_agents.comp_agents.tool_connect_agent import (
 )
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.llm_config import MatMasterLlmConfig
+from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
 from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION, GLOBAL_SCHEMA_INSTRUCTION
 from agents.matmaster_agent.state import RECOMMEND_PARAMS
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
-from agents.matmaster_agent.utils.event_utils import update_state_event
+from agents.matmaster_agent.utils.event_utils import (
+    context_function_event,
+    update_state_event,
+)
 
 logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
@@ -294,6 +298,26 @@ class BaseAgentWithRecAndSum(
 
             if not ctx.session.state['tool_hallucination']:
                 break
+
+        step_title = ctx.session.state.get('step_title', {}).get(
+            'title',
+            f"{i18n.t(ctx.session.state['separate_card_info'])} {ctx.session.state['plan_index'] + 1}: {current_step_tool_name}",
+        )
+        for matmaster_flow_event in context_function_event(
+            ctx,
+            self.name,
+            'matmaster_flow',
+            None,
+            ModelRole,
+            {
+                'title': step_title,
+                'status': 'end',
+                'font_color': '#0E6DE8',
+                'bg_color': '#EBF2FB',
+                'border_color': '#B7D3F7',
+            },
+        ):
+            yield matmaster_flow_event
 
         # TODO: needs a better way to handle customized summary prompt
         if ALL_TOOLS[current_step_tool_name].get('summary_prompt') is not None:

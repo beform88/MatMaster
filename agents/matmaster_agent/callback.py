@@ -124,6 +124,10 @@ async def matmaster_prepare_state(
     callback_context.state['quota_remaining'] = callback_context.state.get(
         'quota_remaining', None
     )
+    # 重试步骤或者是继续步骤
+    callback_context.state['separate_card_info'] = callback_context.state.get(
+        'separate_card_info', ''
+    )
 
 
 async def matmaster_set_lang(

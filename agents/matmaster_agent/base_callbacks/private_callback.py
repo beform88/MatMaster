@@ -97,6 +97,9 @@ def filter_safety_content(func: BeforeModelCallback) -> BeforeModelCallback:
                     f'{callback_context.session.id} {callback_context.agent_name} Content too long, use latest {index+1} part'
                 )
                 break
+            if callback_context.agent_name == 'step_title_agent' and index == 0:
+                break
+
         logger.info(
             f'{callback_context.session.id} {callback_context.agent_name} index={index}, record_tokens = {record_tokens}'
         )
@@ -658,7 +661,9 @@ def check_job_create(func: BeforeToolCallback) -> BeforeToolCallback:
             return
 
         if tool.executor is not None and tool.executor.get('type') != 'local':
-            return await check_job_create_service(tool_context)
+            access_key = _get_ak(tool_context)
+            project_id = _get_projectId(tool_context)
+            return await check_job_create_service(access_key, project_id)
 
     return wrapper
 
