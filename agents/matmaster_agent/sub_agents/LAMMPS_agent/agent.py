@@ -1,6 +1,6 @@
 from dp.agent.adapter.adk import CalculationMCPToolset
 from google.adk.agents import BaseAgent
-from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerParams
 
 from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME
 from agents.matmaster_agent.core_agents.public_agents.job_agents.agent import (
@@ -16,7 +16,7 @@ from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import (
 )
 
 lammps_toolset = CalculationMCPToolset(
-    connection_params=SseServerParams(url=LAMMPS_URL),
+    connection_params=StreamableHTTPServerParams(url=LAMMPS_URL),
     executor=LAMMPS_BOHRIUM_EXECUTOR,
     storage=LAMMPS_BOHRIUM_STORAGE,
     async_mode=True,
