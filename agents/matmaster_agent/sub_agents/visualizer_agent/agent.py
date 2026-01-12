@@ -6,7 +6,7 @@ from agents.matmaster_agent.constant import MATMASTER_AGENT_NAME, BohriumStorge
 from agents.matmaster_agent.llm_config import LLMConfig
 
 from ...core_agents.public_agents.sync_agent import BaseSyncAgentWithToolValidator
-from .callback import validate_visualization_url
+from .callback import validate_visualization_url, validate_visualizer_file_urls
 from .constant import VisualizerAgentName, VisualizerServerUrl
 from .prompt import VisualizerAgentDescription, VisualizerAgentInstruction
 
@@ -26,6 +26,7 @@ class VisualizerAgent(BaseSyncAgentWithToolValidator):
             tools=[visualizer_toolset],
             supervisor_agent=MATMASTER_AGENT_NAME,
             after_model_callback=validate_visualization_url,
+            before_tool_callback=validate_visualizer_file_urls,
             render_tool_response=False,
         )
 
