@@ -26,10 +26,10 @@ class PlanMakeAgent(DisallowTransferAndContentLimitSchemaAgent):
         # 计算 feasibility
         update_plan = ctx.session.state['plan']
         update_plan['feasibility'] = 'null'
-        total_steps = len(update_plan['steps'])
+        total_steps = len(update_plan.get('steps', []))
         exist_step = 0
         update_plan_steps = []
-        for step in update_plan['steps']:
+        for step in update_plan.get('steps', []):
             if not step['tool_name']:
                 step['tool_name'] = 'llm_tool'
             update_plan_steps.append(step)
