@@ -8,6 +8,7 @@ from agents.matmaster_agent.core_agents.public_agents.job_agents.agent import (
 )
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.logger import matmodeler_logging_handler
+from agents.matmaster_agent.sub_agents.LAMMPS_agent.callback import before_tool_callback
 from agents.matmaster_agent.sub_agents.LAMMPS_agent.constant import (
     LAMMPS_AGENT_NAME,
     LAMMPS_BOHRIUM_EXECUTOR,
@@ -52,6 +53,7 @@ When uploading input files, ensure the correct file suffixes:
                 'orchestrate_lammps_input',
                 'convert_lammps_structural_format',
             ],
+            before_tool_callback=before_tool_callback,
         )
 
 

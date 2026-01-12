@@ -11,88 +11,13 @@ logger = logging.getLogger(__name__)
 logger.addFilter(PrefixFilter(MATMASTER_AGENT_NAME))
 logger.setLevel(logging.INFO)
 
-BUILTIN_DPA2_HEADS = [
-    'Domains_Alloy',
-    'Domains_Anode',
-    'Domains_Cluster',
-    'Domains_Drug',
-    'Domains_FerroEle',
-    'Domains_SSE_PBE',
-    'Domains_SemiCond',
-    'H2O_H2O_PD',
-    'Metals_AlMgCu',
-    'Metals_Cu',
-    'Metals_Sn',
-    'Metals_Ti',
-    'Metals_V',
-    'Metals_W',
-    'Others_C12H26',
-    'Others_HfO2',
-    'Domains_SSE_PBESol',
-    'Domains_Transition1x',
-    'H2O_H2O_DPLR',
-    'H2O_H2O_PBE0TS_MD',
-    'H2O_H2O_PBE0TS',
-    'H2O_H2O_SCAN0',
-    'Metals_AgAu_PBED3',
-    'Others_In2Se3',
-    'MP_traj_v024_alldata_mixu',
-    'Alloy_tongqi',
-    'SSE_ABACUS',
-    'Hybrid_Perovskite',
-    'solvated_protein_fragments',
-    'Electrolyte',
-    'ODAC23',
-    'Alex2D',
-    'Omat24',
-    'SPICE2',
-    'OC20M',
-    'OC22',
-    'Organic_Reactions',
-    'RANDOM',
-]
-BUILTIN_DPA3_HEADS = [
-    'Domains_Alloy',
-    'Domains_Anode',
-    'Domains_Cluster',
-    'Domains_Drug',
-    'Domains_FerroEle',
-    'Domains_SSE_PBE',
-    'Domains_SemiCond',
-    'H2O_H2O_PD',
-    'Metals_AlMgCu',
-    'Metals_Sn',
-    'Metals_Ti',
-    'Metals_V',
-    'Metals_W',
-    'Metals_HfO2',
-    'Domains_SSE_PBESol',
-    'Domains_Transition1x',
-    'Metals_AgAu_PBED3',
-    'Others_In2Se3',
-    'MP_traj_v024_alldata_mixu',
-    'Alloy_tongqi',
-    'SSE_ABACUS',
-    'Hybrid_Perovskite',
-    'solvated_protein_fragments',
-    'Electrolyte',
-    'ODAC23',
-    'Alex2D',
-    'Omat24',
-    'SPICE2',
-    'OC20M',
-    'OC22',
-    'Organic_Reactions',
-    'RANDOM',
-]
-
 
 async def _replace_if_not_oss_url(file_path, actual_files, tool_name, arg_name):
     """
     Checks if the file_path is an OSS URL, if not, tries to match it with actual files
     and returns the matched OSS URL or the original file_path.
     """
-    # Check if it's already an OSS URL
+    # Check if it's already an OSS/HTTP URL
     if file_path and isinstance(file_path, str):
         parsed = urlparse(file_path)
         if parsed.scheme in ['http', 'https']:
@@ -127,7 +52,7 @@ async def _replace_if_not_oss_url(file_path, actual_files, tool_name, arg_name):
     return file_path  # Return as is if it's not a string or None
 
 
-async def validate_dpa_file_urls(tool, args, tool_context: ToolContext):
+async def validate_lammps_file_urls(tool, args, tool_context: ToolContext):
     """
     Validates file URLs from session to ensure they are actual session files (not hallucinated by LLM).
     If not an OSS URL, tries to match the filename against session files using regex matching.
@@ -144,11 +69,8 @@ async def validate_dpa_file_urls(tool, args, tool_context: ToolContext):
 
     # Define the file path arguments that need to be validated for each tool
     file_path_args = {
-        'optimize_structure': [('input_structure',), ('model_path',)],
-        'calculate_phonon': [('input_structure',), ('model_path',)],
-        'run_molecular_dynamics': [('initial_structure',), ('model_path',)],
-        'calculate_elastic_constants': [('input_structure',), ('model_path',)],
-        'run_neb': [('initial_structure',), ('final_structure',), ('model_path',)],
+        'run_lammps': [('input_file',), ('structure_file',), ('potential_file',)],
+        'convert_lammps_structural_format': [('structure_file',)],
     }
 
     # Get the argument names that contain file paths for this tool
@@ -175,38 +97,6 @@ async def validate_dpa_file_urls(tool, args, tool_context: ToolContext):
                     args[arg_name] = updated_value
 
 
-async def validate_dpa_head(tool, args, tool_context: ToolContext):
-    """
-    Validates and corrects the head parameter based on the model_path provided.
-    """
-    model_path = args.get('model_path')
-    head = args.get('head')
-
-    if (
-        model_path
-        and 'https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/cd12300a-d3e6-4de9-9783-dd9899376cae/dpa-2.4-7M.pt'
-        in model_path
-    ):
-        if head not in BUILTIN_DPA2_HEADS:
-            args['head'] = 'Omat24'
-            logger.info(
-                f"[validate_dpa_head] Updated head to Omat24 for DPA2.4 model {head}, {args['head']}"
-            )
-    elif (
-        model_path
-        and 'https://bohrium.oss-cn-zhangjiakou.aliyuncs.com/13756/27666/store/upload/18b8f35e-69f5-47de-92ef-af8ef2c13f54/DPA-3.1-3M.pt'
-        in model_path
-    ):
-        if head not in BUILTIN_DPA3_HEADS:
-            args['head'] = 'Omat24'
-            logger.info(
-                f"[validate_dpa_head] Updated head to Omat24 for DPA3.1 model {head}, {args['head']}"
-            )
-
-
 async def before_tool_callback(tool, args, tool_context: ToolContext):
     # First run the file URL validation
-    await validate_dpa_file_urls(tool, args, tool_context)
-
-    # Then run the head validation
-    await validate_dpa_head(tool, args, tool_context)
+    await validate_lammps_file_urls(tool, args, tool_context)
