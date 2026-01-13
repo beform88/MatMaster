@@ -400,7 +400,7 @@ class MatMasterFlowAgent(LlmAgent):
                                 f'{ctx.session.id} 确认计划 not confirm, manually setting it'
                             )
                             yield update_state_event(
-                                ctx, state_delta={'plan_confirm': True}
+                                ctx, state_delta={'plan_confirm': {'flag': True}}
                             )
 
                     plan_confirm = ctx.session.state['plan_confirm'].get('flag', False)
