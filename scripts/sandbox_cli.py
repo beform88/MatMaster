@@ -1,10 +1,12 @@
 import argparse
+import asyncio
 import json
 import os
 import sys
 import time
 from datetime import datetime
 
+import aiohttp
 import jsonpickle
 import requests
 from dotenv import find_dotenv, load_dotenv
@@ -100,7 +102,7 @@ def poll_job_status(job_id, interval=10):
             time.sleep(interval)
 
 
-def main():
+async def main():
     parser = argparse.ArgumentParser(description='Sandbox job cli')
     subparsers = parser.add_subparsers(
         dest='command', help='Available commands', required=True
@@ -138,7 +140,7 @@ def main():
     )
 
     args = parser.parse_args()
-
+    access_key = os.getenv('MATERIALS_ACCESS_KEY')
     # 调用API获取job信息
     logger.info(f"Job ID: {args.job_id}")
 
@@ -150,7 +152,7 @@ def main():
 
         try:
             response = requests.get(
-                f"{OpenAPIJobAPI}/{args.job_id}?accessKey={os.getenv('BOHRIUM_ACCESS_KEY')}"
+                f"{OpenAPIJobAPI}/{args.job_id}?accessKey={access_key}"
             )
             response.raise_for_status()
             job_info = response.json()
@@ -181,14 +183,14 @@ def main():
         logger.info(f"{job_name}[{job_status}] -- {duration}")
 
         # download log
-        get_token_and_download_file('log', args.job_id)
+        await get_token_and_download_file('log', args.job_id, access_key)
 
         if job_status in ['Running']:
             return
         elif job_status == 'Finished':
             # download result.txt
             results_txt = 'results.txt'
-            get_token_and_download_file(results_txt, args.job_id)
+            await get_token_and_download_file(results_txt, args.job_id, access_key)
             with open(results_txt) as f:
                 logger.info(jsonpickle.loads(f.read()))
             os.remove(results_txt)
@@ -196,8 +198,11 @@ def main():
             if args.download_output:
                 # 下载结果文件
                 if result_url and result_url != 'null':
-                    result_response = requests.get(result_url, stream=True)
-                    check_status_and_download_file(result_response, args.output)
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(result_url) as result_response:
+                            await check_status_and_download_file(
+                                result_response, args.output
+                            )
                 else:
                     logger.error('No resultUrl found or resultUrl is empty')
     elif args.command == 'kill':
@@ -207,4 +212,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())

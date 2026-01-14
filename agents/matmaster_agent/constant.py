@@ -53,11 +53,13 @@ MATMASTER_TOOLS_SERVER = f'https://matmaster-tools-server{URL_PART}.bohrium.com'
 if CURRENT_ENV == 'test':
     DFLOW_HOST = 'https://lbg-workflow-mlops.test.dp.tech'
     DFLOW_K8S_API_SERVER = 'https://lbg-workflow-mlops.test.dp.tech'
+    TIEFBLUE_NAS_HOST = 'https://tiefblue-nas-acs-bj.test.bohrium.com'
 elif CURRENT_ENV == 'uat':
-    pass
+    TIEFBLUE_NAS_HOST = 'https://tiefblue-nas-acs-bj.test.bohrium.com'
 elif CURRENT_ENV == 'prod':
     DFLOW_HOST = 'https://workflows.deepmodeling.com'
     DFLOW_K8S_API_SERVER = 'https://workflows.deepmodeling.com'
+    TIEFBLUE_NAS_HOST = 'https://tiefblue-nas-acs-bj.bohrium.com'
 
 # API URL
 OPENAPI_SANDBOX = f'{OPENAPI_HOST}/openapi/v1/sandbox'

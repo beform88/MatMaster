@@ -141,7 +141,9 @@ class ResultMCPAgent(MCPAgent):
                     logger.info(f"{ctx.session.id} dict_result = {dict_result}")
 
                     if self.enable_tgz_unpack:
-                        tgz_flag, new_tool_result = await update_tgz_dict(dict_result)
+                        tgz_flag, new_tool_result = await update_tgz_dict(
+                            dict_result, session_id=ctx.session.id
+                        )
                     else:
                         new_tool_result = dict_result
                     parsed_tool_result = await parse_result(ctx, new_tool_result)
