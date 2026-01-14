@@ -50,6 +50,7 @@ BOHRIUM_COM = f'https://www{URL_PART}.bohrium.com'
 BOHRIUM_HOST = f'https://bohrium{URL_PART}.dp.tech'
 ICL_SERVICE_URL = '101.126.90.82:8001'
 MATMASTER_TOOLS_SERVER = f'https://matmaster-tools-server{URL_PART}.bohrium.com'
+TIEFBLUE_NAS_HOST = f'https://tiefblue-nas-acs-bj{URL_PART}.bohrium.com'
 if CURRENT_ENV == 'test':
     DFLOW_HOST = 'https://lbg-workflow-mlops.test.dp.tech'
     DFLOW_K8S_API_SERVER = 'https://lbg-workflow-mlops.test.dp.tech'

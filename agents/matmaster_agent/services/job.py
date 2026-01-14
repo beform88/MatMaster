@@ -11,6 +11,7 @@ from agents.matmaster_agent.constant import (
     MATMASTER_AGENT_NAME,
     OPENAPI_FILE_TOKEN_API,
     OPENAPI_HOST,
+    TIEFBLUE_NAS_HOST,
     OpenAPIJobAPI,
 )
 from agents.matmaster_agent.logger import PrefixFilter
@@ -153,7 +154,7 @@ async def get_token_and_download_dir(dir_path, job_id, access_key):
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            'https://tiefblue-nas-acs-bj.test.bohrium.com/api/downloadr',
+            f'{TIEFBLUE_NAS_HOST}/api/downloadr',
             json=request_body,
             headers={
                 'Authorization': f"Bearer {token}",
@@ -197,7 +198,9 @@ async def get_iterate_files(
     return prefix, iterate_json
 
 
-async def parse_and_prepare_results(job_id: str = '', access_key: str = ''):
+async def parse_and_prepare_results(
+    job_id: str = '', access_key: str = '', session_id: str = ''
+):
     def norm(p: str) -> str:
         p = p.replace('\\', '/')
         if p.endswith('/') and p != '/':
@@ -294,7 +297,7 @@ async def parse_and_prepare_results(job_id: str = '', access_key: str = ''):
         results_txt_parsed = jsonpickle.loads(
             f.read().replace('pathlib._local.PosixPath', 'pathlib.PosixPath')
         )
-        logger.info(f"results_txt_parsed = {results_txt_parsed}")
+        logger.info(f"{session_id} results_txt_parsed = {results_txt_parsed}")
     os.remove(RESULTS_TXT)
 
     final_results = {}
@@ -318,7 +321,7 @@ async def parse_and_prepare_results(job_id: str = '', access_key: str = ''):
         obj = await find_obj(rel)
 
         if obj is None:
-            logger.warning(f"`{rel}` is not exist")
+            logger.warning(f"{session_id} `{rel}` is not exist")
             continue
 
         is_dir = bool(obj.get('isDir'))

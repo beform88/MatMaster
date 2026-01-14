@@ -162,13 +162,14 @@ async def upload_to_oss_wrapper(
 
 
 async def extract_convert_and_upload(
-    compressed_url: str, temp_dir_path: str = './tmp'
+    compressed_url: str, temp_dir_path: str = './tmp', session_id: str = ''
 ) -> dict:
     """
     下载 TGZ → 解压 → JPG 转 Base64 → 上传 OSS → 自动清理
     """
     async with temp_dir(temp_dir_path) as temp_path:
         # 获取所有JPG文件的Base64编码
+        logger.info(f"{session_id} compressed_url = {compressed_url}")
         files = await extract_files_from_compressed_file_url(compressed_url, temp_path)
         conversion_tasks = [file_to_base64(file) for file in files]
         base64_results = await asyncio.gather(*conversion_tasks)
@@ -187,14 +188,16 @@ async def extract_convert_and_upload(
         }
 
 
-async def update_tgz_dict(tool_result: dict):
+async def update_tgz_dict(tool_result: dict, session_id: str = ''):
     new_tool_result = {}
     compressed_flag = False
     for k, v in tool_result.items():
         new_tool_result[k] = v
         if isinstance(v, str) and v.startswith('https') and v.endswith(('tgz', 'zip')):
             compressed_flag = True
-            new_tool_result.update(**await extract_convert_and_upload(v))
+            new_tool_result.update(
+                **await extract_convert_and_upload(v, session_id=session_id)
+            )
 
     return compressed_flag, new_tool_result
 
@@ -212,6 +215,7 @@ async def extract_file_content(file_url: str, temp_dir_path: str = './tmp') -> d
 
 
 if __name__ == '__main__':
-    invalid_zip = 'https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/jobs/337612/72f4337ea51448edacabf9559bc630b3/outputs.zip'
+    invalid_zip = 'https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/jobs/337612/fc6c0cc25d8847c8acb226c097557ed7/outputs.zip'
     valid_zip = 'https://bohrium-agent-test.oss-cn-zhangjiakou.aliyuncs.com/agent/jobs/110680/c15113bb106b46f1a49800e776a2b8fc/outputs.zip'
-    asyncio.run(extract_convert_and_upload(invalid_zip, './tmp'))
+    failed_zip = 'https://bohrium-agents.oss-cn-zhangjiakou.aliyuncs.com/agent/jobs/337612/263edcfa12a2460abd222f6deeb19969/outputs.zip'
+    asyncio.run(extract_convert_and_upload(failed_zip, './tmp'))
