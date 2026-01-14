@@ -193,14 +193,23 @@ class BaseAgentWithRecAndSum(
         ]
 
         tool_doc = current_function_declaration[0]['description']
+        tool_schema = current_function_declaration[0]['parameters']
+
+        # 如果字符串里包含 {}，替换为 []
+        if isinstance(tool_doc, str):
+            tool_doc = tool_doc.replace('{', '[').replace('}', ']')
+        if isinstance(tool_schema, str):
+            tool_schema = tool_schema.replace('{', '[').replace('}', ']')
+
         tool_args_recommend_prompt = ALL_TOOLS[current_step_tool_name].get(
             'args_setting', ''
         )
+
         self.tool_call_info_agent.instruction = gen_tool_call_info_instruction(
             user_prompt=current_step['description'],
             agent_prompt=self.instruction,
             tool_doc=tool_doc,
-            tool_schema=current_function_declaration[0]['parameters'],
+            tool_schema=tool_schema,
             tool_args_recommend_prompt=tool_args_recommend_prompt,
         )
         logger.info(
