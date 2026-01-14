@@ -3,7 +3,7 @@ from agents.matmaster_agent.core_agents.public_agents.sync_agent import (
 )
 from agents.matmaster_agent.llm_config import LLMConfig
 from agents.matmaster_agent.sub_agents.built_in_agent.file_parse_agent.callback import (
-    check_file_url,
+    check_and_modify_file_url,
 )
 from agents.matmaster_agent.sub_agents.built_in_agent.file_parse_agent.constant import (
     FILE_PARSE_AGENT_NAME,
@@ -23,7 +23,7 @@ class FileParseAgent(BaseSyncAgentWithToolValidator):
             name=FILE_PARSE_AGENT_NAME,
             description='',
             instruction=FileParseAgentInstruction,
-            before_tool_callback=check_file_url,
+            before_tool_callback=check_and_modify_file_url,
             tools=[file_parse],
         )
 
