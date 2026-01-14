@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 OptimadeAgentName = 'optimade_agent'
 
 OptimadeFilterToolDescription = (
