@@ -81,7 +81,6 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant impo
     OPTIMADE_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.prompt import (
-    OptimadeAgentArgsSetting,
     OptimadeAgentSummaryPrompt,
     OptimadeBandgapArgsSetting,
     OptimadeFilterArgsSetting,
@@ -1727,7 +1726,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.UNIVERSAL],
         'description': (
             'What it does: Parse various file contents to extract key information.\n'
-            'When to use: When you need to extract data from files.\n'
+            'When to use: When you need to extract information from a file but there is no dedicated information extraction tool available.\n'
             'Prerequisites / Inputs: File (TXT, PDF, Word, Excel, etc.).\n'
             'Outputs: Extracted information in text form.\n'
             'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
