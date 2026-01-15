@@ -639,6 +639,23 @@
       "zhPrompt": {
         "belonging": "表征分析",
         "belonging_en": "Characterization Analysis",
+        "question": "帮我解读这个程序升温脱附文件，并生成可视化配图，对应总信号，分析曲线信号峰，能得出什么信息",
+        "question_en": "Help me interpret this programmed temperature desorption file and generate a visual plot for the total signal, analyze the curve signal peaks, and what information can be derived",
+        "sharing_url": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share",
+          "test_url": "https://matmaster.test.bohrium.com/matmaster/share/019bbf9687c973ddab802408c725aba3",
+          "uat_url": ""
+        },
+        "sharing_url_en": {
+          "prod_url": "https://matmaster.bohrium.com/matmaster/share"
+        },
+        "structure_url": "https://dp-storage-test2.oss-cn-zhangjiakou.aliyuncs.com/bohrium-test/bohrium/feedback/attachment/01KEZSD75JVQA47RVGFTZ5ZV6R/TPD.XLS"
+      }
+    },
+    {
+      "zhPrompt": {
+        "belonging": "表征分析",
+        "belonging_en": "Characterization Analysis",
         "question": "分析这个XRD文件，提供可视化的图像，并且分析其中是否含有氧化铜",
         "question_en": "Analyze this XRD file, provide visualization, and analyze whether it contains copper oxide",
         "sharing_url": {

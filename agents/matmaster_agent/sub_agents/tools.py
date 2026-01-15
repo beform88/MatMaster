@@ -1668,12 +1668,12 @@ ALL_TOOLS = {
         'belonging_agent': TPD_AGENT_NAME,
         'scene': [SceneEnum.TPD],
         'description': (
-            'What it does: Perform peak finding, fitting, deconvolution, integration, and derivative analysis for a single m/z channel in a TPD file.\n'
-            'When to use: When you need detailed analysis (peak, fit, integration, etc.) for one channel.\n'
-            'Prerequisites / Inputs: Local file path, file name, mol_weight (m/z), data type, line width, cal_options (list of operations).\n'
-            'Outputs: Path to ECharts option JSON, error list, integral area (if computed).\n'
-            'Cannot do / Limits: Only local files; cal_options must follow supported format.\n'
-            'Cost / Notes: Medium; each operation is independent.'
+            'What it does: Perform TPD analysis (peak finding, curve fitting, integration, derivative) for a single molecule weight (m/z) signal from one file.\n'
+            'When to use: When you need detailed peak analysis, area calculation, or derivative for a specific m/z channel or total signal.\n'
+            'Prerequisites / Inputs: Local file path; target molecule weight (m/z as string like "18", "44", or "*" for total signal); analysis operations (peak finding, fitting, integration range, derivative settings).\n'
+            'Outputs: ECharts visualization config, integration area (if calculated), error list for failed operations.\n'
+            'Cannot do / Limits: Processes one m/z at a time; call multiple times for multiple molecules; requires local files.\n'
+            'Cost / Notes: Medium; each operation is independent; default to total signal (*) if m/z not specified.'
         ),
         'alternative': [],
         'self_check': False,
