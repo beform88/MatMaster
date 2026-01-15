@@ -81,10 +81,12 @@ from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.constant impo
     OPTIMADE_DATABASE_AGENT_NAME,
 )
 from agents.matmaster_agent.sub_agents.MrDice_agent.optimade_agent.prompt import (
-    OptimadeAgentArgsSetting,
     OptimadeAgentSummaryPrompt,
+    OptimadeBandgapArgsSetting,
     OptimadeBandgapToolDescription,
+    OptimadeFilterArgsSetting,
     OptimadeFilterToolDescription,
+    OptimadeSpgArgsSetting,
     OptimadeSpgToolDescription,
 )
 from agents.matmaster_agent.sub_agents.NMR_agent.constant import (
@@ -831,7 +833,7 @@ ALL_TOOLS = {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeFilterToolDescription,
-        'args_setting': f"{OptimadeAgentArgsSetting}",
+        'args_setting': f"{OptimadeFilterArgsSetting}",
         'alternative': [
             'fetch_bohrium_crystals',
             'fetch_openlam_structures',
@@ -844,7 +846,7 @@ ALL_TOOLS = {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeSpgToolDescription,
-        'args_setting': f"{OptimadeAgentArgsSetting}",
+        'args_setting': f"{OptimadeSpgArgsSetting}",
         'alternative': [
             'fetch_bohrium_crystals',
             'fetch_structures_with_filter',
@@ -857,7 +859,7 @@ ALL_TOOLS = {
         'belonging_agent': OPTIMADE_DATABASE_AGENT_NAME,
         'scene': [SceneEnum.DATABASE_SEARCH],
         'description': OptimadeBandgapToolDescription,
-        'args_setting': f"{OptimadeAgentArgsSetting}",
+        'args_setting': f"{OptimadeBandgapArgsSetting}",
         'alternative': [
             'fetch_bohrium_crystals',
             'fetch_structures_with_filter',
@@ -1724,7 +1726,7 @@ ALL_TOOLS = {
         'scene': [SceneEnum.UNIVERSAL],
         'description': (
             'What it does: Parse various file contents to extract key information.\n'
-            'When to use: When you need to extract data from files.\n'
+            'When to use: When you need to extract information from a file but there is no dedicated information extraction tool available.\n'
             'Prerequisites / Inputs: File (TXT, PDF, Word, Excel, etc.).\n'
             'Outputs: Extracted information in text form.\n'
             'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
