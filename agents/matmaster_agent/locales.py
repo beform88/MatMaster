@@ -19,7 +19,7 @@ translations = {
         'MoreQuestions': 'You may also be interested in these questions:',
         'Step': 'Step',
         'ReExecuteStep': 'Re-execute Step',
-        'PlanMake': 'Make Plan',
+        'PlanMake': 'Planning',
         'PlanSummary': 'Plan Summary',
         'NoFoundStructure': 'No eligible structures found.',
         'WalletNoFee': 'Insufficient wallet balance',
