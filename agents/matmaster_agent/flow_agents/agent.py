@@ -457,7 +457,7 @@ class MatMasterFlowAgent(LlmAgent):
                             None,
                             ModelRole,
                             {
-                                'title': '制定计划',
+                                'title': i18n.t('PlanMake'),
                                 'status': 'start',
                                 'font_color': '#30B37F',
                                 'bg_color': '#EFF8F5',
@@ -485,7 +485,7 @@ class MatMasterFlowAgent(LlmAgent):
                             None,
                             ModelRole,
                             {
-                                'title': '制定计划',
+                                'title': i18n.t('PlanMake'),
                                 'status': 'end',
                                 'font_color': '#30B37F',
                                 'bg_color': '#EFF8F5',
