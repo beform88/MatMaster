@@ -26,7 +26,7 @@ async def _parse_image_content(content: bytes, mime_type: str) -> str:
     b64_data = base64.b64encode(content).decode('utf-8')
     data_uri = f"data:{mime_type};base64,{b64_data}"
 
-    model_name = MatMasterLlmConfig.gemini_3_pro.model
+    model_name = MatMasterLlmConfig.gemini_3_flash.model
 
     response = await acompletion(
         model=model_name,
