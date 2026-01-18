@@ -59,6 +59,9 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
 from agents.matmaster_agent.flow_agents.schema import FlowStatusEnum, PlanSchema
+from agents.matmaster_agent.flow_agents.step_title_agent.callback import (
+    filter_llm_contents,
+)
 from agents.matmaster_agent.flow_agents.step_title_agent.prompt import (
     STEP_TITLE_INSTRUCTION,
 )
@@ -196,6 +199,7 @@ class MatMasterFlowAgent(LlmAgent):
             instruction=STEP_TITLE_INSTRUCTION,
             output_schema=StepTitleSchema,
             state_key='step_title',
+            before_model_callback=filter_llm_contents,
         )
 
         self._execution_agent = MatMasterSupervisorAgent(
