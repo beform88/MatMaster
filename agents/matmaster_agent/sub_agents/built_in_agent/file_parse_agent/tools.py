@@ -18,7 +18,8 @@ class FileParseResponse(TypedDict):
 
 
 # Configuration Constants
-MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB
+TEXT_FILE_MAX_SIZE = 1 * 1024 * 1024  # 1MB for text files
+IMAGE_FILE_MAX_SIZE = 20 * 1024 * 1024  # 20MB for images
 
 
 async def _parse_image_content(content: bytes, mime_type: str) -> str:
@@ -70,20 +71,29 @@ async def file_parse(file_url: str) -> FileParseResponse:
             async with session.get(
                 file_url, timeout=aiohttp.ClientTimeout(total=60)
             ) as resp:
-                if resp.content_length and resp.content_length > MAX_FILE_SIZE:
+                # Determine the file type first to apply appropriate size limit
+                filename = await get_filename_from_url(file_url)
+                mime_type, _ = mimetypes.guess_type(filename)
+
+                max_size = (
+                    IMAGE_FILE_MAX_SIZE
+                    if mime_type and mime_type.startswith('image/')
+                    else TEXT_FILE_MAX_SIZE
+                )
+
+                if resp.content_length and resp.content_length > max_size:
                     return FileParseResponse(
-                        msg=f'文件超出大小限制（>{MAX_FILE_SIZE} 字节）'
+                        msg=f'文件超出大小限制（>{max_size} 字节）'
                     )
 
                 content = await resp.read()
-                if len(content) > MAX_FILE_SIZE:
+                if len(content) > max_size:
                     return FileParseResponse(
-                        msg=f'文件超出大小限制（>{MAX_FILE_SIZE} 字节）'
+                        msg=f'文件超出大小限制（>{max_size} 字节）'
                     )
 
             # 2. Type Detection
-            filename = await get_filename_from_url(file_url)
-            mime_type, _ = mimetypes.guess_type(filename)
+            # mime_type, _ = mimetypes.guess_type(filename)
 
             # 3. Dispatch
             if mime_type and mime_type.startswith('image/'):
