@@ -72,9 +72,6 @@ from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
 from agents.matmaster_agent.flow_agents.step_validation_agent.schema import (
     StepValidationSchema,
 )
-from agents.matmaster_agent.flow_agents.style import (
-    separate_card,
-)
 from agents.matmaster_agent.flow_agents.utils import (
     check_plan,
     create_dynamic_plan_schema,
@@ -421,10 +418,9 @@ class MatMasterFlowAgent(LlmAgent):
                     ):
                         # 制定计划
                         if check_plan(ctx) == FlowStatusEnum.FAILED:
-                            for replan_event in all_text_event(
-                                ctx, self.name, separate_card('重新制定计划'), ModelRole
-                            ):
-                                yield replan_event
+                            plan_title = i18n.t('RePlanMake')
+                        else:
+                            plan_title = i18n.t('PlanMake')
 
                         available_tools = get_tools_list(ctx, scenes)
                         if not available_tools:
@@ -461,7 +457,7 @@ class MatMasterFlowAgent(LlmAgent):
                             None,
                             ModelRole,
                             {
-                                'title': i18n.t('PlanMake'),
+                                'title': plan_title,
                                 'status': 'start',
                                 'font_color': '#30B37F',
                                 'bg_color': '#EFF8F5',
@@ -489,7 +485,7 @@ class MatMasterFlowAgent(LlmAgent):
                             None,
                             ModelRole,
                             {
-                                'title': i18n.t('PlanMake'),
+                                'title': plan_title,
                                 'status': 'end',
                                 'font_color': '#30B37F',
                                 'bg_color': '#EFF8F5',
