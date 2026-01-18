@@ -1727,7 +1727,7 @@ ALL_TOOLS = {
         'description': (
             'What it does: Parse various file contents to extract key information.\n'
             'When to use: When you need to extract information from a file but there is no dedicated information extraction tool available.\n'
-            'Prerequisites / Inputs: File (TXT, PDF, Word, Excel, etc.).\n'
+            'Prerequisites / Inputs: File (TXT, PDF, Word, Excel, PNG, JPG, etc.).\n'
             'Outputs: Extracted information in text form.\n'
             'Cannot do / Limits: Only return text and do not support generating files in any format.\n'
             'Cost / Notes: Low.'
