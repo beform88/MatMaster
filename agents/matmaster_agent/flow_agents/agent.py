@@ -253,7 +253,7 @@ class MatMasterFlowAgent(LlmAgent):
             name='report_agent',
             model=MatMasterLlmConfig.default_litellm_model,
             global_instruction=ChatAgentGlobalInstruction,
-            description=f'总结本轮的计划执行情况\n格式要求: \n{HUMAN_FRIENDLY_FORMAT_REQUIREMENT}',
+            description='根据完整的上下文，生成markdown总结文档',
             instruction='',
         )
 
