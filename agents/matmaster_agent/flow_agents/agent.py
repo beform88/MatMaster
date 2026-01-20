@@ -62,6 +62,7 @@ from agents.matmaster_agent.flow_agents.plan_info_agent.callback import (
 from agents.matmaster_agent.flow_agents.plan_info_agent.prompt import (
     PLAN_INFO_INSTRUCTION,
 )
+from agents.matmaster_agent.flow_agents.plan_info_agent.schema import PlanInfoSchema
 from agents.matmaster_agent.flow_agents.plan_make_agent.agent import PlanMakeAgent
 from agents.matmaster_agent.flow_agents.plan_make_agent.callback import (
     filter_plan_make_llm_contents,
@@ -187,12 +188,14 @@ class MatMasterFlowAgent(LlmAgent):
             state_key='plan_confirm',
         )
 
-        self._plan_info_agent = DisallowTransferAndContentLimitLlmAgent(
+        self._plan_info_agent = DisallowTransferAndContentLimitSchemaAgent(
             name='plan_info_agent',
-            model=MatMasterLlmConfig.default_litellm_model,
+            model=MatMasterLlmConfig.tool_schema_model,
             global_instruction=GLOBAL_INSTRUCTION,
             description='根据 materials_plan 返回的计划进行总结',
             instruction=PLAN_INFO_INSTRUCTION,
+            output_schema=PlanInfoSchema,
+            state_key='plan_info',
             before_model_callback=filter_plan_info_llm_contents,
         )
 
@@ -497,6 +500,30 @@ class MatMasterFlowAgent(LlmAgent):
                             ctx
                         ):
                             yield plan_summary_event
+                        plan_info = ctx.session.state['plan_info']
+                        intro = plan_info['intro']
+                        plans = plan_info['plans']
+                        overall = plan_info['overall']
+
+                        for matmaster_flow_plans_event in context_function_event(
+                            ctx,
+                            self.name,
+                            'matmaster_flow_plans',
+                            None,
+                            ModelRole,
+                            {
+                                'plans_result': json.dumps(
+                                    {
+                                        'invocation_id': ctx.invocation_id,
+                                        'intro': intro,
+                                        'plans': plans,
+                                        'overall': overall,
+                                    }
+                                )
+                            },
+                        ):
+                            yield matmaster_flow_plans_event
+
                         for matmaster_flow_event in context_function_event(
                             ctx,
                             self.name,
@@ -542,31 +569,6 @@ class MatMasterFlowAgent(LlmAgent):
                                     }
                                 },
                             )
-                        else:
-                            multi_plans = ctx.session.state['multi_plans']['plans']
-                            for generate_plan_confirm_event in context_function_event(
-                                ctx,
-                                self.name,
-                                'matmaster_generate_follow_up',
-                                {},
-                                ModelRole,
-                                {
-                                    'follow_up_result': json.dumps(
-                                        {
-                                            'invocation_id': ctx.invocation_id,
-                                            'title': i18n.t('PlanOperation'),
-                                            'list': [
-                                                f'{i18n.t("Plan")} {id+1}'
-                                                for id in range(len(multi_plans))
-                                            ]
-                                            + [
-                                                i18n.t('RePlan'),
-                                            ],
-                                        }
-                                    ),
-                                },
-                            ):
-                                yield generate_plan_confirm_event
 
                     # 计划未确认，暂停往下执行
                     if ctx.session.state['plan_confirm']['flag']:
