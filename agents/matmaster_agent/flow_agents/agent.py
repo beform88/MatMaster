@@ -632,8 +632,8 @@ class MatMasterFlowAgent(LlmAgent):
                                         report_text_parts.append(
                                             report_event.content.parts[0].text
                                         )
-                                    yield report_event
 
+                                # matmaster_report_md.md
                                 report_markdown = ''.join(report_text_parts)
                                 upload_result = await upload_report_md_to_oss(
                                     ReportUploadParams(
@@ -643,12 +643,16 @@ class MatMasterFlowAgent(LlmAgent):
                                     )
                                 )
                                 if upload_result:
-                                    yield update_state_event(
+                                    for report_file_event in context_function_event(
                                         ctx,
-                                        state_delta={
-                                            'report_md_oss_url': upload_result.oss_url
+                                        self.name,
+                                        'matmaster_report_md',
+                                        {
+                                            'url': upload_result.oss_url,
                                         },
-                                    )
+                                        ModelRole,
+                                    ):
+                                        yield report_file_event
                                 for matmaster_flow_event in context_function_event(
                                     ctx,
                                     self.name,
@@ -656,7 +660,7 @@ class MatMasterFlowAgent(LlmAgent):
                                     None,
                                     ModelRole,
                                     {
-                                        'title': i18n.t('MarkdownDoc'),
+                                        'title': i18n.t('PlanSummary'),
                                         'status': 'end',
                                         'font_color': '#9479F7',
                                         'bg_color': '#F5F3FF',
