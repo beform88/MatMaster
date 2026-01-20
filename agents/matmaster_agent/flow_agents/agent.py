@@ -73,6 +73,9 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
 from agents.matmaster_agent.flow_agents.plan_make_agent.schema import (
     create_dynamic_multi_plans_schema,
 )
+from agents.matmaster_agent.flow_agents.report_agent.prompt import (
+    get_report_instruction,
+)
 from agents.matmaster_agent.flow_agents.scene_agent.constant import SCENE_AGENT
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema
@@ -119,8 +122,13 @@ from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import (
     all_text_event,
     context_function_event,
+    is_text,
     send_error_event,
     update_state_event,
+)
+from agents.matmaster_agent.utils.io_oss import (
+    ReportUploadParams,
+    upload_report_md_to_oss,
 )
 
 logger = logging.getLogger(__name__)
@@ -241,6 +249,14 @@ class MatMasterFlowAgent(LlmAgent):
             instruction='',
         )
 
+        self._report_agent = DisallowTransferAndContentLimitLlmAgent(
+            name='report_agent',
+            model=MatMasterLlmConfig.default_litellm_model,
+            global_instruction=ChatAgentGlobalInstruction,
+            description='根据完整的上下文，生成markdown总结文档',
+            instruction='',
+        )
+
         self.sub_agents = [
             self.chat_agent,
             self.handle_upload_agent,
@@ -252,6 +268,7 @@ class MatMasterFlowAgent(LlmAgent):
             self.plan_confirm_agent,
             self.execution_agent,
             self.analysis_agent,
+            self.report_agent,
         ]
 
         return self
@@ -305,6 +322,11 @@ class MatMasterFlowAgent(LlmAgent):
     @property
     def analysis_agent(self) -> LlmAgent:
         return self._analysis_agent
+
+    @computed_field
+    @property
+    def report_agent(self) -> LlmAgent:
+        return self._report_agent
 
     async def _run_async_impl(
         self, ctx: InvocationContext
@@ -639,6 +661,38 @@ class MatMasterFlowAgent(LlmAgent):
                                     analysis_event
                                 ) in self.analysis_agent.run_async(ctx):
                                     yield analysis_event
+                                self._report_agent.instruction = get_report_instruction(
+                                    ctx.session.state.get('plan', {})
+                                )
+                                report_text_parts: list[str] = []
+                                async for report_event in self.report_agent.run_async(
+                                    ctx
+                                ):
+                                    if is_text(report_event):
+                                        report_text_parts.append(
+                                            report_event.content.parts[0].text
+                                        )
+
+                                # matmaster_report_md.md
+                                report_markdown = ''.join(report_text_parts)
+                                upload_result = await upload_report_md_to_oss(
+                                    ReportUploadParams(
+                                        report_markdown=report_markdown,
+                                        session_id=ctx.session.id,
+                                        invocation_id=ctx.invocation_id,
+                                    )
+                                )
+                                if upload_result:
+                                    for report_file_event in context_function_event(
+                                        ctx,
+                                        self.name,
+                                        'matmaster_report_md',
+                                        {
+                                            'url': upload_result.oss_url,
+                                        },
+                                        ModelRole,
+                                    ):
+                                        yield report_file_event
                                 for matmaster_flow_event in context_function_event(
                                     ctx,
                                     self.name,
