@@ -232,7 +232,7 @@ class MatMasterFlowAgent(LlmAgent):
         self._report_agent = DisallowTransferAndContentLimitLlmAgent(
             name='report_agent',
             model=MatMasterLlmConfig.default_litellm_model,
-            global_instruction='使用 {target_language} 回答',
+            global_instruction=ChatAgentGlobalInstruction,
             description=f'总结本轮的计划执行情况\n格式要求: \n{HUMAN_FRIENDLY_FORMAT_REQUIREMENT}',
             instruction='',
         )
@@ -606,7 +606,7 @@ class MatMasterFlowAgent(LlmAgent):
                                     None,
                                     ModelRole,
                                     {
-                                        'title': i18n.t('MarkdownDoc'),
+                                        'title': i18n.t('PlanSummary'),
                                         'status': 'start',
                                         'font_color': '#9479F7',
                                         'bg_color': '#F5F3FF',
