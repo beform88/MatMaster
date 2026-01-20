@@ -70,11 +70,11 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.callback import (
 from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
     get_plan_make_instruction,
 )
-from agents.matmaster_agent.flow_agents.report_agent.prompt import (
-    get_report_instruction,
-)
 from agents.matmaster_agent.flow_agents.plan_make_agent.schema import (
     create_dynamic_multi_plans_schema,
+)
+from agents.matmaster_agent.flow_agents.report_agent.prompt import (
+    get_report_instruction,
 )
 from agents.matmaster_agent.flow_agents.scene_agent.constant import SCENE_AGENT
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
