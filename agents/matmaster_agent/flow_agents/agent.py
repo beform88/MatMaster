@@ -27,9 +27,6 @@ from agents.matmaster_agent.core_agents.public_agents.job_agents.agent import (
 from agents.matmaster_agent.flow_agents.analysis_agent.prompt import (
     get_analysis_instruction,
 )
-from agents.matmaster_agent.flow_agents.report_agent.prompt import (
-    get_report_instruction,
-)
 from agents.matmaster_agent.flow_agents.chat_agent.prompt import (
     ChatAgentDescription,
     ChatAgentGlobalInstruction,
@@ -59,6 +56,9 @@ from agents.matmaster_agent.flow_agents.plan_info_agent.prompt import (
 from agents.matmaster_agent.flow_agents.plan_make_agent.agent import PlanMakeAgent
 from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
     get_plan_make_instruction,
+)
+from agents.matmaster_agent.flow_agents.report_agent.prompt import (
+    get_report_instruction,
 )
 from agents.matmaster_agent.flow_agents.scene_agent.prompt import SCENE_INSTRUCTION
 from agents.matmaster_agent.flow_agents.scene_agent.schema import SceneSchema

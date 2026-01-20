@@ -8,8 +8,8 @@ import tarfile
 import time
 import zipfile
 from contextlib import asynccontextmanager
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from urllib.parse import unquote
 
@@ -197,7 +197,7 @@ async def upload_report_md_to_oss(
         md_file_path.write_text(report_markdown, encoding='utf-8')
 
         _, b64_data = await file_to_base64(md_file_path)
-        oss_path = (f"agent/{int(time.time())}_{filename}")
+        oss_path = f"agent/{int(time.time())}_{filename}"
         oss_result = await upload_to_oss_wrapper(b64_data, oss_path, filename)
         oss_url = list(oss_result.values())[0]
         return ReportUploadResult(
