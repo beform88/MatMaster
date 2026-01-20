@@ -411,6 +411,7 @@ class MatMasterFlowAgent(LlmAgent):
                         ) in self.plan_confirm_agent.run_async(ctx):
                             yield plan_confirm_event
 
+                        # 用户说确认计划，但 plan_confirm 误判为 False
                         if ctx.user_content.parts[
                             0
                         ].text == '确认计划' and not ctx.session.state[
@@ -423,6 +424,16 @@ class MatMasterFlowAgent(LlmAgent):
                             )
                             yield update_state_event(
                                 ctx, state_delta={'plan_confirm': {'flag': True}}
+                            )
+                        # 没有计划，但 plan_confirm 误判为 True
+                        elif ctx.session.state['plan_confirm'].get(
+                            'flag', False
+                        ) and not ctx.session.state.get('multi_plans', {}):
+                            logger.warning(
+                                f'{ctx.session.id} plan_confirm = True, but no multi_plans, manually setting plan_confirm -> False'
+                            )
+                            yield update_state_event(
+                                ctx, state_delta={'plan_confirm': {'flag': False}}
                             )
 
                     plan_confirm = ctx.session.state['plan_confirm'].get('flag', False)
