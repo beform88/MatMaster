@@ -1463,14 +1463,28 @@ ALL_TOOLS = {
         'bypass_confirmation': True,
         'self_check': False,
     },
-    'convert_lammps_structural_format': {
+    'orchestrate_input': {
         'belonging_agent': LAMMPS_AGENT_NAME,
         'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
         'description': (
-            'What it does: Convert to LAMMPS format.\n'
-            'When to use: Prepare structures for LAMMPS.\n'
-            'Prerequisites / Inputs: Structure file URL.\n'
-            'Outputs: LAMMPS data file.\n'
+            'What it does: Generate input scripts for simulation engines (Currently supports: LAMMPS).\n'
+            'When to use: Create input from description.\n'
+            'Prerequisites / Inputs: engine_type="lammps", natural language task.\n'
+            'Outputs: Input script content.\n'
+            'Cannot do / Limits: Script generation only.\n'
+            'Cost / Notes: Low.'
+        ),
+        'alternative': [],
+        'self_check': False,
+    },
+    'convert_structural_format': {
+        'belonging_agent': LAMMPS_AGENT_NAME,
+        'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
+        'description': (
+            'What it does: Convert structure to target format (Currently supports: lammps/lmp).\n'
+            'When to use: Prepare structures for simulation.\n'
+            'Prerequisites / Inputs: Structure file URL, target_format="lammps/lmp".\n'
+            'Outputs: Converted structure file.\n'
             'Cannot do / Limits: Format conversion only.\n'
             'Cost / Notes: Low.'
         ),
@@ -1487,20 +1501,6 @@ ALL_TOOLS = {
             'Outputs: Simulation results.\n'
             'Cannot do / Limits: Requires LAMMPS format.\n'
             'Cost / Notes: High (simulation time).'
-        ),
-        'alternative': [],
-        'self_check': False,
-    },
-    'orchestrate_lammps_input': {
-        'belonging_agent': LAMMPS_AGENT_NAME,
-        'scene': [SceneEnum.MOLECULAR_DYNAMICS, SceneEnum.LAMMPS],
-        'description': (
-            'What it does: Generate LAMMPS scripts.\n'
-            'When to use: Create input from description.\n'
-            'Prerequisites / Inputs: Natural language task.\n'
-            'Outputs: LAMMPS input script.\n'
-            'Cannot do / Limits: Script generation only.\n'
-            'Cost / Notes: Low.'
         ),
         'alternative': [],
         'self_check': False,
