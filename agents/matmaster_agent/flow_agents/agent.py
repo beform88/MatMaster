@@ -686,13 +686,18 @@ class MatMasterFlowAgent(LlmAgent):
 
                                     if latest_partial_snapshot and (
                                         current_text.startswith(latest_partial_snapshot)
-                                        or latest_partial_snapshot.startswith(current_text)
+                                        or latest_partial_snapshot.startswith(
+                                            current_text
+                                        )
                                     ):
                                         report_markdown = current_text
                                         break
 
                                     # Otherwise treat as incremental chunk, de-dup exact repeats.
-                                    if non_partial_chunks and non_partial_chunks[-1] == current_text:
+                                    if (
+                                        non_partial_chunks
+                                        and non_partial_chunks[-1] == current_text
+                                    ):
                                         continue
                                     non_partial_chunks.append(current_text)
 
