@@ -115,6 +115,9 @@ class ResultMCPAgent(MCPAgent):
                 # 更新状态
                 plan_status = 'success' if status == 'Finished' else 'failed'
                 update_plan = copy.deepcopy(ctx.session.state['plan'])
+                logger.info(
+                    f'{ctx.session.id} plan_index = {ctx.session.state['plan_index']}'
+                )
                 update_plan['steps'][ctx.session.state['plan_index']][
                     'status'
                 ] = plan_status
