@@ -124,7 +124,7 @@ def find_alternative_tool(current_tool_name: str) -> List[str]:
     return tool.get('alternative', [])
 
 
-def get_self_check(current_tool_name: str) -> bool:
+def has_self_check(current_tool_name: str) -> bool:
     """Return self check info for the current tool."""
     tool = ALL_TOOLS.get(current_tool_name)
     if not tool:
