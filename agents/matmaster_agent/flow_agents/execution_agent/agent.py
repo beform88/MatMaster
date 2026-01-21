@@ -129,13 +129,21 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
         # 引导标题
         async for title_event in self.title_agent.run_async(ctx):
             yield title_event
+        if ctx.session.state[PLAN]['steps'][index]['retry_count']:
+            step_title = (
+                i18n.t(separate_card_info)
+                + f'{retry_info}'
+                + ': '
+                + ctx.session.state.get('step_title', {}).get('title', '')
+            )
+        else:
+            step_title = ctx.session.state.get('step_title', {}).get('title', '')
+        if (
+            ctx.session.state[PLAN]['steps'][index]['status']
+            == PlanStepStatusEnum.SUBMITTED
+        ):
+            step_title = '获取任务结果'
 
-        step_title = (
-            i18n.t(separate_card_info)
-            + f'{retry_info}'
-            + ': '
-            + ctx.session.state.get('step_title', {}).get('title', '')
-        )
         for matmaster_flow_event in context_function_event(
             ctx,
             self.name,
