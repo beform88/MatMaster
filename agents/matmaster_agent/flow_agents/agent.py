@@ -540,7 +540,7 @@ class MatMasterFlowAgent(LlmAgent):
 
         # 全部执行完毕，总结执行情况
         if (
-            check_plan(ctx) == FlowStatusEnum.COMPLETE
+            check_plan(ctx) in [FlowStatusEnum.COMPLETE, FlowStatusEnum.FAILED]
             or ctx.session.state['plan']['feasibility'] == 'null'
         ):
             # Skip summary for single-tool plans
@@ -580,11 +580,10 @@ class MatMasterFlowAgent(LlmAgent):
                 self._report_agent.instruction = get_report_instruction(
                     ctx.session.state.get('plan', {})
                 )
-                # Collect report markdown.
+
+                # Collect report Markdown
                 report_markdown = ''
-                async for report_event in self.report_agent.run_async(
-                        ctx
-                ):
+                async for report_event in self.report_agent.run_async(ctx):
                     current_text = is_text(report_event)
                     if not current_text:
                         continue
@@ -648,8 +647,6 @@ class MatMasterFlowAgent(LlmAgent):
                 },
             ):
                 yield generate_follow_up_event
-        elif check_plan(ctx) == FlowStatusEnum.FAILED:
-            yield update_state_event(ctx, state_delta={'loop_continue': True})
 
     async def _run_research_flow(
         self, ctx: InvocationContext
@@ -711,50 +708,43 @@ class MatMasterFlowAgent(LlmAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         try:
-            for _ in range(2):
-                yield update_state_event(ctx, state_delta={'loop_continue': False})
-                # 检查是否还有额度
-                if not ctx.session.state['quota_remaining']:
-                    for quota_remaining_event in all_text_event(
-                        ctx,
-                        self.name,
-                        i18n.t('Questionnaire'),
-                        ModelRole,
-                    ):
-                        yield quota_remaining_event
-                    return
-
-                # 上传文件特殊处理
-                async for handle_upload_event in self.handle_upload_agent.run_async(
-                    ctx
+            # 检查是否还有额度
+            if not ctx.session.state['quota_remaining']:
+                for quota_remaining_event in all_text_event(
+                    ctx,
+                    self.name,
+                    i18n.t('Questionnaire'),
+                    ModelRole,
                 ):
-                    yield handle_upload_event
+                    yield quota_remaining_event
+                return
 
-                # 用户意图识别（一旦进入 research 模式，暂时无法退出）
-                if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
-                    async for intent_event in self.intent_agent.run_async(ctx):
-                        yield intent_event
+            # 上传文件特殊处理
+            async for handle_upload_event in self.handle_upload_agent.run_async(ctx):
+                yield handle_upload_event
 
-                # 如果用户上传文件，强制为 research 模式
-                if (
-                    ctx.session.state[UPLOAD_FILE]
-                    and ctx.session.state['intent']['type'] == IntentEnum.CHAT
-                ):
-                    update_intent = copy.deepcopy(ctx.session.state['intent'])
-                    update_intent['type'] = IntentEnum.RESEARCH
-                    yield update_state_event(ctx, state_delta={'intent': update_intent})
+            # 用户意图识别（一旦进入 research 模式，暂时无法退出）
+            if ctx.session.state['intent'].get('type', None) != IntentEnum.RESEARCH:
+                async for intent_event in self.intent_agent.run_async(ctx):
+                    yield intent_event
 
-                # chat 模式
-                if ctx.session.state['intent']['type'] == IntentEnum.CHAT:
-                    async for chat_event in self.chat_agent.run_async(ctx):
-                        yield chat_event
-                # research 模式
-                else:
-                    async for _research_event in self._run_research_flow(ctx):
-                        yield _research_event
-                # 退出循环
-                if not ctx.session.state['loop_continue']:
-                    break
+            # 如果用户上传文件，强制为 research 模式
+            if (
+                ctx.session.state[UPLOAD_FILE]
+                and ctx.session.state['intent']['type'] == IntentEnum.CHAT
+            ):
+                update_intent = copy.deepcopy(ctx.session.state['intent'])
+                update_intent['type'] = IntentEnum.RESEARCH
+                yield update_state_event(ctx, state_delta={'intent': update_intent})
+
+            # chat 模式
+            if ctx.session.state['intent']['type'] == IntentEnum.CHAT:
+                async for chat_event in self.chat_agent.run_async(ctx):
+                    yield chat_event
+            # research 模式
+            else:
+                async for _research_event in self._run_research_flow(ctx):
+                    yield _research_event
         # 用户触发中止会话
         except CancelledError:
             raise
