@@ -159,7 +159,11 @@ async def file_to_base64(file_path: Path) -> Tuple[Path, str]:
 
 # Step3: Upload to OSS
 async def upload_to_oss_wrapper(
-    b64_data: str, oss_path: str, filename: str
+    b64_data: str,
+    oss_path: str,
+    filename: str,
+    *,
+    with_download_headers: bool = False,
 ) -> Dict[str, dict]:
     def _sync_upload_base64_to_oss(data: str, oss_path: str) -> str:
         try:
@@ -167,7 +171,13 @@ async def upload_to_oss_wrapper(
             endpoint = os.environ['OSS_ENDPOINT']
             bucket_name = os.environ['OSS_BUCKET_NAME']
             bucket = oss2.Bucket(auth, endpoint, bucket_name)
-            bucket.put_object(oss_path, base64.b64decode(data))
+            headers = None
+            if with_download_headers:
+                headers = {
+                    'Content-Disposition': f'attachment; filename="{filename}"',
+                    'Content-Type': 'text/markdown',
+                }
+            bucket.put_object(oss_path, base64.b64decode(data), headers=headers)
             return f"https://{bucket_name}.oss-cn-zhangjiakou.aliyuncs.com/{oss_path}"
         except Exception as e:
             return str(e)
@@ -198,7 +208,9 @@ async def upload_report_md_to_oss(
 
         _, b64_data = await file_to_base64(md_file_path)
         oss_path = f"agent/{int(time.time())}_{filename}"
-        oss_result = await upload_to_oss_wrapper(b64_data, oss_path, filename)
+        oss_result = await upload_to_oss_wrapper(
+            b64_data, oss_path, filename, with_download_headers=True
+        )
         oss_url = list(oss_result.values())[0]
         return ReportUploadResult(
             oss_url=oss_url,
