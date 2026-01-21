@@ -665,7 +665,6 @@ class MatMasterFlowAgent(LlmAgent):
                                     ctx.session.state.get('plan', {})
                                 )
                                 # Collect report markdown.
-                                # Assumption: non-streaming (partial=False) is the full final content.
                                 report_markdown = ''
                                 async for report_event in self.report_agent.run_async(
                                     ctx
