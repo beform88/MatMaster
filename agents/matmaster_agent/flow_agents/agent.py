@@ -669,9 +669,7 @@ class MatMasterFlowAgent(LlmAgent):
                                 async for report_event in self.report_agent.run_async(
                                     ctx
                                 ):
-                                    if not is_text(report_event):
-                                        continue
-                                    current_text = report_event.content.parts[0].text
+                                    current_text = is_text(report_event)
                                     if not current_text:
                                         continue
 
