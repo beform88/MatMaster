@@ -664,17 +664,20 @@ class MatMasterFlowAgent(LlmAgent):
                                 self._report_agent.instruction = get_report_instruction(
                                     ctx.session.state.get('plan', {})
                                 )
-                                report_text_parts: list[str] = []
+                                # Collect report markdown.
+                                report_markdown = ''
                                 async for report_event in self.report_agent.run_async(
                                     ctx
                                 ):
-                                    if is_text(report_event):
-                                        report_text_parts.append(
-                                            report_event.content.parts[0].text
-                                        )
+                                    current_text = is_text(report_event)
+                                    if not current_text:
+                                        continue
+
+                                    report_markdown = current_text
+                                    if not report_event.partial:
+                                        break
 
                                 # matmaster_report_md.md
-                                report_markdown = ''.join(report_text_parts)
                                 upload_result = await upload_report_md_to_oss(
                                     ReportUploadParams(
                                         report_markdown=report_markdown,
