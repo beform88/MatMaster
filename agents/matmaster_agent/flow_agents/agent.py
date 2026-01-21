@@ -668,10 +668,27 @@ class MatMasterFlowAgent(LlmAgent):
                                 async for report_event in self.report_agent.run_async(
                                     ctx
                                 ):
-                                    if is_text(report_event):
-                                        report_text_parts.append(
-                                            report_event.content.parts[0].text
-                                        )
+                                    if not is_text(report_event):
+                                        continue
+
+                                    current_text = report_event.content.parts[0].text
+                                    if not current_text:
+                                        continue
+
+                                    # De-dup / merge streaming outputs:
+                                    # Some models emit "full text so far" repeatedly. If so, replace the last chunk
+                                    # instead of appending to avoid duplicated full documents.
+                                    if report_text_parts:
+                                        last_text = report_text_parts[-1]
+                                        if current_text == last_text:
+                                            continue
+                                        if current_text.startswith(last_text):
+                                            report_text_parts[-1] = current_text
+                                            continue
+                                        if last_text.startswith(current_text):
+                                            continue
+
+                                    report_text_parts.append(current_text)
 
                                 # matmaster_report_md.md
                                 report_markdown = ''.join(report_text_parts)
