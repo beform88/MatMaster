@@ -664,34 +664,47 @@ class MatMasterFlowAgent(LlmAgent):
                                 self._report_agent.instruction = get_report_instruction(
                                     ctx.session.state.get('plan', {})
                                 )
-                                report_text_parts: list[str] = []
+                                # Collect report markdown from streaming events.
+                                # - partial=True: often "full text so far" snapshot
+                                # - partial=False: may be either final full text or incremental chunks
+                                report_markdown = ''
+                                latest_partial_snapshot = ''
+                                non_partial_chunks: list[str] = []
                                 async for report_event in self.report_agent.run_async(
                                     ctx
                                 ):
                                     if not is_text(report_event):
                                         continue
-
                                     current_text = report_event.content.parts[0].text
                                     if not current_text:
                                         continue
 
-                                    # De-dup / merge streaming outputs:
-                                    # Some models emit "full text so far" repeatedly. If so, replace the last chunk
-                                    # instead of appending to avoid duplicated full documents.
-                                    if report_text_parts:
-                                        last_text = report_text_parts[-1]
-                                        if current_text == last_text:
-                                            continue
-                                        if current_text.startswith(last_text):
-                                            report_text_parts[-1] = current_text
-                                            continue
-                                        if last_text.startswith(current_text):
-                                            continue
+                                    if report_event.partial:
+                                        # Keep the latest snapshot, don't append.
+                                        latest_partial_snapshot = current_text
+                                        continue
 
-                                    report_text_parts.append(current_text)
+                                    if latest_partial_snapshot and (
+                                        current_text.startswith(latest_partial_snapshot)
+                                        or latest_partial_snapshot.startswith(current_text)
+                                    ):
+                                        report_markdown = current_text
+                                        break
+
+                                    # Otherwise treat as incremental chunk, de-dup exact repeats.
+                                    if non_partial_chunks and non_partial_chunks[-1] == current_text:
+                                        continue
+                                    non_partial_chunks.append(current_text)
+
+                                if not report_markdown:
+                                    # Prefer the latest snapshot if available; otherwise join chunks.
+                                    report_markdown = (
+                                        latest_partial_snapshot
+                                        if latest_partial_snapshot
+                                        else ''.join(non_partial_chunks)
+                                    )
 
                                 # matmaster_report_md.md
-                                report_markdown = ''.join(report_text_parts)
                                 upload_result = await upload_report_md_to_oss(
                                     ReportUploadParams(
                                         report_markdown=report_markdown,
