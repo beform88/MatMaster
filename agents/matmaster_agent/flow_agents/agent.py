@@ -687,10 +687,11 @@ class MatMasterFlowAgent(LlmAgent):
                                         ctx,
                                         self.name,
                                         'matmaster_report_md',
+                                        None,
+                                        ModelRole,
                                         {
                                             'url': upload_result.oss_url,
-                                        },
-                                        ModelRole,
+                                        }
                                     ):
                                         yield report_file_event
                                 for matmaster_flow_event in context_function_event(
