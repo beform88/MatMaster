@@ -104,6 +104,7 @@ TASK: Analyze topic and collected facts, then rewrite the report based on collec
 
 要求：
 - 仅收录上下文中真实出现并被使用过的来源（例如 web_search/网页抽取得到的 URL、论文信息等）。
+- **只能包含 PDF 文件和搜索得到的 URL，不能包含结构类文件**（如 CIF、POSCAR、VASP 输入文件等结构数据文件）。
 - 所有 URL 和文件路径必须用链接格式呈现：`[显示文本](URL或路径)`。
 - 使用标准引用格式（选择一种并保持一致：APA / IEEE / GB/T 7714 均可），但其中的 URL 和文件路径部分必须用链接格式。
 - 每条引用后追加 1 句简单描述，说明它支持了报告中的哪条事实/结论。
