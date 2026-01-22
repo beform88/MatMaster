@@ -2,7 +2,6 @@ import logging
 from typing import List
 
 from google.adk.agents import InvocationContext
-from google.genai.types import Content
 
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.flow_agents.scene_agent.model import SceneEnum
@@ -130,13 +129,3 @@ def has_self_check(current_tool_name: str) -> bool:
     if not tool:
         return False
     return tool.get('self_check', False)
-
-
-def is_content_has_keywords(content: Content, keywords: List[str]) -> bool:
-    tokens = [f'[{k}]' if k.endswith('agent') else f'`{k}`' for k in keywords]
-
-    return any(
-        isinstance((text := getattr(part, 'text', None)), str)
-        and any(token in text for token in tokens)
-        for part in content.parts
-    )

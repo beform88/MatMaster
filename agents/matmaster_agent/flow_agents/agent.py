@@ -32,7 +32,11 @@ from agents.matmaster_agent.flow_agents.chat_agent.prompt import (
     ChatAgentGlobalInstruction,
     ChatAgentInstruction,
 )
-from agents.matmaster_agent.flow_agents.constant import MATMASTER_FLOW
+from agents.matmaster_agent.flow_agents.constant import (
+    MATMASTER_FLOW,
+    MATMASTER_FLOW_PLANS,
+    MATMASTER_GENERATE_NPS,
+)
 from agents.matmaster_agent.flow_agents.execution_agent.agent import (
     MatMasterSupervisorAgent,
 )
@@ -59,6 +63,7 @@ from agents.matmaster_agent.flow_agents.plan_confirm_agent.schema import (
 from agents.matmaster_agent.flow_agents.plan_info_agent.callback import (
     filter_plan_info_llm_contents,
 )
+from agents.matmaster_agent.flow_agents.plan_info_agent.constant import PLAN_INFO_AGENT
 from agents.matmaster_agent.flow_agents.plan_info_agent.prompt import (
     PLAN_INFO_INSTRUCTION,
 )
@@ -67,6 +72,7 @@ from agents.matmaster_agent.flow_agents.plan_make_agent.agent import PlanMakeAge
 from agents.matmaster_agent.flow_agents.plan_make_agent.callback import (
     filter_plan_make_llm_contents,
 )
+from agents.matmaster_agent.flow_agents.plan_make_agent.constant import PLAN_MAKE_AGENT
 from agents.matmaster_agent.flow_agents.plan_make_agent.prompt import (
     get_plan_make_instruction,
 )
@@ -180,7 +186,7 @@ class MatMasterFlowAgent(LlmAgent):
         )
 
         self._plan_make_agent = PlanMakeAgent(
-            name='plan_make_agent',
+            name=PLAN_MAKE_AGENT,
             model=MatMasterLlmConfig.tool_schema_model,
             description='根据用户的问题依据现有工具执行计划，如果没有工具可用，告知用户，不要自己制造工具或幻想',
             state_key=MULTI_PLANS,
@@ -197,7 +203,7 @@ class MatMasterFlowAgent(LlmAgent):
         )
 
         self._plan_info_agent = DisallowTransferAndContentLimitSchemaAgent(
-            name='plan_info_agent',
+            name=PLAN_INFO_AGENT,
             model=MatMasterLlmConfig.tool_schema_model,
             global_instruction=GLOBAL_INSTRUCTION,
             description='根据 materials_plan 返回的计划进行总结',
@@ -470,7 +476,7 @@ class MatMasterFlowAgent(LlmAgent):
         for matmaster_flow_plans_event in context_function_event(
             ctx,
             self.name,
-            'matmaster_flow_plans',
+            MATMASTER_FLOW_PLANS,
             None,
             ModelRole,
             {
@@ -584,13 +590,8 @@ class MatMasterFlowAgent(LlmAgent):
                 # Collect report Markdown
                 report_markdown = ''
                 async for report_event in self.report_agent.run_async(ctx):
-                    current_text = is_text(report_event)
-                    if not current_text:
-                        continue
-
-                    report_markdown = current_text
-                    if not report_event.partial:
-                        break
+                    if (cur_text := is_text(report_event)) and not report_event.partial:
+                        report_markdown += cur_text
 
                 # matmaster_report_md.md
                 upload_result = await upload_report_md_to_oss(
@@ -756,7 +757,7 @@ class MatMasterFlowAgent(LlmAgent):
         for generate_nps_event in context_function_event(
             ctx,
             self.name,
-            'matmaster_generate_nps',
+            MATMASTER_GENERATE_NPS,
             {},
             ModelRole,
             {'session_id': ctx.session.id, 'invocation_id': ctx.invocation_id},

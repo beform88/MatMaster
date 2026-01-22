@@ -37,6 +37,9 @@ from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.reco
 from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.recommend_params_agent.schema import (
     create_tool_args_schema,
 )
+from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.subagent_summary_agent.callback import (
+    filter_summary_llm_contents,
+)
 from agents.matmaster_agent.core_agents.comp_agents.recommend_summary_agent.subagent_summary_agent.prompt import (
     get_subagent_summary_prompt,
 )
@@ -120,6 +123,7 @@ class BaseAgentWithRecAndSum(
                 description=self.description,
                 global_instruction=GLOBAL_INSTRUCTION,
                 instruction=self.instruction,
+                before_model_callback=filter_summary_llm_contents,
             )
         else:
             self._summary_agent = DisallowTransferAndContentLimitLlmAgent(
