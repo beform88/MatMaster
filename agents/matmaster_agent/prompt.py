@@ -143,6 +143,28 @@ You must strictly adhere to the naming conventions defined in the Material Regis
    - Exception: If discussing a commercial product specifically sold under a trade name (e.g., "Sigma-Aldrich ZIF-8"), use the trade name but reference the scientific name in parentheses.
 """
 
+DOMAIN_SPECIFIC_VOCABULARY = {
+    'deep potential': '深度学习势函数',
+    'Deep Potential Molecular Dynamics': '深度学习势分子动力学',
+    'DPMD': '深度学习势分子动力学',
+    'DPA': 'DPA预训练原子间势函数',
+}
+
+
+def get_vocabulary_enforce_prompt() -> str:
+    vocab_list = '\n'.join(
+        [
+            f'- "{k}" MUST be translated/referred to as "{v}"'
+            for k, v in DOMAIN_SPECIFIC_VOCABULARY.items()
+        ]
+    )
+    return f"""
+### DOMAIN-SPECIFIC VOCABULARY STANDARDS
+To ensure professional consistency in Materials Science, you strictly MUST adhere to the following terminology translations:
+{vocab_list}
+"""
+
+
 STRUCTURE_BUILDING_SAVENAME = """
 Rules (MUST follow, no exceptions):
 1. ASCII letters/digits/underscores only; no spaces or symbols.
