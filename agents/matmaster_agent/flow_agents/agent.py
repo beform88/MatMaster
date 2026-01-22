@@ -1,6 +1,7 @@
 import copy
 import json
 import logging
+import re
 from asyncio import CancelledError
 from typing import AsyncGenerator
 
@@ -468,6 +469,24 @@ class MatMasterFlowAgent(LlmAgent):
             yield matmaster_flow_event
         async for plan_summary_event in self.plan_info_agent.run_async(ctx):
             yield plan_summary_event
+
+        # 校验 plan_make 和 plan_info 的个数是否一致，不一致尝试更新一下 plan_info
+        plan_make_count = len(ctx.session.state[MULTI_PLANS]['plans'])
+        plan_info_count = len(ctx.session.state['plan_info']['plans'])
+        if plan_info_count != plan_make_count:
+            logger.warning(f'{ctx.session.id} plan_info count mismatch')
+            if plan_info_count == 1:
+                logger.warning(f'{ctx.session.id} prepare split plan_info')
+                final_plans = re.split(
+                    r'(?=方案\s*\d+\s*：)', ctx.session.state['plan_info']['plans'][0]
+                )
+                final_plans = [p.strip() for p in final_plans if p.strip()]
+                update_plan_info = copy.deepcopy(ctx.session.state['plan_info'])
+                update_plan_info['plans'] = final_plans
+                yield update_state_event(
+                    ctx, state_delta={'plan_info': update_plan_info}
+                )
+
         plan_info = ctx.session.state['plan_info']
         intro = plan_info['intro']
         plans = plan_info['plans']
@@ -509,7 +528,7 @@ class MatMasterFlowAgent(LlmAgent):
             yield matmaster_flow_event
 
         # 更新计划为可执行的计划
-        update_multi_plans = copy.deepcopy(ctx.session.state['multi_plans'])
+        update_multi_plans = copy.deepcopy(ctx.session.state[MULTI_PLANS])
         for update_plan in update_multi_plans['plans']:
             origin_steps = update_plan['steps']
             actual_steps = []
