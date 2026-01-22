@@ -152,16 +152,20 @@ DOMAIN_SPECIFIC_VOCABULARY = {
 
 
 def get_vocabulary_enforce_prompt() -> str:
-    vocab_list = '\n'.join(
-        [
-            f'- "{k}" MUST be translated/referred to as "{v}"'
-            for k, v in DOMAIN_SPECIFIC_VOCABULARY.items()
-        ]
+    mapping_list = '\n'.join(
+        [f'   - "{eng}" → "{chn}"' for eng, chn in DOMAIN_SPECIFIC_VOCABULARY.items()]
     )
+
     return f"""
 ### DOMAIN-SPECIFIC VOCABULARY STANDARDS
-To ensure professional consistency in Materials Science, you strictly MUST adhere to the following terminology translations:
-{vocab_list}
+To ensure professional consistency, you strictly MUST adhere to the following terminology rules **based on your output language**:
+
+**Condition A: If you are responding in CHINESE (中文):**
+You MUST translate the following terms into their designated Chinese equivalents:
+{mapping_list}
+
+**Condition B: If you are responding in ENGLISH:**
+You MUST use the original English terms (e.g., "Deep Potential", "DPMD"). **DO NOT** use the Chinese translations in English sentences.
 """
 
 
