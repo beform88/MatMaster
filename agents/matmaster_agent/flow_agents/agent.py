@@ -590,13 +590,8 @@ class MatMasterFlowAgent(LlmAgent):
                 # Collect report Markdown
                 report_markdown = ''
                 async for report_event in self.report_agent.run_async(ctx):
-                    current_text = is_text(report_event)
-                    if not current_text:
-                        continue
-
-                    report_markdown = current_text
-                    if not report_event.partial:
-                        break
+                    if (cur_text := is_text(report_event)) and not report_event.partial:
+                        report_markdown += cur_text
 
                 # matmaster_report_md.md
                 upload_result = await upload_report_md_to_oss(
