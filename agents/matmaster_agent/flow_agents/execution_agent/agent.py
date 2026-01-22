@@ -13,6 +13,9 @@ from agents.matmaster_agent.core_agents.comp_agents.dntransfer_climit_agent impo
     DisallowTransferAndContentLimitLlmAgent,
 )
 from agents.matmaster_agent.flow_agents.constant import MATMASTER_SUPERVISOR_AGENT
+from agents.matmaster_agent.flow_agents.execution_agent.utils import (
+    should_exit_retryLoop,
+)
 from agents.matmaster_agent.flow_agents.model import PlanStepStatusEnum
 from agents.matmaster_agent.flow_agents.step_validation_agent.prompt import (
     STEP_VALIDATION_INSTRUCTION,
@@ -28,7 +31,7 @@ from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.prompt import MatMasterCheckTransferPrompt
-from agents.matmaster_agent.state import ERROR_DETAIL, ERROR_OCCURRED, PLAN
+from agents.matmaster_agent.state import PLAN
 from agents.matmaster_agent.sub_agents.mapping import (
     MatMasterSubAgentsEnum,
 )
@@ -368,15 +371,8 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             and ctx.session.state[PLAN]['steps'][index]['retry_count']
                             < MAX_TOOL_RETRIES
                         ):
-                            # 下载 results.txt 失败，退出同一工具重试
-                            DOWNLOAD_RESULTS_TXT_FAILED = (
-                                ctx.session.state[ERROR_OCCURRED]
-                                and ctx.session.state[ERROR_DETAIL].startswith(
-                                    'ClientResponseError'
-                                )
-                                and 'results.txt' in ctx.session.state[ERROR_DETAIL]
-                            )
-                            if DOWNLOAD_RESULTS_TXT_FAILED:
+                            # 对于某些错误，重试没有必要，直接退出
+                            if should_exit_retryLoop:
                                 break
 
                             validation_result = ctx.session.state.get(
