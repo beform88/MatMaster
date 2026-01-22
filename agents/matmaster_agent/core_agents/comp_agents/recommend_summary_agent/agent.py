@@ -58,7 +58,11 @@ from agents.matmaster_agent.llm_config import MatMasterLlmConfig
 from agents.matmaster_agent.locales import i18n
 from agents.matmaster_agent.logger import PrefixFilter
 from agents.matmaster_agent.model import ToolCallInfoSchema
-from agents.matmaster_agent.prompt import GLOBAL_INSTRUCTION, GLOBAL_SCHEMA_INSTRUCTION
+from agents.matmaster_agent.prompt import (
+    GLOBAL_INSTRUCTION,
+    GLOBAL_SCHEMA_INSTRUCTION,
+    get_vocabulary_enforce_prompt,
+)
 from agents.matmaster_agent.state import RECOMMEND_PARAMS
 from agents.matmaster_agent.sub_agents.tools import ALL_TOOLS
 from agents.matmaster_agent.utils.event_utils import (
@@ -334,9 +338,11 @@ class BaseAgentWithRecAndSum(
 
         # TODO: needs a better way to handle customized summary prompt
         if ALL_TOOLS[current_step_tool_name].get('summary_prompt') is not None:
-            self.summary_agent.instruction = ALL_TOOLS[current_step_tool_name].get(
-                'summary_prompt'
+            custom_prompt = ALL_TOOLS[current_step_tool_name].get('summary_prompt')
+            self.summary_agent.instruction = (
+                f"{custom_prompt}\n\n{get_vocabulary_enforce_prompt()}"
             )
+
         if current_step['status'] != PlanStepStatusEnum.SUBMITTED:
             async for summary_event in self.summary_agent.run_async(ctx):
                 yield summary_event
