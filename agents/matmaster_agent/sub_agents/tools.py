@@ -341,11 +341,11 @@ ALL_TOOLS = {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.VACANCY_FORMATION_ENERGY],
         'description': (
-            'What it does: Evaluate vacancy formation energies by relaxing supercells with one atom removed.\n'
-            'When to use: When you need vacancy formation energies for materials.\n'
-            'Prerequisites / Inputs: Structure file.\n'
+            'What it does: Evaluate vacancy formation energies by relaxing supercells after creating vacancies internally (removes one atom from a pristine supercell).\n'
+            'When to use: When you need vacancy formation energies for a material starting from a pristine crystal.\n'
+            'Prerequisites / Inputs: Pristine (defect-free) structure file of the bulk crystal (unit cell or supercell). Do NOT provide a structure that already contains vacancies/defects (missing atoms, partial occupancies, disordered sites), because the tool assumes a complete bulk lattice and will construct vacancies itself; defected inputs may cause errors or invalid energies.\n'
             'Outputs: Vacancy formation energies.\n'
-            'Cannot do / Limits: DFT-based.\n'
+            'Cannot do / Limits: DFT-based.; does not accept pre-defected structures.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['abacus_vacancy_formation_energy'],
@@ -369,11 +369,11 @@ ALL_TOOLS = {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.INTERSTITIAL_FORMATION_ENERGY],
         'description': (
-            'What it does: Insert interstitial atoms into a host lattice to compute formation energies across candidate sites.\n'
-            'When to use: When you need interstitial formation energies.\n'
-            'Prerequisites / Inputs: Host lattice structure and interstitial atoms.\n'
-            'Outputs: Formation energies for candidate sites.\n'
-            'Cannot do / Limits: DFT-based.\n'
+            'What it does: Insert interstitial atoms into a host lattice to compute formation energies across candidate sites (generated internally).\n'
+            'When to use: When you need interstitial formation energies starting from a defect-free bulk crystal.\n'
+            'Prerequisites / Inputs: Pristine (defect-free) host lattice structure and interstitial atoms.\n The host structure must be a complete bulk lattice (no vacancies/antisites/substitutions, no missing atoms, no partial occupancies/disordered sites). Do NOT provide a structure that already contains defects or extra atoms; the tool assumes a pristine lattice and will place interstitials itself—defected inputs may cause errors or invalid energies.\n'
+            'Outputs: Interstitial formation energies for candidate sites.\n'
+            'Cannot do / Limits: DFT-based. Not intended for pre-defected host structures.\n'
             'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
@@ -397,12 +397,12 @@ ALL_TOOLS = {
         'belonging_agent': ApexAgentName,
         'scene': [SceneEnum.APEX, SceneEnum.SURFACE_ENERGY],
         'description': (
-            'What it does: Execute a workflow of surface energy calculation.\n'
-            'When to use: When you need surface energy.\n'
-            'Prerequisites / Inputs: Structure file.\n'
+            'What it does: Execute a workflow of surface energy calculation using a pristine Bulk crystal as input.\n'
+            'When to use: When you need surface energy starting from a Bulk structure.\n'
+            'Prerequisites / Inputs: Bulk structure file. \n'
             'Outputs: Surface energy.\n'
-            'Cannot do / Limits: Cannot build slab structures; DFT-based.\n'
-            'Cost / Notes: DFT calculation cost.'
+            'Cannot do / Limits: Do NOT provide an already-cut slab/surface structure as input. Slab inputs can cause errors or lead to invalid surface energies.; DFT-based.\n'
+            'Cost / Notes: DFT calculation cost.ensure the input is a complete bulk lattice.'
         ),
         'alternative': [],
         'self_check': False,
