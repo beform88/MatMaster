@@ -120,7 +120,7 @@ from agents.matmaster_agent.services.icl import (
     toolchain_from_examples,
 )
 from agents.matmaster_agent.services.questions import get_random_questions
-from agents.matmaster_agent.state import EXPAND, MULTI_PLANS, UPLOAD_FILE
+from agents.matmaster_agent.state import EXPAND, MULTI_PLANS, PLAN, UPLOAD_FILE
 from agents.matmaster_agent.sub_agents.mapping import (
     AGENT_CLASS_MAPPING,
     ALL_AGENT_TOOLS_LIST,
@@ -541,13 +541,14 @@ class MatMasterFlowAgent(LlmAgent):
         yield update_state_event(ctx, state_delta={'multi_plans': update_multi_plans})
 
         # 检查是否应该跳过用户确认步骤
-        if should_bypass_confirmation(ctx):
+        if plan_make_count == 1 and should_bypass_confirmation(ctx):
             # 自动设置计划确认状态
             yield update_state_event(
                 ctx,
                 state_delta={
                     'plan_confirm': {
                         'flag': True,
+                        'selected_plan_id': 0,
                         'reason': 'Auto confirmed for single bypass tool',
                     }
                 },
@@ -690,32 +691,35 @@ class MatMasterFlowAgent(LlmAgent):
         if check_plan(ctx) == FlowStatusEnum.COMPLETE or not ctx.session.state[
             'plan_confirm'
         ].get('flag', False):
+            # 清空 Plan 和 MULTI_PLANS
+            if check_plan(ctx) == FlowStatusEnum.COMPLETE:
+                yield update_state_event(ctx, state_delta={PLAN: {}, MULTI_PLANS: {}})
+
             async for _plan_confirm_event in self._run_plan_confirm_agent(ctx):
                 yield _plan_confirm_event
 
-        plan_confirm = ctx.session.state['plan_confirm'].get('flag', False)
-
-        # 制定计划（1. 无计划；2. 计划未通过；3. 计划已完成；4. 用户未确认计划）
-        if (
-            check_plan(ctx)
-            in [
-                FlowStatusEnum.NO_PLAN,
-                FlowStatusEnum.COMPLETE,
-                FlowStatusEnum.FAILED,
-            ]
-            or not plan_confirm
-        ):
+        # 制定计划（1. 无计划；2. 计划已完成；3. 计划失败；4. 用户未确认计划）
+        if check_plan(ctx) in [
+            FlowStatusEnum.NO_PLAN,
+            FlowStatusEnum.COMPLETE,
+            FlowStatusEnum.FAILED,
+        ] or not ctx.session.state['plan_confirm'].get('flag', False):
             async for _plan_make_event in self._run_plan_make_agent(
                 ctx, UPDATE_USER_CONTENT, TOOLCHAIN_EXAMPLES_PROMPT
             ):
                 yield _plan_make_event
 
-        # 确定选择某个计划
+        # 从 MultiPlans 中选择某个计划
         logger.info(f'{ctx.session.id} check_plan = {check_plan(ctx)}')
-        if plan_confirm and check_plan(ctx) in [FlowStatusEnum.NEW_PLAN]:
+        if ctx.session.state['plan_confirm'].get('flag', False) and check_plan(ctx) in [
+            FlowStatusEnum.NEW_PLAN
+        ]:
             selected_plan_id = ctx.session.state['plan_confirm']['selected_plan_id']
             selected_plan = ctx.session.state[MULTI_PLANS]['plans'][selected_plan_id]
-            yield update_state_event(ctx, state_delta={'plan': selected_plan})
+            yield update_state_event(ctx, state_delta={PLAN: selected_plan})
+            logger.info(
+                f'{ctx.session.id} Reset Plan, plan = {ctx.session.state[PLAN]}'
+            )
 
         # 计划未确认，暂停往下执行
         if ctx.session.state['plan_confirm']['flag']:
