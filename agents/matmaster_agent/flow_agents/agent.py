@@ -7,6 +7,7 @@ from typing import AsyncGenerator
 
 from google.adk.agents import InvocationContext, LlmAgent
 from google.adk.events import Event
+from opik.integrations.adk import track_adk_agent_recursive
 from pydantic import computed_field, model_validator
 
 from agents.matmaster_agent.base_callbacks.private_callback import (
@@ -214,39 +215,7 @@ class MatMasterFlowAgent(LlmAgent):
             before_model_callback=filter_plan_info_llm_contents,
         )
 
-        # execution_agent
-        step_validation_agent = DisallowTransferAndContentLimitSchemaAgent(
-            name='step_validation_agent',
-            model=MatMasterLlmConfig.tool_schema_model,
-            description='校验步骤执行结果是否合理',
-            instruction=STEP_VALIDATION_INSTRUCTION,
-            output_schema=StepValidationSchema,
-            state_key='step_validation',
-        )
-
-        step_title_agent = DisallowTransferAndContentLimitSchemaAgent(
-            name='step_title_agent',
-            model=MatMasterLlmConfig.tool_schema_model,
-            global_instruction=GLOBAL_INSTRUCTION,
-            description='给出每一步的标题',
-            instruction=STEP_TITLE_INSTRUCTION,
-            output_schema=StepTitleSchema,
-            state_key='step_title',
-            before_model_callback=filter_llm_contents,
-        )
-
-        self._execution_agent = MatMasterSupervisorAgent(
-            name='execution_agent',
-            model=MatMasterLlmConfig.default_litellm_model,
-            description='根据 materials_plan 返回的计划进行总结',
-            instruction='',
-            sub_agents=[
-                sub_agent(MatMasterLlmConfig)
-                for sub_agent in AGENT_CLASS_MAPPING.values()
-            ]
-            + [step_title_agent]
-            + [step_validation_agent],
-        )
+        self._execution_agent = None
 
         self._analysis_agent = DisallowTransferAndContentLimitLlmAgent(
             name='execution_summary_agent',
@@ -273,7 +242,6 @@ class MatMasterFlowAgent(LlmAgent):
             self.plan_make_agent,
             self.plan_info_agent,
             self.plan_confirm_agent,
-            self.execution_agent,
             self.analysis_agent,
             self.report_agent,
         ]
@@ -334,6 +302,55 @@ class MatMasterFlowAgent(LlmAgent):
     @property
     def report_agent(self) -> LlmAgent:
         return self._report_agent
+
+    def _build_execution_agent_for_plan(
+        self, ctx: InvocationContext
+    ) -> MatMasterSupervisorAgent:
+        step_validation_agent = DisallowTransferAndContentLimitSchemaAgent(
+            name='step_validation_agent',
+            model=MatMasterLlmConfig.tool_schema_model,
+            description='校验步骤执行结果是否合理',
+            instruction=STEP_VALIDATION_INSTRUCTION,
+            output_schema=StepValidationSchema,
+            state_key='step_validation',
+            after_model_callback=MatMasterLlmConfig.opik_tracer.after_model_callback,
+        )
+        step_title_agent = DisallowTransferAndContentLimitSchemaAgent(
+            name='step_title_agent',
+            model=MatMasterLlmConfig.tool_schema_model,
+            global_instruction=GLOBAL_INSTRUCTION,
+            description='给出每一步的标题',
+            instruction=STEP_TITLE_INSTRUCTION,
+            output_schema=StepTitleSchema,
+            state_key='step_title',
+            before_model_callback=filter_llm_contents,
+            after_model_callback=MatMasterLlmConfig.opik_tracer.after_model_callback,
+        )
+        plan_steps = ctx.session.state.get('plan', {}).get('steps', [])
+        agent_names = []
+        for step in plan_steps:
+            tool_name = step.get('tool_name')
+            if not tool_name:
+                continue
+            belonging_agent = ALL_TOOLS.get(tool_name, {}).get('belonging_agent')
+            if belonging_agent and belonging_agent not in agent_names:
+                agent_names.append(belonging_agent)
+
+        sub_agents = [
+            AGENT_CLASS_MAPPING[agent_name](MatMasterLlmConfig)
+            for agent_name in agent_names
+            if agent_name in AGENT_CLASS_MAPPING
+        ]
+
+        execution_agent = MatMasterSupervisorAgent(
+            name='execution_agent',
+            model=MatMasterLlmConfig.default_litellm_model,
+            description='根据 materials_plan 返回的计划进行总结',
+            instruction='',
+            sub_agents=sub_agents + [step_title_agent] + [step_validation_agent],
+        )
+        track_adk_agent_recursive(execution_agent, MatMasterLlmConfig.opik_tracer)
+        return execution_agent
 
     async def _run_expand_agent(
         self, ctx: InvocationContext
@@ -561,7 +578,10 @@ class MatMasterFlowAgent(LlmAgent):
         yield update_state_event(ctx, state_delta={'scenes': []})
         # 执行计划
         if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
-            async for execution_event in self.execution_agent.run_async(ctx):
+            self._execution_agent = self._build_execution_agent_for_plan(ctx)
+            if self._execution_agent not in self.sub_agents:
+                self.sub_agents.append(self._execution_agent)
+            async for execution_event in self._execution_agent.run_async(ctx):
                 yield execution_event
 
         # 全部执行完毕，总结执行情况
@@ -714,8 +734,25 @@ class MatMasterFlowAgent(LlmAgent):
         if ctx.session.state['plan_confirm'].get('flag', False) and check_plan(ctx) in [
             FlowStatusEnum.NEW_PLAN
         ]:
-            selected_plan_id = ctx.session.state['plan_confirm']['selected_plan_id']
-            selected_plan = ctx.session.state[MULTI_PLANS]['plans'][selected_plan_id]
+            selected_plan_id = ctx.session.state['plan_confirm'].get(
+                'selected_plan_id', 0
+            )
+            plans = ctx.session.state.get(MULTI_PLANS, {}).get('plans', [])
+            if (
+                selected_plan_id is None
+                or not isinstance(selected_plan_id, int)
+                or selected_plan_id < 0
+                or selected_plan_id >= len(plans)
+            ):
+                logger.warning(
+                    f'{ctx.session.id} invalid selected_plan_id={selected_plan_id}, '
+                    f'fallback to 0'
+                )
+                selected_plan_id = 0
+            if not plans:
+                logger.warning(f'{ctx.session.id} empty multi_plans, skip plan select')
+                return
+            selected_plan = plans[selected_plan_id]
             yield update_state_event(ctx, state_delta={PLAN: selected_plan})
             logger.info(
                 f'{ctx.session.id} Reset Plan, plan = {ctx.session.state[PLAN]}'
