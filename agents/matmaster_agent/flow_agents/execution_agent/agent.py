@@ -147,6 +147,17 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
         ):
             step_title = '获取任务结果'
 
+        yield update_state_event(
+            ctx,
+            state_delta={
+                'matmaster_flow_active': {
+                    'title': step_title,
+                    'font_color': '#0E6DE8',
+                    'bg_color': '#EBF2FB',
+                    'border_color': '#B7D3F7',
+                }
+            },
+        )
         for matmaster_flow_event in context_function_event(
             ctx,
             self.name,
