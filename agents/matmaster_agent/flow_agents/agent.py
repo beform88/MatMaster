@@ -469,6 +469,17 @@ class MatMasterFlowAgent(LlmAgent):
             yield plan_event
 
         # 总结计划
+        yield update_state_event(
+            ctx,
+            state_delta={
+                'matmaster_flow_active': {
+                    'title': plan_title,
+                    'font_color': '#30B37F',
+                    'bg_color': '#EFF8F5',
+                    'border_color': '#B2E0CE',
+                }
+            },
+        )
         for matmaster_flow_event in context_function_event(
             ctx,
             self.name,
@@ -543,6 +554,7 @@ class MatMasterFlowAgent(LlmAgent):
             },
         ):
             yield matmaster_flow_event
+        yield update_state_event(ctx, state_delta={'matmaster_flow_active': None})
 
         # 更新计划为可执行的计划
         update_multi_plans = copy.deepcopy(ctx.session.state[MULTI_PLANS])
@@ -603,6 +615,17 @@ class MatMasterFlowAgent(LlmAgent):
 
             # 渲染总结
             if tool_count > 1 or is_async_agent:
+                yield update_state_event(
+                    ctx,
+                    state_delta={
+                        'matmaster_flow_active': {
+                            'title': i18n.t('PlanSummary'),
+                            'font_color': '#9479F7',
+                            'bg_color': '#F5F3FF',
+                            'border_color': '#CFC3FC',
+                        }
+                    },
+                )
                 for matmaster_flow_event in context_function_event(
                     ctx,
                     self.name,
@@ -668,6 +691,9 @@ class MatMasterFlowAgent(LlmAgent):
                     },
                 ):
                     yield matmaster_flow_event
+                yield update_state_event(
+                    ctx, state_delta={'matmaster_flow_active': None}
+                )
 
             # 渲染追问组件
             follow_up_list = await get_random_questions(i18n=i18n)
@@ -808,6 +834,26 @@ class MatMasterFlowAgent(LlmAgent):
                     yield _research_event
         # 用户触发中止会话
         except CancelledError:
+            active_flow = ctx.session.state.get('matmaster_flow_active')
+            if active_flow:
+                for matmaster_flow_event in context_function_event(
+                    ctx,
+                    self.name,
+                    MATMASTER_FLOW,
+                    None,
+                    ModelRole,
+                    {
+                        'title': active_flow.get('title', ''),
+                        'status': 'end',
+                        'font_color': active_flow.get('font_color', '#0E6DE8'),
+                        'bg_color': active_flow.get('bg_color', '#EBF2FB'),
+                        'border_color': active_flow.get('border_color', '#B7D3F7'),
+                    },
+                ):
+                    yield matmaster_flow_event
+                yield update_state_event(
+                    ctx, state_delta={'matmaster_flow_active': None}
+                )
             raise
         except BaseException as err:
             async for error_event in send_error_event(err, ctx, self.name):

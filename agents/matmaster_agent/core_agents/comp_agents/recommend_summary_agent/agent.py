@@ -335,6 +335,7 @@ class BaseAgentWithRecAndSum(
             },
         ):
             yield matmaster_flow_event
+        yield update_state_event(ctx, state_delta={'matmaster_flow_active': None})
 
         # TODO: needs a better way to handle customized summary prompt
         if ALL_TOOLS[current_step_tool_name].get('summary_prompt') is not None:
