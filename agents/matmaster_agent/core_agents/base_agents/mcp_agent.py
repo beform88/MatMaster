@@ -210,7 +210,9 @@ class MCPRunEventsMixin(BaseMixin):
                                 ModelRole,
                             ):
                                 yield tool_response_failed_event
-                            raise RuntimeError('Tool Execution Failed')
+                            raise RuntimeError(
+                                f'Tool Execution Failed: {tool_response["result"].content[0].text}'
+                            )
                         dict_result = load_tool_response(first_part)
                         async for (
                             failed_or_consume_event
