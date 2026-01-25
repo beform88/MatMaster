@@ -591,10 +591,15 @@ class MatMasterFlowAgent(LlmAgent):
         # 执行计划
         if ctx.session.state['plan']['feasibility'] in ['full', 'part']:
             self._execution_agent = self._build_execution_agent_for_plan(ctx)
-            if self._execution_agent not in self.sub_agents:
-                self.sub_agents.append(self._execution_agent)
-            async for execution_event in self._execution_agent.run_async(ctx):
-                yield execution_event
+            if self._execution_agent:
+                # 使用 name 属性来检查，避免 Pydantic __eq__ 的循环引用问题
+                if not any(
+                    agent.name == self._execution_agent.name
+                    for agent in self.sub_agents
+                ):
+                    self.sub_agents.append(self._execution_agent)
+                async for execution_event in self._execution_agent.run_async(ctx):
+                    yield execution_event
 
         # 全部执行完毕，总结执行情况
         if (
