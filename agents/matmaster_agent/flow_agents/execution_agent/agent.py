@@ -372,7 +372,7 @@ class MatMasterSupervisorAgent(DisallowTransferAndContentLimitLlmAgent):
                             < MAX_TOOL_RETRIES
                         ):
                             # 对于某些错误，重试没有必要，直接退出
-                            if should_exit_retryLoop:
+                            if should_exit_retryLoop(ctx):
                                 break
 
                             validation_result = ctx.session.state.get(
