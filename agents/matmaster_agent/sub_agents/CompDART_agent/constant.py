@@ -11,7 +11,7 @@ else:
 COMPDART_BOHRIUM_EXECUTOR = copy.deepcopy(BohriumExecutor)
 COMPDART_BOHRIUM_EXECUTOR['machine']['remote_profile'][
     'image_address'
-] = 'registry.dp.tech/dptech/dpa-calculator:50e69ca3'
+] = 'registry.dp.tech/dptech/dpa-calculator:814c7705'
 COMPDART_BOHRIUM_EXECUTOR['machine']['remote_profile'][
     'machine_type'
 ] = 'c16_m64_1 * NVIDIA 4090'
