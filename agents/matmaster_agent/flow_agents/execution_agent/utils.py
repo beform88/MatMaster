@@ -20,4 +20,9 @@ def should_exit_retryLoop(ctx: InvocationContext) -> bool:
         and '412 Precondition Failed' in ctx.session.state[ERROR_DETAIL]
     )
 
-    return DOWNLOAD_RESULTS_TXT_FAILED or HTTP_412_ERROR
+    # AccessKey Error
+    AccessKey_ERROR = (
+        ANY_ERROR and 'AccessKey Invalid!' in ctx.session.state[ERROR_DETAIL]
+    )
+
+    return DOWNLOAD_RESULTS_TXT_FAILED or HTTP_412_ERROR or AccessKey_ERROR
