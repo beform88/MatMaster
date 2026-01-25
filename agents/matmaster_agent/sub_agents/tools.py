@@ -549,16 +549,16 @@ ALL_TOOLS = {
     #     'scene': [SceneEnum.MOLECULAR],
     #     'description': '',
     # },
-    'run_ga': {
+    'run_dart_ga': {
         'belonging_agent': COMPDART_AGENT_NAME,
         'scene': [SceneEnum.COMPOSITION_OPTIMIZATION],
         'description': (
-            'What it does: Perform composition optimization targeting specific properties using genetic algorithm.\n'
-            'When to use: When you need to optimize compositions for properties.\n'
-            'Prerequisites / Inputs: Proxy model file prepared.\n'
+            'What it does: Perform composition searching for targeting specific properties using genetic algorithm.\n'
+            'When to use: Search optimized compositions for target properties.\n'
+            'Prerequisites / Inputs: Target properties, optional initial compositions or structure templates, constrains, and surrogate model.\n'
             'Outputs: Optimized compositions.\n'
-            'Cannot do / Limits: Cannot build doping structures; requires proxy model.\n'
-            'Cost / Notes: Medium.'
+            'Cannot do / Limits: Cannot build doping structures; requires surrogate model.\n'
+            'Cost / Notes: High due to long iterations.'
         ),
         'alternative': [],
         'self_check': False,
