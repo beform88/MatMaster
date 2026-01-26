@@ -173,12 +173,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.VACANCY_FORMATION_ENERGY],
         'description': (
-            'What it does: Calculate formation energy of non-charged vacancy in metal atoms using DFT.\n'
+            'What it does: Calculate formation energy of non-charged vacancy in metal atoms using DFT.Supports relaxation before calculation.\n'
             'When to use: When you need vacancy formation energy for metal structures.\n'
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters like functional, spin polarization, DFT+U, magnetic moments.\n'
             'Outputs: Vacancy formation energy.\n'
             'Cannot do / Limits: Only non-charged vacancy of metal atoms; requires supercell for calculation.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost'
         ),
         'alternative': ['apex_calculate_vacancy'],
         'self_check': False,
@@ -187,12 +187,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.PHONON],
         'description': (
-            'What it does: Calculate phonon dispersion curve using DFT.\n'
+            'What it does: Calculate phonon dispersion curve using DFT. Supports relaxation before calculation.\n'
             'When to use: When you need phonon properties and thermal corrections for a structure.\n'
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; optional supercell, high-symmetry points, k-path.\n'
             'Outputs: Plot of phonon dispersion band structure and thermal corrections.\n'
             'Cannot do / Limits: Requires DFT; may need supercell for accuracy.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['apex_calculate_phonon', 'calculate_phonon'],
         'self_check': False,
@@ -201,12 +201,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.BAND],
         'description': (
-            'What it does: Calculate electronic band structure using DFT.\n'
+            'What it does: Calculate electronic band structure using DFT. Supports relaxation before calculation.\n'
             'When to use: When you need band structure and band gap for a material.\n'
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; optional high-symmetry points, k-path.\n'
             'Outputs: Plot of band structure and band gap.\n'
             'Cannot do / Limits: DFT-based; supports PYATB or ABACUS nscf.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
         'self_check': False,
@@ -229,12 +229,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.DENSITY_OF_STATES],
         'description': (
-            'What it does: Calculate DOS and PDOS using DFT.\n'
+            'What it does: Calculate DOS and PDOS using DFT. Supports relaxation before calculation.\n'
             'When to use: When you need density of states for electronic structure analysis.\n'
             "Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; PDOS mode ('species', 'species+shell', 'species+orbital').\n"
             'Outputs: Plots for DOS and PDOS.\n'
             'Cannot do / Limits: DFT-based; requires relaxation support.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
         'self_check': False,
@@ -271,12 +271,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.WORK_FUNCTION],
         'description': (
-            'What it does: Calculate work function of slabs and 2D materials using DFT.\n'
+            'What it does: Calculate work function of slabs and 2D materials using DFT. Supports relaxation before calculation.\n'
             'When to use: When you need work function for surface materials.\n'
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; vacuum direction, dipole correction.\n'
             'Outputs: Plot of electrostatic potential and work function.\n'
             'Cannot do / Limits: For slabs and 2D materials; polar slabs have two work functions.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
         'self_check': False,
@@ -290,7 +290,7 @@ ALL_TOOLS = {
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters; ensemble, steps, timestep, temperature.\n'
             'Outputs: ASE trajectory file.\n'
             'Cannot do / Limits: DFT-based MD; expensive for long simulations.\n'
-            'Cost / Notes: High DFT cost; supports relaxation before calculation.'
+            'Cost / Notes: High DFT cost.'
         ),
         'alternative': ['run_molecular_dynamics'],
         'self_check': False,
@@ -299,12 +299,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.Electron_Localization_Function],
         'description': (
-            'What it does: Calculate electron localization function using DFT.\n'
+            'What it does: Calculate electron localization function using DFT. Supports relaxation before calculation.\n'
             'When to use: When you need ELF for bonding analysis.\n'
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
             'Outputs: Cube file of ELF.\n'
             'Cannot do / Limits: DFT-based.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': [],
         'self_check': False,
@@ -313,12 +313,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.EOS],
         'description': (
-            'What it does: Calculate equation of state using DFT.\n'
+            'What it does: Calculate equation of state using DFT.Supports relaxation before calculation.\n'
             'When to use: When you need EOS curve and bulk properties.\n'
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
             'Outputs: Plot of fitted EOS and fitting parameters.\n'
             'Cannot do / Limits: DFT-based.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['apex_calculate_eos'],
         'self_check': False,
@@ -327,12 +327,12 @@ ALL_TOOLS = {
         'belonging_agent': ABACUS_AGENT_NAME,
         'scene': [SceneEnum.ABACUS, SceneEnum.ELASTIC_CONSTANT],
         'description': (
-            'What it does: Calculate elastic properties using DFT.\n'
+            'What it does: Calculate elastic properties using DFT. Supports relaxation before calculation.\n'
             'When to use: When you need elastic constants and moduli.\n'
             'Prerequisites / Inputs: Structure file in cif/VASP POSCAR/ABACUS STRU format; DFT parameters.\n'
             'Outputs: Elastic tensor (Voigt notation), bulk/shear/Young’s modulus, Poisson ratio.\n'
             'Cannot do / Limits: DFT-based.\n'
-            'Cost / Notes: DFT calculation cost; supports relaxation before calculation.'
+            'Cost / Notes: DFT calculation cost.'
         ),
         'alternative': ['apex_calculate_elastic', 'calculate_elastic_constants'],
         'self_check': False,
